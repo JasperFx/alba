@@ -81,7 +81,7 @@ namespace Alba
             var uri = new Uri(root);
             env.Append(OwinConstants.RequestSchemeKey, uri.Scheme);
             env.Append(OwinConstants.RequestPathBaseKey, string.Empty);
-            env.RequestHeaders().AppendHeader(HttpRequestHeaders.Host, uri.Host);
+            env.RequestHeaders().Append(HttpRequestHeaders.Host, uri.Host);
             env.Append(OwinConstants.RequestPathKey, uri.AbsolutePath);
 
             if (parts.Length == 2)

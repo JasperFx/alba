@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CurrentHttpRequestExtensionsTests.cs" />
+    <Compile Include="HeaderDictionaryExtensionsTester.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpecificationExtensions.cs" />
   </ItemGroup>

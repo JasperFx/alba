@@ -20,7 +20,7 @@ namespace Alba
         /// <returns></returns>
         public static IEnumerable<string> GetDelimitedHeaderValues(this HeaderDict headers, string key)
         {
-            return headers.GetHeader(key).GetCommaSeparatedHeaderValues();
+            return headers.GetAll(key).GetCommaSeparatedHeaderValues();
         }
 
         /// <summary>
@@ -29,13 +29,15 @@ namespace Alba
         /// <param name="request"></param>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static string GetSingleHeader(this HeaderDict headers, string key)
+        public static string Get(this HeaderDict headers, string key)
         {
-            return headers.GetHeader(key).FirstOrDefault();
+            key = determineKey(headers, key);
+            return headers.ContainsKey(key) ? headers[key].FirstOrDefault() : null;
         }
 
-        public static HeaderDict AppendHeader(this HeaderDict headers, string key, params string[] values)
+        public static HeaderDict Append(this HeaderDict headers, string key, params string[] values)
         {
+            key = determineKey(headers, key);
             if (headers.ContainsKey(key))
             {
                 var oldArray = headers[key];
@@ -52,8 +54,9 @@ namespace Alba
         }
 
 
-        public static HeaderDict ReplaceHeader(this HeaderDict headers, string key, string value)
+        public static HeaderDict Replace(this HeaderDict headers, string key, string value)
         {
+            key = determineKey(headers, key);
             if (headers.ContainsKey(key))
             {
                 headers[key] = new[] { value };
@@ -67,43 +70,60 @@ namespace Alba
         }
 
 
-        public static HeaderDict ContentType(this HeaderDict env, string contentType)
+        // TODO -- may move these out to conneg extensions
+        public static HeaderDict ContentType(this HeaderDict headers, string contentType)
         {
-            return env.ReplaceHeader(HttpRequestHeaders.ContentType, contentType);
+            return headers.Replace(HttpRequestHeaders.ContentType, contentType);
+        }
+
+        public static string ContentType(this HeaderDict headers)
+        {
+            return headers.Get(HttpRequestHeaders.ContentType);
         }
 
         public static HeaderDict Accepts(this HeaderDict headers, string accepts)
         {
-            headers.ReplaceHeader(HttpRequestHeaders.Accept, accepts);
+            headers.Replace(HttpRequestHeaders.Accept, accepts);
             return headers;
         }
 
-        public static bool HasHeader(this HeaderDict env, string key)
+        public static string Accepts(this HeaderDict headers)
         {
-            return env.ContainsKey(key) || env.Keys.Any(x => x.EqualsIgnoreCase(key));
+            return headers.Get(HttpRequestHeaders.Accept);
         }
 
-        public static IEnumerable<string> GetHeader(this HeaderDict env, string key)
+        public static bool Has(this HeaderDict headers, string key)
         {
-            if (!env.HasHeader(key)) return new string[0];
+            key = determineKey(headers, key);
+            return headers.ContainsKey(key);
+        }
 
+        public static IEnumerable<string> GetAll(this HeaderDict headers, string key)
+        {
+            key = determineKey(headers, key);
+            return headers.ContainsKey(key) ? headers[key] : new string[0];
+        }
 
-            key = env.Keys.FirstOrDefault(x => x.EqualsIgnoreCase(key));
-            return key.IsEmpty() ? new string[0] : env.Get(key);
+        private static string determineKey(HeaderDict headers, string key)
+        {
+            return headers.Keys.FirstOrDefault(x => x.EqualsIgnoreCase(key)) ?? key;
         }
 
 
+        // TODO -- need a test for this thing
         public static void AppendCookie(this HeaderDict headers, Cookie cookie)
         {
 
-            if (headers.ContainsKey(HttpRequestHeaders.Cookie))
+            if (headers.Has(HttpRequestHeaders.Cookie))
             {
-                headers[HttpRequestHeaders.Cookie][0] = headers[HttpRequestHeaders.Cookie][0] + "; " +
-                                                            cookie.ToString();
+                var current = headers.Get(HttpRequestHeaders.Cookie);
+                var newValue = $"{current}; {cookie}";
+
+                headers.Replace(HttpRequestHeaders.Cookie, newValue);
             }
             else
             {
-                headers.AppendHeader(HttpRequestHeaders.Cookie, cookie.ToString());
+                headers.Replace(HttpRequestHeaders.Cookie, cookie.ToString());
             }
 
 
@@ -143,9 +163,9 @@ namespace Alba
         /*
     public class HttpRequestBody
     {
-        private readonly OwinEnvironment _parent;
+        private readonly Owinheadersironment _parent;
 
-        public HttpRequestBody(OwinEnvironment parent)
+        public HttpRequestBody(Owinheadersironment parent)
         {
             _parent = parent;
         }

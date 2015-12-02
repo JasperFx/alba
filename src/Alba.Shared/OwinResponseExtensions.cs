@@ -25,7 +25,7 @@ namespace Alba
             else
             {
                 throw new NotImplementedException();
-                //AppendHeader(HttpResponseHeaders.ContentLength, fileInfo.Length.ToString(CultureInfo.InvariantCulture));
+                //Append(HttpResponseHeaders.ContentLength, fileInfo.Length.ToString(CultureInfo.InvariantCulture));
                 using (var fileStream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
                     //Write(stream => fileStream.CopyTo(stream));
@@ -39,7 +39,7 @@ namespace Alba
         public static void WriteContentType(this OwinEnvironment env, string contentType)
         {
             throw new NotImplementedException();
-            //AppendHeader(HttpResponseHeaders.ContentType, contentType);
+            //Append(HttpResponseHeaders.ContentType, contentType);
         }
         /*
         public static long ContentLength
@@ -87,7 +87,7 @@ namespace Alba
 
             // TODO: This is a hack, better way to accomplish this?
             env[OwinConstants.ResponseStatusCodeKey] = HttpStatusCode.Redirect;
-            AppendHeader("Location", url);
+            Append("Location", url);
             Write(
                 string.Format(
                     "<html><head><title>302 Found</title></head><body><h1>Found</h1><p>The document has moved <a href='{0}'>here</a>.</p></body></html>",

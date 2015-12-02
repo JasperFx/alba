@@ -146,49 +146,49 @@ namespace Alba
 
         public static DateTime? IfModifiedSince(this IDictionary<string, object> request)
         {
-            return request.RequestHeaders().GetSingleHeader(HttpRequestHeaders.IfModifiedSince)
+            return request.RequestHeaders().Get(HttpRequestHeaders.IfModifiedSince)
                 .TryParseHttpDate();
         }
 
         public static DateTime? IfUnModifiedSince(this IDictionary<string, object> request)
         {
-            return request.RequestHeaders().GetSingleHeader(HttpRequestHeaders.IfUnmodifiedSince)
+            return request.RequestHeaders().Get(HttpRequestHeaders.IfUnmodifiedSince)
                 .TryParseHttpDate();
         }
 
         public static IEnumerable<string> IfMatch(this IDictionary<string, object> request)
         {
-            return request.RequestHeaders().GetHeader(HttpRequestHeaders.IfMatch).GetCommaSeparatedHeaderValues();
+            return request.RequestHeaders().GetAll(HttpRequestHeaders.IfMatch).GetCommaSeparatedHeaderValues();
         }
 
         public static IEnumerable<string> IfNoneMatch(this IDictionary<string, object> request)
         {
-            return request.RequestHeaders().GetHeader(HttpRequestHeaders.IfNoneMatch).GetCommaSeparatedHeaderValues();
+            return request.RequestHeaders().GetAll(HttpRequestHeaders.IfNoneMatch).GetCommaSeparatedHeaderValues();
         }
 
 
 
         public static IDictionary<string, object> IfNoneMatch(this IDictionary<string, object> env, string etag)
         {
-            env.RequestHeaders().ReplaceHeader(HttpRequestHeaders.IfNoneMatch, etag);
+            env.RequestHeaders().Replace(HttpRequestHeaders.IfNoneMatch, etag);
             return env;
         }
 
         public static IDictionary<string, object> IfMatch(this IDictionary<string, object> env, string etag)
         {
-            env.RequestHeaders().ReplaceHeader(HttpRequestHeaders.IfMatch, etag);
+            env.RequestHeaders().Replace(HttpRequestHeaders.IfMatch, etag);
             return env;
         }
 
         public static IDictionary<string, object> IfModifiedSince(this IDictionary<string, object> env, DateTime time)
         {
-            env.RequestHeaders().AppendHeader(HttpRequestHeaders.IfModifiedSince, time.ToUniversalTime().ToString("r"));
+            env.RequestHeaders().Append(HttpRequestHeaders.IfModifiedSince, time.ToUniversalTime().ToString("r"));
             return env;
         }
 
         public static IDictionary<string, object> IfUnModifiedSince(this IDictionary<string, object> env, DateTime time)
         {
-            env.RequestHeaders().AppendHeader(HttpRequestHeaders.IfUnmodifiedSince, time.ToUniversalTime().ToString("r"));
+            env.RequestHeaders().Append(HttpRequestHeaders.IfUnmodifiedSince, time.ToUniversalTime().ToString("r"));
             return env;
         }
 
@@ -268,7 +268,7 @@ namespace Alba
 
         public static void RequestId(this IDictionary<string, object> http, string id)
         {
-            http.ResponseHeaders().AppendHeader(REQUEST_ID, id);
+            http.ResponseHeaders().Append(REQUEST_ID, id);
         }
 
         /*
