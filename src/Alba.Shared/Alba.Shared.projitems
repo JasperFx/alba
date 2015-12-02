@@ -9,5 +9,17 @@
     <Import_RootNamespace>Alba</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)CommaTokenParser.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DictionaryExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EtagMatch.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HeaderDictionaryExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HttpGeneralHeaders.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HttpRequestExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HttpRequestHeaders.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HttpResponseBody.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HttpResponseHeaders.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OwinConstants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OwinRequestExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OwinResponseExtensions.cs" />
   </ItemGroup>
 </Project>
