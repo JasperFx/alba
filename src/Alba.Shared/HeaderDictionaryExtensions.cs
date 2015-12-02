@@ -1,8 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http.Headers;
-using System.Xml.Serialization;
 using Baseline.Testing;
 using HeaderDict = System.Collections.Generic.IDictionary<string, string[]>;
 
@@ -10,10 +7,9 @@ namespace Alba
 {
     public static class HeaderDictionaryExtensions
     {
-
         /// <summary>
-        /// Get the associated values from the collection separated into individual values.
-        /// Quoted values will not be split, and the quotes will be removed.
+        ///     Get the associated values from the collection separated into individual values.
+        ///     Quoted values will not be split, and the quotes will be removed.
         /// </summary>
         /// <param name="request"></param>
         /// <param name="key"></param>
@@ -24,7 +20,7 @@ namespace Alba
         }
 
         /// <summary>
-        /// Gets the first, raw header value for the key
+        ///     Gets the first, raw header value for the key
         /// </summary>
         /// <param name="request"></param>
         /// <param name="key"></param>
@@ -59,11 +55,11 @@ namespace Alba
             key = determineKey(headers, key);
             if (headers.ContainsKey(key))
             {
-                headers[key] = new[] { value };
+                headers[key] = new[] {value};
             }
             else
             {
-                headers.Add(key, new[] { value });
+                headers.Add(key, new[] {value});
             }
 
             return headers;
@@ -113,7 +109,6 @@ namespace Alba
         // TODO -- need a test for this thing
         public static void AppendCookie(this HeaderDict headers, Cookie cookie)
         {
-
             if (headers.Has(HttpRequestHeaders.Cookie))
             {
                 var current = headers.Get(HttpRequestHeaders.Cookie);
@@ -125,10 +120,7 @@ namespace Alba
             {
                 headers.Replace(HttpRequestHeaders.Cookie, cookie.ToString());
             }
-
-
         }
-
     }
 
 
@@ -160,69 +152,69 @@ namespace Alba
     }
     */
 
-        /*
-    public class HttpRequestBody
+    /*
+public class HttpRequestBody
+{
+    private readonly Owinheadersironment _parent;
+
+    public HttpRequestBody(Owinheadersironment parent)
     {
-        private readonly Owinheadersironment _parent;
-
-        public HttpRequestBody(Owinheadersironment parent)
-        {
-            _parent = parent;
-        }
-
-        public void XmlInputIs(object target)
-        {
-            var serializer = new XmlSerializer(target.GetType());
-            serializer.Serialize(_parent.Input(), target);
-            _parent.Input().Position = 0;
-        }
-
-        public void JsonInputIs(object target)
-        {
-            string json = null;
-
-            if (_parent.ContainsKey("scenario-support"))
-            {
-                var serializer = _parent["scenario-support"]
-                    .As<IScenarioSupport>()
-                    .Get<IJsonSerializer>();
-
-                json = serializer.Serialize(target);
-            }
-            else
-            {
-                json = JsonUtil.ToJson(target);
-            }
-
-            JsonInputIs(json);
-        }
-
-        public void JsonInputIs(string json)
-        {
-            var writer = new StreamWriter(_parent.Input());
-            writer.Write(json);
-            writer.Flush();
-
-            _parent.Input().Position = 0;
-        }
-
-        public void WriteFormData<T>(T target) where T : class
-        {
-            new TypeDescriptorCache().ForEachProperty(typeof(T), prop =>
-            {
-                var rawValue = prop.GetValue(target, null);
-                var httpValue = rawValue == null ? string.Empty : rawValue.ToString().UrlEncoded();
-
-                _parent.Form()[prop.Name] = httpValue;
-            });
-        }
-
-        public void ReplaceBody(Stream stream)
-        {
-            stream.Position = 0;
-            _parent.Append(OwinConstants.RequestBodyKey, stream);
-        }
-
+        _parent = parent;
     }
-    */
+
+    public void XmlInputIs(object target)
+    {
+        var serializer = new XmlSerializer(target.GetType());
+        serializer.Serialize(_parent.Input(), target);
+        _parent.Input().Position = 0;
+    }
+
+    public void JsonInputIs(object target)
+    {
+        string json = null;
+
+        if (_parent.ContainsKey("scenario-support"))
+        {
+            var serializer = _parent["scenario-support"]
+                .As<IScenarioSupport>()
+                .Get<IJsonSerializer>();
+
+            json = serializer.Serialize(target);
+        }
+        else
+        {
+            json = JsonUtil.ToJson(target);
+        }
+
+        JsonInputIs(json);
+    }
+
+    public void JsonInputIs(string json)
+    {
+        var writer = new StreamWriter(_parent.Input());
+        writer.Write(json);
+        writer.Flush();
+
+        _parent.Input().Position = 0;
+    }
+
+    public void WriteFormData<T>(T target) where T : class
+    {
+        new TypeDescriptorCache().ForEachProperty(typeof(T), prop =>
+        {
+            var rawValue = prop.GetValue(target, null);
+            var httpValue = rawValue == null ? string.Empty : rawValue.ToString().UrlEncoded();
+
+            _parent.Form()[prop.Name] = httpValue;
+        });
+    }
+
+    public void ReplaceBody(Stream stream)
+    {
+        stream.Position = 0;
+        _parent.Append(OwinConstants.RequestBodyKey, stream);
+    }
+
+}
+*/
 }

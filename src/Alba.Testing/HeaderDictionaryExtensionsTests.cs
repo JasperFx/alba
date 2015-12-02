@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Alba.Testing
 {
-    public class HeaderDictionaryExtensionsTester
+    public class HeaderDictionaryExtensionsTests
     {
         private readonly IDictionary<string, string[]> theHeaders = new Dictionary<string, string[]>();
             

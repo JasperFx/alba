@@ -10,16 +10,22 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)CommaTokenParser.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Cookie.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CookieParser.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CookieState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DictionaryExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EtagMatch.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HeaderDictionaryExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HttpEncoder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpGeneralHeaders.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpRequestExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpRequestHeaders.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpResponseBody.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpResponseHeaders.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HttpUtility.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OwinConstants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OwinRequestExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OwinResponseExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Segment.cs" />
   </ItemGroup>
 </Project>
