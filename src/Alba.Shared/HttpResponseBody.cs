@@ -7,6 +7,7 @@ using Baseline.Testing;
 
 namespace Alba
 {
+    // TODO -- test through the scenario support
     public class HttpResponseBody
     {
         private readonly Stream _stream;
