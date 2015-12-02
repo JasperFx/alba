@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Alba.Shared", "Alba.Shared\Alba.Shared.shproj", "{D4D8C71A-B2A3-4792-B149-F5D7D99BA7A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alba.Net46", "Alba.Net46\Alba.Net46.csproj", "{D50B4D33-3C69-4A89-A7DE-E42B44F6A353}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alba.Testing", "Alba.Testing\Alba.Testing.csproj", "{FE3D503B-01CE-4554-83D3-1C1848B895C4}"
+EndProject
+Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Alba.Shared\Alba.Shared.projitems*{d4d8c71a-b2a3-4792-b149-f5d7d99ba7a0}*SharedItemsImports = 13
+		Alba.Shared\Alba.Shared.projitems*{fe3d503b-01ce-4554-83d3-1c1848b895c4}*SharedItemsImports = 4
+		Alba.Shared\Alba.Shared.projitems*{d50b4d33-3c69-4a89-a7de-e42b44f6a353}*SharedItemsImports = 4
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D50B4D33-3C69-4A89-A7DE-E42B44F6A353}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D50B4D33-3C69-4A89-A7DE-E42B44F6A353}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D50B4D33-3C69-4A89-A7DE-E42B44F6A353}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D50B4D33-3C69-4A89-A7DE-E42B44F6A353}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE3D503B-01CE-4554-83D3-1C1848B895C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE3D503B-01CE-4554-83D3-1C1848B895C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE3D503B-01CE-4554-83D3-1C1848B895C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE3D503B-01CE-4554-83D3-1C1848B895C4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
