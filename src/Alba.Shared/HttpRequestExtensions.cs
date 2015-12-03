@@ -11,32 +11,6 @@ namespace Alba
     {
 
 
-        /// <summary>
-        /// Converts the given url to a url relative to the current request
-        /// </summary>
-        /// <param name="request"></param>
-        /// <param name="url"></param>
-        /// <returns></returns>
-        public static string ToRelativeContentUrl(this IDictionary<string, object> request, string url)
-        {
-            var current = request.RelativeUrl().TrimStart('/');
-            var contentUrl = url.TrimStart('/');
-
-            if (current == string.Empty)
-            {
-                return contentUrl;
-            }
-
-            if (contentUrl.StartsWith(current))
-            {
-                return contentUrl.Substring(current.Length).TrimStart('/');
-            }
-
-            var prepend = current.Split('/').Select(x => "..").Join("/");
-            var relativeUrl = prepend.AppendUrl(contentUrl);
-
-            return relativeUrl;
-        }
 
 
         public static IEnumerable<string> GetCommaSeparatedHeaderValues(this IEnumerable<string> enumerable)
@@ -236,8 +210,5 @@ namespace Alba
 
             return dict[OwinConstants.ResponseHeadersKey].As<IDictionary<string, string[]>>();
         }
-
-
-
     }
 }

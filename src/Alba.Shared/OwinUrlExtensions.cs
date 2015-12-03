@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using Baseline.Testing;
 
@@ -8,21 +7,37 @@ namespace Alba
 {
     public static class OwinUrlExtensions
     {
-        public static string RawUrl(this IDictionary<string, object> env)
+        /// <summary>
+        /// Converts the given url to a url relative to the current request
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        public static string ToRelativeContentUrl(this IDictionary<string, object> request, string url)
         {
-            var queryString = env.Get<string>(OwinConstants.RequestQueryStringKey);
-            if (queryString.IsEmpty())
+            var current = request.RelativeUrl().TrimStart('/');
+            var contentUrl = url.TrimStart('/');
+
+            if (current.IsEmpty())
             {
-                return env.Get<string>(OwinConstants.RequestPathBaseKey) + env.Get<string>(OwinConstants.RequestPathKey);
+                return contentUrl;
             }
 
-            return env.Get<string>("owin.RequestPathBase") + env.Get<string>("owin.RequestPath") + "?" +
-                   env.Get<string>("owin.RequestQueryString");
+            if (contentUrl.StartsWith(current))
+            {
+                return contentUrl.Substring(current.Length).TrimStart('/');
+            }
+
+            var prepend = current.Split('/').Select(x => "..").Join("/");
+            var relativeUrl = prepend.AppendUrl(contentUrl);
+
+            return relativeUrl;
         }
+
 
         public static string RelativeUrl(this IDictionary<string, object> env)
         {
-            var url = env.Get<string>(OwinConstants.RequestPathKey).TrimStart('/');
+            var url = env.Get<string>(OwinConstants.RequestPathKey);
 
 
             var queryString = env.Get<string>(OwinConstants.RequestQueryStringKey);
@@ -55,6 +70,8 @@ namespace Alba
 
             return env;
         }
+
+
 
         public static IDictionary<string, object> FullUrl(this IDictionary<string, object> env, string url)
         {
@@ -125,39 +142,23 @@ namespace Alba
         {
             if (Uri.IsWellFormedUriString(url, UriKind.Absolute)) return url;
 
-            if (url.StartsWith("~/"))
+            var pathbase = env.Get<string>(OwinConstants.RequestPathBaseKey);
+            if (pathbase.IsEmpty())
             {
-                // TODO -- need to use the OwinRequestPathBase whatever in this case.  Not really important now, but might 
-                // be down the road.
-                return url.TrimStart('~');
+                if (url.StartsWith("~/"))
+                {
+                    return url.TrimStart('~');
+                }
+
+                if (!url.StartsWith("/"))
+                {
+                    return "/" + url;
+                }
+
+                return url;
             }
 
-            if (!url.StartsWith("/"))
-            {
-                return "/" + url;
-            }
-
-            var requestScheme = env.Get<string>(OwinConstants.RequestSchemeKey) + "://";
-            if (url.StartsWith(requestScheme, StringComparison.OrdinalIgnoreCase)) return url;
-
-            return env.uriBuilderFor(url).Uri.ToString();
+            return $"/{pathbase}/{url.TrimStart('~').TrimStart('/')}";
         }
-
-        public static NameValueCollection QueryString(this IDictionary<string, object> env)
-        {
-            throw new NotImplementedException("Do without using HttpUtility");
-            /*
-            if (!env.ContainsKey(OwinConstants.RequestQueryStringKey)) return new NameValueCollection();
-
-            var values = HttpUtility.ParseQueryString(FubuCore.DictionaryExtensions.Get<string>(env, OwinConstants.RequestQueryStringKey));
-
-            return values;
-            */
-        }
-
-        public static IDictionary<string, object> QueryString(this IDictionary<string, object> env, string querystring)
-        {
-            throw new NotImplementedException();
-        } 
     }
 }

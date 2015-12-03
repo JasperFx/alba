@@ -98,23 +98,7 @@ namespace Alba.Testing
             theEnvironment.IsPut().ShouldBeFalse();
         }
 
-        [Fact]
-        public void relative_url()
-        {
-            theEnvironment.RelativeUrl("");
-            theEnvironment.ToRelativeContentUrl("/foo")
-                .ShouldBe("foo");
 
-            theEnvironment.RelativeUrl("/bar");
-            theEnvironment.ToRelativeContentUrl("/foo")
-                .ShouldBe("../foo");
-
-            theEnvironment.RelativeUrl("/bar");
-            theEnvironment.ToRelativeContentUrl("/bar/1")
-                .ShouldBe("1");
-
-
-        }
 
         [Fact]
         public void get_comma_separated_values_from_header()
