@@ -6,21 +6,26 @@ namespace Alba
 {
     public static class OwinQueryStringExtensions
     {
-        public static NameValueCollection QueryString(this IDictionary<string, object> env)
+        public static NameValueCollection ParseQueryString(this IDictionary<string, object> env)
         {
-            throw new NotImplementedException("Do without using HttpUtility");
-            /*
             if (!env.ContainsKey(OwinConstants.RequestQueryStringKey)) return new NameValueCollection();
 
-            var values = HttpUtility.ParseQueryString(FubuCore.DictionaryExtensions.Get<string>(env, OwinConstants.RequestQueryStringKey));
+            var values = HttpUtility.ParseQueryString(env.Get<string>(OwinConstants.RequestQueryStringKey));
 
             return values;
-            */
+            
+        }
+
+        public static string QueryString(this IDictionary<string, object> env)
+        {
+            return env.Get<string>(OwinConstants.RequestQueryStringKey);
         }
 
         public static IDictionary<string, object> QueryString(this IDictionary<string, object> env, string querystring)
         {
-            throw new NotImplementedException();
+            env.Set(OwinConstants.RequestQueryStringKey, querystring.TrimStart('?'));
+
+            return env;
         }
     }
 }
