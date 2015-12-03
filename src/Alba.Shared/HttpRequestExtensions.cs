@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using Baseline.Testing;
@@ -13,50 +12,11 @@ namespace Alba
 
 
 
-        public static IEnumerable<string> GetCommaSeparatedHeaderValues(this IEnumerable<string> enumerable)
-        {
-            foreach (var content in enumerable)
-            {
-                var searchString = content.Trim();
-                if (searchString.Length == 0) break;
-
-                var parser = new CommaTokenParser();
-                content.ToCharArray().Each(parser.Read);
-
-                // Gotta force the parser to know it's done
-                parser.Read(',');
-
-                foreach (var token in parser.Tokens)
-                {
-                    yield return token.Trim();
-                }
-            }
-
-
-        }
-
-        public static string Quoted(this string value)
-        {
-            return "\"{0}\"".ToFormat(value);
-        }
 
 
 
 
 
-        public static DateTime? TryParseHttpDate(this string dateString)
-        {
-            DateTime date;
-
-            return DateTime.TryParseExact(dateString, "r", CultureInfo.InvariantCulture, DateTimeStyles.None, out date)
-                ? date
-                : null as DateTime?;
-        }
-
-        public static string ToHttpDateString(this DateTime time)
-        {
-            return time.ToUniversalTime().ToString("r");
-        }
 
         public static DateTime? IfModifiedSince(this IDictionary<string, object> request)
         {

@@ -31,5 +31,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)OwinResponseExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OwinUrlExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Segment.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StringExtensions.cs" />
   </ItemGroup>
 </Project>

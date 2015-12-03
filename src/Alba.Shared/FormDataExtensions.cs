@@ -6,50 +6,42 @@ using Baseline.Testing;
 
 namespace Alba
 {
-    // TODO -- have this be "ParseForm()" instead
+
     public static class FormDataExtensions
     {
-        public static NameValueCollection Form(this IDictionary<string, object> env)
+        public static NameValueCollection ParseFormData(this IDictionary<string, object> env)
         {
-
-            if (!env.ContainsKey(OwinConstants.RequestFormKey))
+            if (env.ContainsKey(OwinConstants.RequestBodyKey))
             {
-                env.Add(OwinConstants.RequestFormKey, new NameValueCollection());
+                var body = env[OwinConstants.RequestBodyKey].As<Stream>();
+                var rawData = body.ReadAllText();
+                return HttpUtility.ParseQueryString(rawData);
             }
 
-            return env.Get<NameValueCollection>(OwinConstants.RequestFormKey);
+            return new NameValueCollection();
         }
 
-        private static IEnumerable<string> formData(this IDictionary<string, object> env)
+        public static IDictionary<string, object> WriteFormData(this IDictionary<string, object> env,
+            NameValueCollection values)
         {
-            var form = env.Form();
+            var post = formData(values).Join("&");
+            var postBytes = Encoding.Default.GetBytes(post);
+
+            var stream = new MemoryStream();
+            stream.Write(postBytes, 0, postBytes.Length);
+            stream.Position = 0;
+            env.Set(OwinConstants.RequestBodyKey, stream);
+
+            return env;
+        } 
+
+        private static IEnumerable<string> formData(NameValueCollection form)
+        {
             foreach (var key in form.AllKeys)
             {
                 yield return "{0}={1}".ToFormat(key, HttpUtility.HtmlEncode(form[key]));
             }
 
-        }
-
-        // TODO -- this should go somewhere else
-        public static void RewindData(this IDictionary<string, object> env)
-        {
-            if (env.ContainsKey(OwinConstants.RequestFormKey) && env.Form().Count > 0)
-            {
-                var post = env.formData().Join("&");
-                var postBytes = Encoding.Default.GetBytes(post);
-                env.Input().Write(postBytes, 0, postBytes.Length);
-
-                env.Remove(OwinConstants.RequestFormKey);
-            }
-
-            if (env.ContainsKey(OwinConstants.RequestBodyKey))
-            {
-                env.Input().Position = 0;
-            }
-            else
-            {
-                env.Add(OwinConstants.ResponseBodyKey, new MemoryStream());
-            }
         }
     }
 }

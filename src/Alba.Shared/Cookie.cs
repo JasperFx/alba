@@ -39,7 +39,7 @@ namespace Alba
 
         public CookieState For(string key)
         {
-            return _states.FirstOrDefault(x => StringExtensions.EqualsIgnoreCase(x.Name, key));
+            return _states.FirstOrDefault(x => x.Name.EqualsIgnoreCase(key));
         }
 
         public bool Matches(string name)

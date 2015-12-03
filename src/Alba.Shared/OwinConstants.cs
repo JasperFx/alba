@@ -44,7 +44,6 @@ namespace Alba
 
         //Fubu specific keys until owin has equivalents
         public const string MediaTypeKey = "fubu.MediaType";
-        public const string RequestFormKey = "fubu.RequestForm";
 
         public const string AppMode = "host.AppMode";
         public const string HeaderSettings = "fubu.headerSettings";
