@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)CommaTokenParser.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ContentNegotiationExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Cookie.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CookieParser.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CookieState.cs" />

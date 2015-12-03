@@ -99,35 +99,6 @@ namespace Alba.Testing
         }
 
 
-        [Fact]
-        public void etag_matches_with_no_values()
-        {
-            new string[0].EtagMatches("foo")
-                .ShouldBe(EtagMatch.None);
-        }
 
-        [Fact]
-        public void etag_matches_with_wildcard()
-        {
-            new string[] { "a", "*", "b" }
-                .EtagMatches("foo")
-                .ShouldBe(EtagMatch.Yes);
-        }
-
-        [Fact]
-        public void etag_matches_positive()
-        {
-            new string[] { "a", "b", "foo" }
-                .EtagMatches("foo")
-                .ShouldBe(EtagMatch.Yes);
-        }
-
-        [Fact]
-        public void etag_matches_negative()
-        {
-            new string[] { "a", "b", "bar" }
-                .EtagMatches("foo")
-                .ShouldBe(EtagMatch.No);
-        }
     }
 }

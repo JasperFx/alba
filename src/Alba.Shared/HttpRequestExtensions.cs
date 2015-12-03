@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,63 +17,6 @@ namespace Alba
 
 
 
-        public static DateTime? IfModifiedSince(this IDictionary<string, object> request)
-        {
-            return request.RequestHeaders().Get(HttpRequestHeaders.IfModifiedSince)
-                .TryParseHttpDate();
-        }
-
-        public static DateTime? IfUnModifiedSince(this IDictionary<string, object> request)
-        {
-            return request.RequestHeaders().Get(HttpRequestHeaders.IfUnmodifiedSince)
-                .TryParseHttpDate();
-        }
-
-        public static IEnumerable<string> IfMatch(this IDictionary<string, object> request)
-        {
-            return request.RequestHeaders().GetAll(HttpRequestHeaders.IfMatch).GetCommaSeparatedHeaderValues();
-        }
-
-        public static IEnumerable<string> IfNoneMatch(this IDictionary<string, object> request)
-        {
-            return request.RequestHeaders().GetAll(HttpRequestHeaders.IfNoneMatch).GetCommaSeparatedHeaderValues();
-        }
-
-
-
-        public static IDictionary<string, object> IfNoneMatch(this IDictionary<string, object> env, string etag)
-        {
-            env.RequestHeaders().Replace(HttpRequestHeaders.IfNoneMatch, etag);
-            return env;
-        }
-
-        public static IDictionary<string, object> IfMatch(this IDictionary<string, object> env, string etag)
-        {
-            env.RequestHeaders().Replace(HttpRequestHeaders.IfMatch, etag);
-            return env;
-        }
-
-        public static IDictionary<string, object> IfModifiedSince(this IDictionary<string, object> env, DateTime time)
-        {
-            env.RequestHeaders().Append(HttpRequestHeaders.IfModifiedSince, time.ToUniversalTime().ToString("r"));
-            return env;
-        }
-
-        public static IDictionary<string, object> IfUnModifiedSince(this IDictionary<string, object> env, DateTime time)
-        {
-            env.RequestHeaders().Append(HttpRequestHeaders.IfUnmodifiedSince, time.ToUniversalTime().ToString("r"));
-            return env;
-        }
-
-        public static EtagMatch EtagMatches(this IEnumerable<string> values, string etag)
-        {
-            if (values == null || !values.Any()) return EtagMatch.None;
-
-            return values.Any(x => x.Equals(etag, StringComparison.Ordinal) || x == "*")
-                ? EtagMatch.Yes
-                : EtagMatch.No;
-
-        }
 
         /// <summary>
         /// Helper function to read the response body as a string with the default content encoding

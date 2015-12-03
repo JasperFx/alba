@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ContentNegotiationExtensionsTests.cs" />
     <Compile Include="CookieParserTests.cs" />
     <Compile Include="CookieStateTests.cs" />
     <Compile Include="CookieTests.cs" />
