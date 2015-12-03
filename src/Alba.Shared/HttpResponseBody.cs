@@ -8,6 +8,7 @@ using Baseline.Testing;
 namespace Alba
 {
     // TODO -- test through the scenario support
+    // TODO -- add headers, status code, status description, cookies
     public class HttpResponseBody
     {
         private readonly Stream _stream;

@@ -33,6 +33,7 @@ namespace Alba
         }
 
         // TODO -- this needs to be tested through integration tests
+        // TODO -- add the mimetype support as well
         public static void WriteFile(this OwinEnvironment env, string file)
         {
             var fileInfo = new FileInfo(file);
@@ -55,17 +56,17 @@ namespace Alba
 
 
 
-        public static void Write(this OwinEnvironment env, string content)
+        public static void Write(this OwinEnvironment env, string content, string mimeType = null)
         {
-
-
-
-            throw new NotImplementedException();
-            /*
-            var writer = new StreamWriter(_output) { AutoFlush = true };
-
+            var body = env.ResponseStream();
+            var writer = new StreamWriter(body);
             writer.Write(content);
-            */
+            writer.Flush();
+
+            if (mimeType.IsNotEmpty())
+            {
+                env.ResponseHeaders().ContentType(mimeType);
+            }
         }
 
         public static void Redirect(this OwinEnvironment env, string url)
@@ -82,12 +83,6 @@ namespace Alba
                 $"<html><head><title>302 Found</title></head><body><h1>Found</h1><p>The document has moved <a href='{url}'>here</a>.</p></body></html>");
 
             
-        }
-
-        public static void WriteResponseCode(this OwinEnvironment env, HttpStatusCode status, string description = null)
-        {
-            env[OwinConstants.ResponseStatusCodeKey] = status.As<int>();
-            env[OwinConstants.ResponseReasonPhraseKey] = description;
         }
 
         public static OwinEnvironment StatusCode(this OwinEnvironment env, int statusCode,
@@ -113,47 +108,50 @@ namespace Alba
             return env.Get<string>(OwinConstants.ResponseReasonPhraseKey);
         }
 
+        public static OwinEnvironment StatusDescription(this OwinEnvironment env, string description)
+        {
+            env.Set(OwinConstants.ResponseReasonPhraseKey, description);
+            return env;
+        }
+
 
         public static void Write(this OwinEnvironment env, Action<Stream> output)
         {
-            output(env.ResponseBody());
+            output(env.ResponseStream());
         }
 
         public static void Flush(this OwinEnvironment env)
         {
-            env.ResponseBody().Flush();
+            env.ResponseStream().Flush();
         }
 
         public static Task FlushAsync(this OwinEnvironment env)
         {
-            return env.ResponseBody().FlushAsync();
+            return env.ResponseStream().FlushAsync();
         }
 
         public static Task FlushAsync(this OwinEnvironment env, CancellationToken cancellation)
         {
-            return env.ResponseBody().FlushAsync(cancellation);
+            return env.ResponseStream().FlushAsync(cancellation);
         }
 
-        public static void StreamContents(this OwinEnvironment env, MemoryStream recordedStream)
+        public static Stream ResponseStream(this OwinEnvironment env)
         {
-            recordedStream.Position = 0;
+            if (env.ContainsKey(OwinConstants.ResponseBodyKey))
+            {
+                return env.Get<Stream>(OwinConstants.ResponseBodyKey);
+            }
 
-            var owinOutput = env.Get<Stream>(OwinConstants.ResponseBodyKey);
-            recordedStream.CopyTo(owinOutput);
+            var stream = new MemoryStream();
+            env.Add(OwinConstants.ResponseBodyKey, stream);
 
-            recordedStream.Flush();
-        }
-
-
-        public static Stream ResponseBody(this OwinEnvironment env)
-        {
-            return env.Get<Stream>(OwinConstants.ResponseBodyKey);
+            return stream;
         }
 
 
-        public static HttpResponseBody Body(this OwinEnvironment env)
+        public static HttpResponseBody Response(this OwinEnvironment env)
         {
-            return new HttpResponseBody(env.Get<Stream>(OwinConstants.ResponseBodyKey), env);
+            return new HttpResponseBody(env.ResponseStream(), env);
         }
 
 
