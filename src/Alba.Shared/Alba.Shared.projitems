@@ -21,14 +21,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)HttpEncoder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpGeneralHeaders.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpMethodExtensions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)HttpRequestExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OwinRequestExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpRequestHeaders.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpResponseBody.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpResponseHeaders.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpUtility.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OwinConstants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OwinQueryStringExtensions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)OwinRequestExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OwinResponseExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OwinUrlExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Segment.cs" />

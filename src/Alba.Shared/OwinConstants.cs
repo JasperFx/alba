@@ -47,5 +47,7 @@ namespace Alba
 
         public const string AppMode = "host.AppMode";
         public const string HeaderSettings = "fubu.headerSettings";
+
+        public static readonly string REQUEST_ID = "x-request-id";
     }
 }

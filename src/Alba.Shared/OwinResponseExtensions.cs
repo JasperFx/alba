@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -13,6 +14,28 @@ namespace Alba
 {
     public static class OwinResponseExtensions
     {
+        public static string RequestId(this IDictionary<string, object> http)
+        {
+            return http.ResponseHeaders().Get(OwinConstants.REQUEST_ID);
+
+        }
+
+        public static void RequestId(this IDictionary<string, object> http, string id)
+        {
+            http.ResponseHeaders().Replace(OwinConstants.REQUEST_ID, id);
+        }
+
+        public static IDictionary<string, string[]> ResponseHeaders(this IDictionary<string, object> dict)
+        {
+            if (!dict.ContainsKey(OwinConstants.ResponseHeadersKey))
+            {
+                dict.Add(OwinConstants.ResponseHeadersKey, new Dictionary<string, string[]>());
+            }
+
+            return dict[OwinConstants.ResponseHeadersKey].As<IDictionary<string, string[]>>();
+        }
+
+
         public static void WriteFile(this OwinEnvironment env, string file)
         {
             var fileInfo = new FileInfo(file);
@@ -191,6 +214,5 @@ namespace Alba
             return HeaderValueFor(HttpResponseHeaders.ContentType).Any(x => x.EqualsIgnoreCase(mimeType.Value));
         }
         */
-
     }
 }
