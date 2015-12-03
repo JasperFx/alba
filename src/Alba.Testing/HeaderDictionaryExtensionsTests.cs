@@ -90,5 +90,32 @@ namespace Alba.Testing
 
             theHeaders.GetAll("foo").ShouldHaveTheSameElementsAs("bar", "baz", "one", "two");
         }
+
+        [Fact]
+        public void accepts_round_trip()
+        {
+            theHeaders.Accepts("text/plain");
+            theHeaders.Accepts().ShouldBe("text/plain");
+            theHeaders[HttpRequestHeaders.Accept].ShouldHaveTheSameElementsAs("text/plain");
+        }
+
+        [Fact]
+        public void content_type_round_trip()
+        {
+            theHeaders.ContentType("application/json");
+            theHeaders.ContentType().ShouldBe("application/json");
+
+            theHeaders[HttpRequestHeaders.ContentType].ShouldHaveTheSameElementsAs("application/json");
+        }
+
+        [Fact]
+        public void content_length_round_trip()
+        {
+            theHeaders.ContentLength().ShouldBe(0);
+            theHeaders.ContentLength(25);
+            theHeaders.ContentLength().ShouldBe(25);
+
+            theHeaders[HttpResponseHeaders.ContentLength].ShouldHaveTheSameElementsAs("25");
+        }
     }
 }

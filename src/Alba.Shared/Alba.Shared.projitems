@@ -21,6 +21,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)HttpEncoder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpGeneralHeaders.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpMethodExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MissingThings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OwinRequestExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpRequestHeaders.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpResponseBody.cs" />

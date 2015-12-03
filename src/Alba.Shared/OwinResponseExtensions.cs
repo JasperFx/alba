@@ -2,9 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using Baseline.Testing;
@@ -17,7 +15,6 @@ namespace Alba
         public static string RequestId(this IDictionary<string, object> http)
         {
             return http.ResponseHeaders().Get(OwinConstants.REQUEST_ID);
-
         }
 
         public static void RequestId(this IDictionary<string, object> http, string id)
@@ -35,7 +32,7 @@ namespace Alba
             return dict[OwinConstants.ResponseHeadersKey].As<IDictionary<string, string[]>>();
         }
 
-
+        // TODO -- this needs to be tested through integration tests
         public static void WriteFile(this OwinEnvironment env, string file)
         {
             var fileInfo = new FileInfo(file);
@@ -47,50 +44,22 @@ namespace Alba
             }
             else
             {
-                throw new NotImplementedException();
-                //Append(HttpResponseHeaders.ContentLength, fileInfo.Length.ToString(CultureInfo.InvariantCulture));
+                env.ResponseHeaders()
+                    .Replace(HttpResponseHeaders.ContentLength, fileInfo.Length.ToString(CultureInfo.InvariantCulture));
                 using (var fileStream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
-                    //Write(stream => fileStream.CopyTo(stream));
-                }
-            }
-
-
-
-        }
-
-        public static void WriteContentType(this OwinEnvironment env, string contentType)
-        {
-            throw new NotImplementedException();
-            //Append(HttpResponseHeaders.ContentType, contentType);
-        }
-        /*
-        public static long ContentLength
-        {
-            get
-            {
-                var headers = env.Get<IDictionary<string, string[]>>(OwinConstants.ResponseHeadersKey);
-                return headers.ContainsKey(OwinConstants.ContentLengthHeader)
-                    ? long.Parse(headers[OwinConstants.ContentLengthHeader][0])
-                    : 0;
-            }
-            set
-            {
-                var headers = env.Get<IDictionary<string, string[]>>(OwinConstants.ResponseHeadersKey);
-                if (headers.ContainsKey(OwinConstants.ContentLengthHeader))
-                {
-                    headers[OwinConstants.ContentLengthHeader][0] = value.ToString();
-                }
-                else
-                {
-                    headers.Add(OwinConstants.ContentLengthHeader, new[] { value.ToString() });
+                    env.Write(stream => fileStream.CopyTo(stream));
                 }
             }
         }
-        */
+
+
 
         public static void Write(this OwinEnvironment env, string content)
         {
+
+
+
             throw new NotImplementedException();
             /*
             var writer = new StreamWriter(_output) { AutoFlush = true };
@@ -101,22 +70,18 @@ namespace Alba
 
         public static void Redirect(this OwinEnvironment env, string url)
         {
-            throw new NotImplementedException();
-            /*
             if (url.StartsWith("~"))
             {
                 url = url.TrimStart('~');
             }
 
-            // TODO: This is a hack, better way to accomplish this?
-            env[OwinConstants.ResponseStatusCodeKey] = HttpStatusCode.Redirect;
-            Append("Location", url);
-            Write(
-                string.Format(
-                    "<html><head><title>302 Found</title></head><body><h1>Found</h1><p>The document has moved <a href='{0}'>here</a>.</p></body></html>",
-                    url));
+            env.StatusCode(302);
 
-            */
+            env.ResponseHeaders().Replace("Location", url);
+            env.Write(
+                $"<html><head><title>302 Found</title></head><body><h1>Found</h1><p>The document has moved <a href='{url}'>here</a>.</p></body></html>");
+
+            
         }
 
         public static void WriteResponseCode(this OwinEnvironment env, HttpStatusCode status, string description = null)
@@ -125,51 +90,48 @@ namespace Alba
             env[OwinConstants.ResponseReasonPhraseKey] = description;
         }
 
-        /*
-        public int StatusCode
+        public static OwinEnvironment StatusCode(this OwinEnvironment env, int statusCode,
+            string description = null)
         {
-            get
-            {
-                return env.Get<int>(OwinConstants.ResponseStatusCodeKey);
-            }
-            set
-            {
-                env.Set<int>(OwinConstants.ResponseStatusCodeKey, value);
-            }
-        }
-        
 
-        public string StatusDescription
-        {
-            get
+            env.Set(OwinConstants.ResponseStatusCodeKey, statusCode);
+            if (description.IsNotEmpty())
             {
-                return env.ContainsKey(OwinConstants.ResponseReasonPhraseKey) ? env.Get<string>(OwinConstants.ResponseReasonPhraseKey) : string.Empty;
+                env.Set(OwinConstants.ResponseReasonPhraseKey, description);
             }
-            set
-            {
-                env.Set<string>(OwinConstants.ResponseReasonPhraseKey, value);
-            }
+
+            return env;
         }
-        */
+
+        public static int StatusCode(this OwinEnvironment env)
+        {
+            return env.Get<int>(OwinConstants.ResponseStatusCodeKey);
+        }
+
+        public static string StatusDescription(this OwinEnvironment env)
+        {
+            return env.Get<string>(OwinConstants.ResponseReasonPhraseKey);
+        }
 
 
         public static void Write(this OwinEnvironment env, Action<Stream> output)
         {
-            throw new NotImplementedException("Redo");
-            // output(_output);
+            output(env.ResponseBody());
         }
 
-        // TODO -- need a FlushAsync() for SSE support
         public static void Flush(this OwinEnvironment env)
         {
-            throw new NotImplementedException("Redo");
-            /*
-            if (_output.Length <= 0) return;
+            env.ResponseBody().Flush();
+        }
 
-            StreamContents(_output);
+        public static Task FlushAsync(this OwinEnvironment env)
+        {
+            return env.ResponseBody().FlushAsync();
+        }
 
-            _output = new MemoryStream();
-            */
+        public static Task FlushAsync(this OwinEnvironment env, CancellationToken cancellation)
+        {
+            return env.ResponseBody().FlushAsync(cancellation);
         }
 
         public static void StreamContents(this OwinEnvironment env, MemoryStream recordedStream)
@@ -182,9 +144,10 @@ namespace Alba
             recordedStream.Flush();
         }
 
-        public static Stream Output(this OwinEnvironment env)
+
+        public static Stream ResponseBody(this OwinEnvironment env)
         {
-            throw new NotImplementedException();
+            return env.Get<Stream>(OwinConstants.ResponseBodyKey);
         }
 
 
@@ -193,26 +156,6 @@ namespace Alba
             return new HttpResponseBody(env.Get<Stream>(OwinConstants.ResponseBodyKey), env);
         }
 
-        /*
-        public static IEnumerable<Cookie> Cookies(this OwinEnvironment env)
-        {
-            return HeaderValueFor(HttpResponseHeaders.SetCookie).Select(CookieParser.ToCookie);
-        }
 
-        public Cookie CookieFor(string name)
-        {
-            return Cookies().FirstOrDefault(x => x.Matches(name));
-        }
-
-        public string ContentType()
-        {
-            return HeaderValueFor(HttpResponseHeaders.ContentType).FirstOrDefault();
-        }
-
-        public bool ContentTypeMatches(MimeType mimeType)
-        {
-            return HeaderValueFor(HttpResponseHeaders.ContentType).Any(x => x.EqualsIgnoreCase(mimeType.Value));
-        }
-        */
     }
 }

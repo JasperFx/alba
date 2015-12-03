@@ -32,15 +32,16 @@ namespace Alba
 
         public XmlDocument ReadAsXml()
         {
-            Func<Stream, XmlDocument> read = s => {
-                                                      var body = s.ReadAllText();
+            Func<Stream, XmlDocument> read = s =>
+            {
+                var body = s.ReadAllText();
 
-                                                      if (body.Contains("Error")) return null;
+                if (body.Contains("Error")) return null;
 
-                                                      var document = new XmlDocument();
-                                                      document.LoadXml(body);
+                var document = new XmlDocument();
+                document.LoadXml(body);
 
-                                                      return document;
+                return document;
             };
 
             return Read(read);
@@ -49,7 +50,7 @@ namespace Alba
         public T ReadAsXml<T>() where T : class
         {
             _stream.Position = 0;
-            var serializer = new XmlSerializer(typeof(T));
+            var serializer = new XmlSerializer(typeof (T));
             return serializer.Deserialize(_stream) as T;
         }
 
