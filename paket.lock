@@ -3,6 +3,7 @@ NUGET
   specs:
     Baseline (0.5.0.3)
     Shouldly (2.6.0)
+    Storyteller (3.0.0.291-alpha)
     System.Collections (4.0.10) - framework: dnxcore50
       System.Diagnostics.Debug (>= 4.0.0) - framework: dnxcore50
       System.Resources.ResourceManager (>= 4.0.0) - framework: dnxcore50

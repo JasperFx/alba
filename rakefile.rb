@@ -9,7 +9,7 @@ BUILD_NUMBER = build_number
 
 task :ci => [:version, :default, :pack]
 
-task :default => [:test]
+task :default => [:test, :storyteller]
 
 desc "Prepares the working directory for a new build"
 task :clean do
@@ -84,6 +84,17 @@ desc "Launches VS to the Alba solution file"
 task :sln do
 	sh "start src/Alba.sln"
 end
+
+desc "Run the storyteller specifications"
+task :storyteller => [:compile] do
+	sh "packages/Storyteller/tools/st.exe run src/Alba.Testing --results-path artifacts/stresults.htm --build #{COMPILE_TARGET}"
+end
+
+desc "Run the storyteller specifications"
+task :open_st => [:compile] do
+	sh "packages/Storyteller/tools/st.exe open src/Alba.Testing"
+end
+
 
 "Launches the documentation project in editable mode"
 task :docs do
