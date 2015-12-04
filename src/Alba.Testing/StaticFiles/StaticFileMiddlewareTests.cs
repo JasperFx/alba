@@ -42,7 +42,7 @@ namespace Alba.Testing.StaticFiles
                 theRequest.Add(OwinConstants.RequestPathKey, path);
             }
 
-            return theMiddleware.Invoke(theRequest);
+            return theMiddleware.DetermineContinuation(theRequest);
         }
 
 
@@ -71,6 +71,15 @@ namespace Alba.Testing.StaticFiles
 
             forMethodAndFile("HEAD", "something.js")
                 .AssertOnlyContinuesToTheInner();
+        }
+
+        [Fact]
+        public void file_exists_but_fails_whitelist_test()
+        {
+            theFiles.WriteFile("app.config", "anything");
+
+            forMethodAndFile("GET", "app.config")
+                .ShouldBeOfType<MiddlewareContinuation>();
         }
 
         [Fact]

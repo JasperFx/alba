@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
 using Baseline.Testing;
 
 namespace Alba.StaticFiles
@@ -23,5 +25,33 @@ namespace Alba.StaticFiles
         /// </summary>
         public readonly Cache<string, Func<string>> Headers = new Cache<string, Func<string>>();
 
+
+        /// <summary>
+        /// Add additional file extensions as allowable assets
+        /// </summary>
+        public IList<string> AllowableExtensions = new List<string> { ".eot", ".ttf", ".woff", ".woff2", ".svg", ".map" };
+
+
+        public bool IsAllowed(IStaticFile file)
+        {
+            var extension = Path.GetExtension(file.Path);
+            if (extension.EqualsIgnoreCase(".config")) return false;
+
+            var mimetype = MimeType.MimeTypeByFileName(file.Path);
+            if (mimetype == null) return false;
+
+            if (mimetype == MimeType.Javascript) return true;
+
+            if (mimetype == MimeType.Css) return true;
+
+            if (mimetype == MimeType.Html) return true;
+
+            if (mimetype.Value.StartsWith("image/")) return true;
+
+            
+            if (AllowableExtensions.Contains(extension)) return true;
+
+            return false;
+        }
     }
 }

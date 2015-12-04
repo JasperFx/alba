@@ -1,0 +1,26 @@
+<Spec id="bae36e78-7175-474d-9609-dc5540b79d89" maxRetries="0" tags="" lifecycle="Regression" name="Allowed Filenames" lastUpdated="Friday, December 04, 2015" expirationPeriod="0">
+  <AssetSettings id="2efaa13a-a59a-4e60-add5-334ff98ba22a">
+    <Comment id="2a13cd4b-d9eb-4bee-8ef2-5d345bb36442">Using the default asset settings for allowable static files</Comment>
+    <IsAllowed>
+      <table id="a5ebb79c-eba5-4495-b52e-944e9252c4cd">
+        <IsAllowed-row Filename="foo.js" IsAllowed="True" />
+        <IsAllowed-row Filename="foo.css" IsAllowed="True" />
+        <IsAllowed-row Filename="web.config" IsAllowed="False" />
+        <IsAllowed-row Filename="pic.png" IsAllowed="True" />
+        <IsAllowed-row Filename="pic.jpg" IsAllowed="True" />
+        <IsAllowed-row Filename="pic.bmp" IsAllowed="True" />
+        <IsAllowed-row Filename="pic.gif" IsAllowed="True" />
+        <IsAllowed-row Filename="pic.svg" IsAllowed="True" />
+        <IsAllowed-row Filename="thing.eot" IsAllowed="True" />
+        <IsAllowed-row Filename="thing.ttf" IsAllowed="True" />
+        <IsAllowed-row Filename="thing.woff" IsAllowed="True" />
+        <IsAllowed-row Filename="thing.woff2" IsAllowed="True" />
+        <IsAllowed-row Filename="thing.map" IsAllowed="True" />
+        <IsAllowed-row Filename="doc.doc" IsAllowed="False" />
+        <IsAllowed-row Filename="doc.docx" IsAllowed="False" />
+        <IsAllowed-row Filename="doc.xls" IsAllowed="False" />
+        <IsAllowed-row Filename="doc.xml" IsAllowed="False" />
+      </table>
+    </IsAllowed>
+  </AssetSettings>
+</Spec>
