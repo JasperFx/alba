@@ -52,6 +52,7 @@
     <Compile Include="FullUrl_ExtensionMethod_Tests.cs" />
     <Compile Include="HttpMethodExtensionsTests.cs" />
     <Compile Include="HeaderDictionaryExtensionsTests.cs" />
+    <Compile Include="MimeTypeTests.cs" />
     <Compile Include="OwinRequestExtensionsTests.cs" />
     <Compile Include="OwinQueryStringExtensionsTests.cs" />
     <Compile Include="OwinResponseExtensionsTests.cs" />

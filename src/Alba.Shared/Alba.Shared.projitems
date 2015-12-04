@@ -21,6 +21,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)HttpEncoder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpGeneralHeaders.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpMethodExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MimeType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MissingThings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OwinRequestExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpRequestHeaders.cs" />
@@ -41,5 +42,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Routing\Spread.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Segment.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StringExtensions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Middleware\" />
   </ItemGroup>
 </Project>
