@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AppFunc = System.Func<System.Collections.Generic.IDictionary<string, object>, System.Threading.Tasks.Task>;
+
 
 namespace Alba.Routing
 {
@@ -31,11 +33,15 @@ namespace Alba.Routing
         private readonly List<ISegment> _parameters = new List<ISegment>(); 
         private readonly List<ISegment> _segments = new List<ISegment>(); 
 
-        public Leaf(string route, string name = null)
+        public Leaf(string route, AppFunc appFunc)
         {
+            if (route == null) throw new ArgumentNullException(nameof(route));
+            if (appFunc == null) throw new ArgumentNullException(nameof(appFunc));
+
             route = route.TrimStart('/').TrimEnd('/');
 
-            Name = name ?? route;
+            Name = route;
+            AppFunc = appFunc;
 
             var segments = route.Split('/');
             for (int i = 0; i < segments.Length; i++)
@@ -80,7 +86,8 @@ namespace Alba.Routing
 
         public bool HasSpread => _segments.Any(x => x is Spread);
 
-        public string Name { get; }
+        public string Name { get; set; }
+        public AppFunc AppFunc { get; }
 
         public string NodePath
         {

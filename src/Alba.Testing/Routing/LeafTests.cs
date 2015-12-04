@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Alba.Routing;
 using Shouldly;
 using Xunit;
@@ -41,7 +42,7 @@ namespace Alba.Testing.Routing
         {
             Action action = () =>
             {
-                new Leaf("a/.../b");
+                new Leaf("a/.../b", env => Task.CompletedTask);
             };
             action.ShouldThrow<ArgumentOutOfRangeException>();
         }
@@ -51,7 +52,7 @@ namespace Alba.Testing.Routing
         {
             Action action = () =>
             {
-                new Leaf("a/.../b/...");
+                new Leaf("a/.../b/...", env => Task.CompletedTask);
             };
             action.ShouldThrow<ArgumentOutOfRangeException>();
         }

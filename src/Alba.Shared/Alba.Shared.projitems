@@ -18,6 +18,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)EtagMatch.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FormDataExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HeaderDictionaryExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HtmlHeadInjectionMiddleware.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpEncoder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpGeneralHeaders.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpMethodExtensions.cs" />

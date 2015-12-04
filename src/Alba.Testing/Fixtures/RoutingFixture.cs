@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Alba.Routing;
 using Alba.Testing.Routing;
 using StoryTeller;
@@ -19,7 +20,7 @@ namespace Alba.Testing.Fixtures
         [ExposeAsTable("If the routes are")]
         public void RoutesAre(string Route)
         {
-            _tree.AddRoute(Route, Route);
+            _tree.AddRoute(Route, _ => Task.CompletedTask);
         }
 
         [ExposeAsTable("The selection and arguments should be")]

@@ -14,9 +14,9 @@ namespace Alba.Testing.StaticFiles
 
         public WriteFileContinuationTests()
         {
-            new FileSystem().WriteStringToFile("lib.js", "var x = 0;");
+            new FileSystem().WriteStringToFile("top.js", "var x = 0;");
 
-            theFile = new StaticFile("lib.js");
+            theFile = new StaticFile("top.js");
             new WriteFileContinuation(theEnvironment, theFile, theSettings).Write(theEnvironment);
         }
 

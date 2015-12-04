@@ -1,7 +1,12 @@
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Alba.Routing
 {
+
+
+
     public class RouteTree
     {
         private readonly IDictionary<string, Node> _all = new Dictionary<string, Node>();
@@ -15,9 +20,9 @@ namespace Alba.Routing
             _all.Add(string.Empty, _root);
         }
 
-        public void AddRoute(string pattern, string name)
+        public void AddRoute(string pattern, Func<IDictionary<string, object>, Task> appFunc)
         {
-            var leaf = new Leaf(pattern, name);
+            var leaf = new Leaf(pattern, appFunc);
             if (string.IsNullOrEmpty(pattern))
             {
                 _home = leaf;

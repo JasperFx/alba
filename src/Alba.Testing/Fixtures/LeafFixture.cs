@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Alba.Routing;
 using Alba.Testing.Routing;
 using StoryTeller;
@@ -12,7 +13,7 @@ namespace Alba.Testing.Fixtures
         [ExposeAsTable("Leaf Creation and Parsing")]
         public void CreateLeaf(string Route, out string NodePath, [Default("false")]out bool HasSpread, [Default("NONE")] out ParameterExpectation Parameters)
         {
-            var leaf = new Leaf(Route);
+            var leaf = new Leaf(Route, env => Task.CompletedTask);
             NodePath = leaf.NodePath;
             HasSpread = leaf.HasSpread;
 
