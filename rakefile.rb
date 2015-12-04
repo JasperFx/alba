@@ -75,7 +75,6 @@ end
 
 desc "Pack up the nupkg file"
 task :pack => [:compile] do
-	Dir.mkdir "artifacts"
 	sh "paket.exe pack output artifacts version #{build_number}"
 end
 
