@@ -43,7 +43,4 @@
     <Compile Include="$(MSBuildThisFileDirectory)Segment.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StringExtensions.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)Middleware\" />
-  </ItemGroup>
 </Project>

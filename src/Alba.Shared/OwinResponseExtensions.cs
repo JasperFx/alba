@@ -5,7 +5,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Baseline.Testing;
-using OwinEnvironment = System.Collections.Generic.Dictionary<string, object>;
+using OwinEnvironment = System.Collections.Generic.IDictionary<string, object>;
 
 namespace Alba
 {

@@ -34,6 +34,10 @@ namespace Alba
             return relativeUrl;
         }
 
+        public static string RelativeUrlWithoutQueryString(this IDictionary<string, object> env)
+        {
+            return env.Get<string>(OwinConstants.RequestPathKey);
+        }
 
         public static string RelativeUrl(this IDictionary<string, object> env)
         {

@@ -66,6 +66,11 @@
     <Compile Include="Routing\SpreadTests.cs" />
     <Compile Include="SegmentTests.cs" />
     <Compile Include="SpecificationExtensions.cs" />
+    <Compile Include="StaticFiles\AssetSettingsTests.cs" />
+    <Compile Include="StaticFiles\FubuFileTests.cs" />
+    <Compile Include="StaticFiles\WriteFileContinuationTests.cs" />
+    <Compile Include="StaticFiles\WriteFileHeadContinuationTests.cs" />
+    <Compile Include="StaticFiles\WriteStatusCodeContinuationTests.cs" />
     <Compile Include="StringExtensionsTests.cs" />
   </ItemGroup>
   <ItemGroup>
