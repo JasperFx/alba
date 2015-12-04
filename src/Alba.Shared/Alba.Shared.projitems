@@ -38,6 +38,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Routing\Leaf.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Routing\Node.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Routing\RouteArgument.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Routing\Router.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Routing\RouteTree.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Routing\Segment.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Routing\Spread.cs" />

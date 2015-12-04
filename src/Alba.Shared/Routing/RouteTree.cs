@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AppFunc = System.Func<System.Collections.Generic.IDictionary<string, object>, System.Threading.Tasks.Task>;
 
 namespace Alba.Routing
 {
-
-
-
     public class RouteTree
     {
         private readonly IDictionary<string, Node> _all = new Dictionary<string, Node>();
@@ -18,6 +16,13 @@ namespace Alba.Routing
         {
             _root = new Node("");
             _all.Add(string.Empty, _root);
+
+            NotFound = env =>
+            {
+                env.StatusCode(404, "Resource not found");
+                env.Write("Resource not found", "text/plain");
+                return Task.CompletedTask;
+            };
         }
 
         public void AddRoute(string pattern, Func<IDictionary<string, object>, Task> appFunc)
@@ -70,5 +75,7 @@ namespace Alba.Routing
         {
             return route.Trim().TrimStart('/').TrimEnd('/').Split('/');
         }
+
+        public AppFunc NotFound { get; set; }
     }
 }

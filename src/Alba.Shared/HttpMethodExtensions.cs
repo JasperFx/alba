@@ -8,7 +8,7 @@ namespace Alba
     {
         public static string HttpMethod(this IDictionary<string, object> env)
         {
-            return env.Get<string>(OwinConstants.RequestMethodKey);
+            return env.Get<string>(OwinConstants.RequestMethodKey).ToUpperInvariant();
         }
 
         public static IDictionary<string, object> HttpMethod(this IDictionary<string, object> env, string method)

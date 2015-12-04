@@ -48,6 +48,7 @@
     <Compile Include="DictionaryExtensionsTests.cs" />
     <Compile Include="Fixtures\AssetSettingsFixture.cs" />
     <Compile Include="Fixtures\LeafFixture.cs" />
+    <Compile Include="Fixtures\RouterFixture.cs" />
     <Compile Include="Fixtures\RoutingFixture.cs" />
     <Compile Include="FormDataExtensionsTests.cs" />
     <Compile Include="FullUrl_ExtensionMethod_Tests.cs" />
