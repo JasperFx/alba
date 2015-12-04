@@ -42,6 +42,17 @@
     <Compile Include="$(MSBuildThisFileDirectory)Routing\Segment.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Routing\Spread.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Segment.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StaticFiles\AssetSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StaticFiles\DoNext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StaticFiles\IStaticFile.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StaticFiles\IStaticFiles.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StaticFiles\MiddlewareContinuation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StaticFiles\StaticFile.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StaticFiles\StaticFileMiddleware.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StaticFiles\WriteFileContinuation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StaticFiles\WriteFileHeadContinuation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StaticFiles\WriterContinuation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StaticFiles\WriteStatusCodeContinuation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StringExtensions.cs" />
   </ItemGroup>
 </Project>
