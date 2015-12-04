@@ -5,17 +5,17 @@ namespace Alba.StaticFiles
 {
     public class WriteFileHeadContinuation : WriterContinuation
     {
-        public WriteFileHeadContinuation(IDictionary<string, object> env, IFubuFile file, int status) : base(env, DoNext.Stop)
+        public WriteFileHeadContinuation(IDictionary<string, object> env, IStaticFile file, int status) : base(env, DoNext.Stop)
         {
             File = file;
             Status = status;
         }
 
-        public IFubuFile File { get; }
+        public IStaticFile File { get; }
 
         public int Status {get;}
 
-        public static void WriteHeaders(IDictionary<string, object> response, IFubuFile file)
+        public static void WriteHeaders(IDictionary<string, object> response, IStaticFile file)
         {
             var headers = response.ResponseHeaders();
 

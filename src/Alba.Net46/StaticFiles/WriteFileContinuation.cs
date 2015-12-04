@@ -6,14 +6,14 @@ namespace Alba.StaticFiles
     {
         private readonly AssetSettings _settings;
 
-        public WriteFileContinuation(IDictionary<string, object> env, IFubuFile file, AssetSettings settings)
+        public WriteFileContinuation(IDictionary<string, object> env, IStaticFile file, AssetSettings settings)
             : base(env, DoNext.Stop)
         {
             File = file;
             _settings = settings;
         }
 
-        public IFubuFile File { get; }
+        public IStaticFile File { get; }
 
         public override void Write(IDictionary<string, object> response)
         {

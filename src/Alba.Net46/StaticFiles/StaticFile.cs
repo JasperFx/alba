@@ -4,11 +4,11 @@ using Baseline.Testing;
 
 namespace Alba.StaticFiles
 {
-    public class FubuFile : IFubuFile
+    public class StaticFile : IStaticFile
     {
         private string _relativePath;
 
-        public FubuFile(string path)
+        public StaticFile(string path)
         {
             Path = path;
             if (!System.IO.Path.IsPathRooted(path))
@@ -64,7 +64,7 @@ namespace Alba.StaticFiles
             return new DateTime(last.Year, last.Month, last.Day, last.Hour, last.Minute, last.Second, last.Kind);
         }
 
-        protected bool Equals(FubuFile other)
+        protected bool Equals(StaticFile other)
         {
             return string.Equals(RelativePath, other.RelativePath);
         }
@@ -74,7 +74,7 @@ namespace Alba.StaticFiles
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
-            return Equals((FubuFile)obj);
+            return Equals((StaticFile)obj);
         }
 
         public override int GetHashCode()
@@ -92,7 +92,7 @@ namespace Alba.StaticFiles
 
     public static class FubuFileExtensions
     {
-        public static DateTime ExactLastWriteTime(this IFubuFile file)
+        public static DateTime ExactLastWriteTime(this IStaticFile file)
         {
             return new FileInfo(file.Path).LastWriteTimeUtc;
         }

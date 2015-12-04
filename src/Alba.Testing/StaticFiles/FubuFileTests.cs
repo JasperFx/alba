@@ -18,7 +18,7 @@ namespace Alba.Testing.StaticFiles
         [Fact]
         public void read_contents()
         {
-            var file = new FubuFile("a.txt");
+            var file = new StaticFile("a.txt");
             file.ReadContents().Trim().ShouldBe("some text from a.txt");
         }
 
@@ -28,7 +28,7 @@ namespace Alba.Testing.StaticFiles
             var lines = new List<string>();
             Action<string> action = x => lines.Add(x);
 
-            var file = new FubuFile("a.txt");
+            var file = new StaticFile("a.txt");
 
             file.ReadLines(action);
 
@@ -39,7 +39,7 @@ namespace Alba.Testing.StaticFiles
         public void read_contents_by_stream()
         {
             var wasCalled = false;
-            var file = new FubuFile("a.txt");
+            var file = new StaticFile("a.txt");
             file.ReadContents(stream =>
             {
                 wasCalled = true;
@@ -54,7 +54,7 @@ namespace Alba.Testing.StaticFiles
         {
             new FileSystem().WriteStringToFile("ghostbusters.txt", "Who you gonna call?");
 
-            new FubuFile("ghostbusters.txt")
+            new StaticFile("ghostbusters.txt")
                 .Length().ShouldBe(19);
         }
 
@@ -65,7 +65,7 @@ namespace Alba.Testing.StaticFiles
 
             new FileSystem().WriteStringToFile("ghostbusters.txt", "Who you gonna call?");
 
-            var lastModified = new FubuFile("ghostbusters.txt")
+            var lastModified = new StaticFile("ghostbusters.txt")
                 .LastModified();
 
 
@@ -78,9 +78,9 @@ namespace Alba.Testing.StaticFiles
         {
             new FileSystem().WriteStringToFile("ghostbusters.txt", "Who you gonna call?");
 
-            var etag1 = new FubuFile("ghostbusters.txt").Etag();
-            var etag2 = new FubuFile("ghostbusters.txt").Etag();
-            var etag3 = new FubuFile("ghostbusters.txt").Etag();
+            var etag1 = new StaticFile("ghostbusters.txt").Etag();
+            var etag2 = new StaticFile("ghostbusters.txt").Etag();
+            var etag3 = new StaticFile("ghostbusters.txt").Etag();
 
             etag1.ShouldBe(etag2);
             etag1.ShouldBe(etag3);
@@ -91,11 +91,11 @@ namespace Alba.Testing.StaticFiles
         {
             new FileSystem().WriteStringToFile("ghostbusters.txt", "Who you gonna call?");
 
-            var etag1 = new FubuFile("ghostbusters.txt").Etag();
+            var etag1 = new StaticFile("ghostbusters.txt").Etag();
 
             new FileSystem().WriteStringToFile("ghostbusters.txt", "He slimed me!");
 
-            var etag2 = new FubuFile("ghostbusters.txt").Etag();
+            var etag2 = new StaticFile("ghostbusters.txt").Etag();
 
             etag1.ShouldNotBe(etag2);
         }

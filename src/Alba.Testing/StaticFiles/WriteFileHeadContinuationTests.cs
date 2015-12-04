@@ -10,13 +10,13 @@ namespace Alba.Testing.StaticFiles
     {
         private readonly IDictionary<string, object> theEnvironment = new Dictionary<string, object>();
         private readonly AssetSettings theSettings = new AssetSettings();
-        private FubuFile theFile;
+        private StaticFile theFile;
 
         public WriteFileHeadContinuationTests()
         {
             new FileSystem().WriteStringToFile("lib.js", "var x = 0;");
 
-            theFile = new FubuFile("lib.js");
+            theFile = new StaticFile("lib.js");
             new WriteFileHeadContinuation(theEnvironment, theFile, 200).Write(theEnvironment);
         }
 

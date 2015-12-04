@@ -47,9 +47,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StaticFiles\AssetSettings.cs" />
     <Compile Include="StaticFiles\DoNext.cs" />
-    <Compile Include="StaticFiles\FubuFile.cs" />
-    <Compile Include="StaticFiles\IFubuFile.cs" />
+    <Compile Include="StaticFiles\IStaticFiles.cs" />
+    <Compile Include="StaticFiles\StaticFile.cs" />
+    <Compile Include="StaticFiles\IStaticFile.cs" />
     <Compile Include="StaticFiles\MiddlewareContinuation.cs" />
+    <Compile Include="StaticFiles\StaticFileMiddleware.cs" />
     <Compile Include="StaticFiles\WriteFileContinuation.cs" />
     <Compile Include="StaticFiles\WriteFileHeadContinuation.cs" />
     <Compile Include="StaticFiles\WriterContinuation.cs" />

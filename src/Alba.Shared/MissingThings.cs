@@ -25,27 +25,7 @@
         /*
         public static class CurrentHttpRequestExtensions
         {
-            public static bool IfUnModifiedSinceHeaderAndModifiedSince(this IDictionary<string, object> request, IFubuFile file)
-            {
-                var ifUnModifiedSince = request.IfUnModifiedSince();
-                return ifUnModifiedSince.HasValue && file.LastModified() > ifUnModifiedSince.Value;
-            }
 
-            public static bool IfModifiedSinceHeaderAndNotModified(this IDictionary<string, object> request, IFubuFile file)
-            {
-                var ifModifiedSince = request.IfModifiedSince();
-                return ifModifiedSince.HasValue && file.LastModified().ToUniversalTime() <= ifModifiedSince.Value;
-            }
-
-            public static bool IfNoneMatchHeaderMatchesEtag(this IDictionary<string, object> request, IFubuFile file)
-            {
-                return request.IfNoneMatch().EtagMatches(file.Etag()) == EtagMatch.Yes;
-            }
-
-            public static bool IfMatchHeaderDoesNotMatchEtag(this IDictionary<string, object> request, IFubuFile file)
-            {
-                return request.IfMatch().EtagMatches(file.Etag()) == EtagMatch.No;
-            }
 
         }
         */

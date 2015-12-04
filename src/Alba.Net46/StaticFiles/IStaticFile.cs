@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Alba.StaticFiles
 {
-    public interface IFubuFile
+    public interface IStaticFile
     {
         string Path { get; }
 
@@ -13,13 +13,13 @@ namespace Alba.StaticFiles
         string RelativePath { get; set; }
 
         /// <summary>
-        /// Read the contents of this IFubuFile
+        /// Read the contents of this IStaticFile
         /// </summary>
         /// <returns></returns>
         string ReadContents();
 
         /// <summary>
-        /// Read the contents of this IFubuFile from a stream
+        /// Read the contents of this IStaticFile from a stream
         /// </summary>
         /// <param name="action"></param>
         void ReadContents(Action<Stream> action);
