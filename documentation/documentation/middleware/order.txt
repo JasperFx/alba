@@ -1,0 +1,2 @@
+static_files
+html_head_injection
