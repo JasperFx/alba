@@ -52,6 +52,7 @@
     <Compile Include="Fixtures\RoutingFixture.cs" />
     <Compile Include="FormDataExtensionsTests.cs" />
     <Compile Include="FullUrl_ExtensionMethod_Tests.cs" />
+    <Compile Include="HtmlHeadInjectionMiddleware_end_to_end_Tests.cs" />
     <Compile Include="HttpMethodExtensionsTests.cs" />
     <Compile Include="HeaderDictionaryExtensionsTests.cs" />
     <Compile Include="MimeTypeTests.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="SpecificationExtensions.cs" />
     <Compile Include="StaticFiles\AssetSettingsTests.cs" />
     <Compile Include="StaticFiles\FubuFileTests.cs" />
+    <Compile Include="NowinHarness.cs" />
     <Compile Include="StaticFiles\StaticFileMiddlewareTests.cs" />
     <Compile Include="StaticFiles\StaticFileMiddleware_end_to_end_Tests.cs" />
     <Compile Include="StaticFiles\WriteFileContinuationTests.cs" />
@@ -89,6 +91,17 @@
       <ItemGroup>
         <Reference Include="Baseline">
           <HintPath>..\..\packages\Baseline\lib\net45\Baseline.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.0' Or $(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.1' Or $(TargetFrameworkVersion) == 'v4.5.2' Or $(TargetFrameworkVersion) == 'v4.5.3' Or $(TargetFrameworkVersion) == 'v4.6')">
+      <ItemGroup>
+        <Reference Include="HtmlTags">
+          <HintPath>..\..\packages\HtmlTags\lib\4.0\HtmlTags.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>

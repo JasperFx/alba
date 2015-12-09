@@ -1,48 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using Alba.StaticFiles;
 using Baseline.Testing;
-using Nowin;
 using Shouldly;
 using Xunit;
-using AppFunc = System.Func<System.Collections.Generic.IDictionary<string, object>, System.Threading.Tasks.Task>;
 
 namespace Alba.Testing.StaticFiles
 {
-
-    public class NowinHarness : IDisposable
-    {
-        private IDisposable _disposable;
-
-        public NowinHarness(AppFunc appfunc)
-        {
-            Port = PortFinder.FindPort(5500);
-            var list = new List<IDictionary<string, object>>() { new Dictionary<string, object>() };
-            list[0].Add("port", Port.ToString());
-
-            var properties = new Dictionary<string, object>();
-            properties.Add("host.Addresses", list);
-
-
-            OwinServerFactory.Initialize(properties);
-
-            _disposable = OwinServerFactory.Create(appfunc, properties);            
-        }
-
-        
-
-        public int Port { get; }
-
-        public void Dispose()
-        {
-            _disposable.Dispose();
-        }
-    }
-
-
     public class StaticFileMiddleware_end_to_end_Tests
     {
         [Fact]
