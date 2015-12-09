@@ -1,0 +1,17 @@
+type file
+id Alba
+description A humble library of OWIN helpers and a Trie-based Router
+authors Jeremy D. Miller, Joshua Arnold, et al
+title Alba
+owners Jeremy D. Miller
+licenseUrl https://github.com/JasperFX/alba/blob/master/LICENSE.txt
+projectUrl http://jasperfx.github.io/alba
+version 0.5.0
+
+files
+    bin\release\Alba.dll ==> lib/net45
+
+dependencies
+    Baseline >= 0.5
+
+     
