@@ -22,6 +22,7 @@ namespace Alba.Routing
             _trees[method.ToUpperInvariant()].AddRoute(pattern, appfunc);
         }
 
+        // TODO -- dunno that this needs to be done by verb. Reconsider
         public void AddNotFoundHandler(string method, Func<IDictionary<string, object>, Task> appfunc)
         {
             _trees[method.ToUpperInvariant()].NotFound = appfunc;

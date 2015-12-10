@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Alba.StaticFiles;
-using Baseline.Testing;
+using Baseline;
 using Shouldly;
 using Xunit;
 

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Baseline.Testing;
+using Baseline;
 using Shouldly;
 
 namespace Alba.Testing

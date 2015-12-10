@@ -2,6 +2,7 @@ source https://nuget.org/api/v2
 nuget Baseline
 nuget HtmlTags
 nuget Nowin
+nuget NSubstitute
 nuget Shouldly
 nuget Storyteller 3.0.0.291-alpha -pre
 nuget xunit

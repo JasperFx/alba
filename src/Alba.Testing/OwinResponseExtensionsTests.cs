@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Baseline.Testing;
+using Baseline;
 using Shouldly;
 using Xunit;
 
