@@ -65,6 +65,19 @@ namespace Alba.Testing.Urls
             return method.ToParameters(x => x.do_stuff(value));
         }
 
+
+        [Fact]
+        public void resolve_properties_for_multiple_parameters()
+        {
+            var method = MethodRoute<FakeEndpoint>.For(x => x.complex(null, 3), "stuff/:key/:number", "GET");
+            method.AddParameter("key");
+            method.AddParameter("number");
+
+            var dict = method.ToParameters(x => x.complex("Mat", 5));
+            dict["key"].ShouldBe("Mat");
+            dict["number"].ShouldBe("5");
+        }
+
         [Fact]
         public void register_itself()
         {

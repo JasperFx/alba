@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AppFunc = System.Func<System.Collections.Generic.IDictionary<string, object>, System.Threading.Tasks.Task>;
 
 
@@ -8,6 +9,11 @@ namespace Alba.Routing
 {
     public class Leaf
     {
+        public static Leaf For(string url)
+        {
+            return new Leaf(url, env => Task.CompletedTask);
+        }
+
         public static ISegment ToParameter(string path, int position)
         {
             if (path == "...")

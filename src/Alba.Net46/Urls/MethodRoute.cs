@@ -15,6 +15,7 @@ namespace Alba.Urls
         public Leaf Leaf { get; }
         public string HttpMethod { get; }
         public MethodInfo Method { get; }
+
         private readonly IDictionary<int, string> _parameters = new Dictionary<int, string>();
 
         /// <summary>

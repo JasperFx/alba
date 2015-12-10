@@ -79,6 +79,7 @@
     <Compile Include="StaticFiles\WriteStatusCodeContinuationTests.cs" />
     <Compile Include="StringExtensionsTests.cs" />
     <Compile Include="Urls\MethodRouteTester.cs" />
+    <Compile Include="Urls\RouteWithInputModelTests.cs" />
     <Compile Include="Urls\StaticRouteTests.cs" />
   </ItemGroup>
   <ItemGroup>
