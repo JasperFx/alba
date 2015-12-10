@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Alba.Routing;
 using Baseline;
+using Baseline.Conversion;
 
 namespace Alba.Urls
 {
@@ -45,6 +46,8 @@ namespace Alba.Urls
 
     public class UrlGraph : IUrlRegistry, IUrlGraph
     {
+        public static readonly Conversions Conversions = new Conversions();
+
         private readonly LightweightCache<Type, List<IRouteWithInputModel>> _routesByInputModel
             = new LightweightCache<Type, List<IRouteWithInputModel>>(_ => new List<IRouteWithInputModel>());
 

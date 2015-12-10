@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Alba.Routing;
 using Baseline;
+using Baseline.Conversion;
 
 namespace Alba.Urls
 {
@@ -43,7 +44,14 @@ namespace Alba.Urls
 
         public void ApplyValues(object input, IDictionary<string, string> rawValues)
         {
-            throw new NotImplementedException();
+            _parameters.Each(x =>
+            {
+                if (rawValues.ContainsKey(x.Key))
+                {
+                    var value = rawValues[x.Key];
+                    x.Write(input, value);
+                }
+            });
         }
 
         public void AddFieldParam(string name, string key = null)
@@ -84,14 +92,17 @@ namespace Alba.Urls
             void Write(object input, string raw);
         }
 
-        public class FieldInfoParameter : IParameter
+        internal class FieldInfoParameter : IParameter
         {
             private readonly FieldInfo _field;
+            private readonly Func<string, object> _converter;
 
-            public FieldInfoParameter(FieldInfo field, string key = null)
+            internal FieldInfoParameter(FieldInfo field, string key = null)
             {
                 _field = field;
                 Key = key ?? field.Name;
+
+                _converter = UrlGraph.Conversions.FindConverter(_field.FieldType);
             }
 
             public object Read(object input)
@@ -102,18 +113,21 @@ namespace Alba.Urls
             public string Key { get; }
             public void Write(object input, string raw)
             {
-                throw new NotImplementedException();
+                _field.SetValue(input, _converter(raw));
             }
         }
 
-        public class PropertyInfoParameter : IParameter
+        internal class PropertyInfoParameter : IParameter
         {
             private readonly PropertyInfo _property;
+            private readonly Func<string, object> _converter;
 
-            public PropertyInfoParameter(PropertyInfo property, string key = null)
+            internal PropertyInfoParameter(PropertyInfo property, string key = null)
             {
                 _property = property;
                 Key = key ?? property.Name;
+
+                _converter = UrlGraph.Conversions.FindConverter(_property.PropertyType);
             }
 
             public object Read(object input)
@@ -124,7 +138,7 @@ namespace Alba.Urls
             public string Key { get; }
             public void Write(object input, string raw)
             {
-                throw new NotImplementedException();
+                _property.SetValue(input, _converter(raw));
             }
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Alba.Routing;
 using Alba.Urls;
 using NSubstitute;
@@ -68,6 +69,67 @@ namespace Alba.Testing.Urls
 
             graph.Received().Register(route.Leaf.Name, route);
             graph.Received().RegisterByInput(typeof(InputModel), route);
+        }
+
+        [Fact]
+        public void write_a_string_field()
+        {
+            route.AddFieldParam("Key");
+
+            var model = new InputModel();
+            var dict = new Dictionary<string, string>();
+            dict.Add("Key", "Thom");
+
+            route.ApplyValues(model, dict);
+
+            model.Key.ShouldBe("Thom");
+        }
+
+        [Fact]
+        public void write_a_number_field()
+        {
+            route.AddFieldParam("Number");
+
+            var model = new InputModel();
+            var dict = new Dictionary<string, string>();
+            dict.Add("Number", "11");
+
+            route.ApplyValues(model, dict);
+
+            model.Number.ShouldBe(11);
+        }
+
+        [Fact]
+        public void write_an_enum_property()
+        {
+            route.AddPropertyParam("Color");
+
+            var model = new InputModel();
+            var dict = new Dictionary<string, string>();
+            dict.Add("Color", "Blue");
+
+            route.ApplyValues(model, dict);
+
+            model.Color.ShouldBe(Color.Blue);
+
+        }
+
+        [Fact]
+        public void mixed_field_and_property_write()
+        {
+            route.AddFieldParam("Number");
+            route.AddPropertyParam("Color");
+
+            var dict = new Dictionary<string, string>();
+            dict.Add("Color", "Blue");
+            dict.Add("Number", "11");
+
+
+            var model = new InputModel();
+            route.ApplyValues(model, dict);
+
+            model.Number.ShouldBe(11);
+            model.Color.ShouldBe(Color.Blue);
         }
     }
 
