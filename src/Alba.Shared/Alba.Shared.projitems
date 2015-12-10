@@ -55,6 +55,5 @@
     <Compile Include="$(MSBuildThisFileDirectory)StaticFiles\WriterContinuation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StaticFiles\WriteStatusCodeContinuation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StringExtensions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Util\LightweightCache.cs" />
   </ItemGroup>
 </Project>
