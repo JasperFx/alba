@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Alba.Routing;
@@ -45,13 +44,6 @@ namespace Alba.Urls
 
     }
 
-    public interface IUrlGraph
-    {
-        void RegisterByHandler(Type handlerType, MethodInfo method, IMethodRoute route);
-        void RegisterByInput(Type inputModel, IRouteWithInputModel route);
-        void Register(string name, IRoute route);
-    }
-
     public class UrlGraph : IUrlRegistry, IUrlGraph
     {
         private readonly LightweightCache<Type, List<IRouteWithInputModel>> _routesByInputModel
@@ -64,7 +56,7 @@ namespace Alba.Urls
             = new LightweightCache<string, IRoute>();
 
 
-        public void RegisterByHandler(Type handlerType, MethodInfo method, IMethodRoute route)
+        public void RegisterByHandler(Type handlerType, MethodInfo method, IRoute route)
         {
             throw new NotImplementedException();
         }
@@ -226,41 +218,4 @@ namespace Alba.Urls
             }
         }
     }
-
-
-
-    public interface IMethodRoute : IRoute
-    {
-        IDictionary<string, string> ToParameters(Expression expression);
-    }
-
-    public class MethodRoute<THandler> : IMethodRoute
-    {
-        public Leaf Leaf { get; }
-        public string HttpMethod { get; }
-        public MethodInfo Method { get; }
-        private readonly IDictionary<string, ParameterInfo> _parameters = new Dictionary<string, ParameterInfo>();
-
-        public MethodRoute(Leaf leaf, string httpMethod, MethodInfo method)
-        {
-            Leaf = leaf;
-            HttpMethod = httpMethod;
-            Method = method;
-        }
-
-        public void Register(IUrlGraph graph)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool HasParameters => Method.GetParameters().Any();
-        public IDictionary<string, string> ToParameters(Expression expression)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-
-
-    
 }

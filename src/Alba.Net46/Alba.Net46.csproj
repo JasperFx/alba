@@ -44,6 +44,9 @@
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Urls\IMethodRoute.cs" />
+    <Compile Include="Urls\IUrlGraph.cs" />
+    <Compile Include="Urls\MethodRoute.cs" />
     <Compile Include="Urls\StaticRoute.cs" />
     <Compile Include="Urls\UrlClasses.cs" />
   </ItemGroup>

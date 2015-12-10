@@ -1,0 +1,111 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
+using System.Threading.Tasks;
+using Alba.Routing;
+using Baseline;
+using Baseline.Reflection;
+
+namespace Alba.Urls
+{
+    public class MethodRoute<THandler> : IMethodRoute<THandler>
+    {
+        public Leaf Leaf { get; }
+        public string HttpMethod { get; }
+        public MethodInfo Method { get; }
+        private readonly IDictionary<int, string> _parameters = new Dictionary<int, string>();
+
+        /// <summary>
+        /// Just for testing
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <param name="url"></param>
+        /// <param name="httpMethod"></param>
+        /// <returns></returns>
+        public static MethodRoute<THandler> For(Expression<Action<THandler>> expression, string url, string httpMethod)
+        {
+            var method = ReflectionHelper.GetMethod(expression);
+            var leaf = new Leaf(url, e => Task.CompletedTask);
+
+            return new MethodRoute<THandler>(leaf, httpMethod, method);
+        } 
+
+        public MethodRoute(Leaf leaf, string httpMethod, MethodInfo method)
+        {
+            Leaf = leaf;
+            HttpMethod = httpMethod;
+            Method = method;
+        }
+
+        public void Register(IUrlGraph graph)
+        {
+            graph.Register(Leaf.Name, this);
+            graph.RegisterByHandler(typeof(THandler), Method, this);
+        }
+
+        public bool HasParameters => Method.GetParameters().Any();
+        
+
+        public void AddParameter(string paramName, string key = null)
+        {
+            var parameter = Method.GetParameters().Where(x => x.Name == paramName).SingleOrDefault();
+            if (parameter == null) throw new ArgumentOutOfRangeException(nameof(paramName));
+
+            
+
+            AddParameter(parameter, key);
+
+        }
+
+        public void AddParameter(ParameterInfo parameter, string key = null)
+        {
+            _parameters.Add(parameter.Position, key ?? parameter.Name);
+        }
+
+        public IDictionary<string, string> ToParameters(Expression<Action<THandler>> expression)
+        {
+            var parser = new MethodCallParser();
+            parser.Visit(expression);
+            
+            var parameters = new Dictionary<string, string>();
+
+            _parameters.Each(pair =>
+            {
+                parameters.Add(pair.Value, parser.Arguments[pair.Key].ToString());
+            });
+
+            return parameters;
+        }
+
+        internal class MethodCallParser : ExpressionVisitor
+        {
+            internal readonly List<object> Arguments = new List<object>(); 
+
+            protected override Expression VisitConstant(ConstantExpression node)
+            {
+                Arguments.Add(node.Value);
+
+                return base.VisitConstant(node);
+            }
+
+            protected override Expression VisitMember(MemberExpression member)
+            {
+                if (member.Expression is ConstantExpression &&
+                    member.Member is FieldInfo)
+                {
+                    object container =
+                        ((ConstantExpression)member.Expression).Value;
+                    object value = ((FieldInfo)member.Member).GetValue(container);
+
+                    Arguments.Add(value);
+
+                    return member;
+                }
+
+                return base.VisitMember(member);
+            }
+        }
+    }
+}
