@@ -13,18 +13,6 @@ namespace Alba.Testing.Urls
         private readonly RouteWithInputModel<InputModel> route 
             = new RouteWithInputModel<InputModel>(Route.For("/something", "GET"));
 
-        [Fact]
-        public void has_parameters_with_none()
-        {
-            route.HasParameters.ShouldBeFalse();
-        }
-
-        [Fact]
-        public void has_parameters_with_any()
-        {
-            route.AddFieldParam("Key");
-            route.HasParameters.ShouldBeTrue();
-        }
 
 
         [Fact]

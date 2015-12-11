@@ -24,8 +24,6 @@ namespace Alba.Urls
             graph.RegisterByInput(typeof (T), this);
         }
 
-        public bool HasParameters => _parameters.Any();
-
         public IDictionary<string, string> ToParameters(object model)
         {
             var dict = new Dictionary<string, string>();

@@ -6,8 +6,6 @@ namespace Alba.Urls
     {
         public Route Route { get; }
 
-        public bool HasParameters => false;
-
         public StaticRoute(Route route)
         {
             Route = route;

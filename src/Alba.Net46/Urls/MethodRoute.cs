@@ -44,9 +44,6 @@ namespace Alba.Urls
             graph.RegisterByHandler(typeof(THandler), Method, this);
         }
 
-        public bool HasParameters => Method.GetParameters().Any();
-        
-
         public void AddParameter(string paramName, string key = null)
         {
             var parameter = Method.GetParameters().Where(x => x.Name == paramName).SingleOrDefault();

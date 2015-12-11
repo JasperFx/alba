@@ -106,7 +106,9 @@ namespace Alba.Routing
                 return false;
             }
         }
- 
+
+        public bool HasParameters => _parameters.Any();
+
         public string Pattern { get; }
 
         public bool HasSpread => _segments.Any(x => x is Spread);

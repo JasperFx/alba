@@ -8,22 +8,6 @@ namespace Alba.Testing.Urls
 {
     public class MethodRouteTester
     {
-        [Fact]
-        public void has_parameters_false_on_method_with_empty_params()
-        {
-            MethodRoute<FakeEndpoint>.For(x => x.simple(), "simple", "GET")
-                .HasParameters.ShouldBeFalse();
-
-        }
-
-        [Fact]
-        public void has_parameters_true_for_method_with_route_arguments()
-        {
-            var method = MethodRoute<FakeEndpoint>.For(x => x.do_stuff(null), "stuff/:key", "GET");
-            method.AddParameter("key");
-
-            method.HasParameters.ShouldBeTrue();
-        }
 
         [Fact]
         public void resolve_properties_for_one_parameter_passed_as_variable()

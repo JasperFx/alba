@@ -8,6 +8,5 @@ namespace Alba.Urls
 
         void Register(IUrlGraph graph);
 
-        bool HasParameters { get; }
     }
 }
