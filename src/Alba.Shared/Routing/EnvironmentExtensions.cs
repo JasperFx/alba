@@ -7,7 +7,7 @@ namespace Alba.Routing
         public static readonly string OwinRouteData = "owin.route.data";
         public static readonly string OwinSpreadData = "owin.route.spread";
 
-        public static void SetRouteData(this IDictionary<string, object> env, IDictionary<string, string> routeValues)
+        public static void SetRouteData(this IDictionary<string, object> env, IDictionary<string, object> routeValues)
         {
             if (env.ContainsKey(OwinRouteData))
             {
@@ -33,7 +33,7 @@ namespace Alba.Routing
 
         }
 
-        public static string GetRouteData(this IDictionary<string, object> env, string key)
+        public static object GetRouteData(this IDictionary<string, object> env, string key)
         {
             var routeData = env.GetRouteData();
 
@@ -45,11 +45,11 @@ namespace Alba.Routing
             return null;
         }
 
-        public static IDictionary<string, string> GetRouteData(this IDictionary<string, object> env)
+        public static IDictionary<string, object> GetRouteData(this IDictionary<string, object> env)
         {
-            if (env.ContainsKey(OwinRouteData)) return (IDictionary<string, string>) env[OwinRouteData];
+            if (env.ContainsKey(OwinRouteData)) return (IDictionary<string, object>) env[OwinRouteData];
 
-            var values = new Dictionary<string, string>();
+            var values = new Dictionary<string, object>();
             env.Add(OwinRouteData, values);
 
             return values;

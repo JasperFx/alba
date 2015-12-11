@@ -44,12 +44,12 @@ namespace Alba.Testing.Fixtures
     public class ArgumentExpectation
     {
         private readonly string[] _spread;
-        private readonly IDictionary<string, string> _args;
+        private readonly IDictionary<string, object> _args;
 
         public ArgumentExpectation(string text)
         {
             _spread = new string[0];
-            _args = new Dictionary<string, string>();
+            _args = new Dictionary<string, object>();
 
             if (text == "NONE") return;
 

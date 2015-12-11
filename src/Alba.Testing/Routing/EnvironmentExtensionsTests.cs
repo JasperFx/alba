@@ -21,7 +21,7 @@ namespace Alba.Testing.Routing
         [Fact]
         public void get_route_data_miss()
         {
-            theEnvironment.Add(EnvironmentExtensions.OwinRouteData, new Dictionary<string, string>());
+            theEnvironment.Add(EnvironmentExtensions.OwinRouteData, new Dictionary<string, object>());
 
             theEnvironment.GetRouteData("foo").ShouldBeNull();
         }
@@ -29,7 +29,7 @@ namespace Alba.Testing.Routing
         [Fact]
         public void get_route_data_hit()
         {
-            theEnvironment.Add(EnvironmentExtensions.OwinRouteData, new Dictionary<string, string> { {"foo", "bar"} });
+            theEnvironment.Add(EnvironmentExtensions.OwinRouteData, new Dictionary<string, object> { {"foo", "bar"} });
 
             theEnvironment.GetRouteData("foo").ShouldBe("bar");
         }
@@ -37,7 +37,7 @@ namespace Alba.Testing.Routing
         [Fact]
         public void set_route_data()
         {
-            var dict = new Dictionary<string, string> { {"foo", "bar"} };
+            var dict = new Dictionary<string, object> { {"foo", "bar"} };
             theEnvironment.SetRouteData(dict);
 
             theEnvironment.GetRouteData("foo").ShouldBe("bar");
@@ -52,7 +52,7 @@ namespace Alba.Testing.Routing
         [Fact]
         public void get_route_data_from_environment()
         {
-            var routeValues = new Dictionary<string, string> { { "foo", "bar" } };
+            var routeValues = new Dictionary<string, object> { { "foo", "bar" } };
             theEnvironment.Add(EnvironmentExtensions.OwinRouteData, routeValues);
 
             theEnvironment.GetRouteData().ShouldBeSameAs(routeValues);

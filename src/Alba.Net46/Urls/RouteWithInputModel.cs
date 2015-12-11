@@ -79,13 +79,6 @@ namespace Alba.Urls
         }
 
 
-        internal interface IParameter
-        {
-            string Key { get; }
-            object Read(object input);
-            void Write(object input, string raw);
-        }
-
         internal class FieldInfoParameter : IParameter
         {
             private readonly Func<string, object> _converter;
@@ -137,5 +130,12 @@ namespace Alba.Urls
                 _property.SetValue(input, _converter(raw));
             }
         }
+    }
+
+    internal interface IParameter
+    {
+        string Key { get; }
+        object Read(object input);
+        void Write(object input, string raw);
     }
 }
