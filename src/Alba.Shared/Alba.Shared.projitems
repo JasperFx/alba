@@ -36,6 +36,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Routing\EnvironmentExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Routing\HttpVerbs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Routing\ISegment.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Routing\MethodCallParser.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Routing\Route.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Routing\Node.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Routing\RouteArgument.cs" />

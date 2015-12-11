@@ -62,46 +62,16 @@ namespace Alba.Urls
 
         public IDictionary<string, string> ToParameters(Expression<Action<THandler>> expression)
         {
-            var parser = new MethodCallParser();
-            parser.Visit(expression);
+            var arguments = MethodCallParser.ToArguments(expression);
             
             var parameters = new Dictionary<string, string>();
 
             _parameters.Each(pair =>
             {
-                parameters.Add(pair.Value, parser.Arguments[pair.Key].ToString());
+                parameters.Add(pair.Value, arguments[pair.Key].ToString());
             });
 
             return parameters;
-        }
-
-        internal class MethodCallParser : ExpressionVisitor
-        {
-            internal readonly List<object> Arguments = new List<object>(); 
-
-            protected override Expression VisitConstant(ConstantExpression node)
-            {
-                Arguments.Add(node.Value);
-
-                return base.VisitConstant(node);
-            }
-
-            protected override Expression VisitMember(MemberExpression member)
-            {
-                if (member.Expression is ConstantExpression &&
-                    member.Member is FieldInfo)
-                {
-                    object container =
-                        ((ConstantExpression)member.Expression).Value;
-                    object value = ((FieldInfo)member.Member).GetValue(container);
-
-                    Arguments.Add(value);
-
-                    return member;
-                }
-
-                return base.VisitMember(member);
-            }
         }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Baseline;
 using AppFunc = System.Func<System.Collections.Generic.IDictionary<string, object>, System.Threading.Tasks.Task>;
@@ -88,6 +89,16 @@ namespace Alba.Routing
 
         public IEnumerable<ISegment> Segments => _segments;
 
+        public Type InputType { get; set; }
+        public Type HandlerType { get; set; }
+        public MethodInfo Method { get; set; }
+
+
+
+        public RouteArgument GetArgument(string key)
+        {
+            return _segments.OfType<RouteArgument>().FirstOrDefault(x => x.Key == key);
+        }
 
         public bool EndsWithArgument
         {
