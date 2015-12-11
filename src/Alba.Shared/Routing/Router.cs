@@ -16,7 +16,9 @@ namespace Alba.Routing
 
         public void Add(string method, string pattern, Func<IDictionary<string, object>, Task> appfunc)
         {
-            _trees[method.ToUpperInvariant()].AddRoute(pattern, appfunc);
+            var route = new Route(pattern, method, appfunc);
+
+            _trees[method.ToUpperInvariant()].AddRoute(route);
         }
 
         // TODO -- dunno that this needs to be done by verb. Reconsider

@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Alba.Testing.Routing
 {
-    public class LeafTests
+    public class RouteTests
     {
         [Fact]
         public void blank_segment()
@@ -42,7 +42,7 @@ namespace Alba.Testing.Routing
         {
             Action action = () =>
             {
-                new Route("a/.../b", env => Task.CompletedTask);
+                new Route("a/.../b", "GET", env => Task.CompletedTask);
             };
             action.ShouldThrow<ArgumentOutOfRangeException>();
         }
@@ -52,7 +52,7 @@ namespace Alba.Testing.Routing
         {
             Action action = () =>
             {
-                new Route("a/.../b/...", env => Task.CompletedTask);
+                new Route("a/.../b/...", "GET", env => Task.CompletedTask);
             };
             action.ShouldThrow<ArgumentOutOfRangeException>();
         }

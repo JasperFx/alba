@@ -6,8 +6,6 @@ namespace Alba.Urls
     {
         Route Route { get; }
 
-        string HttpMethod { get; }
-
         void Register(IUrlGraph graph);
 
         bool HasParameters { get; }

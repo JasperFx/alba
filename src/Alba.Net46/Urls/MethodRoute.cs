@@ -13,7 +13,6 @@ namespace Alba.Urls
     public class MethodRoute<THandler> : IMethodRoute<THandler>
     {
         public Route Route { get; }
-        public string HttpMethod { get; }
         public MethodInfo Method { get; }
 
         private readonly IDictionary<int, string> _parameters = new Dictionary<int, string>();
@@ -28,15 +27,14 @@ namespace Alba.Urls
         public static MethodRoute<THandler> For(Expression<Action<THandler>> expression, string url, string httpMethod)
         {
             var method = ReflectionHelper.GetMethod(expression);
-            var leaf = new Route(url, e => Task.CompletedTask);
+            var leaf = new Route(url, httpMethod, e => Task.CompletedTask);
 
-            return new MethodRoute<THandler>(leaf, httpMethod, method);
+            return new MethodRoute<THandler>(leaf, method);
         } 
 
-        public MethodRoute(Route route, string httpMethod, MethodInfo method)
+        public MethodRoute(Route route, MethodInfo method)
         {
             Route = route;
-            HttpMethod = httpMethod;
             Method = method;
         }
 

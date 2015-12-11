@@ -9,9 +9,14 @@ namespace Alba.Routing
 {
     public class Route
     {
-        public static Route For(string url)
+        /// <summary>
+        /// This is only for testing purposes
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        public static Route For(string url, string httpMethod)
         {
-            return new Route(url, env => Task.CompletedTask);
+            return new Route(url, httpMethod ?? HttpVerbs.GET, env => Task.CompletedTask);
         }
 
         public static ISegment ToParameter(string path, int position)
@@ -39,7 +44,7 @@ namespace Alba.Routing
         private readonly List<ISegment> _parameters = new List<ISegment>(); 
         private readonly List<ISegment> _segments = new List<ISegment>(); 
 
-        public Route(string pattern, AppFunc appFunc)
+        public Route(string pattern, string httpMethod, AppFunc appFunc)
         {
             if (pattern == null) throw new ArgumentNullException(nameof(pattern));
             if (appFunc == null) throw new ArgumentNullException(nameof(appFunc));
@@ -47,6 +52,7 @@ namespace Alba.Routing
             pattern = pattern.TrimStart('/').TrimEnd('/');
 
             Name = pattern;
+            HttpMethod = httpMethod;
             AppFunc = appFunc;
 
             var segments = pattern.Split('/');
@@ -93,6 +99,7 @@ namespace Alba.Routing
         public bool HasSpread => _segments.Any(x => x is Spread);
 
         public string Name { get; set; }
+        public string HttpMethod { get; }
         public AppFunc AppFunc { get; }
 
         public string NodePath

@@ -5,14 +5,12 @@ namespace Alba.Urls
     public class StaticRoute : IRoute
     {
         public Route Route { get; }
-        public string HttpMethod { get; }
 
         public bool HasParameters => false;
 
-        public StaticRoute(Route route, string httpMethod)
+        public StaticRoute(Route route)
         {
             Route = route;
-            HttpMethod = httpMethod;
         }
 
         public void Register(IUrlGraph graph)

@@ -9,7 +9,7 @@ namespace Alba.Testing.Urls
 {
     public class StaticRouteTests
     {
-        private readonly StaticRoute theRoute = new StaticRoute(new Route("folder", e => Task.CompletedTask), "GET");
+        private readonly StaticRoute theRoute = new StaticRoute(new Route("folder", "GET", e => Task.CompletedTask));
 
         [Fact]
         public void has_no_parameters()

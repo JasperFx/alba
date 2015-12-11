@@ -21,7 +21,9 @@ namespace Alba.Testing.Fixtures
         [ExposeAsTable("If the routes are")]
         public void RoutesAre(string Route)
         {
-            _tree.AddRoute(Route, _ => Task.CompletedTask);
+            var route = new Route(Route, HttpVerbs.GET, _ => Task.CompletedTask);
+
+            _tree.AddRoute(route);
         }
 
         [ExposeAsTable("The selection and arguments should be")]

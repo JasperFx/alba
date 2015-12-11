@@ -11,14 +11,12 @@ namespace Alba.Urls
     {
         private readonly IList<IParameter> _parameters = new List<IParameter>();
 
-        public RouteWithInputModel(Route route, string httpMethod)
+        public RouteWithInputModel(Route route)
         {
             Route = route;
-            HttpMethod = httpMethod;
         }
 
         public Route Route { get; }
-        public string HttpMethod { get; }
 
         public void Register(IUrlGraph graph)
         {

@@ -11,7 +11,7 @@ namespace Alba.Testing.Urls
     public class RouteWithInputModelTests
     {
         private readonly RouteWithInputModel<InputModel> route 
-            = new RouteWithInputModel<InputModel>(Route.For("/something"), "GET");
+            = new RouteWithInputModel<InputModel>(Route.For("/something", "GET"));
 
         [Fact]
         public void has_parameters_with_none()

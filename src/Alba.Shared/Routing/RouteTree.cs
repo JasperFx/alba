@@ -25,18 +25,16 @@ namespace Alba.Routing
             };
         }
 
-        public void AddRoute(string pattern, Func<IDictionary<string, object>, Task> appFunc)
+        public void AddRoute(Route route)
         {
-            var leaf = new Route(pattern, appFunc);
-            if (string.IsNullOrEmpty(pattern))
+            if (string.IsNullOrEmpty(route.Pattern))
             {
-                _home = leaf;
+                _home = route;
             }
 
-            _leaves.Add(leaf.Pattern, leaf);
-            var node = getNode(leaf.NodePath);
-            node.AddLeaf(leaf);
-
+            _leaves.Add(route.Pattern, route);
+            var node = getNode(route.NodePath);
+            node.AddLeaf(route);
         }
 
         private Node getNode(string nodePath)

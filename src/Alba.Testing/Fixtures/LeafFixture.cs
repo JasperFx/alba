@@ -13,7 +13,7 @@ namespace Alba.Testing.Fixtures
         [ExposeAsTable("Route Creation and Parsing")]
         public void CreateLeaf(string Route, out string NodePath, [Default("false")]out bool HasSpread, [Default("NONE")] out ParameterExpectation Parameters)
         {
-            var leaf = new Route(Route, env => Task.CompletedTask);
+            var leaf = new Route(Route, HttpVerbs.GET, env => Task.CompletedTask);
             NodePath = leaf.NodePath;
             HasSpread = leaf.HasSpread;
 
