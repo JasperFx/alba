@@ -11,7 +11,7 @@ namespace Alba.Testing.Urls
     public class RouteWithInputModelTests
     {
         private readonly RouteWithInputModel<InputModel> route 
-            = new RouteWithInputModel<InputModel>(Leaf.For("/something"), "GET");
+            = new RouteWithInputModel<InputModel>(Route.For("/something"), "GET");
 
         [Fact]
         public void has_parameters_with_none()
@@ -67,7 +67,7 @@ namespace Alba.Testing.Urls
 
             route.Register(graph);
 
-            graph.Received().Register(route.Leaf.Name, route);
+            graph.Received().Register(route.Route.Name, route);
             graph.Received().RegisterByInput(typeof(InputModel), route);
         }
 

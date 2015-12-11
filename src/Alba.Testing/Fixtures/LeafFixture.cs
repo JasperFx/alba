@@ -10,10 +10,10 @@ namespace Alba.Testing.Fixtures
 {
     public class LeafFixture : Fixture
     {
-        [ExposeAsTable("Leaf Creation and Parsing")]
+        [ExposeAsTable("Route Creation and Parsing")]
         public void CreateLeaf(string Route, out string NodePath, [Default("false")]out bool HasSpread, [Default("NONE")] out ParameterExpectation Parameters)
         {
-            var leaf = new Leaf(Route, env => Task.CompletedTask);
+            var leaf = new Route(Route, env => Task.CompletedTask);
             NodePath = leaf.NodePath;
             HasSpread = leaf.HasSpread;
 
@@ -51,9 +51,9 @@ namespace Alba.Testing.Fixtures
 
         }
 
-        public ParameterExpectation(Leaf leaf)
+        public ParameterExpectation(Route route)
         {
-            _segments.AddRange(leaf.Parameters);
+            _segments.AddRange(route.Parameters);
         }
 
         public override string ToString()

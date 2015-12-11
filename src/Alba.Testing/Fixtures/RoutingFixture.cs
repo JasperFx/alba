@@ -30,7 +30,7 @@ namespace Alba.Testing.Fixtures
             var env = new Dictionary<string, object>();
             var leaf = _tree.Select(Url);
 
-            Selected = leaf.Route;
+            Selected = leaf.Pattern;
 
             leaf.SetValues(env, RouteTree.ToSegments(Url));
 

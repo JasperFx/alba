@@ -12,7 +12,7 @@ namespace Alba.Urls
 {
     public class MethodRoute<THandler> : IMethodRoute<THandler>
     {
-        public Leaf Leaf { get; }
+        public Route Route { get; }
         public string HttpMethod { get; }
         public MethodInfo Method { get; }
 
@@ -28,21 +28,21 @@ namespace Alba.Urls
         public static MethodRoute<THandler> For(Expression<Action<THandler>> expression, string url, string httpMethod)
         {
             var method = ReflectionHelper.GetMethod(expression);
-            var leaf = new Leaf(url, e => Task.CompletedTask);
+            var leaf = new Route(url, e => Task.CompletedTask);
 
             return new MethodRoute<THandler>(leaf, httpMethod, method);
         } 
 
-        public MethodRoute(Leaf leaf, string httpMethod, MethodInfo method)
+        public MethodRoute(Route route, string httpMethod, MethodInfo method)
         {
-            Leaf = leaf;
+            Route = route;
             HttpMethod = httpMethod;
             Method = method;
         }
 
         public void Register(IUrlGraph graph)
         {
-            graph.Register(Leaf.Name, this);
+            graph.Register(Route.Name, this);
             graph.RegisterByHandler(typeof(THandler), Method, this);
         }
 

@@ -7,11 +7,11 @@ using AppFunc = System.Func<System.Collections.Generic.IDictionary<string, objec
 
 namespace Alba.Routing
 {
-    public class Leaf
+    public class Route
     {
-        public static Leaf For(string url)
+        public static Route For(string url)
         {
-            return new Leaf(url, env => Task.CompletedTask);
+            return new Route(url, env => Task.CompletedTask);
         }
 
         public static ISegment ToParameter(string path, int position)
@@ -39,17 +39,17 @@ namespace Alba.Routing
         private readonly List<ISegment> _parameters = new List<ISegment>(); 
         private readonly List<ISegment> _segments = new List<ISegment>(); 
 
-        public Leaf(string route, AppFunc appFunc)
+        public Route(string pattern, AppFunc appFunc)
         {
-            if (route == null) throw new ArgumentNullException(nameof(route));
+            if (pattern == null) throw new ArgumentNullException(nameof(pattern));
             if (appFunc == null) throw new ArgumentNullException(nameof(appFunc));
 
-            route = route.TrimStart('/').TrimEnd('/');
+            pattern = pattern.TrimStart('/').TrimEnd('/');
 
-            Name = route;
+            Name = pattern;
             AppFunc = appFunc;
 
-            var segments = route.Split('/');
+            var segments = pattern.Split('/');
             for (int i = 0; i < segments.Length; i++)
             {
                 var segment = ToParameter(segments[i], i);
@@ -58,13 +58,13 @@ namespace Alba.Routing
 
             _parameters.AddRange(_segments.Where(x => !(x is Segment)));
 
-            Route = string.Join("/", _segments.Select(x => x.SegmentPath));
+            Pattern = string.Join("/", _segments.Select(x => x.SegmentPath));
 
 
             if (!HasSpread) return;
 
             var spreads = _parameters.OfType<Spread>().ToArray();
-            if (spreads.Count() > 1 || spreads.First().Position != _segments.Count - 1) throw new ArgumentOutOfRangeException(nameof(route), "The spread parameter can only be the last segment in a route");
+            if (spreads.Count() > 1 || spreads.First().Position != _segments.Count - 1) throw new ArgumentOutOfRangeException(nameof(pattern), "The spread parameter can only be the last segment in a route");
         }
 
         public IEnumerable<ISegment> Segments => _segments;
@@ -88,7 +88,7 @@ namespace Alba.Routing
             }
         }
  
-        public string Route { get; }
+        public string Pattern { get; }
 
         public bool HasSpread => _segments.Any(x => x is Spread);
 

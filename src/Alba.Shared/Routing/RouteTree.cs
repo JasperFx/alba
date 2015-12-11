@@ -8,9 +8,9 @@ namespace Alba.Routing
     public class RouteTree
     {
         private readonly IDictionary<string, Node> _all = new Dictionary<string, Node>();
-        private readonly IDictionary<string, Leaf> _leaves = new Dictionary<string, Leaf>();
+        private readonly IDictionary<string, Route> _leaves = new Dictionary<string, Route>();
         private readonly Node _root;
-        private Leaf _home;
+        private Route _home;
 
         public RouteTree()
         {
@@ -27,13 +27,13 @@ namespace Alba.Routing
 
         public void AddRoute(string pattern, Func<IDictionary<string, object>, Task> appFunc)
         {
-            var leaf = new Leaf(pattern, appFunc);
+            var leaf = new Route(pattern, appFunc);
             if (string.IsNullOrEmpty(pattern))
             {
                 _home = leaf;
             }
 
-            _leaves.Add(leaf.Route, leaf);
+            _leaves.Add(leaf.Pattern, leaf);
             var node = getNode(leaf.NodePath);
             node.AddLeaf(leaf);
 
@@ -57,7 +57,7 @@ namespace Alba.Routing
             return node;
         }
 
-        public Leaf Select(string route)
+        public Route Select(string route)
         {
             if (string.IsNullOrEmpty(route.Trim())) return _home;
 
@@ -66,7 +66,7 @@ namespace Alba.Routing
             return Select(segments);
         }
 
-        public Leaf Select(string[] segments)
+        public Route Select(string[] segments)
         {
             return _root.Select(segments, 0);
         }

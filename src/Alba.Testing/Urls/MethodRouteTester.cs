@@ -86,7 +86,7 @@ namespace Alba.Testing.Urls
 
             method.Register(graph);
 
-            graph.Received().Register(method.Leaf.Name, method);
+            graph.Received().Register(method.Route.Name, method);
 
             graph.Received().RegisterByHandler(typeof(FakeEndpoint), method.Method, method);
         }

@@ -11,20 +11,20 @@ namespace Alba.Testing.Routing
         [Fact]
         public void blank_segment()
         {
-            Leaf.ToParameter("foo", 0).ShouldBeOfType<Alba.Routing.Segment>().Path.ShouldBe("foo");
+            Route.ToParameter("foo", 0).ShouldBeOfType<Alba.Routing.Segment>().Path.ShouldBe("foo");
         }
 
         [Fact]
         public void spread()
         {
-            Leaf.ToParameter("...", 4).ShouldBeOfType<Spread>()
+            Route.ToParameter("...", 4).ShouldBeOfType<Spread>()
                 .Position.ShouldBe(4);
         }
 
         [Fact]
         public void argument_starting_with_colon()
         {
-            var arg = Leaf.ToParameter(":foo", 2).ShouldBeOfType<RouteArgument>();
+            var arg = Route.ToParameter(":foo", 2).ShouldBeOfType<RouteArgument>();
             arg.Position.ShouldBe(2);
             arg.Key.ShouldBe("foo");
         }
@@ -32,7 +32,7 @@ namespace Alba.Testing.Routing
         [Fact]
         public void argument_in_brackets()
         {
-            var arg = Leaf.ToParameter("{bar}", 3).ShouldBeOfType<RouteArgument>();
+            var arg = Route.ToParameter("{bar}", 3).ShouldBeOfType<RouteArgument>();
             arg.Position.ShouldBe(3);
             arg.Key.ShouldBe("bar");
         }
@@ -42,7 +42,7 @@ namespace Alba.Testing.Routing
         {
             Action action = () =>
             {
-                new Leaf("a/.../b", env => Task.CompletedTask);
+                new Route("a/.../b", env => Task.CompletedTask);
             };
             action.ShouldThrow<ArgumentOutOfRangeException>();
         }
@@ -52,9 +52,11 @@ namespace Alba.Testing.Routing
         {
             Action action = () =>
             {
-                new Leaf("a/.../b/...", env => Task.CompletedTask);
+                new Route("a/.../b/...", env => Task.CompletedTask);
             };
             action.ShouldThrow<ArgumentOutOfRangeException>();
         }
+
+
     }
 }

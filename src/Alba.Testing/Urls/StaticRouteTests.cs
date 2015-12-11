@@ -9,7 +9,7 @@ namespace Alba.Testing.Urls
 {
     public class StaticRouteTests
     {
-        private readonly StaticRoute theRoute = new StaticRoute(new Leaf("folder", e => Task.CompletedTask), "GET");
+        private readonly StaticRoute theRoute = new StaticRoute(new Route("folder", e => Task.CompletedTask), "GET");
 
         [Fact]
         public void has_no_parameters()
@@ -24,7 +24,7 @@ namespace Alba.Testing.Urls
 
             theRoute.Register(graph);
 
-            graph.Received().Register(theRoute.Leaf.Name, theRoute);
+            graph.Received().Register(theRoute.Route.Name, theRoute);
         }
     }
 }

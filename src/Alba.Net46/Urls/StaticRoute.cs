@@ -4,20 +4,20 @@ namespace Alba.Urls
 {
     public class StaticRoute : IRoute
     {
-        public Leaf Leaf { get; }
+        public Route Route { get; }
         public string HttpMethod { get; }
 
         public bool HasParameters => false;
 
-        public StaticRoute(Leaf leaf, string httpMethod)
+        public StaticRoute(Route route, string httpMethod)
         {
-            Leaf = leaf;
+            Route = route;
             HttpMethod = httpMethod;
         }
 
         public void Register(IUrlGraph graph)
         {
-            graph.Register(Leaf.Name, this);
+            graph.Register(Route.Name, this);
         }
     }
 }

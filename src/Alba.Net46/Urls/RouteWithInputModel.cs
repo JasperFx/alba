@@ -4,27 +4,26 @@ using System.Linq;
 using System.Reflection;
 using Alba.Routing;
 using Baseline;
-using Baseline.Conversion;
 
 namespace Alba.Urls
 {
     public class RouteWithInputModel<T> : IRouteWithInputModel
     {
-        private readonly IList<IParameter> _parameters = new List<IParameter>(); 
+        private readonly IList<IParameter> _parameters = new List<IParameter>();
 
-        public Leaf Leaf { get; }
-        public string HttpMethod { get; }
-
-        public RouteWithInputModel(Leaf leaf, string httpMethod)
+        public RouteWithInputModel(Route route, string httpMethod)
         {
-            Leaf = leaf;
+            Route = route;
             HttpMethod = httpMethod;
         }
 
+        public Route Route { get; }
+        public string HttpMethod { get; }
+
         public void Register(IUrlGraph graph)
         {
-            graph.Register(Leaf.Name, this);
-            graph.RegisterByInput(typeof(T), this);
+            graph.Register(Route.Name, this);
+            graph.RegisterByInput(typeof (T), this);
         }
 
         public bool HasParameters => _parameters.Any();
@@ -84,18 +83,17 @@ namespace Alba.Urls
         }
 
 
-
         internal interface IParameter
         {
-            object Read(object input);
             string Key { get; }
+            object Read(object input);
             void Write(object input, string raw);
         }
 
         internal class FieldInfoParameter : IParameter
         {
-            private readonly FieldInfo _field;
             private readonly Func<string, object> _converter;
+            private readonly FieldInfo _field;
 
             internal FieldInfoParameter(FieldInfo field, string key = null)
             {
@@ -111,6 +109,7 @@ namespace Alba.Urls
             }
 
             public string Key { get; }
+
             public void Write(object input, string raw)
             {
                 _field.SetValue(input, _converter(raw));
@@ -119,8 +118,8 @@ namespace Alba.Urls
 
         internal class PropertyInfoParameter : IParameter
         {
-            private readonly PropertyInfo _property;
             private readonly Func<string, object> _converter;
+            private readonly PropertyInfo _property;
 
             internal PropertyInfoParameter(PropertyInfo property, string key = null)
             {
@@ -136,6 +135,7 @@ namespace Alba.Urls
             }
 
             public string Key { get; }
+
             public void Write(object input, string raw)
             {
                 _property.SetValue(input, _converter(raw));

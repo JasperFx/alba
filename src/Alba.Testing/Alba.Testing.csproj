@@ -81,6 +81,7 @@
     <Compile Include="Urls\MethodRouteTester.cs" />
     <Compile Include="Urls\RouteWithInputModelTests.cs" />
     <Compile Include="Urls\StaticRouteTests.cs" />
+    <Compile Include="Urls\UrlGraphTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Alba.Net46\Alba.Net46.csproj">

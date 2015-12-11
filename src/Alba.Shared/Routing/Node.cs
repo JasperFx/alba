@@ -6,8 +6,8 @@ namespace Alba.Routing
     public interface INode
     {
         string Route { get; }
-        Leaf SpreadLeaf { get; set; }
-        Leaf Select(string[] segments, int position);
+        Route SpreadRoute { get; set; }
+        Route Select(string[] segments, int position);
     }
 
     public class Node : INode
@@ -29,13 +29,13 @@ namespace Alba.Routing
 
         public string Route { get; }
 
-        public Leaf SpreadLeaf { get; set; }
-        public IDictionary<string, Leaf> NamedLeaves { get; } = new Dictionary<string, Leaf>(); 
+        public Route SpreadRoute { get; set; }
+        public IDictionary<string, Route> NamedLeaves { get; } = new Dictionary<string, Route>(); 
         public IDictionary<string, INode> NamedNodes { get; } = new Dictionary<string, INode>(); 
 
         public IList<INode> ArgNodes { get; } = new List<INode>();
 
-        public Leaf Select(string[] segments, int position)
+        public Route Select(string[] segments, int position)
         {
             var hasMore = position < segments.Length - 1;
             var current = segments[position];
@@ -49,12 +49,12 @@ namespace Alba.Routing
 
                 if (NamedNodes.ContainsKey(current))
                 {
-                    var leaf = NamedNodes[current].SpreadLeaf;
+                    var leaf = NamedNodes[current].SpreadRoute;
                     if (leaf != null) return leaf;
                 }
 
-                if (ArgLeaf != null) return ArgLeaf;
-                if (SpreadLeaf != null) return SpreadLeaf;
+                if (ArgRoute != null) return ArgRoute;
+                if (SpreadRoute != null) return SpreadRoute;
             }
             else
             {
@@ -74,7 +74,7 @@ namespace Alba.Routing
 
             
 
-            return SpreadLeaf;
+            return SpreadRoute;
             
         }
 
@@ -98,22 +98,22 @@ namespace Alba.Routing
             return Route.Split('/').Last();
         }
 
-        public void AddLeaf(Leaf leaf)
+        public void AddLeaf(Route route)
         {
-            if (leaf.HasSpread)
+            if (route.HasSpread)
             {
-                SpreadLeaf = leaf;
+                SpreadRoute = route;
             }
-            else if (leaf.EndsWithArgument)
+            else if (route.EndsWithArgument)
             {
-                ArgLeaf = leaf;
+                ArgRoute = route;
             }
             else
             {
-                NamedLeaves.Add(leaf.LastSegment, leaf);
+                NamedLeaves.Add(route.LastSegment, route);
             }
         }
 
-        public Leaf ArgLeaf { get; private set; }
+        public Route ArgRoute { get; private set; }
     }
 }

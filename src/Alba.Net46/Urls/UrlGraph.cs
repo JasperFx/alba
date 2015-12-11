@@ -2,48 +2,11 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
-using Alba.Routing;
 using Baseline;
 using Baseline.Conversion;
 
 namespace Alba.Urls
 {
-    // getting a string url
-    public interface IUrlRegistry
-    {
-        string UrlFor(object model, string httpMethod = null);
-
-        string UrlFor<T>(string httpMethod = null) where T : class;
-
-        string UrlFor(Type handlerType, MethodInfo method = null, string httpMethod = null);
-
-        string UrlFor<THandler>(Expression<Action<THandler>> expression, string httpMethod = null);
-
-        string UrlFor(string routeName);
-    }
-
-    /* JS route:
-    {name: "", method: "", url: "", parameters: []}
-
-
-
-    */
-
-    internal class HandlerMethods
-    {
-        private readonly LightweightCache<string, IRoute> _routesByMethod
-            = new LightweightCache<string, IRoute>();
-
-        public Type HandlerType { get; }
-
-        public HandlerMethods(Type handlerType)
-        {
-            HandlerType = handlerType;
-        }
-
-
-    }
-
     public class UrlGraph : IUrlRegistry, IUrlGraph
     {
         public static readonly Conversions Conversions = new Conversions();
@@ -98,21 +61,10 @@ namespace Alba.Urls
             throw new NotImplementedException();
         }
 
-        public string UrlFor(string routeName)
+        public string UrlFor(string routeName, IDictionary<string, object> parameters = null)
         {
             // has to be a static route, or blow up
             throw new NotImplementedException();
         }
-    }
-
-    public interface IRoute
-    {
-        Leaf Leaf { get; }
-
-        string HttpMethod { get; }
-
-        void Register(IUrlGraph graph);
-
-        bool HasParameters { get; }
     }
 }

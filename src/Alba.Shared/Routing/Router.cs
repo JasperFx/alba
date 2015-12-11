@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Baseline;
 
 namespace Alba.Routing
 {
@@ -10,11 +11,7 @@ namespace Alba.Routing
 
         public Router()
         {
-            _trees.Add("GET", new RouteTree());
-            _trees.Add("POST", new RouteTree());
-            _trees.Add("PUT", new RouteTree());
-            _trees.Add("DELETE", new RouteTree());
-            _trees.Add("HEAD", new RouteTree());
+            HttpVerbs.All.Each(x => _trees.Add(x, new RouteTree()));
         }
 
         public void Add(string method, string pattern, Func<IDictionary<string, object>, Task> appfunc)
