@@ -43,7 +43,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Routing\RouteTree.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Routing\Segment.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Routing\Spread.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Segment.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CookieSegment.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StaticFiles\AssetSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StaticFiles\DoNext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StaticFiles\IStaticFile.cs" />

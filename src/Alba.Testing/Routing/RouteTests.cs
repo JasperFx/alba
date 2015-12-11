@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Alba.Routing;
 using Shouldly;
@@ -54,9 +55,66 @@ namespace Alba.Testing.Routing
             {
                 new Route("a/.../b/...", "GET", env => Task.CompletedTask);
             };
+
             action.ShouldThrow<ArgumentOutOfRangeException>();
         }
 
 
+    }
+
+    public class building_a_route_from_segments_Tests
+    {
+        private ISegment[] segments;
+        private Route route;
+
+        public building_a_route_from_segments_Tests()
+        {
+            segments = new ISegment[]
+            {new Segment("folder", 0), new Segment("folder2", 1), new RouteArgument("name", 2)};
+
+
+            route = new Route(segments, HttpVerbs.PUT, env => Task.CompletedTask);
+
+        }
+
+        [Fact]
+        public void should_have_the_appfunc()
+        {
+            route.AppFunc.ShouldNotBeNull();
+        }
+
+        [Fact]
+        public void should_build_the_pattern_from_the_segments()
+        {
+            route.Pattern.ShouldBe("folder/folder2/:name");
+        }
+
+        [Fact]
+        public void should_remember_the_httpMethod()
+        {
+            route.HttpMethod.ShouldBe(HttpVerbs.PUT);
+        }
+
+        [Fact]
+        public void still_has_the_original_segments()
+        {
+            route.Segments.ShouldHaveTheSameElementsAs(segments);
+        }
+
+        [Fact]
+        public void still_derives_the_name()
+        {
+            route.Name.ShouldBe("folder/folder2/:name");
+        }
+
+        [Fact]
+        public void parameters_still_work()
+        {
+            var environment = new Dictionary<string, object>();
+
+            route.SetValues(environment, new string[] { "folder", "folder2", "somebody" });
+
+            environment.GetRouteData("name").ShouldBe("somebody");
+        }
     }
 }

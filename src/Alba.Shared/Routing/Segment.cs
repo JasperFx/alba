@@ -12,6 +12,7 @@ namespace Alba.Routing
         }
 
         public string SegmentPath { get; }
+        public bool IsParameter => false;
 
         public Segment(string path, int position)
         {

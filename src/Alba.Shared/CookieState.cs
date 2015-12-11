@@ -29,9 +29,9 @@ namespace Alba
             
         }
 
-        public static CookieState For(Segment segment)
+        public static CookieState For(CookieSegment cookieSegment)
         {
-            return Parse(segment.Key, segment.Value);
+            return Parse(cookieSegment.Key, cookieSegment.Value);
         }
 
         public CookieState(string name)

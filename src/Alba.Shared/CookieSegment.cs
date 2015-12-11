@@ -2,7 +2,7 @@ using System;
 
 namespace Alba
 {
-    public struct Segment
+    public struct CookieSegment
     {
         public static string UnquoteToken(string token)
         {
@@ -12,7 +12,7 @@ namespace Alba
             return token.Substring(1, token.Length - 2);
         }
 
-        public Segment(string text)
+        public CookieSegment(string text)
         {
             var index = text.IndexOf('=');
             if (index < 0)

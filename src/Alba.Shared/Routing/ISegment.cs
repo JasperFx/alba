@@ -9,5 +9,6 @@ namespace Alba.Routing
         string CanonicalPath();
 
         string SegmentPath { get; }
+        bool IsParameter { get; }
     }
 }

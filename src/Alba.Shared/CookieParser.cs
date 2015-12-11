@@ -81,7 +81,7 @@ namespace Alba
 
             var cookie = new Cookie();
 
-            var segments = SplitValues(headerValue).Select(x => new Segment(x.Trim()));
+            var segments = SplitValues(headerValue).Select(x => new CookieSegment(x.Trim()));
             segments.Each(segment => {
                                          string canonicalKey = segment.Key.ToLowerInvariant();
 

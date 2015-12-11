@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Baseline;
 using AppFunc = System.Func<System.Collections.Generic.IDictionary<string, object>, System.Threading.Tasks.Task>;
 
 
@@ -42,7 +43,8 @@ namespace Alba.Routing
         }
 
         private readonly List<ISegment> _parameters = new List<ISegment>(); 
-        private readonly List<ISegment> _segments = new List<ISegment>(); 
+        private readonly List<ISegment> _segments = new List<ISegment>();
+
 
         public Route(string pattern, string httpMethod, AppFunc appFunc)
         {
@@ -71,6 +73,17 @@ namespace Alba.Routing
 
             var spreads = _parameters.OfType<Spread>().ToArray();
             if (spreads.Count() > 1 || spreads.First().Position != _segments.Count - 1) throw new ArgumentOutOfRangeException(nameof(pattern), "The spread parameter can only be the last segment in a route");
+        }
+
+        public Route(ISegment[] segments, string httpVerb, AppFunc appfunc)
+        {
+            _segments.AddRange(segments);
+            _parameters.AddRange(segments.Where(x => x.IsParameter));
+            HttpMethod = httpVerb;
+            AppFunc = appfunc;
+
+            Pattern = _segments.Select(x => x.SegmentPath).Join("/");
+            Name = Pattern;
         }
 
         public IEnumerable<ISegment> Segments => _segments;
