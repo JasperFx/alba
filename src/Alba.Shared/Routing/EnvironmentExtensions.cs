@@ -19,7 +19,7 @@ namespace Alba.Routing
             }
         }
 
-        public static void SetRouteData(this IDictionary<string, object> env, string key, string value)
+        public static void SetRouteData(this IDictionary<string, object> env, string key, object value)
         {
             var routeData = env.GetRouteData();
             if (routeData.ContainsKey(key))
