@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace Alba.Urls
+namespace Alba.Routing
 {
     public interface IUrlRegistry
     {

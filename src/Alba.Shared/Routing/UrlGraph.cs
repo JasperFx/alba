@@ -5,33 +5,33 @@ using System.Reflection;
 using Baseline;
 using Baseline.Conversion;
 
-namespace Alba.Urls
+namespace Alba.Routing
 {
-    public class UrlGraph : IUrlRegistry, IUrlGraph
+    public class UrlGraph : IUrlRegistry
     {
         public static readonly Conversions Conversions = new Conversions();
 
-        private readonly LightweightCache<Type, List<IRouteWithInputModel>> _routesByInputModel
-            = new LightweightCache<Type, List<IRouteWithInputModel>>(_ => new List<IRouteWithInputModel>());
+        private readonly LightweightCache<Type, List<Route>> _routesByInputModel
+            = new LightweightCache<Type, List<Route>>(_ => new List<Route>());
 
         private readonly LightweightCache<Type, HandlerMethods> _routesPerHandler
             = new LightweightCache<Type, HandlerMethods>(type => new HandlerMethods(type));
 
-        private readonly LightweightCache<string, IRoute> _routesPerName
-            = new LightweightCache<string, IRoute>();
+        private readonly LightweightCache<string, Route> _routesPerName
+            = new LightweightCache<string, Route>();
 
 
-        public void RegisterByHandler(Type handlerType, MethodInfo method, IRoute route)
+        public void RegisterByHandler(Type handlerType, MethodInfo method, Route route)
         {
             throw new NotImplementedException();
         }
 
-        public void RegisterByInput(Type inputModel, IRouteWithInputModel route)
+        public void RegisterByInput(Type inputModel, Route route)
         {
             throw new NotImplementedException();
         }
 
-        public void Register(string name, IRoute route)
+        public void Register(string name, Route route)
         {
             throw new NotImplementedException();
         }

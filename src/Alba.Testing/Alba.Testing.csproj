@@ -79,10 +79,8 @@
     <Compile Include="StaticFiles\WriteFileHeadContinuationTests.cs" />
     <Compile Include="StaticFiles\WriteStatusCodeContinuationTests.cs" />
     <Compile Include="StringExtensionsTests.cs" />
-    <Compile Include="Urls\MethodRouteTester.cs" />
     <Compile Include="Routing\Route_resolving_urls_with_input_model_Tests.cs" />
-    <Compile Include="Urls\StaticRouteTests.cs" />
-    <Compile Include="Urls\UrlGraphTests.cs" />
+    <Compile Include="Routing\UrlGraphTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Alba.Net46\Alba.Net46.csproj">

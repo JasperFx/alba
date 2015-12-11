@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Alba.Routing;
-using Alba.Urls;
 using NSubstitute;
 using Shouldly;
 using Xunit;

@@ -1,8 +1,6 @@
-﻿using System;
-using Alba.Urls;
-using Xunit;
+﻿using Alba.Routing;
 
-namespace Alba.Testing.Urls
+namespace Alba.Testing.Routing
 {
     
     public class UrlGraphTests

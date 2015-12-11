@@ -1,12 +1,12 @@
 using System;
 using Baseline;
 
-namespace Alba.Urls
+namespace Alba.Routing
 {
     internal class HandlerMethods
     {
-        private readonly LightweightCache<string, IRoute> _routesByMethod
-            = new LightweightCache<string, IRoute>();
+        private readonly LightweightCache<string, Route> _routesByMethod
+            = new LightweightCache<string, Route>();
 
         public Type HandlerType { get; }
 
