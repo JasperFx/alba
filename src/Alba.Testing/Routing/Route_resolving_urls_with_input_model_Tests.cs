@@ -1,24 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Alba.Routing;
 using Alba.Urls;
 using NSubstitute;
 using Shouldly;
 using Xunit;
 
-namespace Alba.Testing.Urls
+namespace Alba.Testing.Routing
 {
-    public class RouteWithInputModelTests
+    public class Route_resolving_urls_with_input_model_Tests
     {
-        private readonly RouteWithInputModel<InputModel> route 
-            = new RouteWithInputModel<InputModel>(Route.For("/something", "GET"));
-
-
-
+        private readonly Func<IDictionary<string, object>, Task> Empty = e => Task.CompletedTask;
+            
+            
+            
         [Fact]
         public void get_parameters_from_field()
         {
-            route.AddFieldParam("Key");
+            var route = new Route("foo/:Key", "GET", Empty);
+            route.GetArgument("Key").MapToField<InputModel>("Key");
 
             var dict = route.ToParameters(new InputModel {Key = "Rand"});
 
@@ -29,7 +30,8 @@ namespace Alba.Testing.Urls
         [Fact]
         public void get_parameters_from_property()
         {
-            route.AddPropertyParam("Color");
+            var route = new Route("foo/:Color", "GET", Empty);
+            route.GetArgument("Color").MapToProperty<InputModel>(x => x.Color);
 
             var dict = route.ToParameters(new InputModel {Color = Color.Blue});
 
@@ -39,8 +41,9 @@ namespace Alba.Testing.Urls
         [Fact]
         public void multiple_field_and_property()
         {
-            route.AddFieldParam("Key");
-            route.AddPropertyParam("Color");
+            var route = new Route("foo/:Color/:Key", "GET", Empty);
+            route.GetArgument("Color").MapToProperty<InputModel>(x => x.Color);
+            route.GetArgument("Key").MapToField<InputModel>("Key");
 
             var dict = route.ToParameters(new InputModel { Color = Color.Blue, Key = "Perrin"});
 
@@ -48,27 +51,19 @@ namespace Alba.Testing.Urls
             dict["Key"] = "Perrin";
         }
 
-        [Fact]
-        public void registers_itself()
-        {
-            var graph = Substitute.For<IUrlGraph>();
-
-            route.Register(graph);
-
-            graph.Received().Register(route.Route.Name, route);
-            graph.Received().RegisterByInput(typeof(InputModel), route);
-        }
 
         [Fact]
         public void write_a_string_field()
         {
-            route.AddFieldParam("Key");
+            var route = new Route("foo/:Key", "GET", Empty);
+            route.InputType = typeof (InputModel);
+            route.GetArgument("Key").MapToField<InputModel>("Key");
 
             var model = new InputModel();
-            var dict = new Dictionary<string, string>();
+            var dict = new Dictionary<string, object>();
             dict.Add("Key", "Thom");
 
-            route.ApplyValues(model, dict);
+            route.WriteToInputModel(model, dict);
 
             model.Key.ShouldBe("Thom");
         }
@@ -76,13 +71,15 @@ namespace Alba.Testing.Urls
         [Fact]
         public void write_a_number_field()
         {
-            route.AddFieldParam("Number");
+            var route = new Route("foo/:Number", "GET", Empty);
+            route.InputType = typeof(InputModel);
+            route.GetArgument("Number").MapToField<InputModel>("Number");
 
             var model = new InputModel();
-            var dict = new Dictionary<string, string>();
-            dict.Add("Number", "11");
+            var dict = new Dictionary<string, object>();
+            dict.Add("Number", 11);
 
-            route.ApplyValues(model, dict);
+            route.WriteToInputModel(model, dict);
 
             model.Number.ShouldBe(11);
         }
@@ -90,35 +87,21 @@ namespace Alba.Testing.Urls
         [Fact]
         public void write_an_enum_property()
         {
-            route.AddPropertyParam("Color");
+            var route = new Route("foo/:Color", "GET", Empty);
+            route.InputType = typeof(InputModel);
+            route.GetArgument("Color").MapToProperty<InputModel>(x => x.Color);
+
 
             var model = new InputModel();
-            var dict = new Dictionary<string, string>();
-            dict.Add("Color", "Blue");
+            var dict = new Dictionary<string, object>();
+            dict.Add("Color", Color.Blue);
 
-            route.ApplyValues(model, dict);
+            route.WriteToInputModel(model, dict);
 
             model.Color.ShouldBe(Color.Blue);
 
         }
 
-        [Fact]
-        public void mixed_field_and_property_write()
-        {
-            route.AddFieldParam("Number");
-            route.AddPropertyParam("Color");
-
-            var dict = new Dictionary<string, string>();
-            dict.Add("Color", "Blue");
-            dict.Add("Number", "11");
-
-
-            var model = new InputModel();
-            route.ApplyValues(model, dict);
-
-            model.Number.ShouldBe(11);
-            model.Color.ShouldBe(Color.Blue);
-        }
     }
 
     public class InputModel

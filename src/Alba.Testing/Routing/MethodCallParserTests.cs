@@ -1,8 +1,5 @@
 ﻿using System.Collections.Generic;
 using Alba.Routing;
-using Alba.Testing.Urls;
-using Alba.Urls;
-using Shouldly;
 using Xunit;
 
 namespace Alba.Testing.Routing
@@ -48,17 +45,17 @@ namespace Alba.Testing.Routing
 
     public class FakeEndpoint
     {
-        public void simple() { }
+        public void simple()
+        {
+        }
 
 
         public void do_stuff(string key)
         {
-
         }
 
         public void complex(string key, int number)
         {
-
         }
     }
 }

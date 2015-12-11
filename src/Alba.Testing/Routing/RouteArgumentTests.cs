@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Alba.Routing;
+using Baseline.Reflection;
 using Shouldly;
 using Xunit;
 
@@ -11,26 +13,26 @@ namespace Alba.Testing.Routing
         [Fact]
         public void happy_path()
         {
-            var env = new Dictionary<string, object>();
+            var routeData = new Dictionary<string, object>();
 
             var parameter = new RouteArgument("foo", 1);
 
-            parameter.SetValues(env, "a/b/c/d".Split('/'));
+            parameter.SetValues(routeData, "a/b/c/d".Split('/'));
 
-            env.GetRouteData("foo").ShouldBe("b");
+            routeData["foo"].ShouldBe("b");
         }
 
         [Fact]
         public void happy_path_with_number()
         {
-            var env = new Dictionary<string, object>();
+            var routeData = new Dictionary<string, object>();
 
             var parameter = new RouteArgument("foo", 1);
             parameter.ArgType = typeof (int);
 
-            parameter.SetValues(env, "a/25/c/d".Split('/'));
+            parameter.SetValues(routeData, "a/25/c/d".Split('/'));
 
-            env.GetRouteData("foo").ShouldBe(25);
+            routeData["foo"].ShouldBe(25);
         }
 
         [Fact]
@@ -48,7 +50,7 @@ namespace Alba.Testing.Routing
         }
 
         [Fact]
-        public void can_override_the_parameter_arg_type()
+        public void can_override_the_arg_type()
         {
             var parameter = new RouteArgument("foo", 1);
             parameter.ArgType = typeof (int);
@@ -69,6 +71,16 @@ namespace Alba.Testing.Routing
                 .ShouldBe("Rand");
 
             
+        }
+
+        [Fact]
+        public void setting_the_member_changes_the_segment_key_name()
+        {
+            var arg = new RouteArgument("Key", 0);
+            arg.MapToField<InputModel>("Number");
+
+            arg.ArgType.ShouldBe(typeof(int));
+            arg.Key.ShouldBe("Number");
         }
 
         [Fact]
@@ -126,7 +138,44 @@ namespace Alba.Testing.Routing
             arg.ReadRouteDataFromInput(new InputModel {Color = Color.Blue})
                 .ShouldBe("Blue");
         }
-        
+
+
+        [Fact]
+        public void set_mapped_parameter()
+        {
+            var method = ReflectionHelper.GetMethod<SomeEndpoint>(x => x.go(null, 3));
+            var param = method.GetParameters().Last();
+
+            var arg = new RouteArgument("number", 0);
+            arg.MappedParameter = param;
+
+            arg.ArgType.ShouldBe(typeof(int));
+            arg.MappedParameter.ShouldBe(param);
+        }
+
+        [Fact]
+        public void read_route_data_from_arguments()
+        {
+            var method = ReflectionHelper.GetMethod<SomeEndpoint>(x => x.go(null, 3));
+            var param = method.GetParameters().Last();
+
+            var arg = new RouteArgument("number", 0);
+            arg.MappedParameter = param;
+
+            var arguments = MethodCallParser.ToArguments<SomeEndpoint>(x => x.go(null, 3));
+
+            arg.ReadRouteDataFromMethodArguments(arguments).ShouldBe("3");
+        }
+
+
+
+        public class SomeEndpoint
+        {
+            public void go(string name, int number)
+            {
+                
+            }
+        }
 
         public class InputModel
         {

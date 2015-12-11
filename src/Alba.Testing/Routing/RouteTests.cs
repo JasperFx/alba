@@ -56,7 +56,7 @@ namespace Alba.Testing.Routing
                 new Route("a/.../b/...", "GET", env => Task.CompletedTask);
             };
 
-            action.ShouldThrow<ArgumentOutOfRangeException>();
+            action.ShouldThrow<InvalidOperationException>();
         }
 
 

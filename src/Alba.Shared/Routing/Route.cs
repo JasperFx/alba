@@ -43,7 +43,8 @@ namespace Alba.Routing
             return new Segment(path, position);
         }
 
-        private readonly List<ISegment> _parameters = new List<ISegment>(); 
+        private Lazy<RouteArgument[]> _arguments;
+        private Spread _spread;
         private readonly List<ISegment> _segments = new List<ISegment>();
 
 
@@ -65,26 +66,36 @@ namespace Alba.Routing
                 _segments.Add(segment);
             }
 
-            _parameters.AddRange(_segments.Where(x => !(x is Segment)));
+            
 
             Pattern = string.Join("/", _segments.Select(x => x.SegmentPath));
 
+            setupArgumentsAndSpread();
+        }
+
+        private void setupArgumentsAndSpread()
+        {
+            _arguments = new Lazy<RouteArgument[]>(() => _segments.OfType<RouteArgument>().ToArray());
+            _spread = _segments.OfType<Spread>().SingleOrDefault();
 
             if (!HasSpread) return;
 
-            var spreads = _parameters.OfType<Spread>().ToArray();
-            if (spreads.Count() > 1 || spreads.First().Position != _segments.Count - 1) throw new ArgumentOutOfRangeException(nameof(pattern), "The spread parameter can only be the last segment in a route");
+            if (_spread != _segments.Last())
+                throw new ArgumentOutOfRangeException(nameof(Pattern),
+                    "The spread parameter can only be the last segment in a route");
         }
 
         public Route(ISegment[] segments, string httpVerb, AppFunc appfunc)
         {
             _segments.AddRange(segments);
-            _parameters.AddRange(segments.Where(x => x.IsParameter));
+
             HttpMethod = httpVerb;
             AppFunc = appfunc;
 
             Pattern = _segments.Select(x => x.SegmentPath).Join("/");
             Name = Pattern;
+
+            setupArgumentsAndSpread();
         }
 
         public IEnumerable<ISegment> Segments => _segments;
@@ -118,11 +129,11 @@ namespace Alba.Routing
             }
         }
 
-        public bool HasParameters => _parameters.Any();
+        public bool HasParameters => HasSpread || _arguments.Value.Any();
 
         public string Pattern { get; }
 
-        public bool HasSpread => _segments.Any(x => x is Spread);
+        public bool HasSpread => _spread != null;
 
         public string Name { get; set; }
         public string HttpMethod { get; }
@@ -145,14 +156,42 @@ namespace Alba.Routing
 
         public string LastSegment => _segments.Count == 0 ? string.Empty : _segments.Last().CanonicalPath();
 
-        public IEnumerable<ISegment> Parameters => _parameters;
+        public IEnumerable<ISegment> Parameters => _segments.Where(x => !(x is Segment)).ToArray();
 
         public void SetValues(IDictionary<string, object> env, string[] segments)
         {
-            foreach (var parameter in _parameters)
+            if (HasParameters)
             {
-                parameter.SetValues(env, segments);
+                var routeData = new Dictionary<string, object>();
+                _arguments.Value.Each(x => x.SetValues(routeData, segments));
+
+                env.SetRouteData(routeData);
             }
+
+            if (HasSpread)
+            {
+                _spread.SetValues(env, segments);
+            }
+        }
+
+
+        public IDictionary<string, string> ToParameters(object input)
+        {
+            var dict = new Dictionary<string, string>();
+            _arguments.Value.Each(x => dict.Add(x.Key, x.ReadRouteDataFromInput(input)));
+
+            return dict;
+        }
+
+
+        public void WriteToInputModel(object model, Dictionary<string, object> dict)
+        {
+            if (model == null) throw new ArgumentNullException(nameof(model));
+
+            if (model.GetType() != InputType) throw new ArgumentOutOfRangeException(nameof(model), $"This route maps to {InputType} but got {model.GetType()}");
+
+
+            _arguments.Value.Each(x => x.ApplyRouteDataToInput(model, dict));
         }
     }
 }

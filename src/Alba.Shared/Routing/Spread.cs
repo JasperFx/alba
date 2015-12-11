@@ -19,10 +19,10 @@ namespace Alba.Routing
             Position = position;
         }
 
-        public void SetValues(IDictionary<string, object> env, string[] segments)
+        public void SetValues(IDictionary<string, object> routeData, string[] segments)
         {
             var spreadData = getSpreadData(segments);
-            env.SetSpreadData(spreadData);
+            routeData.SetSpreadData(spreadData);
         }
 
         private string[] getSpreadData(string[] segments)

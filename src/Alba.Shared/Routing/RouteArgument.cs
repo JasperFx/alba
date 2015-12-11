@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
-using Alba.Urls;
 using Baseline;
 using Baseline.Conversion;
 using Baseline.Reflection;
@@ -21,7 +19,7 @@ namespace Alba.Routing
 
         private Type _argType;
         private MemberInfo _mappedMember;
-        public string Key { get; }
+        public string Key { get; set; }
         public int Position { get; }
         public string CanonicalPath()
         {
@@ -40,6 +38,21 @@ namespace Alba.Routing
             SegmentPath = ":" + Key;
         }
 
+        private ParameterInfo _parameter;
+        public ParameterInfo MappedParameter
+        {
+            get { return _parameter; }
+            set
+            {
+                if (value == null) throw new ArgumentNullException(nameof(value));
+
+                Key = value.Name;
+                _parameter = value;
+                ArgType = value.ParameterType;
+
+            }
+        }
+
         public MemberInfo MappedMember
         {
             get { return _mappedMember; }
@@ -51,6 +64,8 @@ namespace Alba.Routing
                     _writeData = (input, val) => field.SetValue(input, val);
                     _readData = input => field.GetValue(input);
                     ArgType = field.FieldType;
+
+                    Key = field.Name;
                 }
                 else if (value is PropertyInfo)
                 {
@@ -58,6 +73,8 @@ namespace Alba.Routing
                     _writeData = (input, val) => prop.SetValue(input, val);
                     _readData = input => prop.GetValue(input);
                     ArgType = prop.PropertyType;
+
+                    Key = prop.Name;
                 }
                 else
                 {
@@ -104,10 +121,15 @@ namespace Alba.Routing
             return _readData(input)?.ToString() ?? string.Empty;
         }
 
-        public void SetValues(IDictionary<string, object> env, string[] segments)
+        public string ReadRouteDataFromMethodArguments(List<object> arguments)
+        {
+            return _parameter == null ? string.Empty : arguments[_parameter.Position].ToString();
+        }
+
+        public void SetValues(IDictionary<string, object> routeData, string[] segments)
         {
             var raw = segments[Position];
-            env.SetRouteData(Key, _converter(raw));
+            routeData.Add(Key,_converter(raw));
         }
 
         protected bool Equals(RouteArgument other)
@@ -135,5 +157,7 @@ namespace Alba.Routing
         {
             return $"{Key}:{Position}";
         }
+
+
     }
 }

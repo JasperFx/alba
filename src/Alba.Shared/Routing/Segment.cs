@@ -21,10 +21,6 @@ namespace Alba.Routing
             SegmentPath = path;
         }
 
-        public void SetValues(IDictionary<string, object> env, string[] segments)
-        {
-            // nullo
-        }
 
 
     }
