@@ -1,0 +1,15 @@
+<Spec id="f26066e1-9b4d-414f-98f4-c66ecb219204" maxRetries="0" tags="" lifecycle="Regression" name="Basic Route Generation with Paths and Http Verbs" lastUpdated="Monday, December 14, 2015" expirationPeriod="0">
+  <RouteBuilder id="b2a76a9b-d65d-4977-9ffb-a90e6bf15725">
+    <BuildRoute>
+      <table id="e914fc53-b493-4f2b-98f0-dcd796805f64">
+        <BuildRoute-row Method="get_one()" HttpMethod="GET" Pattern="one" Arguments="EMPTY" />
+        <BuildRoute-row Method="post_one()" HttpMethod="POST" Pattern="one" Arguments="EMPTY" />
+        <BuildRoute-row Method="put_one_two()" HttpMethod="PUT" Pattern="one/two" Arguments="EMPTY" />
+        <BuildRoute-row Method="delete_one_two()" HttpMethod="DELETE" Pattern="one/two" Arguments="EMPTY" />
+        <BuildRoute-row Method="head_one_two()" HttpMethod="HEAD" Pattern="one/two" Arguments="EMPTY" />
+        <BuildRoute-row Method="patch_one_two()" HttpMethod="PATCH" Pattern="one/two" Arguments="EMPTY" />
+        <BuildRoute-row Method="options_one_two()" HttpMethod="OPTIONS" Pattern="one/two" Arguments="EMPTY" />
+      </table>
+    </BuildRoute>
+  </RouteBuilder>
+</Spec>

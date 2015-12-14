@@ -10,7 +10,7 @@ namespace JasperRouter.Testing
         {
             using (var runner = new SpecRunner<NulloSystem>())
             {
-                var results = runner.Run("Routing/Routing with Spread Arguments");
+                var results = runner.Run("Route Generation/Derive arguments from method signature");
 
                 runner.OpenResultsInBrowser();
                 results.Counts.AssertSuccess();

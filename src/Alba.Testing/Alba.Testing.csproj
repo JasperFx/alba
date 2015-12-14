@@ -48,6 +48,7 @@
     <Compile Include="DictionaryExtensionsTests.cs" />
     <Compile Include="Fixtures\AssetSettingsFixture.cs" />
     <Compile Include="Fixtures\LeafFixture.cs" />
+    <Compile Include="Fixtures\RouteBuilderFixture.cs" />
     <Compile Include="Fixtures\RouterFixture.cs" />
     <Compile Include="Fixtures\RoutingFixture.cs" />
     <Compile Include="FormDataExtensionsTests.cs" />
@@ -63,6 +64,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Routing\EnvironmentExtensionsTests.cs" />
     <Compile Include="Routing\MethodCallParserTests.cs" />
+    <Compile Include="Routing\RouteBuilderTests.cs" />
     <Compile Include="Routing\RouteTests.cs" />
     <Compile Include="Routing\NodeTests.cs" />
     <Compile Include="Routing\RouteArgumentTests.cs" />
@@ -78,6 +80,7 @@
     <Compile Include="StaticFiles\WriteFileContinuationTests.cs" />
     <Compile Include="StaticFiles\WriteFileHeadContinuationTests.cs" />
     <Compile Include="StaticFiles\WriteStatusCodeContinuationTests.cs" />
+    <Compile Include="StorytellerHarness.cs" />
     <Compile Include="StringExtensionsTests.cs" />
     <Compile Include="Routing\Route_resolving_urls_with_input_model_Tests.cs" />
     <Compile Include="Routing\UrlGraphTests.cs" />

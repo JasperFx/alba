@@ -131,13 +131,15 @@ namespace Alba.Routing
 
         public bool HasParameters => HasSpread || _arguments.Value.Any();
 
+        public IEnumerable<RouteArgument> Arguments => _arguments.Value.ToArray(); 
+
         public string Pattern { get; }
 
         public bool HasSpread => _spread != null;
 
         public string Name { get; set; }
         public string HttpMethod { get; }
-        public AppFunc AppFunc { get; }
+        public AppFunc AppFunc { get; set; }
 
         public string NodePath
         {

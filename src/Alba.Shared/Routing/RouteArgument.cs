@@ -13,6 +13,12 @@ namespace Alba.Routing
     {
         public static readonly Conversions Conversions = new Conversions();
 
+        static RouteArgument()
+        {
+            // TODO -- eliminate this later when Baseline catches up
+            Conversions.RegisterConversion(Guid.Parse);
+        }
+
         private Func<string, object> _converter = x => x;
         private Action<object, object> _writeData = (x, y) => { };
         private Func<object, object> _readData = x => null; 
@@ -26,7 +32,7 @@ namespace Alba.Routing
             return "*";
         }
 
-        public string SegmentPath { get; }
+        public string SegmentPath => ":" + Key;
         public bool IsParameter => true;
 
         public RouteArgument(string key, int position, Type argType = null)
@@ -34,11 +40,22 @@ namespace Alba.Routing
             ArgType = argType ?? typeof (string);
             Key = key;
             Position = position;
-
-            SegmentPath = ":" + Key;
         }
 
         private ParameterInfo _parameter;
+
+        public RouteArgument(ParameterInfo parameter, int position)
+        {
+            MappedParameter = parameter;
+            Position = position;
+        }
+
+        public RouteArgument(MemberInfo member, int position)
+        {
+            Position = position;
+            MappedMember = member;
+        }
+
         public ParameterInfo MappedParameter
         {
             get { return _parameter; }
