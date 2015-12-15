@@ -22,6 +22,13 @@ namespace Alba.Testing.Routing
         }
 
         [Fact]
+        public void picks_up_custom_route_name_from_attribute_if_any()
+        {
+            var route = RouteBuilder.Build<SomeEndpoint>(x => x.Named());
+            route.Name.ShouldBe("Finn");
+        }
+
+        [Fact]
         public void assign_the_input_type_if_is_one()
         {
             var route = RouteBuilder.Build<SomeEndpoint>(x => x.post_something(null));
@@ -51,6 +58,12 @@ namespace Alba.Testing.Routing
         public void delete_something(string name)
         {
             
+        }
+
+        [RouteName("Finn")]
+        public void Named()
+        {
+            throw new System.NotImplementedException();
         }
     }
 

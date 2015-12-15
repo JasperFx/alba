@@ -84,12 +84,16 @@ namespace Alba.Routing
 
             }
 
-            return new Route(segments, verb, env => Task.CompletedTask)
+            var route = new Route(segments, verb, env => Task.CompletedTask)
             {
                 HandlerType = handlerType,
                 Method = method,
                 InputType = inputType
             };
+
+            method.ForAttribute<RouteNameAttribute>(att => route.Name = att.Name);
+
+            return route;
         }
 
         public static Type DetermineInputType(MethodInfo method)
