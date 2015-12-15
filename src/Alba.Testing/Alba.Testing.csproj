@@ -74,6 +74,7 @@
     <Compile Include="Scenarios\Assertions\AssertionRunner.cs" />
     <Compile Include="Scenarios\Assertions\StatusCodeAssertionTests.cs" />
     <Compile Include="Scenarios\BodyContainsAssertionTests.cs" />
+    <Compile Include="Scenarios\BodyDoesNotContainAssertionTests.cs" />
     <Compile Include="Scenarios\ScenarioAssertionExceptionTests.cs" />
     <Compile Include="SegmentTests.cs" />
     <Compile Include="SpecificationExtensions.cs" />

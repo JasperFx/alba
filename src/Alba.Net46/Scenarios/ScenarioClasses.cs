@@ -52,6 +52,11 @@ namespace Alba.Scenarios
             _assertions.Add(new BodyContainsAssertion(text));
         }
 
+        public void ContentShouldNotContain(string text)
+        {
+            _assertions.Add(new BodyDoesNotContainAssertion(text));
+        }
+
         public void Assert()
         {
             if (!_ignoreStatusCode)
