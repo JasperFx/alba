@@ -4,67 +4,60 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net;
 using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
-using Alba.Routing;
+using Alba.Scenarios.Assertions;
 using Baseline;
 using Environment = System.Collections.Generic.Dictionary<string, object>;
 
 namespace Alba.Scenarios
 {
-    public interface IScenarioSupport
-    {
-        string RootUrl { get; }
-        T Get<T>();
-
-        string ToJson(object document);
-        T FromJson<T>(string json);
-        T FromJson<T>(Stream stream);
-
-        Task Invoke(Environment env);
-
-        IUrlRegistry Urls { get; }
-    }
-
-    public static class ScenarioExtensions
-    {
-        public static HttpResponseBody Scenario(this IScenarioSupport support, Action<Scenario> configuration)
-        {
-            var scenario = new Scenario(support);
-            configuration(scenario);
-
-            support.Invoke(scenario.Request).Wait();
-
-            return new HttpResponseBody(support, scenario.Request);
-        }
-    }
-
-    public interface IAssertion
-    {
-        void Assert(Scenario scenario, ScenarioAssertionException ex);
-    }
-
     public class Scenario : IUrlExpression
     {
-        private readonly ScenarioAssertionException _assertion;
-        private readonly IList<IAssertion> _assertions = new List<IAssertion>(); 
+        private readonly ScenarioAssertionException _assertionRecords;
+        private readonly IList<IScenarioAssertion> _assertions = new List<IScenarioAssertion>();
+        private int _expectedStatusCode = 200;
+        private bool _ignoreStatusCode;
 
         public Scenario(IScenarioSupport support)
         {
             Support = support;
             Request = new Environment();
-            Request.FullUrl(support.RootUrl);
+            if (support != null) Request.FullUrl(support.RootUrl);
             Request.RequestHeaders().Accepts("*/*");
 
             Request.Add(OwinConstants.RequestBodyKey, new MemoryStream());
 
-            _assertion = new ScenarioAssertionException();
+            _assertionRecords = new ScenarioAssertionException();
+        }
+
+        public void StatusCodeShouldBe(HttpStatusCode httpStatusCode)
+        {
+            _expectedStatusCode = (int)httpStatusCode;
+        }
+
+        public void StatusCodeShouldBe(int statusCode)
+        {
+            _expectedStatusCode = statusCode;
+        }
+
+        public void IgnoreStatusCode()
+        {
+            _ignoreStatusCode = true;
         }
 
         public void Assert()
         {
-            _assertion.AssertValid();
+            if (!_ignoreStatusCode)
+            {
+                new StatusCodeAssertion(_expectedStatusCode).Assert(this, _assertionRecords);
+            }
+
+            _assertions.Each(x => x.Assert(this, _assertionRecords));
+
+
+            _assertionRecords.AssertValid();
         }
 
         public HttpRequestBody Body => new HttpRequestBody(Support, Request);
@@ -137,46 +130,6 @@ namespace Alba.Scenarios
             Body.WriteFormData(input);
 
             return new SendExpression(Request);
-        }
-    }
-
-    public interface IUrlExpression
-    {
-        SendExpression Action<T>(Expression<Action<T>> expression);
-        SendExpression Url(string relativeUrl);
-        SendExpression Input<T>(T input = null) where T : class;
-
-        SendExpression Json<T>(T input) where T : class;
-        SendExpression Xml<T>(T input) where T : class;
-
-        SendExpression FormData<T>(T input) where T : class;
-    }
-
-    public class SendExpression
-    {
-        private readonly Environment Request;
-
-        public SendExpression(Environment request)
-        {
-            Request = request;
-        }
-
-        public SendExpression ContentType(string contentType)
-        {
-            Request.RequestHeaders().ContentType(contentType);
-            return this;
-        }
-
-        public SendExpression Accepts(string accepts)
-        {
-            Request.RequestHeaders().Accepts(accepts);
-            return this;
-        }
-
-        public SendExpression Etag(string etag)
-        {
-            Request.RequestHeaders().Replace(HttpRequestHeaders.IfNoneMatch, etag);
-            return this;
         }
     }
 
