@@ -46,6 +46,9 @@ namespace Alba.Scenarios
 
         public void WriteFormData<T>(T target) where T : class
         {
+            _parent.RequestHeaders().ContentType(MimeType.HttpFormMimetype);
+
+
             var values = new NameValueCollection();
 
             typeof (T).GetProperties().Where(x => x.CanWrite && x.CanRead).Each(prop =>

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq.Expressions;
@@ -7,7 +7,6 @@ using System.Text;
 using System.Xml.Serialization;
 using Alba.Scenarios.Assertions;
 using Baseline;
-using Environment = System.Collections.Generic.Dictionary<string, object>;
 
 namespace Alba.Scenarios
 {
@@ -21,7 +20,7 @@ namespace Alba.Scenarios
         public Scenario(IScenarioSupport support)
         {
             Support = support;
-            Request = new Environment();
+            Request = new Dictionary<string, object>();
             if (support != null) Request.FullUrl(support.RootUrl);
             Request.RequestHeaders().Accepts("*/*");
 
@@ -60,6 +59,23 @@ namespace Alba.Scenarios
             _assertions.Add(new BodyTextAssertion(exactContent));
         }
 
+        public void StatusCodeShouldBeOk()
+        {
+            StatusCodeShouldBe(HttpStatusCode.OK);
+        }
+
+        public void ContentTypeShouldBe(MimeType mimeType)
+        {
+            ContentTypeShouldBe(mimeType.Value);
+        }
+
+
+        public void ContentTypeShouldBe(string mimeType)
+        {
+            Header(HttpResponseHeaders.ContentType).SingleValueShouldEqual(mimeType);
+        }
+
+
         public void Assert()
         {
             if (!_ignoreStatusCode)
@@ -77,7 +93,7 @@ namespace Alba.Scenarios
 
         public IScenarioSupport Support { get; }
 
-        public Environment Request { get; }
+        public Dictionary<string, object> Request { get; }
 
         SendExpression IUrlExpression.Action<T>(Expression<Action<T>> expression)
         {
@@ -137,8 +153,6 @@ namespace Alba.Scenarios
         SendExpression IUrlExpression.FormData<T>(T input)
         {
             this.As<IUrlExpression>().Input(input);
-
-            Request.RequestHeaders().ContentType(MimeType.HttpFormMimetype);
 
             Body.WriteFormData(input);
 
