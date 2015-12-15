@@ -26,7 +26,7 @@ namespace Alba.Scenarios
             _messages.Add(message);
         }
 
-        public void AssertValid()
+        public void AssertAll()
         {
             if (_messages.Any())
             {

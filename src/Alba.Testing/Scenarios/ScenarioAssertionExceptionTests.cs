@@ -11,7 +11,7 @@ namespace Alba.Testing.Scenarios
         {
             var ex = new ScenarioAssertionException();
 
-            ex.AssertValid(); // all good!
+            ex.AssertAll(); // all good!
         }
 
         [Fact]
@@ -20,7 +20,7 @@ namespace Alba.Testing.Scenarios
             var ex = new ScenarioAssertionException();
             ex.Add("You stink!");
 
-            Exception<ScenarioAssertionException>.ShouldBeThrownBy(() => ex.AssertValid());
+            Exception<ScenarioAssertionException>.ShouldBeThrownBy(() => ex.AssertAll());
         }
 
         [Fact]

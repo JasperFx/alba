@@ -11,7 +11,7 @@ namespace Alba.Testing.Scenarios.Assertions
             var assertion = new StatusCodeAssertion(304);
 
             AssertionRunner.Run(assertion, _ => _.StatusCode(304))
-                .AssertValid();
+                .AssertAll();
         }
 
         [Fact]

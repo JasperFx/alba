@@ -10,7 +10,7 @@ namespace Alba.Testing.Scenarios
         public void happy_path()
         {
             AssertionRunner.Run(new BodyDoesNotContainAssertion("Hey!"), env => env.Write("You!"))
-                .AssertValid();
+                .AssertAll();
         }
 
         [Fact]

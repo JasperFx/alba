@@ -76,6 +76,9 @@
     <Compile Include="Scenarios\BodyContainsAssertionTests.cs" />
     <Compile Include="Scenarios\BodyDoesNotContainAssertionTests.cs" />
     <Compile Include="Scenarios\BodyTextAssertionTests.cs" />
+    <Compile Include="Scenarios\HasSingleHeaderValueAssertionTests.cs" />
+    <Compile Include="Scenarios\HeaderValueAssertionTests.cs" />
+    <Compile Include="Scenarios\NoHeaderValueAssertionTests.cs" />
     <Compile Include="Scenarios\ScenarioAssertionExceptionTests.cs" />
     <Compile Include="SegmentTests.cs" />
     <Compile Include="SpecificationExtensions.cs" />

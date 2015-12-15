@@ -48,10 +48,15 @@
     <Compile Include="Scenarios\Assertions\BodyDoesNotContainAssertion.cs" />
     <Compile Include="Scenarios\Assertions\BodyTextAssertion.cs" />
     <Compile Include="Scenarios\Assertions\StatusCodeAssertion.cs" />
+    <Compile Include="Scenarios\HasSingleHeaderValueAssertion.cs" />
+    <Compile Include="Scenarios\HeaderExpectations.cs" />
+    <Compile Include="Scenarios\HeaderValueAssertion.cs" />
+    <Compile Include="Scenarios\HttpRequestBody.cs" />
     <Compile Include="Scenarios\HttpResponseBody.cs" />
     <Compile Include="Scenarios\IScenarioAssertion.cs" />
     <Compile Include="Scenarios\IScenarioSupport.cs" />
     <Compile Include="Scenarios\IUrlExpression.cs" />
+    <Compile Include="Scenarios\NoHeaderValueAssertion.cs" />
     <Compile Include="Scenarios\ScenarioAssertionException.cs" />
     <Compile Include="Scenarios\ScenarioClasses.cs" />
     <Compile Include="Scenarios\ScenarioExtensions.cs" />
