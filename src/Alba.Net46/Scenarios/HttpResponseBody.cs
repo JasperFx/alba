@@ -5,20 +5,23 @@ using System.Xml;
 using System.Xml.Serialization;
 using Baseline;
 
-namespace Alba
+namespace Alba.Scenarios
 {
     // TODO -- test through the scenario support
     // TODO -- add headers, status code, status description, cookies
     public class HttpResponseBody
     {
+        private readonly IScenarioSupport _support;
         private readonly Stream _stream;
-        private readonly IDictionary<string, object> env;
 
-        public HttpResponseBody(Stream stream, IDictionary<string, object> environment)
+        public HttpResponseBody(IScenarioSupport support, IDictionary<string, object> environment)
         {
-            _stream = stream;
-            env = environment;
+            _support = support;
+            _stream = environment.ResponseStream();
+            OwinRequest = environment;
         }
+
+        public IDictionary<string, object> OwinRequest { get; }
 
         public string ReadAsText()
         {
@@ -57,21 +60,8 @@ namespace Alba
 
         public T ReadAsJson<T>()
         {
-            throw new NotImplementedException("Redo");
-            /*
             var json = ReadAsText();
-
-            if (env.ContainsKey("scenario-support"))
-            {
-                return
-                    env.Get<IScenarioSupport>("scenario-support")
-                        .Get<IJsonSerializer>()
-                        .Deserialize<T>(json);
-            }
-
-
-            return JsonUtil.Get<T>(json);
-            */
+            return _support.FromJson<T>(json);
         }
     }
 }

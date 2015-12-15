@@ -29,6 +29,11 @@ namespace Alba
 
         }
 
+        public static string UrlEncoded(this string value)
+        {
+            return HttpUtility.UrlEncode(value);
+        }
+
         public static string Quoted(this string value)
         {
             return $"\"{value}\"";

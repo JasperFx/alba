@@ -44,6 +44,8 @@
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scenarios\HttpResponseBody.cs" />
+    <Compile Include="Scenarios\ScenarioClasses.cs" />
   </ItemGroup>
   <Import Project="..\Alba.Shared\Alba.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -26,7 +26,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)MissingThings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OwinRequestExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpRequestHeaders.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)HttpResponseBody.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpResponseHeaders.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpUtility.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OwinConstants.cs" />

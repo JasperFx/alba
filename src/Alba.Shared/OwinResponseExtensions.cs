@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Alba.Scenarios;
 using Baseline;
 using OwinEnvironment = System.Collections.Generic.IDictionary<string, object>;
 
@@ -147,12 +148,10 @@ namespace Alba
             return stream;
         }
 
-
         public static HttpResponseBody Response(this OwinEnvironment env)
         {
-            return new HttpResponseBody(env.ResponseStream(), env);
+            return new HttpResponseBody(null, env);
         }
-
 
     }
 }

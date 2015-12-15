@@ -51,5 +51,6 @@ namespace Alba
             var cancellation = env.Get<CancellationToken>(OwinConstants.CallCancelledKey);
             return cancellation == null ? false : !cancellation.IsCancellationRequested;
         }
+
     }
 }
