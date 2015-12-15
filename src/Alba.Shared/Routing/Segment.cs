@@ -13,6 +13,15 @@ namespace Alba.Routing
 
         public string SegmentPath { get; }
         public bool IsParameter => false;
+        public string SegmentFromModel(object model)
+        {
+            return Path;
+        }
+
+        public string ReadRouteDataFromMethodArguments(List<object> arguments)
+        {
+            return Path;
+        }
 
         public Segment(string path, int position)
         {

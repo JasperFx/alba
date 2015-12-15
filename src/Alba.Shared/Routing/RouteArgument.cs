@@ -34,6 +34,10 @@ namespace Alba.Routing
 
         public string SegmentPath => ":" + Key;
         public bool IsParameter => true;
+        public string SegmentFromModel(object model)
+        {
+            return HttpUtility.UrlEncode(ReadRouteDataFromInput(model));
+        }
 
         public RouteArgument(string key, int position, Type argType = null)
         {
@@ -140,7 +144,7 @@ namespace Alba.Routing
 
         public string ReadRouteDataFromMethodArguments(List<object> arguments)
         {
-            return _parameter == null ? string.Empty : arguments[_parameter.Position].ToString();
+            return _parameter == null ? string.Empty : HttpUtility.UrlEncode(arguments[_parameter.Position].ToString());
         }
 
         public void SetValues(IDictionary<string, object> routeData, string[] segments)

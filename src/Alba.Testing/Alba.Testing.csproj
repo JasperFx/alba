@@ -64,6 +64,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Routing\EnvironmentExtensionsTests.cs" />
     <Compile Include="Routing\MethodCallParserTests.cs" />
+    <Compile Include="Routing\Reverse_Url_Lookup_Tests.cs" />
     <Compile Include="Routing\RouteBuilderTests.cs" />
     <Compile Include="Routing\RouteTests.cs" />
     <Compile Include="Routing\NodeTests.cs" />

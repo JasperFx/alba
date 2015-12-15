@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
 using Baseline;
@@ -194,6 +195,22 @@ namespace Alba.Routing
 
 
             _arguments.Value.Each(x => x.ApplyRouteDataToInput(model, dict));
+        }
+
+        public string ToUrlFromInputModel(object model)
+        {
+            return "/" + _segments.Select(x => x.SegmentFromModel(model)).Join("/");
+        }
+
+        public override string ToString()
+        {
+            return $"{HttpMethod}:{Pattern}";
+        }
+
+        public string ReadRouteDataFromMethodArguments(Expression expression)
+        {
+            var arguments = MethodCallParser.ToArguments(expression);
+            return "/" + _segments.Select(x => x.ReadRouteDataFromMethodArguments(arguments)).Join("/");
         }
     }
 }

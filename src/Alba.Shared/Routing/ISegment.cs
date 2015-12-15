@@ -9,5 +9,8 @@ namespace Alba.Routing
 
         string SegmentPath { get; }
         bool IsParameter { get; }
+        string SegmentFromModel(object model);
+
+        string ReadRouteDataFromMethodArguments(List<object> arguments);
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Alba.Routing
@@ -13,6 +14,10 @@ namespace Alba.Routing
 
         public string SegmentPath { get; } = "...";
         public bool IsParameter => true;
+        public string SegmentFromModel(object model)
+        {
+            throw new NotSupportedException();
+        }
 
         public Spread(int position)
         {
@@ -34,6 +39,11 @@ namespace Alba.Routing
             if (Position > (segments.Length - 1)) return new string[0];
 
             return segments.Skip(Position).ToArray();
+        }
+
+        public string ReadRouteDataFromMethodArguments(List<object> arguments)
+        {
+            throw new NotSupportedException();
         }
 
         public override string ToString()

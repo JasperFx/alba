@@ -34,11 +34,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)OwinResponseExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OwinUrlExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Routing\EnvironmentExtensions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Routing\HandlerMethods.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Routing\HttpVerbs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Routing\ISegment.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Routing\IUrlRegistry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Routing\MethodCallParser.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Routing\QueryStringAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Routing\Route.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Routing\Node.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Routing\RouteArgument.cs" />
@@ -49,6 +49,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Routing\Spread.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CookieSegment.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Routing\UrlGraph.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Routing\UrlPatternAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Routing\UrlResolutionException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StaticFiles\AssetSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StaticFiles\DoNext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StaticFiles\IStaticFile.cs" />
