@@ -47,6 +47,11 @@ namespace Alba.Scenarios
             _ignoreStatusCode = true;
         }
 
+        public void ContentShouldContain(string text)
+        {
+            _assertions.Add(new BodyContainsAssertion(text));
+        }
+
         public void Assert()
         {
             if (!_ignoreStatusCode)
