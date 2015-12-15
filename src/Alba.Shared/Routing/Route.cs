@@ -212,5 +212,12 @@ namespace Alba.Routing
             var arguments = MethodCallParser.ToArguments(expression);
             return "/" + _segments.Select(x => x.ReadRouteDataFromMethodArguments(arguments)).Join("/");
         }
+
+        public string ToUrlFromParameters(IDictionary<string, object> parameters)
+        {
+            return "/" + _segments.Select(x => x.SegmentFromParameters(parameters)).Join("/");
+        }
+
+
     }
 }

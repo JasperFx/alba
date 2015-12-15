@@ -46,6 +46,11 @@ namespace Alba.Routing
             throw new NotSupportedException();
         }
 
+        public string SegmentFromParameters(IDictionary<string, object> parameters)
+        {
+            throw new NotSupportedException();
+        }
+
         public override string ToString()
         {
             return $"spread:{Position}";

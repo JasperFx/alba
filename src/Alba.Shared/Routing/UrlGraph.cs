@@ -141,8 +141,25 @@ namespace Alba.Routing
 
         public string UrlFor(string routeName, IDictionary<string, object> parameters = null)
         {
-            // has to be a static route, or blow up
-            throw new NotImplementedException();
+            var route = RouteByName(routeName);
+            if (route == null) throw new UrlResolutionException($"There are no routes with the name '{routeName}'");
+
+            if (parameters == null)
+            {
+                assertNoParameters(route);
+                return "/" + route.Pattern;
+            }
+            else
+            {
+                return route.ToUrlFromParameters(parameters);
+            }
+
+
+        }
+
+        private Route RouteByName(string routeName)
+        {
+            return _routesPerName.Has(routeName) ? _routesPerName[routeName] : null;
         }
     }
 }

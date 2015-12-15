@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Alba.Routing;
 using Baseline;
 using Baseline.Reflection;
@@ -87,16 +88,21 @@ namespace Alba.Testing.Routing
             urls.UrlFor(model).ShouldBe("/qsandroute/test/23?Param=42");
         }
         */
-        /*
+        
         [Fact]
-        public void retrieve_url_by_input_type_with_parameters()
+        public void retrieve_url_by_urn_name_with_parameters()
         {
-            var parameters = new RouteParameters<ModelWithInputs>();
-            parameters[x => x.Name] = "Max";
+            var dict = new Dictionary<string, object> { {"Name", "Max"} };
 
-            urls.UrlFor<ModelWithInputs>(parameters).ShouldBe("/find/Max");
+            urls.UrlFor("find_by_name", dict).ShouldBe("/find/Max");
         }
-        */
+
+        [Fact]
+        public void find_route_by_name_positive()
+        {
+            urls.UrlFor("A").ShouldBe("/one/a");
+        }
+        
 
         [Fact]
         public void retrieve_a_url_for_a_model_and_http_method()
@@ -146,21 +152,16 @@ namespace Alba.Testing.Routing
             });
         }
 
-        /*
+        
         [Fact]
-        public void url_for_route_parameter_by_type_respects_the_absolute_path()
+        public void url_for_by_type_respects_the_absolute_path()
         {
-            urls.UrlFor<Model6>(new RouteParameters())
+            urls.UrlFor<Model6>()
                 .ShouldBe("/one/a");
         }
 
-        [Fact]
-        public void url_for_route_parameter_by_type_and_category_respects_absolute_path()
-        {
-            urls.UrlFor<UrlModel>(new RouteParameters(), "different")
-                .ShouldBe("/one/m4");
-        }
-        */
+
+        
     }
 
 
@@ -173,11 +174,13 @@ namespace Alba.Testing.Routing
 
     public class OneController
     {
+        [RouteName("find_by_name")]
         public void get_find_Name(ModelWithInputs input)
         {
         }
 
-        public void A(Model6 input)
+        [RouteName("A")]
+        public void get_one_a(Model6 input)
         {
         }
 

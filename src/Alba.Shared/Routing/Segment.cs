@@ -23,6 +23,11 @@ namespace Alba.Routing
             return Path;
         }
 
+        public string SegmentFromParameters(IDictionary<string, object> parameters)
+        {
+            return Path;
+        }
+
         public Segment(string path, int position)
         {
             Path = path;

@@ -147,6 +147,16 @@ namespace Alba.Routing
             return _parameter == null ? string.Empty : HttpUtility.UrlEncode(arguments[_parameter.Position].ToString());
         }
 
+        public string SegmentFromParameters(IDictionary<string, object> parameters)
+        {
+            if (!parameters.ContainsKey(Key))
+            {
+                throw new UrlResolutionException($"Missing required parameter '{Key}'");
+            }
+
+            return parameters[Key].ToString();
+        }
+
         public void SetValues(IDictionary<string, object> routeData, string[] segments)
         {
             var raw = segments[Position];
