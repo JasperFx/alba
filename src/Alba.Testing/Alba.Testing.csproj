@@ -71,6 +71,7 @@
     <Compile Include="Routing\RouteArgumentTests.cs" />
     <Compile Include="Routing\SegmentTests.cs" />
     <Compile Include="Routing\SpreadTests.cs" />
+    <Compile Include="Scenarios\ScenarioAssertionExceptionTests.cs" />
     <Compile Include="SegmentTests.cs" />
     <Compile Include="SpecificationExtensions.cs" />
     <Compile Include="StaticFiles\AssetSettingsTests.cs" />
