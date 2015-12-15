@@ -3,6 +3,7 @@ NUGET
   specs:
     Baseline (0.5.0.9)
     HtmlTags (3.0.0.186)
+    Newtonsoft.Json (7.0.1)
     Nowin (0.22.0)
     NSubstitute (1.9.2)
     Shouldly (2.6.0)
