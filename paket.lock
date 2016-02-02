@@ -21,7 +21,7 @@ NUGET
     Nowin (0.22.2)
     NSubstitute (1.9.2)
     Shouldly (2.6.0)
-    Storyteller (3.0.0.315-rc)
+    Storyteller (3.0.0.322-rc)
     System.Collections (4.0.10)
       System.Diagnostics.Debug (>= 4.0.0) - framework: dnxcore50
       System.Resources.ResourceManager (>= 4.0.0) - framework: dnxcore50
