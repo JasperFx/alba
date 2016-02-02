@@ -169,5 +169,52 @@ namespace Alba.Scenarios
         {
             return new HeaderExpectations(this, headerKey);
         }
+
+
+        public IUrlExpression Get
+        {
+            get
+            {
+                Request.HttpMethod("GET");
+                return this;
+            }
+        }
+
+        public IUrlExpression Put
+        {
+            get
+            {
+                Request.HttpMethod("PUT");
+                return this;
+            }
+        }
+
+        public IUrlExpression Delete
+        {
+            get
+            {
+                Request.HttpMethod("DELETE");
+                return this;
+            }
+        }
+
+        public IUrlExpression Post
+        {
+            get
+            {
+                Request.HttpMethod("POST");
+                return this;
+            }
+        }
+
+        public IUrlExpression Head
+        {
+            get
+            {
+                Request.HttpMethod("HEAD");
+                return this;
+            }
+        }
+
     }
 }
