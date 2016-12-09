@@ -63,7 +63,7 @@ namespace Alba.Testing.StaticFiles
         [Fact]
         public void writes_the_etag_for_the_file()
         {
-            theEnvironment.ResponseHeaders().Get(HttpResponseHeaders.ETag)
+            theEnvironment.ResponseHeaders().Get("etag")
                 .ShouldBe(theFile.Etag().Quoted());
         }
     }

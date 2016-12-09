@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Net;
+using System.Threading.Tasks;
 using Alba.Scenarios;
 using Baseline;
 using Shouldly;
@@ -383,9 +386,9 @@ namespace Alba.Testing.Scenarios
     public class InMemoryEndpoint
     {
         
-        private readonly IOutputWriter _writer;
+        private readonly IDictionary<string, object> _writer;
 
-        public InMemoryEndpoint(IOutputWriter writer)
+        public InMemoryEndpoint(IDictionary<string, object> writer)
         {
             _writer = writer;
         }
@@ -393,24 +396,27 @@ namespace Alba.Testing.Scenarios
 
         public string get_wrong_status_code()
         {
-            _writer.WriteResponseCode(HttpStatusCode.InternalServerError);
+            throw new NotImplementedException();
+            //_writer.WriteResponseCode(HttpStatusCode.InternalServerError);
 
             return "the error text";
         }
 
         public string post_header_values(HeaderInput input)
         {
-            if (input.Value1.IsNotEmpty())
-            {
-                _writer.AppendHeader(input.Key, input.Value1);
-            }
+            throw new NotImplementedException();
 
-            if (input.Value2.IsNotEmpty())
-            {
-                _writer.AppendHeader(input.Key, input.Value2);
-            }
-
-            return "it's all good";
+//            if (input.Value1.IsNotEmpty())
+//            {
+//                _writer.AppendHeader(input.Key, input.Value1);
+//            }
+//
+//            if (input.Value2.IsNotEmpty())
+//            {
+//                _writer.AppendHeader(input.Key, input.Value2);
+//            }
+//
+//            return "it's all good";
         }
 
         public string get_memory_hello()

@@ -1,0 +1,17 @@
+<Spec id="f8a5de9e-e93f-4879-9b60-9b9d2fdb9b88" maxRetries="0" tags="" lifecycle="Regression" name="Resource Not Found Mechanics" lastUpdated="Friday, December 04, 2015" expirationPeriod="0">
+  <Router id="47fdf316-1870-46a5-831c-e10c81c706e5">
+    <RoutesAre>
+      <table id="5516ffc7-4c7e-419f-a339-1f94b76a3d6d">
+        <RoutesAre-row HttpMethod="GET" Pattern="planets" />
+        <RoutesAre-row HttpMethod="GET" Pattern="planets/hoth" />
+        <RoutesAre-row HttpMethod="GET" Pattern="planets/naboo" />
+      </table>
+    </RoutesAre>
+    <TheResultShouldBe>
+      <table id="b38005eb-0939-4838-9624-313995e275b2">
+        <TheResultShouldBe-row HttpMethod="GET" Url="planets/tattooine" Status="404" Body="Resource not found" Arguments="NONE" />
+        <TheResultShouldBe-row HttpMethod="POST" Url="planets" Status="404" Body="Resource not found" Arguments="NONE" />
+      </table>
+    </TheResultShouldBe>
+  </Router>
+</Spec>

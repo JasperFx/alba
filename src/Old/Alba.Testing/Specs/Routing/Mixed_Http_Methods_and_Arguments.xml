@@ -1,0 +1,18 @@
+<Spec id="7120895e-ffee-40fd-a580-4f3f4576936e" maxRetries="0" tags="" lifecycle="Regression" name="Mixed Http Methods and Arguments" lastUpdated="Friday, December 04, 2015" expirationPeriod="0">
+  <Router id="c9522d6b-e904-47a9-8bd8-8ba52c534454">
+    <RoutesAre>
+      <table id="7e088118-466d-4bc0-adc3-05356c326e69">
+        <RoutesAre-row HttpMethod="GET" Pattern="planets/:planet" />
+        <RoutesAre-row HttpMethod="POST" Pattern="planets/:planet" />
+        <RoutesAre-row HttpMethod="HEAD" Pattern="planets/naboo" />
+      </table>
+    </RoutesAre>
+    <TheResultShouldBe>
+      <table id="96b8fe78-44c2-4c7b-b330-c2c1eddc2204">
+        <TheResultShouldBe-row HttpMethod="GET" Url="planets/hoth" Status="200" Body="GET: /planets/:planet" Arguments="planet: hoth" />
+        <TheResultShouldBe-row HttpMethod="POST" Url="planets/naboo" Status="200" Body="POST: /planets/:planet" Arguments="planet: naboo" />
+        <TheResultShouldBe-row HttpMethod="HEAD" Url="planets/naboo" Status="200" Body="HEAD: /planets/naboo" Arguments="NONE" />
+      </table>
+    </TheResultShouldBe>
+  </Router>
+</Spec>

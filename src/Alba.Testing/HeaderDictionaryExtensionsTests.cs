@@ -115,7 +115,7 @@ namespace Alba.Testing
             theHeaders.ContentLength(25);
             theHeaders.ContentLength().ShouldBe(25);
 
-            theHeaders[HttpResponseHeaders.ContentLength].ShouldHaveTheSameElementsAs("25");
+            theHeaders["content-length"].ShouldHaveTheSameElementsAs("25");
         }
     }
 }

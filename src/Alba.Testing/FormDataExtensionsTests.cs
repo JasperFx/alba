@@ -35,7 +35,7 @@ namespace Alba.Testing
         [Fact]
         public void round_trip_writing_and_parsing()
         {
-            var form1 = new NameValueCollection();
+            var form1 = new Dictionary<string, string>();
             form1["a"] = "what?";
             form1["b"] = "now?";
             form1["c"] = "really?";

@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Threading.Tasks;
 using HtmlTags;
 using Shouldly;
@@ -32,13 +33,15 @@ namespace Alba.Testing
                 return Task.CompletedTask;
             });
 
-            using (var server = new NowinHarness(appfunc))
-            {
-                var client = new WebClient();
 
-                var path = $"http://localhost:{server.Port}";
-                client.DownloadString(path).ShouldContain("<!--Hello!-->");
-            }
+            throw new NotImplementedException();
+//            using (var server = new NowinHarness(appfunc))
+//            {
+//                var client = new WebClient();
+//
+//                var path = $"http://localhost:{server.Port}";
+//                client.DownloadString(path).ShouldContain("<!--Hello!-->");
+//            }
 
         }
     }

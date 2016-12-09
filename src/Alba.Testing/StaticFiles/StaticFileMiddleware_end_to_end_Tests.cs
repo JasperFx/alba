@@ -18,14 +18,14 @@ namespace Alba.Testing.StaticFiles
 
             var middleware = new StaticFileMiddleware(env => { throw new Exception("Should not get here"); }, new Alba.StaticFiles.StaticFiles(AppDomain.CurrentDomain.BaseDirectory), new AssetSettings());
 
-
-            using (var server = new NowinHarness(middleware.Invoke))
-            {
-                var client = new WebClient();
-
-                var path = $"http://localhost:{server.Port}/static.js";
-                client.DownloadString(path).ShouldBe("var y = 0;");
-            }
+            throw new NotImplementedException();
+//            using (var server = new NowinHarness(middleware.Invoke))
+//            {
+//                var client = new WebClient();
+//
+//                var path = $"http://localhost:{server.Port}/static.js";
+//                client.DownloadString(path).ShouldBe("var y = 0;");
+//            }
         }
     }
 

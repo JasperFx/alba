@@ -1,0 +1,10 @@
+<Spec id="b9fbb805-ce2a-441a-b2ea-aeea3e818702" maxRetries="0" tags="" lifecycle="Regression" name="Route generation with dashes and underscores" lastUpdated="Monday, December 14, 2015" expirationPeriod="0">
+  <RouteBuilder id="98711773-bf55-4f33-bb36-295232d6535e">
+    <BuildRoute>
+      <table id="0e5eac78-c7dd-4f6e-ae16-6fcab7b35457">
+        <BuildRoute-row Method="get_with__underscore()" HttpMethod="GET" Pattern="with/_underscore" Arguments="EMPTY" />
+        <BuildRoute-row Method="get_with_foo___bar()" HttpMethod="GET" Pattern="with/foo-bar" Arguments="EMPTY" />
+      </table>
+    </BuildRoute>
+  </RouteBuilder>
+</Spec>

@@ -1,0 +1,17 @@
+<Spec id="66819200-37b6-426a-8523-ba59fa9578ff" maxRetries="0" tags="" lifecycle="Regression" name="Leaf Creation and Parsing" lastUpdated="Tuesday, December 01, 2015" expirationPeriod="0">
+  <Leaf id="83a5c38a-d77f-4371-9237-718d8e9d01e2">
+    <CreateLeaf>
+      <table id="0e2c3338-27cc-42d6-ac3e-0f7ee9bd00c8">
+        <CreateLeaf-row Route="a/b/c" NodePath="a/b" HasSpread="false" Parameters="NONE" />
+        <CreateLeaf-row Route="a/b/:c" NodePath="a/b" HasSpread="false" Parameters="c:2" />
+        <CreateLeaf-row Route="a/b/{c}" NodePath="a/b" HasSpread="false" Parameters="c:2" />
+        <CreateLeaf-row Route="a/:b/c/:d" NodePath="a/*/c" HasSpread="false" Parameters="b:1; d:3" />
+        <CreateLeaf-row Route="a/{b}/c/{d}" NodePath="a/*/c" HasSpread="false" Parameters="b:1; d:3" />
+        <CreateLeaf-row Route="..." NodePath="EMPTY" HasSpread="True" Parameters="spread:0" />
+        <CreateLeaf-row Route="a/..." NodePath="a" HasSpread="True" Parameters="spread:1" />
+        <CreateLeaf-row Route="a/:b/..." NodePath="a" HasSpread="True" Parameters="b:1; spread:2" />
+        <CreateLeaf-row Route="a/b/..." NodePath="a/b" HasSpread="True" Parameters="spread:2" />
+      </table>
+    </CreateLeaf>
+  </Leaf>
+</Spec>
