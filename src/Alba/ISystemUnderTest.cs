@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
@@ -34,5 +35,9 @@ namespace Alba
 
         T FromJson<T>(string json);
         string ToJson(object target);
+        string UrlFor<T>(Expression<Action<T>> expression, string method);
+        string UrlFor<T>(string method);
+
+        string UrlFor<T>(T input, string method);
     }
 }

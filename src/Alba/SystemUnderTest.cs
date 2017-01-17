@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
 using Alba.Stubs;
@@ -77,6 +78,21 @@ namespace Alba
         }
 
         public string ToJson(object target)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string UrlFor<T>(Expression<Action<T>> expression, string method)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string UrlFor<T>(string method)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string UrlFor<T>(T input, string method)
         {
             throw new NotImplementedException();
         }

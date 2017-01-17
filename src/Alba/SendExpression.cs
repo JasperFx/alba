@@ -6,9 +6,9 @@ namespace Alba
     {
         private readonly HttpRequest _request;
 
-        public SendExpression(HttpRequest request)
+        public SendExpression(HttpContext context)
         {
-            _request = request;
+            _request = context.Request;
         }
 
         public SendExpression ContentType(string contentType)

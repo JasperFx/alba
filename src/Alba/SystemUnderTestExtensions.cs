@@ -12,8 +12,7 @@ namespace Alba
         {
             using (var scope = system.Services.GetService<IServiceScopeFactory>().CreateScope())
             {
-                var scenario = new Scenario(system.Features, scope.ServiceProvider);
-
+                var scenario = new Scenario(system, scope);
 
                 try
                 {
