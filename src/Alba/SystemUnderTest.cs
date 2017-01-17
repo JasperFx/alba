@@ -70,5 +70,14 @@ namespace Alba
             return Task.CompletedTask;
         }
 
+        public T FromJson<T>(string json)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string ToJson(object target)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -10,9 +10,9 @@ namespace Alba
         // for test isolation?
         public static async Task<Scenario> Scenario(this ISystemUnderTest system, Action<Scenario> configure)
         {
-            using (var scope = system.Application.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            using (var scope = system.Services.GetService<IServiceScopeFactory>().CreateScope())
             {
-                var scenario = new Scenario(system.Application.ServerFeatures, scope.ServiceProvider);
+                var scenario = new Scenario(system.Features, scope.ServiceProvider);
 
 
                 try
@@ -21,7 +21,7 @@ namespace Alba
 
                     await scenario.RunBeforeActions().ConfigureAwait(false);
 
-                    await system.Application.Build()(scenario.Context).ConfigureAwait(false);
+                    await system.Invoker(scenario.Context).ConfigureAwait(false);
 
                     scenario.RunAssertions();
 

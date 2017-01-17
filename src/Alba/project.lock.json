@@ -6073,6 +6073,7 @@
       "Microsoft.AspNetCore.Hosting >= 1.1.0",
       "Microsoft.AspNetCore.Http >= 1.1.0",
       "Microsoft.AspNetCore.Http.Abstractions >= 1.1.0",
+      "Microsoft.AspNetCore.WebUtilities >= 1.1.0",
       "System.Xml.XmlDocument >= 4.0.1"
     ],
     ".NETStandard,Version=v1.6": [

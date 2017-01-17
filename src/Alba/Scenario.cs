@@ -11,6 +11,8 @@ namespace Alba
         private readonly IList<Func<HttpContext, Task>> _befores = new List<Func<HttpContext, Task>>();
         private readonly IList<Func<HttpContext, Task>> _afters = new List<Func<HttpContext, Task>>();
 
+        private readonly IList<IScenarioAssertion> _assertions = new List<IScenarioAssertion>();
+
         public Scenario(IFeatureCollection features, IServiceProvider requestServices)
         {
             Context = new StubHttpContext(features, requestServices);
@@ -35,6 +37,12 @@ namespace Alba
         }
 
         // holds on to the http context & IApplicationServer
+
+
+        public void AssertThat(IScenarioAssertion assertion)
+        {
+            _assertions.Add(assertion);
+        }
 
 
         public void Before<T>(Func<T, HttpContext, Task> action)
