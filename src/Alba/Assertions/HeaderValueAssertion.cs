@@ -1,7 +1,7 @@
 using System.Linq;
 using Baseline;
 
-namespace Alba
+namespace Alba.Assertions
 {
     public class HeaderValueAssertion : IScenarioAssertion
     {

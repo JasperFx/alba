@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
-namespace Alba
+namespace Alba.Stubs
 {
     public class StubConnectionInfo : ConnectionInfo
     {

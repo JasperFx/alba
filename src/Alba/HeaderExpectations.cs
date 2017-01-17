@@ -1,3 +1,5 @@
+using Alba.Assertions;
+
 namespace Alba
 {
     public class HeaderExpectations

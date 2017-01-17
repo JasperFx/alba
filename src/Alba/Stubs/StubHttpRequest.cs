@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Internal;
 
-namespace Alba
+namespace Alba.Stubs
 {
     public class StubHttpRequest : HttpRequest
     {

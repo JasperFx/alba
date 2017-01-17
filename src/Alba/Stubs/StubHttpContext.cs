@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Http.Features;
 
-namespace Alba
+namespace Alba.Stubs
 {
     public class StubHttpContext : HttpContext
     {

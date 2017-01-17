@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
-namespace Alba
+namespace Alba.Stubs
 {
     public class StubSession : ISession
     {
