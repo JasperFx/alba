@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Text;
 using Microsoft.AspNetCore.Http;
 
 namespace Alba
@@ -37,11 +38,8 @@ namespace Alba
 
         public static void Write(this HttpResponse response, string content)
         {
-            using (var writer = new StreamWriter(response.Body))
-            {
-                writer.Write(content);
-                writer.Flush();
-            }
+            var bytes = Encoding.UTF8.GetBytes(content);
+            response.Body.Write(bytes, 0, bytes.Length);
         }
     }
 }
