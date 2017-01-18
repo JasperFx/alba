@@ -9,38 +9,20 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public Task using_scenario_with_controller_expression()
         {
+            host.RegisterRoute<InMemoryEndpoint>(e => e.get_memory_hello(), "GET", "/memory/hello");
+
+            host.Handlers["/memory/hello"] = c =>
+            {
+                c.Response.Write("hello from the in memory host");
+                c.Response.ContentType("text/plain");
+
+                return Task.CompletedTask;
+            };
+
             return host.Scenario(x =>
             {
                 x.Get.Action<InMemoryEndpoint>(e => e.get_memory_hello());
                 x.ContentShouldBe("hello from the in memory host");
-            });
-        }
-
-        [Fact]
-        public async Task using_scenario_with_input_model()
-        {
-            await host.Scenario(x =>
-            {
-                x.Get.Input(new InMemoryInput { Color = "Red" });
-                x.ContentShouldBe("The color is Red");
-            });
-
-
-            await host.Scenario(x =>
-            {
-                x.Get.Input(new InMemoryInput { Color = "Orange" });
-                x.ContentShouldBe("The color is Orange");
-            });
-        }
-
-
-        [Fact]
-        public Task using_scenario_with_input_model_as_marker()
-        {
-            return host.Scenario(x =>
-            {
-                x.Get.Input<MarkerInput>();
-                x.ContentShouldBe("just the marker");
             });
         }
 
