@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Shouldly;
 using Xunit;
 
@@ -9,9 +10,15 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public Task single_header_value_is_positive()
         {
+            host.Handlers["/one"] = c => {
+                c.Response.Headers.Append("Foo", "Bar");
+
+                return Task.CompletedTask;
+            };
+
             return host.Scenario(x =>
             {
-                x.Post.Json(new HeaderInput { Key = "Foo", Value1 = "Bar" }).Accepts("text/plain");
+                x.Post.Url("/one");
 
                 x.Header("Foo").ShouldHaveOneNonNullValue()
                     .SingleValueShouldEqual("Bar");
@@ -21,11 +28,17 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task single_header_value_is_negative_with_the_wrong_value()
         {
+            host.Handlers["/one"] = c => {
+                c.Response.Headers.Append("Foo", "NotBar");
+
+                return Task.CompletedTask;
+            };
+
             var ex = await Exception<ScenarioAssertionException>.ShouldBeThrownBy(() =>
             {
                 return host.Scenario(x =>
                 {
-                    x.Post.Json(new HeaderInput { Key = "Foo", Value1 = "NotBar" });
+                    x.Post.Url("/one");
                     x.Header("Foo").ShouldHaveOneNonNullValue()
                         .SingleValueShouldEqual("Bar");
                 });
@@ -37,11 +50,18 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task single_header_value_is_negative_with_the_too_many_values()
         {
+            host.Handlers["/one"] = c => {
+                c.Response.Headers.Append("Foo", "NotBar");
+                c.Response.Headers.Append("Foo", "AnotherBar");
+
+                return Task.CompletedTask;
+            };
+
             var ex = await Exception<ScenarioAssertionException>.ShouldBeThrownBy(() =>
             {
                 return host.Scenario(x =>
                 {
-                    x.Post.Json(new HeaderInput { Key = "Foo", Value1 = "NotBar", Value2 = "AnotherBar" });
+                    x.Post.Url("/one");
                     x.Header("Foo").ShouldHaveOneNonNullValue()
                         .SingleValueShouldEqual("Bar");
                 });
@@ -54,9 +74,11 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public Task header_should_not_be_written_happy_path()
         {
+            host.Handlers["/one"] = c => Task.CompletedTask;
+
             return host.Scenario(x =>
             {
-                x.Post.Json(new HeaderInput { Key = "Foo" }).Accepts("text/plain");
+                x.Post.Url("/one");
                 x.Header("Foo").ShouldNotBeWritten();
             });
         }
@@ -64,11 +86,18 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task header_should_not_be_written_sad_path_with_values()
         {
+            host.Handlers["/one"] = c => {
+                c.Response.Headers.Append("Foo", "Bar1");
+                c.Response.Headers.Append("Foo", "Bar2");
+
+                return Task.CompletedTask;
+            };
+
             var ex = await Exception<ScenarioAssertionException>.ShouldBeThrownBy(() =>
             {
                 return host.Scenario(x =>
                 {
-                    x.Post.Json(new HeaderInput { Key = "Foo", Value1 = "Bar1", Value2 = "Bar2" }).Accepts("plain/text");
+                    x.Post.Url("/one");
                     x.Header("Foo").ShouldNotBeWritten();
                 });
             });
@@ -80,11 +109,19 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task should_have_on_non_null_value_sad_path_with_too_many_values()
         {
+            host.Handlers["/one"] = c =>
+            {
+                c.Response.Headers.Append("Foo", "Bar1");
+                c.Response.Headers.Append("Foo", "Bar2");
+
+                return Task.CompletedTask;
+            };
+
             var ex = await Exception<ScenarioAssertionException>.ShouldBeThrownBy(() =>
             {
                 return host.Scenario(x =>
                 {
-                    x.Post.Json(new HeaderInput { Key = "Foo", Value1 = "Bar1", Value2 = "Bar2" });
+                    x.Post.Url("/one");
                     x.Header("Foo").ShouldHaveOneNonNullValue();
                 });
             });
@@ -97,9 +134,16 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public Task should_have_on_non_null_header_value_happy_path()
         {
+            host.Handlers["/one"] = c =>
+            {
+                c.Response.Headers.Append("Foo", "Anything");
+
+                return Task.CompletedTask;
+            };
+
             return host.Scenario(x =>
             {
-                x.Post.Json(new HeaderInput { Key = "Foo", Value1 = "Anything" }).Accepts("text/plain");
+                x.Post.Url("/one");
                 x.Header("Foo").ShouldHaveOneNonNullValue();
             });
         }
@@ -107,11 +151,16 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task should_have_one_non_null_value_sad_path()
         {
+            host.Handlers["/one"] = c =>
+            {
+                return Task.CompletedTask;
+            };
+
             var ex = await Exception<ScenarioAssertionException>.ShouldBeThrownBy(() =>
             {
                 return host.Scenario(x =>
                 {
-                    x.Post.Json(new HeaderInput { Key = "Foo" }).Accepts("text/plain");
+                    x.Post.Url("/one");
                     x.Header("Foo").ShouldHaveOneNonNullValue();
                 });
             });
@@ -123,11 +172,16 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task single_header_value_is_negative_because_there_are_no_values()
         {
+            host.Handlers["/one"] = c =>
+            {
+                return Task.CompletedTask;
+            };
+
             var ex = await Exception<ScenarioAssertionException>.ShouldBeThrownBy(() =>
             {
                 return host.Scenario(x =>
                 {
-                    x.Post.Json(new HeaderInput { Key = "Foo" });
+                    x.Post.Url("/one");
                     x.Header("Foo")
                         .SingleValueShouldEqual("Bar");
                 });

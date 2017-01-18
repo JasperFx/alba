@@ -10,9 +10,15 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public Task using_scenario_with_ContentShouldContain_declaration_happy_path()
         {
+            host.Handlers["/one"] = c =>
+            {
+                c.Response.Write("**just the marker**");
+                return Task.CompletedTask;
+            };
+
             return host.Scenario(x =>
             {
-                x.Get.Input<MarkerInput>();
+                x.Get.Url("/one");
                 x.ContentShouldContain("just the marker");
             });
         }
@@ -21,29 +27,33 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task using_scenario_with_ContentShouldContain_declaration_sad_path()
         {
-            try
+            host.Handlers["/one"] = c =>
             {
-                await host.Scenario(x =>
-                {
-                    x.Get.Input<MarkerInput>();
-                    x.ContentShouldContain("wrong text");
-                });
+                c.Response.Write("**just the marker**");
+                return Task.CompletedTask;
+            };
 
-                throw new NotSupportedException("No exception thrown by the scenario");
-            }
-            catch (Exception e)
+            var ex = await fails(x =>
             {
-                e.ShouldBeOfType<ScenarioAssertionException>();
-                e.Message.ShouldContain("The response body does not contain expected text \"wrong text\"");
-            }
+                x.Get.Url("/one");
+                x.ContentShouldContain("wrong text");
+            });
+
+            ex.Message.ShouldContain("Expected text 'wrong text' was not found in the response body");
         }
 
         [Fact]
         public Task using_scenario_with_ContentShouldNotContain_declaration_happy_path()
         {
+            host.Handlers["/one"] = c =>
+            {
+                c.Response.Write("**just the marker**");
+                return Task.CompletedTask;
+            };
+
             return host.Scenario(x =>
             {
-                x.Get.Input<MarkerInput>();
+                x.Get.Url("/one");
                 x.ContentShouldNotContain("some random stuff");
             });
         }
@@ -51,16 +61,22 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task using_scenario_with_ContentShouldNotContain_declaration_sad_path()
         {
+            host.Handlers["/one"] = c =>
+            {
+                c.Response.Write("**just the marker**");
+                return Task.CompletedTask;
+            };
+
             var ex = await Exception<ScenarioAssertionException>.ShouldBeThrownBy(() =>
             {
                 return host.Scenario(x =>
                 {
-                    x.Get.Input<MarkerInput>();
+                    x.Get.Url("/one");
                     x.ContentShouldNotContain("just the marker");
                 });
             });
 
-            ex.Message.ShouldContain("The response body should not contain text \"just the marker\"");
+            ex.Message.ShouldContain("Text 'just the marker' should not be found in the response body");
         }
 
 

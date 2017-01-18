@@ -10,9 +10,18 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public Task using_scenario_with_StatusCodeShouldBe_happy_path()
         {
+            host.Handlers["/one"] = c =>
+            {
+                c.Response.StatusCode = 200;
+                c.Response.ContentType("text/plain");
+                c.Response.Write("Some text");
+
+                return Task.CompletedTask;
+            };
+
             return host.Scenario(x =>
             {
-                x.Get.Input<MarkerInput>();
+                x.Get.Url("/one");
                 x.StatusCodeShouldBe(HttpStatusCode.OK);
             });
         }
@@ -20,16 +29,25 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task using_scenario_with_StatusCodeShouldBe_sad_path()
         {
+            host.Handlers["/one"] = c =>
+            {
+                c.Response.StatusCode = 200;
+                c.Response.ContentType("text/plain");
+                c.Response.Write("Some text");
+
+                return Task.CompletedTask;
+            };
+
             var ex = await Exception<ScenarioAssertionException>.ShouldBeThrownBy(() =>
             {
                 return host.Scenario(x =>
                 {
-                    x.Get.Input<MarkerInput>();
+                    x.Get.Url("/one");
                     x.StatusCodeShouldBe(HttpStatusCode.InternalServerError);
                 });
             });
 
-            ex.Message.ShouldContain("Expected status code 500 (InternalServerError), but was 200");
+            ex.Message.ShouldContain("Expected status code 500, but was 200");
         }
 
 
