@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Alba.Stubs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Newtonsoft.Json;
@@ -18,11 +19,11 @@ namespace Alba.Testing
 
         public HttpContext CreateContext()
         {
-            throw new NotImplementedException();
+            return new StubHttpContext(Features, Services);
         }
 
         public IFeatureCollection Features { get; } = null;
-        public IServiceProvider Services { get; } = null;
+        public IServiceProvider Services { get; set; } = null;
         public RequestDelegate Invoker { get; set; }
         public Task BeforeEach(HttpContext context)
         {

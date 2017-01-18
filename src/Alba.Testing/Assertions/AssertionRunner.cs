@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using NSubstitute;
 
 namespace Alba.Testing.Assertions
 {
@@ -11,7 +13,9 @@ namespace Alba.Testing.Assertions
             Action<HttpContext> configuration)
         {
             var ex = new ScenarioAssertionException();
-            var scenario = new Scenario(new BasicScenarioSupport(), null);
+            var support = new BasicScenarioSupport();
+
+            var scenario = new Scenario(support, Substitute.For<IServiceScope>());
             configuration(scenario.Context);
 
             var stream = scenario.Context.Response.Body;
