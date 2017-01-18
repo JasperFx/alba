@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http.Features;
 
 namespace Alba
 {
-    public interface ISystemUnderTest
+    public interface ISystemUnderTest : IDisposable
     {
         // Have it return an IApplicationBuilder. Makes many, many things easier
 

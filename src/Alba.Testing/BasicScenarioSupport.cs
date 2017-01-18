@@ -128,5 +128,10 @@ namespace Alba.Testing
                 Method = ReflectionHelper.GetMethod(expression)
             });
         }
+
+        public void Dispose()
+        {
+            Container?.Dispose();
+        }
     }
 }

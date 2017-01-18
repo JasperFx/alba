@@ -8,13 +8,16 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Builder.Internal;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Internal;
+using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Alba
 {
     public class SystemUnderTest : ISystemUnderTest
     {
+        private readonly IWebHost _host;
         public RequestDelegate Invoker { get; }
 
         public HttpContext CreateContext()
@@ -25,9 +28,20 @@ namespace Alba
         public IFeatureCollection Features { get; }
         public IServiceProvider Services { get; }
 
-        public static SystemUnderTest ForStartup<T>() where T : class, new()
+        public static SystemUnderTest ForStartup<T>(Action<IHostingEnvironment> configure = null) where T : class
         {
+            var environment = new HostingEnvironment {ContentRootPath = AppContext.BaseDirectory};
+
+            // TODO -- get the content paths all set up to do the parallel trick
+            configure?.Invoke(environment);
+
             var builder = new WebHostBuilder();
+            builder.ConfigureServices(_ =>
+            {
+                _.AddSingleton<IHostingEnvironment>(environment);
+                _.AddSingleton<IServer>(new TestServer());
+            });
+
             builder.UseStartup<T>();
 
             var host = builder.Start();
@@ -57,8 +71,10 @@ namespace Alba
             Features = host.ServerFeatures;
             Services = host.Services;
 
-            var field = typeof(WebHost).GetField("_application", BindingFlags.NonPublic);
+            var field = typeof(WebHost).GetField("_application", BindingFlags.NonPublic | BindingFlags.Instance);
             Invoker = field.GetValue(host).As<RequestDelegate>();
+
+            _host = host;
         }
 
 
@@ -95,6 +111,11 @@ namespace Alba
         public string UrlFor<T>(T input, string httpMethod)
         {
             throw new NotImplementedException();
+        }
+
+        public void Dispose()
+        {
+            _host?.Dispose();
         }
     }
 }
