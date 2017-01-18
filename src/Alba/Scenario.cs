@@ -52,9 +52,11 @@ namespace Alba
         // holds on to the http context & IApplicationServer
 
 
-        public void AssertThat(IScenarioAssertion assertion)
+        public Scenario AssertThat(IScenarioAssertion assertion)
         {
             _assertions.Add(assertion);
+
+            return this;
         }
 
 
@@ -104,9 +106,10 @@ namespace Alba
             _assertionRecords.AssertAll();
         }
 
-        public void StatusCodeShouldBe(HttpStatusCode httpStatusCode)
+        public Scenario StatusCodeShouldBe(HttpStatusCode httpStatusCode)
         {
             _expectedStatusCode = (int)httpStatusCode;
+            return this;
         }
 
         public void StatusCodeShouldBe(int statusCode)
@@ -119,36 +122,7 @@ namespace Alba
             _ignoreStatusCode = true;
         }
 
-        public void ContentShouldContain(string text)
-        {
-            _assertions.Add(new BodyContainsAssertion(text));
-        }
 
-        public void ContentShouldNotContain(string text)
-        {
-            _assertions.Add(new BodyDoesNotContainAssertion(text));
-        }
-
-        public void ContentShouldBe(string exactContent)
-        {
-            _assertions.Add(new BodyTextAssertion(exactContent));
-        }
-
-        public void StatusCodeShouldBeOk()
-        {
-            StatusCodeShouldBe(HttpStatusCode.OK);
-        }
-
-        public void ContentTypeShouldBe(MimeType mimeType)
-        {
-            ContentTypeShouldBe(mimeType.Value);
-        }
-
-
-        public void ContentTypeShouldBe(string mimeType)
-        {
-            Header("content-type").SingleValueShouldEqual(mimeType);
-        }
 
 
         
