@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Baseline;
 #if NET46
 #endif
@@ -64,7 +65,19 @@ namespace Alba
 
         public string ReadBody(Scenario scenario)
         {
-            return Body ?? (Body = scenario.Context.Response.Body.ReadAllText());
+            var stream = scenario.Context.Response.Body;
+            if (Body == null)
+            {
+                stream.Position = 0;
+                Body = Encoding.UTF8.GetString(stream.ReadAllBytes());
+            }
+
+            return Body;
+        }
+
+        public void ShowActualBodyInErrorMessage(Scenario scenario)
+        {
+            ReadBody(scenario);
         }
     }
 }

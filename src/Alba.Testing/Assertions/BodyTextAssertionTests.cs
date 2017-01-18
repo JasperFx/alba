@@ -19,7 +19,7 @@ namespace Alba.Testing.Assertions
         {
             var assertion = new BodyTextAssertion("Hey!");
             AssertionRunner.Run(assertion, env => env.Response.Write("Hey! You!"))
-                .Messages.Single().ShouldContain("The contents should have been:");
+                .Messages.Single().ShouldContain("Expected the content to be 'Hey!'");
         }
     }
 }

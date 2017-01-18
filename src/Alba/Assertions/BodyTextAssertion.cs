@@ -14,7 +14,7 @@ namespace Alba.Assertions
             var body = ex.ReadBody(scenario);
             if (!body.Equals(Text))
             {
-                ex.Add($"The contents should have been:\n\nText");
+                ex.Add($"Expected the content to be '{Text}'");
             }
         }
     }

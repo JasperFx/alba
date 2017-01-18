@@ -10,7 +10,9 @@
     "Shouldly": "2.8.2",
     "NSubstitute": "2.0.0-rc",
     "Alba": { "target": "project" },
-    "HtmlTags.AspNetCore": "4.1.0" 
+    "HtmlTags.AspNetCore": "4.1.0",
+    "StructureMap.Microsoft.DependencyInjection": "1.3.0",
+    "StructureMap":  "4.4.2"  
   },
   "testRunner": "xunit",
   "frameworks": {

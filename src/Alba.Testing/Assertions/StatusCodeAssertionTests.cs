@@ -20,7 +20,7 @@ namespace Alba.Testing.Assertions
             var assertion = new StatusCodeAssertion(200);
 
             AssertionRunner.Run(assertion, _ => _.StatusCode(304))
-                .SingleMessageShouldBe("Expected a Status Code of 200, but was 304");
+                .SingleMessageShouldBe("Expected status code 200, but was 304");
         }
     }
 }

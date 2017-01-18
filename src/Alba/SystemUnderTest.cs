@@ -82,7 +82,7 @@ namespace Alba
             throw new NotImplementedException();
         }
 
-        public string UrlFor<T>(Expression<Action<T>> expression, string method)
+        public string UrlFor<T>(Expression<Action<T>> expression, string httpMethod)
         {
             throw new NotImplementedException();
         }
@@ -92,7 +92,7 @@ namespace Alba
             throw new NotImplementedException();
         }
 
-        public string UrlFor<T>(T input, string method)
+        public string UrlFor<T>(T input, string httpMethod)
         {
             throw new NotImplementedException();
         }

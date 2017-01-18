@@ -14,7 +14,9 @@
             var statusCode = scenario.Context.Response.StatusCode;
             if (statusCode != Expected)
             {
-                ex.Add($"Expected a Status Code of {Expected}, but was {statusCode}");
+                ex.Add($"Expected status code {Expected}, but was {statusCode}");
+
+                ex.ShowActualBodyInErrorMessage(scenario);
             }
         }
     }

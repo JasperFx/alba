@@ -7,16 +7,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using Alba.Assertions;
-using Alba.Stubs;
 using Baseline;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Alba
 {
     public class Scenario : IUrlExpression
     {
+        private readonly ScenarioAssertionException _assertionRecords = new ScenarioAssertionException();
         private readonly ISystemUnderTest _system;
         private readonly IList<Func<HttpContext, Task>> _befores = new List<Func<HttpContext, Task>>();
         private readonly IList<Func<HttpContext, Task>> _afters = new List<Func<HttpContext, Task>>();
@@ -92,9 +91,17 @@ namespace Alba
         public HttpRequestBody Body => new HttpRequestBody(_system, Context);
 
 
-        public void RunAssertions()
+        internal void RunAssertions()
         {
-            throw new NotImplementedException();
+            if (!_ignoreStatusCode)
+            {
+                new StatusCodeAssertion(_expectedStatusCode).Assert(this, _assertionRecords);
+            }
+
+            _assertions.Each(x => x.Assert(this, _assertionRecords));
+
+
+            _assertionRecords.AssertAll();
         }
 
         public void StatusCodeShouldBe(HttpStatusCode httpStatusCode)
@@ -140,7 +147,7 @@ namespace Alba
 
         public void ContentTypeShouldBe(string mimeType)
         {
-            Header("content-length").SingleValueShouldEqual(mimeType);
+            Header("content-type").SingleValueShouldEqual(mimeType);
         }
 
 

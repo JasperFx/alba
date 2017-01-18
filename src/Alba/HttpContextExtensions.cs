@@ -18,7 +18,7 @@ namespace Alba
 
         public static void RelativeUrl(this HttpContext context, string relativeUrl)
         {
-            context.Request.Path = relativeUrl;
+            context.Request.PathBase = relativeUrl;
         }
 
         public static void Accepts(this HttpContext context, string mimeType)
@@ -40,6 +40,8 @@ namespace Alba
         {
             var bytes = Encoding.UTF8.GetBytes(content);
             response.Body.Write(bytes, 0, bytes.Length);
+            response.Body.Flush();
         }
+
     }
 }
