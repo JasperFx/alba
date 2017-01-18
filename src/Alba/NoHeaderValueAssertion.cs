@@ -14,13 +14,13 @@ namespace Alba
 
         public void Assert(Scenario scenario, ScenarioAssertionException ex)
         {
-            if (scenario.Context.Request.Headers.ContainsKey(_headerKey))
+            var headers = scenario.Context.Response.Headers;
+            if (headers.ContainsKey(_headerKey))
             {
-                var values = scenario.Context.Request.Headers[_headerKey];
+                var values = headers[_headerKey];
                 var valueText = values.Select(x => "'" + x + "'").Join(", ");
                 ex.Add($"Expected no value for header '{_headerKey}', but found values {valueText}");
             }
-
         }
     }
 }
