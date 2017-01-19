@@ -97,7 +97,36 @@ end
 
 "Launches the documentation project in editable mode"
 task :docs do
-	sh "paket.exe install"
-	sh "packages/Storyteller/tools/st.exe doc-run -v #{BUILD_VERSION}"
+	sh "dotnet restore"
+	sh "dotnet stdocs run -v #{BUILD_VERSION}"
+end
+
+"Exports the documentation to jasperfx.github.io - requires Git access to that repo though!"
+task :publish do
+	FileUtils.remove_dir('doc-target') if Dir.exists?('doc-target')
+
+	if !Dir.exists? 'doc-target' 
+		Dir.mkdir 'doc-target'
+		sh "git clone -b gh-pages https://github.com/jasperfx/alba.git doc-target"
+	else
+		Dir.chdir "doc-target" do
+			sh "git checkout --force"
+			sh "git clean -xfd"
+			sh "git pull origin master"
+		end
+	end
+	
+	sh "dotnet restore"
+	sh "dotnet stdocs export doc-target ProjectWebsite --version #{BUILD_VERSION} --project alba"
+	
+	Dir.chdir "doc-target" do
+		sh "git add --all"
+		sh "git commit -a -m \"Documentation Update for #{BUILD_VERSION}\" --allow-empty"
+		sh "git push origin gh-pages"
+	end
+	
+
+	
+
 end
 

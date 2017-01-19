@@ -1,6 +1,0 @@
-urls
-headers
-request_body
-writing_content
-cookies
-conneg

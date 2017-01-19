@@ -197,3 +197,5 @@ FakesAssemblies/
 
 artifacts
 src/.idea
+
+doc-target
