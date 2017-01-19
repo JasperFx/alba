@@ -53,7 +53,7 @@ namespace Alba.Stubs
         public override ClaimsPrincipal User { get; set; } = new ClaimsPrincipal();
 
 
-        public override IDictionary<object, object> Items { get; set; }
+        public override IDictionary<object, object> Items { get; set; } = new Dictionary<object, object>();
 
         public sealed override IServiceProvider RequestServices { get; set; }
 

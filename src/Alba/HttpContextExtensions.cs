@@ -18,7 +18,7 @@ namespace Alba
 
         public static void RelativeUrl(this HttpContext context, string relativeUrl)
         {
-            context.Request.PathBase = relativeUrl;
+            context.Request.Path = relativeUrl;
         }
 
         public static void Accepts(this HttpContext context, string mimeType)

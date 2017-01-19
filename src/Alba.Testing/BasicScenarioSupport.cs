@@ -55,7 +55,7 @@ namespace Alba.Testing
 
         public Task Invoke(HttpContext context)
         {
-            return Handlers[context.Request.PathBase](context);
+            return Handlers[context.Request.Path](context);
         }
 
         public Task BeforeEach(HttpContext context)

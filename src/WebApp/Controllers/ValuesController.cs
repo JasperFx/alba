@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApp.Controllers
@@ -13,7 +12,13 @@ namespace WebApp.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            return new string[] { "value1", "value2" };
+            var context = HttpContext;
+            Console.WriteLine("Got me a context");
+
+
+            HttpContext.Response.Headers.Append("content-type", "text/plain");
+
+            return new[] {"value1", "value2"};
         }
 
         // GET api/values/5
@@ -25,13 +30,13 @@ namespace WebApp.Controllers
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody]string value)
+        public void Post([FromBody] string value)
         {
         }
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        public void Put(int id, [FromBody] string value)
         {
         }
 

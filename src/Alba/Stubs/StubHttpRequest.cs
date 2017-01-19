@@ -20,12 +20,12 @@ namespace Alba.Stubs
         }
 
         public override HttpContext HttpContext { get; }
-        public override string Method { get; set; }
-        public override string Scheme { get; set; }
-        public override bool IsHttps { get; set; }
-        public override HostString Host { get; set; }
-        public override PathString PathBase { get; set; }
-        public override PathString Path { get; set; }
+        public override string Method { get; set; } = "GET";
+        public override string Scheme { get; set; } = "http";
+        public override bool IsHttps { get; set; } = false;
+        public override HostString Host { get; set; } = new HostString("localhost", 5000);
+        public override PathString PathBase { get; set; } = "/";
+        public override PathString Path { get; set; } = "/";
         public override QueryString QueryString { get; set; }
         public override IQueryCollection Query { get; set; }
         public override string Protocol { get; set; }
