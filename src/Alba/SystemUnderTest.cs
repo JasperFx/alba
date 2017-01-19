@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -28,11 +30,25 @@ namespace Alba
         public IFeatureCollection Features { get; }
         public IServiceProvider Services { get; }
 
-        public static SystemUnderTest ForStartup<T>(Action<IHostingEnvironment> configure = null) where T : class
-        {
-            var environment = new HostingEnvironment {ContentRootPath = AppContext.BaseDirectory};
 
-            // TODO -- get the content paths all set up to do the parallel trick
+
+        public static string FindParallelFolder(string folderName)
+        {
+            var starting = AppContext.BaseDirectory.ToFullPath();
+            while (starting.Contains(Path.DirectorySeparatorChar + "bin"))
+            {
+                starting = starting.ParentDirectory();
+            }
+
+            var candidate = starting.ParentDirectory().AppendPath(folderName);
+
+            return Directory.Exists(candidate) ? candidate : null;
+        }
+
+        public static SystemUnderTest ForStartup<T>(Action<IHostingEnvironment> configure = null, string rootPath = null) where T : class
+        {
+            var environment = new HostingEnvironment {ContentRootPath = rootPath ?? FindParallelFolder(typeof(T).GetTypeInfo().Assembly.GetName().Name) ?? AppContext.BaseDirectory};
+
             configure?.Invoke(environment);
 
             var builder = new WebHostBuilder();

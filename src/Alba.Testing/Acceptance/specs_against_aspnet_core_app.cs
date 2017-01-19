@@ -37,5 +37,15 @@ namespace Alba.Testing.Acceptance
                 _.ContentShouldBe("I ran a POST with value Blue");
             });
         }
+
+        [Fact]
+        public Task can_do_the_parallel_directory_trick_from_fubu_for_content_data()
+        {
+            return run(_ =>
+            {
+                _.Get.Url("/hello.txt");
+                _.ContentShouldContain("Hello from ASP.Net Core app!");
+            });
+        }
     }
 }
