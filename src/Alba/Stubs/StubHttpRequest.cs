@@ -26,8 +26,8 @@ namespace Alba.Stubs
         public override HostString Host { get; set; } = new HostString("localhost", 5000);
         public override PathString PathBase { get; set; } = "/";
         public override PathString Path { get; set; } = "/";
-        public override QueryString QueryString { get; set; }
-        public override IQueryCollection Query { get; set; }
+        public override QueryString QueryString { get; set; } = QueryString.Empty;
+        public override IQueryCollection Query { get; set; } = new QueryCollection();
         public override string Protocol { get; set; }
         public override IHeaderDictionary Headers { get; } = new HeaderDictionary();
         public override IRequestCookieCollection Cookies { get; set; } = new RequestCookieCollection();

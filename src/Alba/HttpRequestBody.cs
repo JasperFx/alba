@@ -36,13 +36,22 @@ namespace Alba
 
         public void JsonInputIs(string json)
         {
-            var stream = _parent.Response.Body;
+            writeTextToBody(json);
+
+
+        }
+
+        private void writeTextToBody(string json)
+        {
+            var stream = _parent.Request.Body;
 
             var writer = new StreamWriter(stream);
             writer.Write(json);
             writer.Flush();
 
             stream.Position = 0;
+
+            _parent.Request.ContentLength = stream.Length;
         }
 
         public void WriteFormData<T>(T target) where T : class
@@ -75,5 +84,10 @@ namespace Alba
             _parent.Request.Body = stream;
         }
 
+        public void TextIs(string body)
+        {
+            writeTextToBody(body);
+            _parent.Request.ContentType = "text/plain";
+        }
     }
 }
