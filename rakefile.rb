@@ -70,6 +70,10 @@ task :test => [:compile] do
 
 	sh "dotnet test src/Alba.Testing"
 	sh "dotnet test src/AlbaRouter.Testing"
+	
+	Dir.chdir("src/AlbaRouterStoryteller") do
+	  system "dotnet storyteller run"
+	end
 end
 
 desc "Pack up the nupkg file"
@@ -84,14 +88,12 @@ task :sln do
 	sh "start src/Alba.sln"
 end
 
-desc "Run the storyteller specifications"
-task :storyteller => [:compile] do
-	sh "packages/Storyteller/tools/st.exe run src/Alba.Testing --results-path artifacts/stresults.htm --build #{COMPILE_TARGET}"
-end
 
 desc "Run the storyteller specifications"
 task :open_st => [:compile] do
-	sh "packages/Storyteller/tools/st.exe open src/Alba.Testing"
+	Dir.chdir("src/AlbaRouterStoryteller") do
+	  system "dotnet storyteller open"
+	end
 end
 
 
