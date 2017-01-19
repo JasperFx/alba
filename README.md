@@ -2,11 +2,12 @@
 
 [![Join the chat at https://gitter.im/JasperFx/alba](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/JasperFx/alba?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Framework independent helpers for working with OWIN applications and middleware
+Tooling for better integration testing against ASP.Net Core applications. Also an alternative routing engine based on the Trie algorithm just for fun.
 
-Before opening the code, run `paket restore` from the command line at the root of the project to restore Nuget dependencies. Or use the rake build script if you're okay with that approach.
+To get started with the code, you'll need at least the dotnet CLI version 1.0.1 to work with the code. Assuming that you've got VS2015 or above, just open the solution
+at src/Alba.sln and go to town.
 
-To run the Storyteller specifications, you can use the `storyteller.cmd` batch file.
+At this point, we're keeping Alba back on the project.json project format until VS2017 has stabilized.
 
 
 
