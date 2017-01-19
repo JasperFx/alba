@@ -10,6 +10,7 @@
     "Shouldly": "2.8.2",
     "NSubstitute": "2.0.0-rc",
     "Alba": { "target": "project" },
+    "AlbaRouter": { "target": "project" },
     "StructureMap.Microsoft.DependencyInjection": "1.3.0",
     "StructureMap": "4.4.2",
     "WebApp": {"target": "project" }
@@ -20,7 +21,7 @@
       "dependencies": {
         "Microsoft.NETCore.App": {
           "type": "platform",
-          "version": "1.0.1"
+          "version": "1.0.0"
         }
       },
       "imports": [

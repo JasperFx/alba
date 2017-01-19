@@ -10,6 +10,11 @@ namespace Alba.Stubs
 {
     public class StubHttpContext : HttpContext
     {
+        public static StubHttpContext Empty()
+        {
+            return new StubHttpContext(new FeatureCollection(), null);
+        }
+
         public StubHttpContext(IFeatureCollection features, IServiceProvider services)
         {
             Features = features;

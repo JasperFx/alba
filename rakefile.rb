@@ -9,7 +9,7 @@ BUILD_NUMBER = build_number
 
 task :ci => [:version, :default, :pack]
 
-task :default => [:test, :storyteller]
+task :default => [:test]
 
 desc "Prepares the working directory for a new build"
 task :clean do
@@ -59,26 +59,26 @@ end
 
 desc 'Compile the code'
 task :compile => [:clean] do
-	sh "paket.exe install"
-
-	msbuild = '"C:\Program Files (x86)\MSBuild\14.0\Bin\msbuild.exe"'
-
-	sh "#{msbuild} src/Alba.sln   /property:Configuration=#{COMPILE_TARGET} /v:m /t:rebuild /nr:False /maxcpucount:2"
+	sh "dotnet restore src"
+	sh "dotnet build src/Alba.Testing"
+	sh "dotnet build src/AlbaRouter.Testing"
 end
 
 desc 'Run the unit tests'
 task :test => [:compile] do
 	Dir.mkdir RESULTS_DIR
 
-	sh "packages/xunit.runner.console/tools/xunit.console.exe src/Alba.Testing/bin/#{COMPILE_TARGET}/Alba.Testing.dll"
+	sh "dotnet test src/Alba.Testing"
+	sh "dotnet test src/AlbaRouter.Testing"
 end
 
 desc "Pack up the nupkg file"
 task :pack => [:compile] do
-	sh "paket.exe pack output artifacts version #{build_number}"
+	sh "dotnet pack src/Alba -o artifacts --configuration Release --version-suffix #{build_revision}"
+	sh "dotnet pack src/AlbaRouter -o artifacts --configuration Release --version-suffix #{build_revision}"
 end
 
-
+# TODO -- redo these tasks
 desc "Launches VS to the Alba solution file"
 task :sln do
 	sh "start src/Alba.sln"
