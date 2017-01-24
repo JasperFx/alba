@@ -985,7 +985,7 @@
           }
         }
       },
-      "Storyteller/4.0.0-alpha-441": {
+      "Storyteller/4.0.0-alpha-463": {
         "type": "package",
         "dependencies": {
           "Baseline": "1.1.0",
@@ -3880,12 +3880,12 @@
         "runtimes/ubuntu.16.10-x64/native/System.Security.Cryptography.Native.OpenSsl.so"
       ]
     },
-    "Storyteller/4.0.0-alpha-441": {
-      "sha512": "s71J+v/b4iTjsrEnDIGvgQz7KbGKqMZ2izk3vdIIHz7lgL7aIYeuOSi1ZBbxcH4By/HHfPs9rOZxViahc/X/iQ==",
+    "Storyteller/4.0.0-alpha-463": {
+      "sha512": "GX3ea1qFiRTcZUkgqdDqqp8jKXOnUfa22qnjqz8k5Dx+VUN92+5vTAzg3e31dNvNS82DmX6fpio13RhUiiMLCA==",
       "type": "package",
-      "path": "Storyteller/4.0.0-alpha-441",
+      "path": "Storyteller/4.0.0-alpha-463",
       "files": [
-        "Storyteller.4.0.0-alpha-441.nupkg.sha512",
+        "Storyteller.4.0.0-alpha-463.nupkg.sha512",
         "Storyteller.nuspec",
         "lib/net46/Storyteller.dll",
         "lib/netstandard1.6/Storyteller.dll"
@@ -8499,7 +8499,7 @@
       "Alba",
       "AlbaRouter",
       "Microsoft.NETCore.App >= 1.0.1",
-      "Storyteller >= 4.0.0-alpha-441"
+      "Storyteller >= 4.0.0-alpha-463"
     ],
     ".NETCoreApp,Version=v1.0": [
       "Microsoft.NETCore.App >= 1.0.1"
@@ -8507,15 +8507,15 @@
   },
   "tools": {
     ".NETCoreApp,Version=v1.0": {
-      "dotnet-storyteller/1.0.0-alpha-441": {
+      "dotnet-storyteller/1.0.0-alpha-463": {
         "type": "package",
         "dependencies": {
           "Microsoft.DotNet.Cli.Utils": "1.0.0-preview4-004233",
           "Microsoft.DotNet.InternalAbstractions": "1.0.500-preview2-1-003177",
           "Microsoft.DotNet.ProjectModel": "1.0.0-rc3-1-003177",
           "Microsoft.Extensions.CommandLineUtils": "1.1.0",
-          "Microsoft.NETCore.App": "1.0.1",
-          "StorytellerRunner": "1.0.0-alpha-441"
+          "Microsoft.NETCore.App": "1.1.0",
+          "StorytellerRunner": "1.0.0-alpha-463"
         },
         "compile": {
           "lib/netcoreapp1.0/dotnet-storyteller.dll": {}
@@ -8528,7 +8528,7 @@
   },
   "projectFileToolGroups": {
     ".NETCoreApp,Version=v1.0": [
-      "dotnet-storyteller >= 1.0.0-alpha-441"
+      "dotnet-storyteller >= 1.0.0-alpha-463"
     ]
   }
 }
