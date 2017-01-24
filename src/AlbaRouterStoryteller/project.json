@@ -7,11 +7,7 @@
   "dependencies": {
     "AlbaRouter": { "target": "project" },
     "Alba": { "target": "project" },
-    "Storyteller": "4.0.0-alpha-467",
-    "Microsoft.NETCore.App": {
-      "type": "platform",
-      "version": "1.0.0"
-    }
+    "Storyteller": "4.0.0-alpha-467"
   },
 
   "tools": {

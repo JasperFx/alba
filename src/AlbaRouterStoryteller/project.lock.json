@@ -8498,7 +8498,6 @@
     "": [
       "Alba",
       "AlbaRouter",
-      "Microsoft.NETCore.App >= 1.0.0",
       "Storyteller >= 4.0.0-alpha-467"
     ],
     ".NETCoreApp,Version=v1.0": [
