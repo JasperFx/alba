@@ -2302,7 +2302,7 @@
       ]
     },
     "Microsoft.Win32.Registry/4.0.0": {
-      "sha512": "RUQ2UNQFvYY0s8HcrkAk3qgSfTvWZICoDjS+HjB55bQ8QS6L5XxXqaLk9IxN9zCMWg3pNd/Xau2jCEIKRjR/RQ==",
+      "sha512": "8zbjdxGJ6/BP11x3Z8GhHHVx6EMEc+4Uk9wU0azLJHUY4WC7GnoQ49dBnajsd6sAJWb9LTObHZUdbyw/35Uq6g==",
       "type": "package",
       "path": "Microsoft.Win32.Registry/4.0.0",
       "files": [
@@ -2982,7 +2982,7 @@
       ]
     },
     "System.Diagnostics.Process/4.1.0": {
-      "sha512": "iPr+LXSrrZB9MKm0mUDwkVWtTFACDqQ0OYqJWbinCEr7ucA++9fWXRxozWdaqdyVCuFfJh+HdHq6XaMDP+34Pw==",
+      "sha512": "5JgOkEOeAl5mouMi49AJDnX/5/IyOk9BUi39dqEOwoP5lhAadjFMLGXLe0RohuIDMJPtrWe7zMosyhYc21ievw==",
       "type": "package",
       "path": "System.Diagnostics.Process/4.1.0",
       "files": [
@@ -5732,7 +5732,7 @@
       ]
     },
     "System.Threading.ThreadPool/4.0.10": {
-      "sha512": "9WCj2T/rn2lTTngIsJBjjNkn4N77KD5bVR0pkJDPk7JsaJt1Yk/+uCoCNZRRv7soygakKjf3JrSQDIOFdC7GJQ==",
+      "sha512": "fEE6NjZmXhlEHzISD30+FcLeozR1ZJtz5cov4EPKhQyFFEcqrrq9ialZoj+hfa2qLte5kQFi8sehGjl+Lk1XiQ==",
       "type": "package",
       "path": "System.Threading.ThreadPool/4.0.10",
       "files": [
@@ -5961,7 +5961,7 @@
       ]
     },
     "System.Xml.XmlDocument/4.0.1": {
-      "sha512": "mLMZObAjEaOFhNlex1yykaD83/ADCku6gEJMrxgWsZnTNo7u3+hkyMs/gx+MfcovWj+VtiqVzyyIqhDHM4mtEA==",
+      "sha512": "VLf5WFuxklB9yvHBuU8dGCzbtXCrqyhaavMzOjLWidGqa7kwCJu3er/M5AgQbDyqEvk6bNyKxrz/uxjR9bUaHg==",
       "type": "package",
       "path": "System.Xml.XmlDocument/4.0.1",
       "files": [
