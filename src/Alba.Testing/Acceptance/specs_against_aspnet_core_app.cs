@@ -81,8 +81,6 @@ namespace Alba.Testing.Acceptance
                     .Json(new Person {FirstName = "Tom", LastName = "Brady"})
                     .ToUrl("/api/json");
 
-                _.StatusCodeShouldBe(415);
-
             });
 
 

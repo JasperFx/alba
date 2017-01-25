@@ -259,5 +259,10 @@ namespace Alba
                 return this;
             }
         }
+
+        internal void Rewind()
+        {
+            Context.Request.Body.Position = 0;
+        }
     }
 }

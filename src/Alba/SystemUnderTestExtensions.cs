@@ -15,6 +15,8 @@ namespace Alba
                 var scenario = new Scenario(system, scope);
                 configure(scenario);
 
+                scenario.Rewind();
+
                 try
                 {
                     await system.BeforeEach(scenario.Context).ConfigureAwait(false);

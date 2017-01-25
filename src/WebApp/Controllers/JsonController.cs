@@ -1,4 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.IO;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.Extensions.Configuration.EnvironmentVariables;
+using Newtonsoft.Json;
 
 namespace WebApp.Controllers
 {
@@ -12,8 +18,10 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post(Person person)
+        public IActionResult Post()
         {
+             var person = new JsonSerializer().Deserialize<Person>(new JsonTextReader(new StreamReader(HttpContext.Request.Body)));
+
              return Json(person);
         }
 
@@ -28,5 +36,30 @@ namespace WebApp.Controllers
     {
         public string FirstName = "Jeremy";
         public string LastName = "Miller";
+    }
+
+    public class JsonInputFormatter : IInputFormatter
+    {
+        public JsonInputFormatter()
+        {
+            Console.WriteLine("I was called");
+        }
+
+        public bool CanRead(InputFormatterContext context)
+        {
+            var contentType = context.HttpContext.Request.ContentType;
+            return contentType == "text/json" || contentType == "application/json";
+        }
+
+        public Task<InputFormatterResult> ReadAsync(InputFormatterContext context)
+        {
+            var serializer = new JsonSerializer();
+
+            var model = serializer.Deserialize(new JsonTextReader(new StreamReader(context.HttpContext.Request.Body)), context.ModelType);
+
+            var result = InputFormatterResult.Success(model);
+
+            return Task.FromResult(result);
+        }
     }
 }

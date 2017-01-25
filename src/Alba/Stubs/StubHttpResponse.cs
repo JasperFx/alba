@@ -1,7 +1,10 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Internal;
+using Microsoft.Extensions.ObjectPool;
 
 namespace Alba.Stubs
 {
@@ -10,22 +13,27 @@ namespace Alba.Stubs
         public StubHttpResponse(StubHttpContext context)
         {
             HttpContext = context;
+
+            Cookies = new ResponseCookies(Headers, new DefaultObjectPool<StringBuilder>(new DefaultPooledObjectPolicy<StringBuilder>()));
         }
 
         public override void OnStarting(Func<object, Task> callback, object state)
         {
-            throw new NotImplementedException();
         }
 
         public override void OnCompleted(Func<object, Task> callback, object state)
         {
-            throw new NotImplementedException();
         }
 
         public override void Redirect(string location, bool permanent)
         {
-            throw new NotImplementedException();
+            RedirectedTo = location;
+            RedirectedPermanent = permanent;
         }
+
+        public bool RedirectedPermanent { get; set; }
+
+        public string RedirectedTo { get; set; }
 
         public override HttpContext HttpContext { get; }
         public override int StatusCode { get; set; } = 200;
@@ -34,6 +42,6 @@ namespace Alba.Stubs
         public override long? ContentLength { get; set; }
         public override string ContentType { get; set; }
         public override IResponseCookies Cookies { get; }
-        public override bool HasStarted { get; }
+        public override bool HasStarted { get; } = true;
     }
 }
