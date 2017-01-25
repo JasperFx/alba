@@ -206,8 +206,14 @@ namespace Alba
 
             return new SendExpression(Context);
         }
-        
 
+        public SendExpression Text(string text)
+        {
+            Body.TextIs(text);
+            Context.Request.ContentType = "text/plain";
+
+            return new SendExpression(Context);
+        }
 
 
         public HeaderExpectations Header(string headerKey)

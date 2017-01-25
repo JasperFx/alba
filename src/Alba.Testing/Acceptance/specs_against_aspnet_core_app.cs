@@ -90,5 +90,22 @@ namespace Alba.Testing.Acceptance
             person.FirstName.ShouldBe("Tom");
             person.LastName.ShouldBe("Brady");
         }
+
+        [Fact]
+        public async Task can_post_text_to_mvc_endpoint()
+        {
+            var json = "{'FirstName': 'Peyton', 'LastName': 'Manning'}"
+                .Replace("'", "\"");
+
+            var result = await run(_ =>
+            {
+                _.Post.Text(json).ToUrl("/api/json");
+            });
+
+            var person = result.ResponseBody.ReadAsJson<Person>();
+
+            person.FirstName.ShouldBe("Peyton");
+            person.LastName.ShouldBe("Manning");
+        }
     }
 }

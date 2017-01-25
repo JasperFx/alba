@@ -31,7 +31,7 @@ namespace WebApp.Controllers
             return Json(person);
         }
     }
-
+    
     public class Person
     {
         public string FirstName = "Jeremy";

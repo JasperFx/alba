@@ -13,5 +13,6 @@ namespace Alba
         SendExpression Xml<T>(T input) where T : class;
 
         SendExpression FormData<T>(T input) where T : class;
+        SendExpression Text(string text);
     }
 }
