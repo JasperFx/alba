@@ -39,5 +39,7 @@ namespace Alba
         string UrlFor<T>(string method);
 
         string UrlFor<T>(T input, string httpMethod);
+
+        bool SupportsUrlLookup { get; }
     }
 }

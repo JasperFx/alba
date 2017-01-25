@@ -8,7 +8,7 @@ namespace Alba
     {
         // How can we do this in such a way that you can use StructureMap child containers
         // for test isolation?
-        public static async Task<Scenario> Scenario(this ISystemUnderTest system, Action<Scenario> configure)
+        public static async Task<IScenarioResult> Scenario(this ISystemUnderTest system, Action<Scenario> configure)
         {
             using (var scope = system.Services.GetService<IServiceScopeFactory>().CreateScope())
             {
@@ -20,6 +20,11 @@ namespace Alba
                     await system.BeforeEach(scenario.Context).ConfigureAwait(false);
 
                     await scenario.RunBeforeActions().ConfigureAwait(false);
+
+                    if (scenario.Context.Request.Path == null)
+                    {
+                        throw new InvalidOperationException("This scenario has no defined url");
+                    }
 
                     await system.Invoker(scenario.Context).ConfigureAwait(false);
 

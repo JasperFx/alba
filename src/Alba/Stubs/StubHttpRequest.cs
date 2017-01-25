@@ -34,7 +34,7 @@ namespace Alba.Stubs
         public override long? ContentLength { get; set; }
         public override string ContentType { get; set; }
         public override Stream Body { get; set; } = new MemoryStream();
-        public override bool HasFormContentType { get; }
+        public override bool HasFormContentType { get; } = false; // TODO -- do something here.
         public override IFormCollection Form { get; set; }
     }
 }

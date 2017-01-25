@@ -13,7 +13,13 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Alba
 {
-    public class Scenario : IUrlExpression
+    public interface IScenarioResult
+    {
+        HttpResponseBody ResponseBody { get; }
+        HttpContext Context { get; }
+    }
+
+    public class Scenario : IUrlExpression, IScenarioResult
     {
         private readonly ScenarioAssertionException _assertionRecords = new ScenarioAssertionException();
         private readonly ISystemUnderTest _system;
@@ -30,6 +36,8 @@ namespace Alba
             Context = system.CreateContext();
             Context.RequestServices = scope.ServiceProvider;
         }
+
+        HttpResponseBody IScenarioResult.ResponseBody => new HttpResponseBody(_system, Context);
 
         public HttpContext Context { get; }
 
@@ -142,11 +150,18 @@ namespace Alba
 
         SendExpression IUrlExpression.Input<T>(T input)
         {
-            var url = input == null
-                ? _system.UrlFor<T>(Context.Request.Method)
-                : _system.UrlFor(input, Context.Request.Method);
+            if (_system.SupportsUrlLookup)
+            {
+                var url = input == null
+                    ? _system.UrlFor<T>(Context.Request.Method)
+                    : _system.UrlFor(input, Context.Request.Method);
 
-            Context.RelativeUrl(url);
+                Context.RelativeUrl(url);
+            }
+            else
+            {
+                Context.RelativeUrl(null);
+            }
 
             return new SendExpression(Context);
         }

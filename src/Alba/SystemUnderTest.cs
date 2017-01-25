@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -14,6 +13,7 @@ using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 
 namespace Alba
 {
@@ -104,30 +104,41 @@ namespace Alba
             return Task.CompletedTask;
         }
 
-        public T FromJson<T>(string json)
+        public virtual T FromJson<T>(string json)
         {
-            throw new NotImplementedException();
+            var serializer = new JsonSerializer();
+
+            var reader = new JsonTextReader(new StringReader(json));
+            return serializer.Deserialize<T>(reader);
         }
 
-        public string ToJson(object target)
+        public virtual string ToJson(object target)
         {
-            throw new NotImplementedException();
+            var serializer = new JsonSerializer();
+
+            var writer = new StringWriter();
+            var jsonWriter = new JsonTextWriter(writer);
+            serializer.Serialize(jsonWriter, target);
+
+            return writer.ToString();
         }
 
-        public string UrlFor<T>(Expression<Action<T>> expression, string httpMethod)
+        public virtual string UrlFor<T>(Expression<Action<T>> expression, string httpMethod)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException("You will need to manually specify the Url");
         }
 
-        public string UrlFor<T>(string method)
+        public virtual string UrlFor<T>(string method)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException("You will need to manually specify the Url");
         }
 
-        public string UrlFor<T>(T input, string httpMethod)
+        public virtual string UrlFor<T>(T input, string httpMethod)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException("You will need to manually specify the Url");
         }
+
+        public bool SupportsUrlLookup { get; protected set; } = false;
 
         public void Dispose()
         {

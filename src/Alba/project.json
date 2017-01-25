@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-*",
+  "version": "1.0.0-alpha-*",
   "buildOptions": {
     "debugType": "portable"
   },
@@ -9,7 +9,8 @@
     "Microsoft.AspNetCore.Http.Abstractions": "1.1.0",
     "Microsoft.AspNetCore.Http": "1.1.0",
     "Microsoft.AspNetCore.Hosting":"1.1.0",
-    "Microsoft.AspNetCore.WebUtilities": "1.1.0"
+    "Microsoft.AspNetCore.WebUtilities": "1.1.0",
+    "Newtonsoft.Json": "9.0.1"
   },
   "frameworks": {
     "netstandard1.6": {

@@ -2906,7 +2906,7 @@
           "lib/netstandard1.3/_._": {}
         }
       },
-      "Alba/1.0.0": {
+      "Alba/1.0.0-alpha": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.6",
         "dependencies": {
@@ -2916,6 +2916,7 @@
           "Microsoft.AspNetCore.Http.Abstractions": "1.1.0",
           "Microsoft.AspNetCore.WebUtilities": "1.1.0",
           "NETStandard.Library": "1.6.1",
+          "Newtonsoft.Json": "9.0.1",
           "System.Xml.XmlDocument": "4.0.1"
         },
         "compile": {
@@ -2925,7 +2926,7 @@
           "netstandard1.6/Alba.dll": {}
         }
       },
-      "AlbaRouter/1.0.0": {
+      "AlbaRouter/1.0.0-alpha": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.6",
         "dependencies": {
@@ -8483,12 +8484,12 @@
         "ref/xamarinwatchos10/_._"
       ]
     },
-    "Alba/1.0.0": {
+    "Alba/1.0.0-alpha": {
       "type": "project",
       "path": "../Alba/project.json",
       "msbuildProject": "../Alba/Alba.xproj"
     },
-    "AlbaRouter/1.0.0": {
+    "AlbaRouter/1.0.0-alpha": {
       "type": "project",
       "path": "../AlbaRouter/project.json",
       "msbuildProject": "../AlbaRouter/AlbaRouter.xproj"

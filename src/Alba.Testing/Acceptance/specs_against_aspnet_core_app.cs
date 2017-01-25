@@ -1,16 +1,23 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.Extensions.DependencyInjection;
+using Shouldly;
 using WebApp;
+using WebApp.Controllers;
 using Xunit;
 
 namespace Alba.Testing.Acceptance
 {
     public class specs_against_aspnet_core_app
     {
-        private Task<Scenario> run(Action<Scenario> configuration)
+        private Task<IScenarioResult> run(Action<Scenario> configuration)
         {
             using (var system = SystemUnderTest.ForStartup<Startup>())
             {
+                var formatters = system.Services.GetServices<IInputFormatter>().ToArray();
+
                 return system.Scenario(configuration);
             }
         }
@@ -46,6 +53,44 @@ namespace Alba.Testing.Acceptance
                 _.Get.Url("/hello.txt");
                 _.ContentShouldContain("Hello from ASP.Net Core app!");
             });
+        }
+
+        [Fact]
+        public async Task can_read_json_response()
+        {
+            var result = await run(_ =>
+            {
+                _.Get.Url("/api/json");
+            });
+
+
+            var person = result.ResponseBody.ReadAsJson<Person>();
+
+
+            person.FirstName.ShouldBe("Jeremy");
+            person.LastName.ShouldBe("Miller");
+        }
+
+        [Fact]
+        public async Task can_post_json_response()
+        {
+
+            var result = await run(_ =>
+            {
+                _.Post
+                    .Json(new Person {FirstName = "Tom", LastName = "Brady"})
+                    .ToUrl("/api/json");
+
+                _.StatusCodeShouldBe(415);
+
+            });
+
+
+
+            var person = result.ResponseBody.ReadAsJson<Person>();
+
+            person.FirstName.ShouldBe("Tom");
+            person.LastName.ShouldBe("Brady");
         }
     }
 }

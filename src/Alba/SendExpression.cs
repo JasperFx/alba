@@ -28,5 +28,11 @@ namespace Alba
             _request.Headers["If-None-Match"] = etag;
             return this;
         }
+
+        public SendExpression ToUrl(string url)
+        {
+            _request.Path = url;
+            return this;
+        }
     }
 }

@@ -107,6 +107,8 @@ namespace Alba.Testing
             throw new NotImplementedException();
         }
 
+        public bool SupportsUrlLookup { get; } = true;
+
         internal class Route
         {
             public Type HandlerType;

@@ -100,14 +100,6 @@ namespace Alba.Testing
         }
         
 
-        public string get_wrong_status_code()
-        {
-            throw new NotImplementedException();
-            //_writer.WriteResponseCode(HttpStatusCode.InternalServerError);
-
-            return "the error text";
-        }
-
         public string post_header_values(HeaderInput input)
         {
             throw new NotImplementedException();
