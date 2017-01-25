@@ -17,9 +17,6 @@ namespace WebApp
                 .AddJsonFile("appsettings.json", true, true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true);
 
-            if (env.IsEnvironment("Development"))
-                builder.AddApplicationInsightsSettings(true);
-
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
         }
@@ -29,11 +26,6 @@ namespace WebApp
         // This method gets called by the runtime. Use this method to add services to the container
         public void ConfigureServices(IServiceCollection services)
         {
-            // Add framework services.
-            services.AddApplicationInsightsTelemetry(Configuration);
-
-
-
             services.AddMvc(config =>
             {
                 config.RespectBrowserAcceptHeader = true;
