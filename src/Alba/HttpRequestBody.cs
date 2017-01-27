@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Xml.Serialization;
 using Baseline;
 using Microsoft.AspNetCore.Http;
@@ -21,10 +22,20 @@ namespace Alba
 
         public void XmlInputIs(object target)
         {
+            var writer = new StringWriter();
+
             var serializer = new XmlSerializer(target.GetType());
-            var stream = _parent.Response.Body;
-            serializer.Serialize(stream, target);
+            serializer.Serialize(writer, target);
+            var xml = writer.ToString();
+            var bytes = Encoding.UTF8.GetBytes(xml);
+
+            var stream = _parent.Request.Body;
+            stream.Write(bytes, 0, bytes.Length);
             stream.Position = 0;
+
+            _parent.Request.ContentType = MimeType.Xml.Value;
+            _parent.Accepts(MimeType.Xml.Value);
+            _parent.Request.ContentLength = xml.Length;
         }
 
         public void JsonInputIs(object target)
@@ -37,8 +48,9 @@ namespace Alba
         public void JsonInputIs(string json)
         {
             writeTextToBody(json);
-
-
+            _parent.Request.ContentType = MimeType.Json.Value;
+            _parent.Accepts(MimeType.Json.Value);
+            _parent.Request.ContentLength = json.Length;
         }
 
         private void writeTextToBody(string json)
@@ -58,7 +70,6 @@ namespace Alba
         {
             _parent.Request.ContentType(MimeType.HttpFormMimetype);
 
-
             var values = new Dictionary<string, string>();
 
             typeof (T).GetProperties().Where(x => x.CanWrite && x.CanRead).Each(prop =>
@@ -75,6 +86,9 @@ namespace Alba
                 values.Add(field.Name, rawValue?.ToString() ?? string.Empty);
             });
 
+            //TODO: Is this the real form data length?
+            _parent.Request.ContentLength = values.Count;
+
             _parent.WriteFormData(values);
         }
 
@@ -87,7 +101,8 @@ namespace Alba
         public void TextIs(string body)
         {
             writeTextToBody(body);
-            _parent.Request.ContentType = "text/plain";
+            _parent.Request.ContentType = MimeType.Text.Value;
+            _parent.Request.ContentLength = body.Length;
         }
     }
 }

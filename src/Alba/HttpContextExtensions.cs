@@ -8,7 +8,7 @@ namespace Alba
     {
         public static void ContentType(this HttpRequest request, string mimeType)
         {
-            request.Headers["content-type"] = mimeType;
+            request.ContentType = mimeType;
         }
 
         public static void ContentType(this HttpResponse response, string mimeType)
