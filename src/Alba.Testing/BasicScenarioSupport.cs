@@ -104,7 +104,7 @@ namespace Alba.Testing
 
         public string UrlFor<T>(T input, string httpMethod)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         public bool SupportsUrlLookup { get; } = true;

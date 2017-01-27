@@ -169,31 +169,17 @@ namespace Alba
         SendExpression IUrlExpression.Json<T>(T input)
         {
             this.As<IUrlExpression>().Input(input);
-            Body.JsonInputIs(_system.ToJson(input));
 
-            Context.Request.Headers["content-type"] = "application/json";
-            Context.Request.Headers["accept"] = "application/json";
+            Body.JsonInputIs(_system.ToJson(input));
 
             return new SendExpression(Context);
         }
 
         SendExpression IUrlExpression.Xml<T>(T input) 
         {
-            var writer = new StringWriter();
-
-            var serializer = new XmlSerializer(typeof(T));
-            serializer.Serialize(writer, input);
-
-            var bytes = Encoding.UTF8.GetBytes(writer.ToString());
-
-            var stream = Context.Request.Body;
-            stream.Write(bytes, 0, bytes.Length);
-            stream.Position = 0;
-
-            Context.Request.ContentType("application/xml");
-            Context.Accepts("application/xml");
-
             this.As<IUrlExpression>().Input(input);
+
+            Body.XmlInputIs(input);
 
             return new SendExpression(Context);
         }
