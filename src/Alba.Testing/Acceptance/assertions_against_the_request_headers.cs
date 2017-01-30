@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Shouldly;
 using Xunit;
 
@@ -151,6 +152,42 @@ namespace Alba.Testing.Acceptance
             {
                 x.Post
                     .FormData(new Person { FirstName = "Tom" })
+                    .ToUrl("/one");
+                x.Context.Request.ContentLength.ShouldNotBeNull();
+            });
+        }
+
+        [Fact]
+        public Task using_scenario_with_DictionaryFormData_should_set_content_type()
+        {
+            host.Handlers["/one"] = c =>
+            {
+                c.Response.StatusCode = 200;
+                return Task.CompletedTask;
+            };
+
+            return host.Scenario(x =>
+            {
+                x.Post
+                    .FormData(new Dictionary<string, string> { {"foo", "bar"} })
+                    .ToUrl("/one");
+                x.Context.Request.ContentType.ShouldBe(MimeType.HttpFormMimetype);
+            });
+        }
+
+        [Fact]
+        public Task using_scenario_with_DictionaryFormData_should_set_content_length()
+        {
+            host.Handlers["/one"] = c =>
+            {
+                c.Response.StatusCode = 200;
+                return Task.CompletedTask;
+            };
+
+            return host.Scenario(x =>
+            {
+                x.Post
+                    .FormData(new Dictionary<string, string> { {"foo", "bar"} })
                     .ToUrl("/one");
                 x.Context.Request.ContentLength.ShouldNotBeNull();
             });

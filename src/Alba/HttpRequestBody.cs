@@ -66,30 +66,14 @@ namespace Alba
             _parent.Request.ContentLength = stream.Length;
         }
 
-        public void WriteFormData<T>(T target) where T : class
+        public void WriteFormData(Dictionary<string, string> input)
         {
             _parent.Request.ContentType(MimeType.HttpFormMimetype);
 
-            var values = new Dictionary<string, string>();
-
-            typeof (T).GetProperties().Where(x => x.CanWrite && x.CanRead).Each(prop =>
-            {
-                var rawValue = prop.GetValue(target, null);
-
-                values.Add(prop.Name, rawValue?.ToString() ?? string.Empty);
-            });
-
-            typeof (T).GetFields().Each(field =>
-            {
-                var rawValue = field.GetValue(target);
-
-                values.Add(field.Name, rawValue?.ToString() ?? string.Empty);
-            });
-
             //TODO: Is this the real form data length?
-            _parent.Request.ContentLength = values.Count;
+            _parent.Request.ContentLength = input.Count;
 
-            _parent.WriteFormData(values);
+            _parent.WriteFormData(input);
         }
 
         public void ReplaceBody(Stream stream)
