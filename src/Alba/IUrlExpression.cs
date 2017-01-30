@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace Alba
@@ -14,5 +15,6 @@ namespace Alba
 
         SendExpression FormData<T>(T input) where T : class;
         SendExpression Text(string text);
+        SendExpression FormData(Dictionary<string, string> input);
     }
 }

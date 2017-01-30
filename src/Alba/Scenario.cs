@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
@@ -184,7 +186,32 @@ namespace Alba
             return new SendExpression(Context);
         }
 
-        SendExpression IUrlExpression.FormData<T>(T input)
+        SendExpression IUrlExpression.FormData<T>(T target)
+        {
+            this.As<IUrlExpression>().Input(target);
+
+            var values = new Dictionary<string, string>();
+
+            typeof(T).GetProperties().Where(x => x.CanWrite && x.CanRead).Each(prop =>
+            {
+                var rawValue = prop.GetValue(target, null);
+
+                values.Add(prop.Name, rawValue?.ToString() ?? string.Empty);
+            });
+
+            typeof(T).GetFields().Each(field =>
+            {
+                var rawValue = field.GetValue(target);
+
+                values.Add(field.Name, rawValue?.ToString() ?? string.Empty);
+            });
+
+            Body.WriteFormData(values);
+
+            return new SendExpression(Context);
+        }
+
+        SendExpression IUrlExpression.FormData(Dictionary<string, string> input)
         {
             this.As<IUrlExpression>().Input(input);
 
