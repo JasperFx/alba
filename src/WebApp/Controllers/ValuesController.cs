@@ -12,11 +12,11 @@ namespace WebApp.Controllers
     {
         // GET api/values
         [HttpGet]
-        public IEnumerable<string> Get()
+        public string Get()
         {
             HttpContext.Response.Headers.Append("content-type", "text/plain");
 
-            return new[] {"value1", "value2"};
+            return "value1, value2";
         }
 
         // GET api/values/5

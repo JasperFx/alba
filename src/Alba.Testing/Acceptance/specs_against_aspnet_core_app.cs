@@ -16,8 +16,6 @@ namespace Alba.Testing.Acceptance
         {
             using (var system = SystemUnderTest.ForStartup<Startup>())
             {
-                var formatters = system.Services.GetServices<IInputFormatter>().ToArray();
-
                 return system.Scenario(configuration);
             }
         }
@@ -27,8 +25,8 @@ namespace Alba.Testing.Acceptance
         {
             return run(_ =>
             {
-                _.Get.Url("/api/values");
-                _.ContentTypeShouldBe("text/plain");
+                _.Get.Url("/api/values").Accepts("text/plain");
+                _.ContentTypeShouldBe("text/plain; charset=utf-8");
                 _.StatusCodeShouldBeOk();
             });
         }
