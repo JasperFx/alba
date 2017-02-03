@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Formatters;
-using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using WebApp;
 using WebApp.Controllers;

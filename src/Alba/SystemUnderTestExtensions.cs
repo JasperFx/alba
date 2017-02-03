@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Alba
@@ -13,6 +14,10 @@ namespace Alba
             using (var scope = system.Services.GetService<IServiceScopeFactory>().CreateScope())
             {
                 var scenario = new Scenario(system, scope);
+
+                var contextAccessor = scope.ServiceProvider.GetService<IHttpContextAccessor>();
+                contextAccessor.HttpContext = scenario.Context;
+
                 configure(scenario);
 
                 scenario.Rewind();

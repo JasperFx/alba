@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Formatters;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using JsonInputFormatter = WebApp.Controllers.JsonInputFormatter;
@@ -30,10 +29,9 @@ namespace WebApp
             services.AddMvc(config =>
             {
                 config.RespectBrowserAcceptHeader = true;
+                config.InputFormatters.Clear();
+                config.InputFormatters.Add(new JsonInputFormatter());
             });
-
-            services.AddTransient<IInputFormatter, JsonInputFormatter>();
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline

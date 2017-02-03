@@ -56,6 +56,7 @@ namespace Alba
             {
                 _.AddSingleton<IHostingEnvironment>(environment);
                 _.AddSingleton<IServer>(new TestServer());
+                _.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             });
 
             builder.UseStartup<T>();

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
-using Microsoft.Extensions.Configuration.EnvironmentVariables;
 using Newtonsoft.Json;
 
 namespace WebApp.Controllers
@@ -18,15 +18,13 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post()
+        public IActionResult Post([FromBody]Person person)
         {
-             var person = new JsonSerializer().Deserialize<Person>(new JsonTextReader(new StreamReader(HttpContext.Request.Body)));
-
              return Json(person);
         }
 
         [HttpPut]
-        public IActionResult Put(Person person)
+        public IActionResult Put([FromBody]Person person)
         {
             return Json(person);
         }
@@ -48,7 +46,10 @@ namespace WebApp.Controllers
         public bool CanRead(InputFormatterContext context)
         {
             var contentType = context.HttpContext.Request.ContentType;
-            return contentType == "text/json" || contentType == "application/json";
+
+            var supported = new[] { "text/plain", "text/json", "application/json"};
+
+            return supported.Any(x => contentType?.StartsWith(x) ?? false);
         }
 
         public Task<InputFormatterResult> ReadAsync(InputFormatterContext context)
