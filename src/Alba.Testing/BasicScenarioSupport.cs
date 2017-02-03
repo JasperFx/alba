@@ -30,6 +30,7 @@ namespace Alba.Testing
         public BasicScenarioSupport()
         {
             var registry = new Registry();
+            registry.ForSingletonOf<IHttpContextAccessor>().Use<HttpContextAccessor>();
             registry.Populate(new ServiceDescriptor[0]);
 
             Container = new Container(registry);
@@ -40,7 +41,7 @@ namespace Alba.Testing
             return new StubHttpContext(Features, Services);
         }
 
-        public IFeatureCollection Features { get; } = null;
+        public IFeatureCollection Features { get; } = new FeatureCollection();
         public IServiceProvider Services => new StructureMapServiceProvider(Container);
         public RequestDelegate Invoker => Invoke;
 

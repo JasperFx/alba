@@ -223,7 +223,7 @@ namespace Alba
         public SendExpression Text(string text)
         {
             Body.TextIs(text);
-            Context.Request.ContentType = "text/plain";
+            Context.Request.ContentType = MimeType.Text.Value;
 
             return new SendExpression(Context);
         }

@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.IO;
 using Alba.Stubs;
 using Baseline;
 using Shouldly;
@@ -21,7 +19,7 @@ namespace Alba.Testing
                 ["c"] = "really?"
             };
 
-            var context = new StubHttpContext(null, null);
+            var context = StubHttpContext.Empty();
 
             context.WriteFormData(form1);
 
