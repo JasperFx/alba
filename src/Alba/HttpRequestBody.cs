@@ -1,10 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Xml.Serialization;
-using Baseline;
 using Microsoft.AspNetCore.Http;
 
 namespace Alba
@@ -40,7 +37,7 @@ namespace Alba
 
         public void JsonInputIs(object target)
         {
-            string json = _system.ToJson(target);
+            var json = _system.ToJson(target);
 
             JsonInputIs(json);
         }
@@ -69,10 +66,6 @@ namespace Alba
         public void WriteFormData(Dictionary<string, string> input)
         {
             _parent.Request.ContentType(MimeType.HttpFormMimetype);
-
-            //TODO: Is this the real form data length?
-            _parent.Request.ContentLength = input.Count;
-
             _parent.WriteFormData(input);
         }
 

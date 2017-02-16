@@ -15,6 +15,8 @@ namespace Alba
         {
             var post = formData(values).Join("&");
 
+            context.Request.ContentLength = post.Length;
+
             var postBytes = Encoding.UTF8.GetBytes(post);
 
             var stream = new MemoryStream();
