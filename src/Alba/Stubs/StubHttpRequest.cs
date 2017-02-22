@@ -4,21 +4,25 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Http.Internal;
-using Microsoft.Extensions.Primitives;
+using Microsoft.Net.Http.Headers;
 
 namespace Alba.Stubs
 {
     public class StubHttpRequest : HttpRequest
     {
-        public StubHttpRequest(StubHttpContext context)
+        private readonly FormFeature _formFeature;
+
+        public StubHttpRequest(HttpContext context)
         {
             HttpContext = context;
+            _formFeature = new FormFeature(this);
         }   
 
         public override Task<IFormCollection> ReadFormAsync(CancellationToken cancellationToken = new CancellationToken())
         {
-            throw new NotImplementedException();
+            return _formFeature.ReadFormAsync(cancellationToken);
         }
 
         public override HttpContext HttpContext { get; }
@@ -36,35 +40,24 @@ namespace Alba.Stubs
 
         public override long? ContentLength
         {
-            get
-            {
-                if (!Headers.ContainsKey("content-length"))
-                {
-                    return null;
-                }
-
-                return long.Parse(Headers["content-length"].First());
-            }
-            set
-            {
-                Headers["content-length"] = new StringValues(value.ToString());
-            }
+            get { return Headers.GetContentLength(); }
+            set { Headers.SetContentLength(value); }
         }
 
         public override string ContentType
         {
-            get
-            {
-                return Headers["content-type"].FirstOrDefault();
-            }
-            set
-            {
-                Headers["content-type"] = new StringValues(value);
-            }
+            get { return Headers[HeaderNames.ContentType]; }
+            set { Headers[HeaderNames.ContentType] = value; }
         }
 
         public override Stream Body { get; set; } = new MemoryStream();
-        public override bool HasFormContentType { get; } = false; // TODO -- do something here.
-        public override IFormCollection Form { get; set; }
+
+        public override bool HasFormContentType => _formFeature.HasFormContentType;
+
+        public override IFormCollection Form
+        {
+            get { return _formFeature.ReadForm(); }
+            set { _formFeature.Form = value; }
+        }
     }
 }
