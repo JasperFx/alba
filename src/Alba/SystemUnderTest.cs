@@ -124,8 +124,20 @@ namespace Alba
                 configuration(_builder);
             }
 
-            return _builder.Start();
+            var host = _builder.Start();
+
+            var settings = host.Services.GetService<JsonSerializerSettings>();
+            if (settings != null)
+            {
+                JsonSerializerSettings = settings;
+            }
+
+            
+
+            return host;
         }
+
+        public JsonSerializerSettings JsonSerializerSettings { get; set; } = new JsonSerializerSettings();
 
 
         public virtual Task BeforeEach(HttpContext context)
@@ -138,10 +150,14 @@ namespace Alba
             return Task.CompletedTask;
         }
 
-        // TODO -- need to pull JsonSerializerSettings out
         public virtual T FromJson<T>(string json)
         {
-            var serializer = new JsonSerializer();
+            if (!_host.IsValueCreated)
+            {
+                var host = _host.Value;
+            }
+
+            var serializer = JsonSerializer.Create(JsonSerializerSettings);
 
             var reader = new JsonTextReader(new StringReader(json));
             return serializer.Deserialize<T>(reader);
@@ -149,7 +165,12 @@ namespace Alba
 
         public virtual string ToJson(object target)
         {
-            var serializer = new JsonSerializer();
+            if (!_host.IsValueCreated)
+            {
+                var host = _host.Value;
+            }
+
+            var serializer = JsonSerializer.Create(JsonSerializerSettings);
 
             var writer = new StringWriter();
             var jsonWriter = new JsonTextWriter(writer);
