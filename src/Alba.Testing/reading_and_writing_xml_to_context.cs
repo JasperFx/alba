@@ -1,11 +1,13 @@
-﻿using System.Xml.Serialization;
+﻿using System.Xml;
+using System.Xml.Serialization;
 using Alba.Stubs;
+using Baseline;
 using Shouldly;
 using Xunit;
 
 namespace Alba.Testing
 {
-    public class HttpResponseBodyTester
+    public class reading_and_writing_xml_to_context
     {
         [Fact]
         public void can_parse_xml()
@@ -38,6 +40,22 @@ namespace Alba.Testing
             var root = body.ReadAsXml();
 
             root.DocumentElement["Name"].InnerText.ShouldBe("Declan");
+        }
+
+        [Fact]
+        public void can_write_xml_to_request()
+        {
+            var context = StubHttpContext.Empty();
+            new HttpRequestBody(null, context).XmlInputIs(new MyMessage { Age = 3, Name = "Declan" });
+
+
+            context.Request.Body.Position = 0;
+
+            var xml = context.Request.Body.ReadAllText();
+            var doc = new XmlDocument();
+            doc.LoadXml(xml);
+
+            doc.DocumentElement["Name"].InnerText.ShouldBe("Declan");
         }
 
         public class MyMessage

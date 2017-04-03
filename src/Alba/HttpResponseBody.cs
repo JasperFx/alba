@@ -7,8 +7,6 @@ using Microsoft.AspNetCore.Http;
 
 namespace Alba
 {
-    // TODO -- test through the scenario support
-    // TODO -- add headers, status code, status description, cookies
     public class HttpResponseBody
     {
         private readonly ISystemUnderTest _system;
