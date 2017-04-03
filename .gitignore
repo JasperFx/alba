@@ -199,3 +199,5 @@ artifacts
 src/.idea
 
 doc-target
+stresults.htm
+project.lock.json
