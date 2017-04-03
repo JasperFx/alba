@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using JsonInputFormatter = WebApp.Controllers.JsonInputFormatter;
@@ -26,6 +27,8 @@ namespace WebApp
         // This method gets called by the runtime. Use this method to add services to the container
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<IWidget, GreenWidget>();
+
             services.AddMvc(config =>
             {
                 config.RespectBrowserAcceptHeader = true;

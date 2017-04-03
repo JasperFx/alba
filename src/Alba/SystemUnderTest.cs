@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -24,6 +25,7 @@ namespace Alba
         private readonly Action<IWebHostBuilder> _configuration;
         private readonly Lazy<RequestDelegate> _invoker;
         private readonly WebHostBuilder _builder;
+        private readonly IList<Action<IServiceCollection>> _registrations = new List<Action<IServiceCollection>>();
 
         public RequestDelegate Invoker => _invoker.Value;
 
@@ -72,7 +74,16 @@ namespace Alba
             });
         }
 
-        
+        public void ConfigureServices(Action<IServiceCollection> configure)
+        {
+            assertHostNotStarted();
+            _registrations.Add(configure);
+        }
+
+        private void assertHostNotStarted()
+        {
+            if (_host.IsValueCreated) throw new InvalidOperationException("The WebHost has already been started");
+        }
 
         private IWebHost buildHost()
         {
@@ -82,6 +93,11 @@ namespace Alba
                 _.AddSingleton<IServer>(new TestServer());
                 _.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             });
+
+            foreach (var registration in _registrations)
+            {
+                _builder.ConfigureServices(registration);
+            }
 
             _configuration(_builder);
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,13 @@ namespace WebApp.Controllers
     [Route("api/[controller]")]
     public class ValuesController : Controller
     {
+        public static IWidget[] LastWidget { get; set; }
+
+        public ValuesController(IEnumerable<IWidget> lastWidget)
+        {
+            LastWidget = lastWidget.ToArray();
+        }
+
         // GET api/values
         [HttpGet]
         public string Get()
