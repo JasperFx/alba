@@ -61,7 +61,6 @@ desc 'Compile the code'
 task :compile => [:clean] do
 	sh "dotnet restore src"
 	sh "dotnet build src/Alba.Testing"
-	sh "dotnet build src/AlbaRouter.Testing"
 end
 
 desc 'Run the unit tests'
@@ -69,31 +68,17 @@ task :test => [:compile] do
 	Dir.mkdir RESULTS_DIR
 
 	sh "dotnet test src/Alba.Testing"
-	sh "dotnet test src/AlbaRouter.Testing"
-	
-	Dir.chdir("src/AlbaRouterStoryteller") do
-	  system "dotnet storyteller run"
-	end
 end
 
 desc "Pack up the nupkg file"
 task :pack => [:compile] do
 	sh "dotnet pack src/Alba -o artifacts --configuration Release --version-suffix #{build_revision}"
-	sh "dotnet pack src/AlbaRouter -o artifacts --configuration Release --version-suffix #{build_revision}"
 end
 
 # TODO -- redo these tasks
 desc "Launches VS to the Alba solution file"
 task :sln do
 	sh "start src/Alba.sln"
-end
-
-
-desc "Run the storyteller specifications"
-task :open_st => [:compile] do
-	Dir.chdir("src/AlbaRouterStoryteller") do
-	  system "dotnet storyteller open"
-	end
 end
 
 
