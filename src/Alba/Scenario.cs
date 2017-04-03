@@ -44,61 +44,11 @@ namespace Alba
 
         public HttpContext Context { get; }
 
-        internal async Task RunBeforeActions()
-        {
-            foreach (var before in _befores)
-            {
-                await before(Context).ConfigureAwait(false);
-            }
-        }
-
-        internal async Task RunAfterActions()
-        {
-            foreach (var before in _afters)
-            {
-                await before(Context).ConfigureAwait(false);
-            }
-        }
-
-        // holds on to the http context & IApplicationServer
-
-
         public Scenario AssertThat(IScenarioAssertion assertion)
         {
             _assertions.Add(assertion);
 
             return this;
-        }
-
-
-        public void Before<T>(Func<T, HttpContext, Task> action)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void After<T>(Func<T, HttpContext, Task> action)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Before<T>(Func<HttpContext, Task> action)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void After<T>(Func<HttpContext, Task> action)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Before<T>(Func<T, Task> action)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void After<T>(Func<T, Task> action)
-        {
-            throw new NotImplementedException();
         }
 
         public HttpRequestBody Body => new HttpRequestBody(_system, Context);

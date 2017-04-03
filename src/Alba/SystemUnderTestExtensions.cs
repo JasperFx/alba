@@ -26,8 +26,6 @@ namespace Alba
                 {
                     await system.BeforeEach(scenario.Context).ConfigureAwait(false);
 
-                    await scenario.RunBeforeActions().ConfigureAwait(false);
-
                     if (scenario.Context.Request.Path == null)
                     {
                         throw new InvalidOperationException("This scenario has no defined url");
@@ -36,8 +34,6 @@ namespace Alba
                     await system.Invoker(scenario.Context).ConfigureAwait(false);
 
                     scenario.RunAssertions();
-
-                    await scenario.RunAfterActions().ConfigureAwait(false);
                 }
                 finally
                 {
