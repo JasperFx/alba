@@ -11,11 +11,13 @@ namespace WebApp.Controllers
     [Route("api/[controller]")]
     public class ValuesController : Controller
     {
+        private readonly IEnumerable<IWidget> _lastWidget;
         public static IWidget[] LastWidget { get; set; }
 
         public ValuesController(IEnumerable<IWidget> lastWidget)
         {
-            LastWidget = lastWidget.ToArray();
+            _lastWidget = lastWidget;
+            
         }
 
         // GET api/values
@@ -47,6 +49,7 @@ namespace WebApp.Controllers
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {
+            LastWidget = _lastWidget.ToArray();
         }
 
         // DELETE api/values/5

@@ -12,6 +12,8 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task override_service_registration_in_bootstrapping()
         {
+            ValuesController.LastWidget = new IWidget[0];
+
             using (var system = SystemUnderTest.ForStartup<Startup>())
             {
                 system.ConfigureServices(_ =>
@@ -25,7 +27,8 @@ namespace Alba.Testing.Acceptance
 
                 await system.Scenario(_ =>
                 {
-                    _.Get.Url("/api/values");
+                    
+                    _.Put.Url("/api/values/foo").ContentType("application/json");
                 });
 
                 ValuesController.LastWidget.Length.ShouldBe(2);

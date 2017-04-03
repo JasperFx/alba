@@ -85,6 +85,11 @@ namespace Alba
 
         public void UseStartup<T>() where T : class
         {
+            if (Environment.ContentRootPath.IsEmpty())
+            {
+                Environment.ContentRootPath = FindParallelFolder(typeof(T).GetTypeInfo().Assembly.GetName().Name) ?? Directory.GetCurrentDirectory();
+            }
+
             Configure(x => x.UseStartup<T>());
         }
 
@@ -138,7 +143,6 @@ namespace Alba
         }
 
         public JsonSerializerSettings JsonSerializerSettings { get; set; } = new JsonSerializerSettings();
-
 
         public virtual Task BeforeEach(HttpContext context)
         {
