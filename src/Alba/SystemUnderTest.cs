@@ -6,8 +6,6 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Alba.Stubs;
 using Baseline;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Builder.Internal;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.AspNetCore.Hosting.Server;
@@ -22,10 +20,10 @@ namespace Alba
     {
         public IHostingEnvironment Environment { get; }
         private readonly Lazy<IWebHost> _host;
-        private readonly Action<IWebHostBuilder> _configuration;
         private readonly Lazy<RequestDelegate> _invoker;
         private readonly WebHostBuilder _builder;
         private readonly IList<Action<IServiceCollection>> _registrations = new List<Action<IServiceCollection>>();
+        private readonly IList<Action<IWebHostBuilder>> _configurations = new List<Action<IWebHostBuilder>>();
 
         public RequestDelegate Invoker => _invoker.Value;
 
@@ -56,13 +54,20 @@ namespace Alba
         {
             var environment = new HostingEnvironment {ContentRootPath = rootPath ?? FindParallelFolder(typeof(T).GetTypeInfo().Assembly.GetName().Name) ?? AppContext.BaseDirectory};
 
-            return new SystemUnderTest(x => x.UseStartup<T>(), environment);
+            var system = new SystemUnderTest(environment);
+            system.UseStartup<T>();
+
+            return system;
         }
 
-        private SystemUnderTest(Action<IWebHostBuilder> configuration, IHostingEnvironment environment)
+        public static SystemUnderTest For(Action<IWebHostBuilder> configuration)
         {
-            Environment = environment;
-            _configuration = configuration;
+            return new SystemUnderTest(new HostingEnvironment());
+        }
+
+        private SystemUnderTest(IHostingEnvironment environment = null)
+        {
+            Environment = environment ?? new HostingEnvironment();
             _host = new Lazy<IWebHost>(buildHost);
             _builder = new WebHostBuilder();
 
@@ -72,6 +77,21 @@ namespace Alba
                 var field = typeof(WebHost).GetField("_application", BindingFlags.NonPublic | BindingFlags.Instance);
                 return field.GetValue(host).As<RequestDelegate>();
             });
+        }
+
+        public SystemUnderTest() : this(new HostingEnvironment())
+        {
+        }
+
+        public void UseStartup<T>() where T : class
+        {
+            Configure(x => x.UseStartup<T>());
+        }
+
+        public void Configure(Action<IWebHostBuilder> configure)
+        {
+            assertHostNotStarted();
+            _configurations.Add(configure);
         }
 
         public void ConfigureServices(Action<IServiceCollection> configure)
@@ -99,7 +119,10 @@ namespace Alba
                 _builder.ConfigureServices(registration);
             }
 
-            _configuration(_builder);
+            foreach (var configuration in _configurations)
+            {
+                configuration(_builder);
+            }
 
             return _builder.Start();
         }
