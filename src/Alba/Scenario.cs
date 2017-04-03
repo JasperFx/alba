@@ -139,7 +139,7 @@ namespace Alba
         
         SendExpression IUrlExpression.Action<T>(Expression<Action<T>> expression)
         {
-            Context.RelativeUrl(_system.UrlFor(expression, Context.Request.Method));
+            Context.RelativeUrl(_system.Urls.UrlFor(expression, Context.Request.Method));
             return new SendExpression(Context);
         }
 
@@ -153,11 +153,11 @@ namespace Alba
 
         SendExpression IUrlExpression.Input<T>(T input)
         {
-            if (_system.SupportsUrlLookup)
+            if (!(_system.Urls is NulloUrlLookup))
             {
                 var url = input == null
-                    ? _system.UrlFor<T>(Context.Request.Method)
-                    : _system.UrlFor(input, Context.Request.Method);
+                    ? _system.Urls.UrlFor<T>(Context.Request.Method)
+                    : _system.Urls.UrlFor(input, Context.Request.Method);
 
                 Context.RelativeUrl(url);
             }

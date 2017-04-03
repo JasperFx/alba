@@ -17,7 +17,7 @@ using StructureMap;
 
 namespace Alba.Testing
 {
-    public class BasicScenarioSupport : ISystemUnderTest
+    public class BasicScenarioSupport : ISystemUnderTest, IUrlLookup
     {
         public readonly Container Container;
 
@@ -34,6 +34,8 @@ namespace Alba.Testing
             registry.Populate(new ServiceDescriptor[0]);
 
             Container = new Container(registry);
+
+            Urls = this;
         }
 
         public HttpContext CreateContext()
@@ -136,5 +138,7 @@ namespace Alba.Testing
         {
             Container?.Dispose();
         }
+
+        public IUrlLookup Urls { get; set; } = new NulloUrlLookup();
     }
 }

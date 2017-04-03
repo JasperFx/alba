@@ -138,6 +138,7 @@ namespace Alba
             return Task.CompletedTask;
         }
 
+        // TODO -- need to pull JsonSerializerSettings out
         public virtual T FromJson<T>(string json)
         {
             var serializer = new JsonSerializer();
@@ -157,6 +158,29 @@ namespace Alba
             return writer.ToString();
         }
 
+
+        public IUrlLookup Urls { get; set; } = new NulloUrlLookup();
+
+        public void Dispose()
+        {
+            if (_host.IsValueCreated)
+            {
+                _host.Value.Dispose();
+            }
+        }
+    }
+
+    public interface IUrlLookup
+    {
+        string UrlFor<T>(Expression<Action<T>> expression, string httpMethod);
+        string UrlFor<T>(string method);
+        string UrlFor<T>(T input, string httpMethod);
+
+        
+    }
+
+    public class NulloUrlLookup : IUrlLookup
+    {
         public virtual string UrlFor<T>(Expression<Action<T>> expression, string httpMethod)
         {
             throw new NotSupportedException("You will need to manually specify the Url");
@@ -170,16 +194,6 @@ namespace Alba
         public virtual string UrlFor<T>(T input, string httpMethod)
         {
             throw new NotSupportedException("You will need to manually specify the Url");
-        }
-
-        public bool SupportsUrlLookup { get; protected set; } = false;
-
-        public void Dispose()
-        {
-            if (_host.IsValueCreated)
-            {
-                _host.Value.Dispose();
-            }
         }
     }
 }

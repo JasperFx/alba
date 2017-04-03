@@ -21,6 +21,8 @@ namespace Alba
 
 */
 
+        IUrlLookup Urls { get; set; }
+
         HttpContext CreateContext();
 
 
@@ -35,11 +37,5 @@ namespace Alba
 
         T FromJson<T>(string json);
         string ToJson(object target);
-        string UrlFor<T>(Expression<Action<T>> expression, string httpMethod);
-        string UrlFor<T>(string method);
-
-        string UrlFor<T>(T input, string httpMethod);
-
-        bool SupportsUrlLookup { get; }
     }
 }
