@@ -7,9 +7,11 @@ namespace Alba
 {
     public static class SystemUnderTestExtensions
     {
-        // How can we do this in such a way that you can use StructureMap child containers
-        // for test isolation?
-        public static async Task<IScenarioResult> Scenario(this ISystemUnderTest system, Action<Scenario> configure)
+        // SAMPLE: ScenarioSignature
+        public static async Task<IScenarioResult> Scenario(
+            this ISystemUnderTest system,
+            Action<Scenario> configure)
+        // ENDSAMPLE
         {
             using (var scope = system.Services.GetService<IServiceScopeFactory>().CreateScope())
             {

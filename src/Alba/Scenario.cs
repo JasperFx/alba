@@ -1,26 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
-using System.Xml.Serialization;
 using Alba.Assertions;
 using Baseline;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Primitives;
 
 namespace Alba
 {
+    // SAMPLE: IScenarioResult
     public interface IScenarioResult
     {
+        /// <summary>
+        /// Helpers to interrogate or read the HttpResponse.Body
+        /// of the request
+        /// </summary>
         HttpResponseBody ResponseBody { get; }
+
+        /// <summary>
+        /// The raw HttpContext used during the scenario
+        /// </summary>
         HttpContext Context { get; }
     }
+    // ENDSAMPLE
 
     public class Scenario : IUrlExpression, IScenarioResult
     {

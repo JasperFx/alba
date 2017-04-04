@@ -62,7 +62,11 @@ namespace Alba
 
         public static SystemUnderTest For(Action<IWebHostBuilder> configuration)
         {
-            return new SystemUnderTest(new HostingEnvironment());
+            var system = new SystemUnderTest(new HostingEnvironment());
+
+            system.Configure(configuration);
+
+            return system;
         }
 
         private SystemUnderTest(IHostingEnvironment environment = null)

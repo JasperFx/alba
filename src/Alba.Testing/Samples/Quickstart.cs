@@ -1,12 +1,15 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Baseline;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Shouldly;
 using Xunit;
 
 namespace Alba.Testing.Samples
 {
+
     public class Quickstart
     {
         // SAMPLE: should_say_hello_world
@@ -21,14 +24,73 @@ namespace Alba.Testing.Samples
                 {
                     _.Get.Url("/");
                     _.ContentShouldBe("Hello, World!");
+                    _.StatusCodeShouldBeOk();
                 });
             }
         }
         // ENDSAMPLE
 
+        [Fact]
+        public Task should_say_hello_world_raw()
+        {
+            // SAMPLE: programmatic-bootstrapping
+            var system = SystemUnderTest.For(_ =>
+            {
+                _.Configure(app =>
+                {
+                    app.Run(c =>
+                    {
+                        return c.Response.WriteAsync("Hello, World!");
+                    });
+                });
+            });
+            // ENDSAMPLE
+
+            try
+            {
+                return system.Scenario(_ =>
+                {
+                    _.Get.Url("/");
+                    _.ContentShouldContain("Hello, World!");
+                });
+            }
+            finally
+            {
+                system.Dispose();
+            }
+
+
+        }
+
         // SAMPLE: should_say_hello_world_with_raw_objects
         [Fact]
         public async Task should_say_hello_world_with_raw_objects()
+        {
+            using (var system = SystemUnderTest.ForStartup<Startup>())
+            {
+                var response = await system.Scenario(_ =>
+                {
+                    _.Get.Url("/");
+                    _.StatusCodeShouldBeOk();
+                });
+
+                response.ResponseBody.ReadAsText()
+                    .ShouldBe("Hello, World!");
+
+                // or you can go straight at the HttpContext
+                // The ReadAllText() extension method is from Baseline
+
+
+                var body = response.Context.Response.Body;
+                body.Position = 0; // need to rewind it because we read it above
+                body.ReadAllText().ShouldBe("Hello, World!");
+            }
+        }
+        // ENDSAMPLE
+
+
+        [Fact]
+        public async Task working_with_the_raw_response()
         {
             using (var system = SystemUnderTest.ForStartup<Startup>())
             {
@@ -44,7 +106,6 @@ namespace Alba.Testing.Samples
                     .ShouldBe("Hello, World!");
             }
         }
-        // ENDSAMPLE
     }
 
     // SAMPLE: HelloWorldApp
@@ -60,4 +121,7 @@ namespace Alba.Testing.Samples
         }
     }
     // ENDSAMPLE
+
+
+
 }
