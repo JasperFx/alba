@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Xml;
 using Newtonsoft.Json;
 
 namespace Alba.Testing.Samples
 {
-    public class Json
+    public class JsonAndXml
     {
         // SAMPLE: sending-json
         public Task send_json(ISystemUnderTest system)
@@ -21,6 +22,25 @@ namespace Alba.Testing.Samples
 
                 // OR, if url lookup is enabled, this is an equivalent:
                 _.Post.Json(new Input {Name = "Max", Age = 13});
+            });
+        }
+        // ENDSAMPLE
+
+        // SAMPLE: sending-xml
+        public Task send_xml(ISystemUnderTest system)
+        {
+            return system.Scenario(_ =>
+            {
+                // This serializes the Input object to xml,
+                // writes it to the HttpRequest.Body, and sets
+                // the accepts & content-type header values to
+                // application/xml
+                _.Post
+                    .Xml(new Input {Name = "Max", Age = 13})
+                    .ToUrl("/person");
+
+                // OR, if url lookup is enabled, this is an equivalent:
+                _.Post.Xml(new Input {Name = "Max", Age = 13});
             });
         }
         // ENDSAMPLE
@@ -47,6 +67,27 @@ namespace Alba.Testing.Samples
             var output = result.ResponseBody.ReadAsJson<Output>();
 
             // do assertions against the Output model
+        }
+        // ENDSAMPLE
+
+
+
+        // SAMPLE: read-xml
+        public async Task read_xml(ISystemUnderTest system)
+        {
+            var result = await system.Scenario(_ =>
+            {
+                _.Get.Url("/output");
+            });
+
+            // This deserializes the response body to the
+            // designated Output type
+            var output = result.ResponseBody.ReadAsXml<Output>();
+
+            // do assertions against the Output model
+
+            // OR, if you just want the XmlDocument itself:
+            XmlDocument document = result.ResponseBody.ReadAsXml();
         }
         // ENDSAMPLE
     }
