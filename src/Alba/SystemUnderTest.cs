@@ -199,14 +199,14 @@ namespace Alba
         }
     }
 
+    // SAMPLE: IUrlLookup
     public interface IUrlLookup
     {
         string UrlFor<T>(Expression<Action<T>> expression, string httpMethod);
         string UrlFor<T>(string method);
         string UrlFor<T>(T input, string httpMethod);
-
-        
     }
+    // ENDSAMPLE
 
     public class NulloUrlLookup : IUrlLookup
     {
