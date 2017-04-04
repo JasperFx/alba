@@ -35,7 +35,16 @@ namespace Alba
         public IFeatureCollection Features => _host.Value.ServerFeatures;
         public IServiceProvider Services => _host.Value.Services;
 
-
+        /// <summary>
+        /// Force the SystemUnderTest to bootstrap itself
+        /// </summary>
+        public void Bootstrap()
+        {
+            if (!_host.IsValueCreated)
+            {
+                var host = _host.Value;
+            }
+        }
 
         public static string FindParallelFolder(string folderName)
         {
