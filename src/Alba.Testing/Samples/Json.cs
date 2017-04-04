@@ -1,0 +1,85 @@
+﻿using System;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+
+namespace Alba.Testing.Samples
+{
+    public class Json
+    {
+        // SAMPLE: sending-json
+        public Task send_json(ISystemUnderTest system)
+        {
+            return system.Scenario(_ =>
+            {
+                // This serializes the Input object to json,
+                // writes it to the HttpRequest.Body, and sets
+                // the accepts & content-type header values to
+                // application/json
+                _.Post
+                    .Json(new Input {Name = "Max", Age = 13})
+                    .ToUrl("/person");
+
+                // OR, if url lookup is enabled, this is an equivalent:
+                _.Post.Json(new Input {Name = "Max", Age = 13});
+            });
+        }
+        // ENDSAMPLE
+
+        public void customizing_serialization()
+        {
+            // SAMPLE: customizing-serialization
+            var system = SystemUnderTest.ForStartup<Startup>();
+            system.JsonSerializerSettings.DateFormatHandling = DateFormatHandling.IsoDateFormat;
+            // ENDSAMPLE
+
+        }
+
+        // SAMPLE: read-json
+        public async Task read_json(ISystemUnderTest system)
+        {
+            var result = await system.Scenario(_ =>
+            {
+                _.Get.Url("/output");
+            });
+
+            // This deserializes the response body to the
+            // designated Output type
+            var output = result.ResponseBody.ReadAsJson<Output>();
+
+            // do assertions against the Output model
+        }
+        // ENDSAMPLE
+    }
+
+    // SAMPLE: custom-system-for-json
+    public class CustomSystem : SystemUnderTest
+    {
+        public CustomSystem()
+        {
+            UseStartup<Startup>();
+        }
+
+        public override T FromJson<T>(string json)
+        {
+            throw new NotImplementedException("Do your own Json serialization");
+        }
+
+        public override string ToJson(object target)
+        {
+            throw new NotImplementedException("Do your own Json serialization");
+        }
+    }
+    // ENDSAMPLE
+
+    public class Input
+    {
+        public string Name;
+        public int Age;
+    }
+
+    public class Output
+    {
+        public string Name;
+        public int Age;
+    }
+}
