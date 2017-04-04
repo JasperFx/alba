@@ -5,7 +5,7 @@
         <meta charset="utf-8">
         <meta name="generator" content="Bootply" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-		<title>Alba - Documentation</title>
+		<title>Alba - Working with Plain Text Requests</title>
 		<link href="/alba/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
 		<link href="/alba/content/prism.css" rel="stylesheet" type="text/css" />
 		<link href="/alba/content/theme.css" rel="stylesheet" type="text/css" />
@@ -43,8 +43,8 @@
 		        <li>
 <a href="https://gitter.im/jasperfx/Alba?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/jasperfx/Alba" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
-		      	<li><a href="/alba/getting_started" title="Getting Started">Previous</a></li>
-		      	<li><a href="/alba/documentation/bootstrapping" title="Bootstrapping and Configuration">Next</a></li>
+		      	<li><a href="/alba/documentation/xml" title="Sending and Checking Xml">Previous</a></li>
+		      	<li><a href="/alba/documentation/formdata" title="Sending Http Form Data">Next</a></li>
 		      </ul>
       <div class="navbar-form navbar-left" role="search">
         <div class="form-group">
@@ -59,7 +59,7 @@
 
 		  <div class="container">
 		  	<nav class="navbar-inverse">
-		  		<ol class="breadcrumb"><li><a href="/alba/">Alba</a></li><li class="active">Documentation</li></ol>
+		  		<ol class="breadcrumb"><li><a href="/alba/">Alba</a></li><li><a href="/alba/documentation">Documentation</a></li><li class="active">Working with Plain Text Requests</li></ol>
 		  	</nav>
 		  </div>
 
@@ -76,22 +76,33 @@
 
 		        </ul>
 
-		        	<h3 class="no-margin">Next</h3><p><a href="/alba/documentation/bootstrapping">Bootstrapping and Configuration</a></p>
-		        	<h3 class="no-margin">Previous</h3><a href="/alba/getting_started">Getting Started</a></p>
+		        	<h3 class="no-margin">Next</h3><p><a href="/alba/documentation/formdata">Sending Http Form Data</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/alba/documentation/xml">Sending and Checking Xml</a></p>
 
 		        </ul>
 		      </div><!--/left-->
 		      
 		      <!--right-->
 		      <div class="col-md-9">
-			      	<h1>Documentation</h1>
+			      	<h1>Working with Plain Text Requests</h1>
 			      
 			      	<hr />
 
 			      	<div id="main-pane">
-			      		<!--Title:Documentation-->
-<!--Url:documentation-->
-<ul class="table-of-contents"><li><a href="/alba/documentation/bootstrapping">Bootstrapping and Configuration</a></li><li><a href="/alba/documentation/urls">Working with Url&#x27;s</a></li><li><a href="/alba/documentation/headers">Working with Headers</a></li><li><a href="/alba/documentation/json">Sending and Checking Json</a></li><li><a href="/alba/documentation/xml">Sending and Checking Xml</a></li><li><a href="/alba/documentation/text">Working with Plain Text Requests</a></li><li><a href="/alba/documentation/formdata">Sending Http Form Data</a></li><li><a href="/alba/documentation/statuscode">Http Status Codes</a></li><li><a href="/alba/documentation/assertions">Writing Custom Assertions</a></li></ul>
+			      		<!--title: Working with Plain Text Requests-->
+<p>If you find yourself needing to test HTTP endpoints that either send text or return text, Alba
+has you covered with some built in helpers.</p>
+<h2 id="reading-the-response-text">Reading the Response Text</h2>
+<p>To read the response body as text, use this syntax:</p>
+<pre><code class="language-csharp">&#xA;public async Task read_text(ISystemUnderTest system)&#xA;{&#xA;    var result = await system.Scenario(_ =&gt;&#xA;    {&#xA;        _.Get.Url(&quot;/output&quot;);&#xA;    });&#xA;&#xA;    // This deserializes the response body to the&#xA;    // designated Output type&#xA;    var outputString = result.ResponseBody.ReadAsText();&#xA;&#xA;    // do assertions against the Output string&#xA;}&#xA;</code></pre>
+<h2 id="assertions-against-the-response-text">Assertions against the Response Text</h2>
+<p>You have these built in operations for asserting on the response body text:</p>
+<pre><code class="language-csharp">&#xA;public Task assert_on_content(ISystemUnderTest system)&#xA;{&#xA;    return system.Scenario(_ =&gt;&#xA;    {&#xA;        _.ContentShouldBe(&quot;exactly this&quot;);&#xA;&#xA;        _.ContentShouldContain(&quot;some snippet&quot;);&#xA;&#xA;        _.ContentShouldNotContain(&quot;some warning&quot;);&#xA;    });&#xA;}&#xA;</code></pre>
+<h2 id="sending-text">Sending Text</h2>
+<p>Lastly, you can send text to an HTTP endpoint with this syntax:</p>
+<pre><code class="language-csharp">&#xA;public Task send_text(ISystemUnderTest system)&#xA;{&#xA;    return system.Scenario(_ =&gt;&#xA;    {&#xA;        _.Post.Text(&quot;some text&quot;).ToUrl(&quot;/textdata&quot;);&#xA;    });&#xA;}&#xA;</code></pre>
+<p>Do note that this also sets the <code>content-length</code> header to the string length and
+sets the <code>content-type</code> header of the request to &quot;text/plain.&quot;</p>
 
 			      	</div>
 
@@ -99,12 +110,12 @@
 
 			      	<nav>
 				        <span>
-				        	<strong>Previous: </strong><a href="/alba/getting_started">Getting Started</a>
+				        	<strong>Previous: </strong><a href="/alba/documentation/xml">Sending and Checking Xml</a>
 
 				        </span>
 				        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/alba/documentation/bootstrapping">Bootstrapping and Configuration</a>
+				        	<strong>Next: </strong><a href="/alba/documentation/formdata">Sending Http Form Data</a>
 
 				        </span>
 			      	</nav>

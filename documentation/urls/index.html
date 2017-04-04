@@ -5,7 +5,7 @@
         <meta charset="utf-8">
         <meta name="generator" content="Bootply" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-		<title>Alba - Documentation</title>
+		<title>Alba - Working with Url's</title>
 		<link href="/alba/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
 		<link href="/alba/content/prism.css" rel="stylesheet" type="text/css" />
 		<link href="/alba/content/theme.css" rel="stylesheet" type="text/css" />
@@ -43,8 +43,8 @@
 		        <li>
 <a href="https://gitter.im/jasperfx/Alba?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/jasperfx/Alba" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
-		      	<li><a href="/alba/getting_started" title="Getting Started">Previous</a></li>
-		      	<li><a href="/alba/documentation/bootstrapping" title="Bootstrapping and Configuration">Next</a></li>
+		      	<li><a href="/alba/documentation/bootstrapping" title="Bootstrapping and Configuration">Previous</a></li>
+		      	<li><a href="/alba/documentation/headers" title="Working with Headers">Next</a></li>
 		      </ul>
       <div class="navbar-form navbar-left" role="search">
         <div class="form-group">
@@ -59,7 +59,7 @@
 
 		  <div class="container">
 		  	<nav class="navbar-inverse">
-		  		<ol class="breadcrumb"><li><a href="/alba/">Alba</a></li><li class="active">Documentation</li></ol>
+		  		<ol class="breadcrumb"><li><a href="/alba/">Alba</a></li><li><a href="/alba/documentation">Documentation</a></li><li class="active">Working with Url&#x27;s</li></ol>
 		  	</nav>
 		  </div>
 
@@ -76,22 +76,36 @@
 
 		        </ul>
 
-		        	<h3 class="no-margin">Next</h3><p><a href="/alba/documentation/bootstrapping">Bootstrapping and Configuration</a></p>
-		        	<h3 class="no-margin">Previous</h3><a href="/alba/getting_started">Getting Started</a></p>
+		        	<h3 class="no-margin">Next</h3><p><a href="/alba/documentation/headers">Working with Headers</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/alba/documentation/bootstrapping">Bootstrapping and Configuration</a></p>
 
 		        </ul>
 		      </div><!--/left-->
 		      
 		      <!--right-->
 		      <div class="col-md-9">
-			      	<h1>Documentation</h1>
+			      	<h1>Working with Url's</h1>
 			      
 			      	<hr />
 
 			      	<div id="main-pane">
-			      		<!--Title:Documentation-->
-<!--Url:documentation-->
-<ul class="table-of-contents"><li><a href="/alba/documentation/bootstrapping">Bootstrapping and Configuration</a></li><li><a href="/alba/documentation/urls">Working with Url&#x27;s</a></li><li><a href="/alba/documentation/headers">Working with Headers</a></li><li><a href="/alba/documentation/json">Sending and Checking Json</a></li><li><a href="/alba/documentation/xml">Sending and Checking Xml</a></li><li><a href="/alba/documentation/text">Working with Plain Text Requests</a></li><li><a href="/alba/documentation/formdata">Sending Http Form Data</a></li><li><a href="/alba/documentation/statuscode">Http Status Codes</a></li><li><a href="/alba/documentation/assertions">Writing Custom Assertions</a></li></ul>
+			      		<!--title: Working with Url's-->
+<p>The simplest way to specify the url for the request is to use one of these calls shown below,
+depending upon the HTTP method:</p>
+<pre><code class="language-csharp">&#xA;public Task specify_url(SystemUnderTest system)&#xA;{&#xA;    return system.Scenario(_ =&gt;&#xA;    {&#xA;        // Directly specify the Url against a given&#xA;        // HTTP method&#xA;        _.Get.Url(&quot;/&quot;);&#xA;        _.Put.Url(&quot;/&quot;);&#xA;        _.Post.Url(&quot;/&quot;);&#xA;        _.Delete.Url(&quot;/&quot;);&#xA;        _.Head.Url(&quot;/&quot;);&#xA;    });&#xA;}&#xA;</code></pre>
+<p><strong>If</strong> your system under test supports it, you can use reverse url lookup to specify the Url's in terms of your application code:</p>
+<pre><code class="language-csharp">&#xA;public Task reverse_url_lookup(SystemUnderTest system)&#xA;{&#xA;    return system.Scenario(_ =&gt;&#xA;    {&#xA;        // By controller action&#xA;        _.Get.Action&lt;MyController&gt;(x =&gt; x.Get());&#xA;&#xA;        // By the action method&#x27;s input model&#xA;        _.Post.Input(new InputModel {Id = &quot;foo&quot;});&#xA;&#xA;&#xA;        // Serializes the object passed in as Json,&#xA;        // writes that to the HttpRequest.Body,&#xA;        // and looks up the Url by the input model&#xA;        // type&#xA;        _.Put.Json(new InputModel());&#xA;&#xA;    });&#xA;}&#xA;</code></pre>
+<p>This mechanism has been helpful in our earlier usage of the <a href="https://jeremydmiller.com/2015/11/05/testing-http-handlers-with-no-web-server-in-sight/">FubuMVC Scenario testing</a> that Alba is based on to create traceability from
+the tests to the underlying code.</p>
+<div class="alert alert-warning"><b>Note!</b> Alba does not yet have a url lookup strategy for MVC applications, but one is planned. These methods will throw NotSupportedException's out of the box.</div>
+<p>To actually implement the reverse url lookup, you can create your own implementation of the <code>IUrlLookup</code> interface:</p>
+<pre><code class="language-csharp">&#xA;public interface IUrlLookup&#xA;{&#xA;    string UrlFor&lt;T&gt;(Expression&lt;Action&lt;T&gt;&gt; expression, string httpMethod);&#xA;    string UrlFor&lt;T&gt;(string method);&#xA;    string UrlFor&lt;T&gt;(T input, string httpMethod);&#xA;}&#xA;</code></pre>
+<p>and set the <code>SystemUnderTest.Urls</code> property to your new lookup strategy.</p>
+<p>There are some specific Url helpers for sending Json or Xml data as well. See also:</p>
+<ul>
+<li><a href="/alba/documentation/json">Sending and Checking Json</a></li>
+<li><a href="/alba/documentation/xml">Sending and Checking Xml</a></li>
+</ul>
 
 			      	</div>
 
@@ -99,12 +113,12 @@
 
 			      	<nav>
 				        <span>
-				        	<strong>Previous: </strong><a href="/alba/getting_started">Getting Started</a>
+				        	<strong>Previous: </strong><a href="/alba/documentation/bootstrapping">Bootstrapping and Configuration</a>
 
 				        </span>
 				        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/alba/documentation/bootstrapping">Bootstrapping and Configuration</a>
+				        	<strong>Next: </strong><a href="/alba/documentation/headers">Working with Headers</a>
 
 				        </span>
 			      	</nav>

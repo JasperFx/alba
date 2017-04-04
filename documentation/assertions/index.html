@@ -5,7 +5,7 @@
         <meta charset="utf-8">
         <meta name="generator" content="Bootply" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-		<title>Alba - Router</title>
+		<title>Alba - Writing Custom Assertions</title>
 		<link href="/alba/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
 		<link href="/alba/content/prism.css" rel="stylesheet" type="text/css" />
 		<link href="/alba/content/theme.css" rel="stylesheet" type="text/css" />
@@ -43,7 +43,7 @@
 		        <li>
 <a href="https://gitter.im/jasperfx/Alba?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/jasperfx/Alba" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
-		      	<li><a href="/alba/documentation" title="Documentation">Previous</a></li>
+		      	<li><a href="/alba/documentation/statuscode" title="Http Status Codes">Previous</a></li>
 		      	
 		      </ul>
       <div class="navbar-form navbar-left" role="search">
@@ -59,7 +59,7 @@
 
 		  <div class="container">
 		  	<nav class="navbar-inverse">
-		  		<ol class="breadcrumb"><li><a href="/alba/">Alba</a></li><li><a href="/alba/documentation">Documentation</a></li><li class="active">Router</li></ol>
+		  		<ol class="breadcrumb"><li><a href="/alba/">Alba</a></li><li><a href="/alba/documentation">Documentation</a></li><li class="active">Writing Custom Assertions</li></ol>
 		  	</nav>
 		  </div>
 
@@ -69,7 +69,7 @@
 		      <!--left-->
 		      
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>Alba 0.5.0</h3>
+		      	<h3>Alba 1.0.0</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -77,21 +77,32 @@
 		        </ul>
 
 		        	
-		        	<h3 class="no-margin">Previous</h3><a href="/alba/documentation">Documentation</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/alba/documentation/statuscode">Http Status Codes</a></p>
 
 		        </ul>
 		      </div><!--/left-->
 		      
 		      <!--right-->
 		      <div class="col-md-9">
-			      	<h1>Router</h1>
+			      	<h1>Writing Custom Assertions</h1>
 			      
 			      	<hr />
 
 			      	<div id="main-pane">
-			      		<!--Title:Router-->
-<!--Url:router-->
-<p>TODO(Write some content!)</p>
+			      		<!--title: Writing Custom Assertions-->
+<div class="alert alert-info"><b>Note!</b> All of the assertions are applied during the Scenario execution, and any
+failures will be reported out in the Exception message thrown by Alba on Scenario failures.</div>
+<p>The Scenario assertions in Alba are completely extensible and you can happily add your own via extension methods - but
+please send anything that's generally useful as a pull request to Alba itself;-)</p>
+<p>The first step is to write your own implementation of this interface:</p>
+<pre><code class="language-csharp">&#xA;public interface IScenarioAssertion&#xA;{&#xA;    void Assert(Scenario scenario, ScenarioAssertionException ex);&#xA;}&#xA;</code></pre>
+<p>As an example, here's the assertion from Alba that validates that the response body is supposed to</p>
+<pre><code class="language-csharp">&#xA;public class BodyContainsAssertion : IScenarioAssertion&#xA;{&#xA;    public string Text { get; set; }&#xA;&#xA;    public BodyContainsAssertion(string text)&#xA;    {&#xA;        Text = text;&#xA;    }&#xA;&#xA;    public void Assert(Scenario scenario, ScenarioAssertionException ex)&#xA;    {&#xA;        var body = ex.ReadBody(scenario);&#xA;        if (!body.Contains(Text))&#xA;        {&#xA;            // Add the failure message to the exception. This exception only&#xA;            // gets thrown if there are failures.&#xA;            ex.Add($&quot;Expected text &#x27;{Text}&#x27; was not found in the response body&quot;);&#xA;        }&#xA;    }&#xA;}&#xA;</code></pre>
+<p>Once you have your assertion class, you can apply it to a scenario through an extension method against the
+<code>Scenario</code> class. Here's the <code>Scenario.ContentShouldContain(text)</code> implementation from Alba itself:</p>
+<pre><code class="language-csharp">&#xA;public static Scenario ContentShouldContain(this Scenario scenario, string text)&#xA;{&#xA;    return scenario.AssertThat(new BodyContainsAssertion(text));&#xA;}&#xA;</code></pre>
+<p>Finally, use your new asssertion in a Scenario like this:</p>
+<pre><code class="language-csharp">&#xA;[Fact]&#xA;public Task using_scenario_with_ContentShouldContain_declaration_happy_path()&#xA;{&#xA;    host.Handlers[&quot;/one&quot;] = c =&gt;&#xA;    {&#xA;        c.Response.Write(&quot;**just the marker**&quot;);&#xA;        return Task.CompletedTask;&#xA;    };&#xA;&#xA;    return host.Scenario(x =&gt;&#xA;    {&#xA;        x.Get.Url(&quot;/one&quot;);&#xA;        x.ContentShouldContain(&quot;just the marker&quot;);&#xA;    });&#xA;}&#xA;</code></pre>
 
 			      	</div>
 
@@ -99,7 +110,7 @@
 
 			      	<nav>
 				        <span>
-				        	<strong>Previous: </strong><a href="/alba/documentation">Documentation</a>
+				        	<strong>Previous: </strong><a href="/alba/documentation/statuscode">Http Status Codes</a>
 
 				        </span>
 				        <span class="pull-right">

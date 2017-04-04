@@ -5,7 +5,7 @@
         <meta charset="utf-8">
         <meta name="generator" content="Bootply" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-		<title>Alba - Documentation</title>
+		<title>Alba - Sending and Checking Json</title>
 		<link href="/alba/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
 		<link href="/alba/content/prism.css" rel="stylesheet" type="text/css" />
 		<link href="/alba/content/theme.css" rel="stylesheet" type="text/css" />
@@ -43,8 +43,8 @@
 		        <li>
 <a href="https://gitter.im/jasperfx/Alba?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/jasperfx/Alba" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
-		      	<li><a href="/alba/getting_started" title="Getting Started">Previous</a></li>
-		      	<li><a href="/alba/documentation/bootstrapping" title="Bootstrapping and Configuration">Next</a></li>
+		      	<li><a href="/alba/documentation/headers" title="Working with Headers">Previous</a></li>
+		      	<li><a href="/alba/documentation/xml" title="Sending and Checking Xml">Next</a></li>
 		      </ul>
       <div class="navbar-form navbar-left" role="search">
         <div class="form-group">
@@ -59,7 +59,7 @@
 
 		  <div class="container">
 		  	<nav class="navbar-inverse">
-		  		<ol class="breadcrumb"><li><a href="/alba/">Alba</a></li><li class="active">Documentation</li></ol>
+		  		<ol class="breadcrumb"><li><a href="/alba/">Alba</a></li><li><a href="/alba/documentation">Documentation</a></li><li class="active">Sending and Checking Json</li></ol>
 		  	</nav>
 		  </div>
 
@@ -76,22 +76,38 @@
 
 		        </ul>
 
-		        	<h3 class="no-margin">Next</h3><p><a href="/alba/documentation/bootstrapping">Bootstrapping and Configuration</a></p>
-		        	<h3 class="no-margin">Previous</h3><a href="/alba/getting_started">Getting Started</a></p>
+		        	<h3 class="no-margin">Next</h3><p><a href="/alba/documentation/xml">Sending and Checking Xml</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/alba/documentation/headers">Working with Headers</a></p>
 
 		        </ul>
 		      </div><!--/left-->
 		      
 		      <!--right-->
 		      <div class="col-md-9">
-			      	<h1>Documentation</h1>
+			      	<h1>Sending and Checking Json</h1>
 			      
 			      	<hr />
 
 			      	<div id="main-pane">
-			      		<!--Title:Documentation-->
-<!--Url:documentation-->
-<ul class="table-of-contents"><li><a href="/alba/documentation/bootstrapping">Bootstrapping and Configuration</a></li><li><a href="/alba/documentation/urls">Working with Url&#x27;s</a></li><li><a href="/alba/documentation/headers">Working with Headers</a></li><li><a href="/alba/documentation/json">Sending and Checking Json</a></li><li><a href="/alba/documentation/xml">Sending and Checking Xml</a></li><li><a href="/alba/documentation/text">Working with Plain Text Requests</a></li><li><a href="/alba/documentation/formdata">Sending Http Form Data</a></li><li><a href="/alba/documentation/statuscode">Http Status Codes</a></li><li><a href="/alba/documentation/assertions">Writing Custom Assertions</a></li></ul>
+			      		<!--title: Sending and Checking Json-->
+<h2 id="sending-json">Sending Json</h2>
+<p>Since posting Json to a web server API is so common, Alba has some helpers for writing Json to the request:</p>
+<pre><code class="language-csharp">&#xA;public Task send_json(ISystemUnderTest system)&#xA;{&#xA;    return system.Scenario(_ =&gt;&#xA;    {&#xA;        // This serializes the Input object to json,&#xA;        // writes it to the HttpRequest.Body, and sets&#xA;        // the accepts &amp; content-type header values to&#xA;        // application/json&#xA;        _.Post&#xA;            .Json(new Input {Name = &quot;Max&quot;, Age = 13})&#xA;            .ToUrl(&quot;/person&quot;);&#xA;&#xA;        // OR, if url lookup is enabled, this is an equivalent:&#xA;        _.Post.Json(new Input {Name = &quot;Max&quot;, Age = 13});&#xA;    });&#xA;}&#xA;</code></pre>
+<h2 id="reading-json">Reading Json</h2>
+<p>To deserialize the response body with Json to interrogate the results in a strong typed way, use this syntax:</p>
+<pre><code class="language-csharp">&#xA;public async Task read_json(ISystemUnderTest system)&#xA;{&#xA;    var result = await system.Scenario(_ =&gt;&#xA;    {&#xA;        _.Get.Url(&quot;/output&quot;);&#xA;    });&#xA;&#xA;    // This deserializes the response body to the&#xA;    // designated Output type&#xA;    var output = result.ResponseBody.ReadAsJson&lt;Output&gt;();&#xA;&#xA;    // do assertions against the Output model&#xA;}&#xA;</code></pre>
+<h2 id="customizing-json-serialization">Customizing Json Serialization</h2>
+<p>By default, Alba is depending on the near ubiquity of <a href="http://www.newtonsoft.com/json">Json.Net</a> and uses that for all of its
+Json serialization. Because folks frequently customize the serialization, Alba exposes a couple different ways to configure
+the Json serialization. In order:</p>
+<ol>
+<li>If there is a <code>JsonSerializerSettings</code> registration in the application's IoC container, Alba uses that</li>
+<li>Failing that, Alba exposes a <code>JsonSerializerSettings</code> property as shown below:</li>
+</ol>
+<pre><code class="language-csharp">&#xA;var system = SystemUnderTest.ForStartup&lt;Startup&gt;();&#xA;system.JsonSerializerSettings.DateFormatHandling = DateFormatHandling.IsoDateFormat;&#xA;</code></pre>
+<p>If your application is using an alternative Json serializer, you'll probably need to just subclass <code>SystemUnderTest</code>
+like this example:</p>
+<pre><code class="language-csharp">&#xA;public class CustomSystem : SystemUnderTest&#xA;{&#xA;    public CustomSystem()&#xA;    {&#xA;        UseStartup&lt;Startup&gt;();&#xA;    }&#xA;&#xA;    public override T FromJson&lt;T&gt;(string json)&#xA;    {&#xA;        throw new NotImplementedException(&quot;Do your own Json serialization&quot;);&#xA;    }&#xA;&#xA;    public override string ToJson(object target)&#xA;    {&#xA;        throw new NotImplementedException(&quot;Do your own Json serialization&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
 
 			      	</div>
 
@@ -99,12 +115,12 @@
 
 			      	<nav>
 				        <span>
-				        	<strong>Previous: </strong><a href="/alba/getting_started">Getting Started</a>
+				        	<strong>Previous: </strong><a href="/alba/documentation/headers">Working with Headers</a>
 
 				        </span>
 				        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/alba/documentation/bootstrapping">Bootstrapping and Configuration</a>
+				        	<strong>Next: </strong><a href="/alba/documentation/xml">Sending and Checking Xml</a>
 
 				        </span>
 			      	</nav>
