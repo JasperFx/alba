@@ -3,7 +3,7 @@ urls
 headers
 json
 xml
+text
 formdata
 statuscode
-response
 assertions

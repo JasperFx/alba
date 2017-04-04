@@ -71,6 +71,48 @@ namespace Alba.Testing.Samples
         // ENDSAMPLE
 
 
+        // SAMPLE: read-text
+        public async Task read_text(ISystemUnderTest system)
+        {
+            var result = await system.Scenario(_ =>
+            {
+                _.Get.Url("/output");
+            });
+
+            // This deserializes the response body to the
+            // designated Output type
+            var outputString = result.ResponseBody.ReadAsText();
+
+            // do assertions against the Output string
+        }
+        // ENDSAMPLE
+
+        // SAMPLE: assert-on-text
+        public Task assert_on_content(ISystemUnderTest system)
+        {
+            return system.Scenario(_ =>
+            {
+                _.ContentShouldBe("exactly this");
+
+                _.ContentShouldContain("some snippet");
+
+                _.ContentShouldNotContain("some warning");
+            });
+        }
+        // ENDSAMPLE
+
+
+        // SAMPLE: send-text
+        public Task send_text(ISystemUnderTest system)
+        {
+            return system.Scenario(_ =>
+            {
+                _.Post.Text("some text").ToUrl("/textdata");
+            });
+        }
+        // ENDSAMPLE
+
+
 
         // SAMPLE: read-xml
         public async Task read_xml(ISystemUnderTest system)

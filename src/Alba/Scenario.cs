@@ -181,6 +181,7 @@ namespace Alba
         {
             Body.TextIs(text);
             Context.Request.ContentType = MimeType.Text.Value;
+            Context.Request.ContentLength = text.Length;
 
             return new SendExpression(Context);
         }

@@ -5,10 +5,12 @@ namespace Alba
 {
     public static class ScenarioExpectationsExtensions
     {
+        // SAMPLE: ContentShouldContain
         public static Scenario ContentShouldContain(this Scenario scenario, string text)
         {
             return scenario.AssertThat(new BodyContainsAssertion(text));
         }
+        // ENDSAMPLE
 
         public static Scenario ContentShouldNotContain(this Scenario scenario, string text)
         {

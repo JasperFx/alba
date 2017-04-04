@@ -1,5 +1,6 @@
 ﻿namespace Alba.Assertions
 {
+    // SAMPLE: StatusCodeAssertion
     public class StatusCodeAssertion : IScenarioAssertion
     {
         public int Expected { get; set; }
@@ -20,4 +21,5 @@
             }
         }
     }
+    // ENDSAMPLE
 }

@@ -44,13 +44,14 @@ namespace Alba.Testing.Samples
                 // Assert that there is one and only one value equal to "150"
                 _.Header("content-length").SingleValueShouldEqual("150");
 
-
                 // Assert that there is no value for this response header
                 _.Header("connection").ShouldNotBeWritten();
 
-
                 // Only write one value for this header
                 _.Header("set-cookie").ShouldHaveOneNonNullValue();
+
+                // Check the content-type header
+                _.ContentTypeShouldBe("text/json");
             });
         }
         // ENDSAMPLE
