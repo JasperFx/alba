@@ -33,6 +33,8 @@ namespace Alba
 
                     await system.Invoker(scenario.Context).ConfigureAwait(false);
 
+                    scenario.Context.Response.Body.Position = 0;
+
                     scenario.RunAssertions();
                 }
                 finally
