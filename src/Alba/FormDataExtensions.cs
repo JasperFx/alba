@@ -16,6 +16,7 @@ namespace Alba
             var post = formData(values).Join("&");
 
             context.Request.ContentLength = post.Length;
+            context.Request.ContentType = MimeType.HttpFormMimetype;
 
             var postBytes = Encoding.UTF8.GetBytes(post);
 
