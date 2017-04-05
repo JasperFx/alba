@@ -2,16 +2,14 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
-using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Http.Features;
 using Context = Microsoft.AspNetCore.Hosting.Internal.HostingApplication.Context;
 
 namespace Alba
 {
-    public class TestServer : IServer
+    internal class TestServer : IServer
     {
         private const string DefaultEnvironmentName = "Development";
         private const string ServerName = nameof(TestServer);

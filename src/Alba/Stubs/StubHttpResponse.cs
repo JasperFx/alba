@@ -45,8 +45,8 @@ namespace Alba.Stubs
 
         public override long? ContentLength
         {
-            get { return Headers.GetContentLength(); }
-            set { Headers.SetContentLength(value); }
+            get { return Headers.ContentLength(); }
+            set { Headers.ContentLength(value); }
         }
 
         public override string ContentType

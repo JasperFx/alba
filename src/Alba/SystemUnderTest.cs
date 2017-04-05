@@ -16,6 +16,9 @@ using Newtonsoft.Json;
 
 namespace Alba
 {
+    /// <summary>
+    /// Root host of Alba to govern and configure the underlying ASP.Net Core application
+    /// </summary>
     public class SystemUnderTest : ISystemUnderTest
     {
         public IHostingEnvironment Environment { get; }
@@ -33,11 +36,15 @@ namespace Alba
         }
 
         public IFeatureCollection Features => _host.Value.ServerFeatures;
+
+        /// <summary>
+        /// The underlying IoC container for the application
+        /// </summary>
         public IServiceProvider Services => _host.Value.Services;
 
 
 
-        public static string FindParallelFolder(string folderName)
+        private static string FindParallelFolder(string folderName)
         {
             var starting = AppContext.BaseDirectory.ToFullPath();
             while (starting.Contains(Path.DirectorySeparatorChar + "bin"))
@@ -50,6 +57,13 @@ namespace Alba
             return Directory.Exists(candidate) ? candidate : null;
         }
 
+        /// <summary>
+        /// Create a SystemUnderTest using the designated "Startup" type
+        /// to configure the ASP.Net Core system
+        /// </summary>
+        /// <param name="rootPath"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public static SystemUnderTest ForStartup<T>(string rootPath = null) where T : class
         {
             var environment = new HostingEnvironment {ContentRootPath = rootPath ?? FindParallelFolder(typeof(T).GetTypeInfo().Assembly.GetName().Name) ?? AppContext.BaseDirectory};
@@ -87,6 +101,10 @@ namespace Alba
         {
         }
 
+        /// <summary>
+        /// Use the Startup type T to configure the ASP.Net Core application
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
         public void UseStartup<T>() where T : class
         {
             if (Environment.ContentRootPath.IsEmpty())
@@ -97,12 +115,20 @@ namespace Alba
             Configure(x => x.UseStartup<T>());
         }
 
+        /// <summary>
+        /// Add extra system configuration to the underlying ASP.Net Core application
+        /// </summary>
+        /// <param name="configure"></param>
         public void Configure(Action<IWebHostBuilder> configure)
         {
             assertHostNotStarted();
             _configurations.Add(configure);
         }
 
+        /// <summary>
+        /// Modify the IoC service registrations for the underlying ASP.Net Core application
+        /// </summary>
+        /// <param name="configure"></param>
         public void ConfigureServices(Action<IServiceCollection> configure)
         {
             assertHostNotStarted();
@@ -146,18 +172,39 @@ namespace Alba
             return host;
         }
 
+        /// <summary>
+        /// Governs the Json serialization of the out of the box SystemUnderTest.
+        /// </summary>
         public JsonSerializerSettings JsonSerializerSettings { get; set; } = new JsonSerializerSettings();
 
+        /// <summary>
+        /// Override to take some kind of action just before an Http request
+        /// is executed.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public virtual Task BeforeEach(HttpContext context)
         {
             return Task.CompletedTask;
         }
 
+        /// <summary>
+        /// Override to take some kind of action immediately after
+        /// an Http request executes
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public virtual Task AfterEach(HttpContext context)
         {
             return Task.CompletedTask;
         }
 
+        /// <summary>
+        /// Can be overridden to customize the Json serialization
+        /// </summary>
+        /// <param name="json"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public virtual T FromJson<T>(string json)
         {
             if (!_host.IsValueCreated)
@@ -171,6 +218,11 @@ namespace Alba
             return serializer.Deserialize<T>(reader);
         }
 
+        /// <summary>
+        /// Can be overridden to customize the Json serialization
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns></returns>
         public virtual string ToJson(object target)
         {
             if (!_host.IsValueCreated)
@@ -188,6 +240,9 @@ namespace Alba
         }
 
 
+        /// <summary>
+        /// Url lookup strategy for this system
+        /// </summary>
         public IUrlLookup Urls { get; set; } = new NulloUrlLookup();
 
         public void Dispose()

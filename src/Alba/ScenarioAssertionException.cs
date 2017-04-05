@@ -26,6 +26,10 @@ namespace Alba
         {
         }
 #endif
+        /// <summary>
+        /// Add an assertion failure message
+        /// </summary>
+        /// <param name="message"></param>
         public void Add(string message)
         {
             _messages.Add(message);

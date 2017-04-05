@@ -5,7 +5,12 @@ namespace Alba
 {
     public static class HeaderExtensions
     {
-        public static long? GetContentLength(this IHeaderDictionary headers)
+        /// <summary>
+        /// Get the content-length header value
+        /// </summary>
+        /// <param name="headers"></param>
+        /// <returns></returns>
+        public static long? ContentLength(this IHeaderDictionary headers)
         {
             long length;
             var rawValue = headers[HeaderNames.ContentLength];
@@ -20,7 +25,12 @@ namespace Alba
             return null;
         }
 
-        public static void SetContentLength(this IHeaderDictionary headers, long? value)
+        /// <summary>
+        /// Set the content-length header value
+        /// </summary>
+        /// <param name="headers"></param>
+        /// <param name="value"></param>
+        public static void ContentLength(this IHeaderDictionary headers, long? value)
         {
             if (value.HasValue)
             {

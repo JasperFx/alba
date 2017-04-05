@@ -1,5 +1,6 @@
 namespace Alba
 {
+
     // SAMPLE: IScenarioAssertion
     public interface IScenarioAssertion
     {

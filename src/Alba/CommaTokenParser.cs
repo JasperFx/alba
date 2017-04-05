@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Alba
 {
-    public class CommaTokenParser
+    internal class CommaTokenParser
     {
         private readonly List<string> _tokens = new List<string>();
         private List<char> _characters;

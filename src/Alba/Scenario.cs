@@ -48,8 +48,16 @@ namespace Alba
 
         HttpResponseBody IScenarioResult.ResponseBody => new HttpResponseBody(_system, Context);
 
+        /// <summary>
+        /// The HttpContext for this Scenario
+        /// </summary>
         public HttpContext Context { get; }
 
+        /// <summary>
+        /// Add an assertion to the Scenario that will be executed after the request
+        /// </summary>
+        /// <param name="assertion"></param>
+        /// <returns></returns>
         public Scenario AssertThat(IScenarioAssertion assertion)
         {
             _assertions.Add(assertion);
@@ -73,17 +81,30 @@ namespace Alba
             _assertionRecords.AssertAll();
         }
 
+        /// <summary>
+        /// Verify the expected Http Status Code
+        /// </summary>
+        /// <param name="httpStatusCode"></param>
+        /// <returns></returns>
         public Scenario StatusCodeShouldBe(HttpStatusCode httpStatusCode)
         {
             _expectedStatusCode = (int)httpStatusCode;
             return this;
         }
 
+        /// <summary>
+        /// Verify the expected Http Status Code
+        /// </summary>
+        /// <returns></returns>
         public void StatusCodeShouldBe(int statusCode)
         {
             _expectedStatusCode = statusCode;
         }
 
+        /// <summary>
+        /// Just ignore the Http Status Code when doing assertions against
+        /// the response
+        /// </summary>
         public void IgnoreStatusCode()
         {
             _ignoreStatusCode = true;

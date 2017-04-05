@@ -13,18 +13,31 @@ namespace Alba
             _headerKey = headerKey;
         }
 
+        /// <summary>
+        /// Asserts that there is a single header value matching 'expected'
+        /// in the Http response
+        /// </summary>
+        /// <param name="expected"></param>
+        /// <returns></returns>
         public HeaderExpectations SingleValueShouldEqual(string expected)
         {
             _parent.AssertThat(new HeaderValueAssertion(_headerKey, expected));
             return this;
         }
 
+        /// <summary>
+        /// Asserts that there is exactly one value in the response for the header
+        /// </summary>
+        /// <returns></returns>
         public HeaderExpectations ShouldHaveOneNonNullValue()
         {
             _parent.AssertThat(new HasSingleHeaderValueAssertion(_headerKey));
             return this;
         }
 
+        /// <summary>
+        /// Asserts that there are no values for this header in the Http response
+        /// </summary>
         public void ShouldNotBeWritten()
         {
             _parent.AssertThat(new NoHeaderValueAssertion(_headerKey));

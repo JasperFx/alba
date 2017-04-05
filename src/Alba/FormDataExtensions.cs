@@ -10,6 +10,13 @@ namespace Alba
 
     public static class FormDataExtensions
     {
+        /// <summary>
+        /// Write the dictionary values to the HttpContext.Request.Body.
+        /// Also sets content-length & content-type header to
+        /// application/x-www-form-urlencoded
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="values"></param>
         public static void WriteFormData(this HttpContext context,
             Dictionary<string, string> values)
         {

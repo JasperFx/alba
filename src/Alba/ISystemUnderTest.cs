@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
@@ -8,19 +7,6 @@ namespace Alba
 {
     public interface ISystemUnderTest : IDisposable
     {
-        // Have it return an IApplicationBuilder. Makes many, many things easier
-
-        // Other things?
-        /*
-            1.) Url resolution?
-            2.) Set up defaults in the StubHttpContext?
-
-
-
-
-
-*/
-
         IUrlLookup Urls { get; set; }
 
         HttpContext CreateContext();

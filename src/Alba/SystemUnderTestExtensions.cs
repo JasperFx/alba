@@ -8,6 +8,14 @@ namespace Alba
     public static class SystemUnderTestExtensions
     {
         // SAMPLE: ScenarioSignature
+        /// <summary>
+        /// Define and execute an integration test by running an Http request through
+        /// your ASP.Net Core system
+        /// </summary>
+        /// <param name="system"></param>
+        /// <param name="configure"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
         public static async Task<IScenarioResult> Scenario(
             this ISystemUnderTest system,
             Action<Scenario> configure)
