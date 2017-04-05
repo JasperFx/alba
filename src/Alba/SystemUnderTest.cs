@@ -42,7 +42,16 @@ namespace Alba
         /// </summary>
         public IServiceProvider Services => _host.Value.Services;
 
-
+        /// <summary>
+        /// Force the SystemUnderTest to bootstrap itself
+        /// </summary>
+        public void Bootstrap()
+        {
+            if (!_host.IsValueCreated)
+            {
+                var host = _host.Value;
+            }
+        }
 
         private static string FindParallelFolder(string folderName)
         {
