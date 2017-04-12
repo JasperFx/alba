@@ -2,12 +2,14 @@ COMPILE_TARGET = ENV['config'].nil? ? "debug" : ENV['config']
 RESULTS_DIR = "results"
 BUILD_VERSION = '1.0.0'
 
-tc_build_number = ENV["BUILD_NUMBER"]
+tc_build_number = ENV["APPVEYOR_BUILD_NUMBER"]
 build_revision = tc_build_number || Time.new.strftime('5%H%M')
 build_number = "#{BUILD_VERSION}.#{build_revision}"
-BUILD_NUMBER = build_number 
+BUILD_NUMBER = build_number
 
-task :ci => [:version, :default, :pack]
+CI = ENV["CI"].nil? ? false : true
+
+task :ci => [:version, :default, :pack, :appVeyorPush]
 
 task :default => [:test]
 
@@ -22,7 +24,7 @@ end
 desc "Update the version information for the build"
 task :version do
   asm_version = build_number
-  
+
   begin
     commit = `git log -1 --pretty=format:%H`
   rescue
@@ -30,7 +32,7 @@ task :version do
   end
   puts "##teamcity[buildNumber '#{build_number}']" unless tc_build_number.nil?
   puts "Version: #{build_number}" if tc_build_number.nil?
-  
+
   options = {
 	:description => 'Grab bag of generic utilities and extension methods for .Net development',
 	:product_name => 'Baseline',
@@ -39,9 +41,9 @@ task :version do
 	:version => asm_version,
 	:file_version => build_number,
 	:informational_version => asm_version
-	
+
   }
-  
+
   puts "Writing src/CommonAssemblyInfo.cs..."
 	File.open('src/CommonAssemblyInfo.cs', 'w') do |file|
 		file.write "using System.Reflection;\n"
@@ -75,6 +77,21 @@ task :pack => [:compile] do
 	sh "dotnet pack src/Alba -o artifacts --configuration Release --version-suffix #{build_revision}"
 end
 
+desc "Pushes the Nuget's to AppVeyor"
+task :appVeyorPush do
+  if !CI
+    puts "Not on CI, skipping artifact upload"
+    next
+  end
+  Dir.glob('./artifacts/*.*') do |file|
+    full_path = File.expand_path file
+    full_path = full_path.gsub('/', '\\') if OS.windows?
+    cmd = "appveyor PushArtifact #{full_path}"
+    puts cmd
+    sh cmd
+  end
+end
+
 # TODO -- redo these tasks
 desc "Launches VS to the Alba solution file"
 task :sln do
@@ -92,7 +109,7 @@ end
 task :publish do
 	FileUtils.remove_dir('doc-target') if Dir.exists?('doc-target')
 
-	if !Dir.exists? 'doc-target' 
+	if !Dir.exists? 'doc-target'
 		Dir.mkdir 'doc-target'
 		sh "git clone -b gh-pages https://github.com/jasperfx/alba.git doc-target"
 	else
@@ -102,18 +119,34 @@ task :publish do
 			sh "git pull origin master"
 		end
 	end
-	
+
 	sh "dotnet restore"
 	sh "dotnet stdocs export doc-target ProjectWebsite --version #{BUILD_VERSION} --project alba"
-	
+
 	Dir.chdir "doc-target" do
 		sh "git add --all"
 		sh "git commit -a -m \"Documentation Update for #{BUILD_VERSION}\" --allow-empty"
 		sh "git push origin gh-pages"
 	end
-	
 
-	
+end
 
+
+module OS
+  def OS.windows?
+    (/cygwin|mswin|mingw|bccwin|wince|emx/ =~ RUBY_PLATFORM) != nil
+  end
+
+  def OS.mac?
+   (/darwin/ =~ RUBY_PLATFORM) != nil
+  end
+
+  def OS.unix?
+    !OS.windows?
+  end
+
+  def OS.linux?
+    OS.unix? and not OS.mac?
+  end
 end
 
