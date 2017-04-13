@@ -30,8 +30,6 @@ task :version do
   rescue
     commit = "git unavailable"
   end
-  puts "##teamcity[buildNumber '#{build_number}']" unless tc_build_number.nil?
-  puts "Version: #{build_number}" if tc_build_number.nil?
 
   options = {
 	:description => 'Grab bag of generic utilities and extension methods for .Net development',
