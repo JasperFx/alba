@@ -1,4 +1,5 @@
 {
+  "locked": false,
   "version": 2,
   "targets": {
     ".NETStandard,Version=v1.6": {
@@ -2163,9 +2164,9 @@
       ]
     },
     "Microsoft.CSharp/4.0.1": {
-      "sha512": "81YIq3GnAptMkE2g9Oo2skl6iTbcS8TjKZI78wf3AJYJnIb8HSJWBTyKS0u+xX8j3JU90sWl3kfrm+wlyC7cRg==",
+      "sha512": "VsdwI1tgSRH25H4G+2XpNsi53g6kDbXbR3yCPVm3HeO3lgqySH9M+QUGQDnRQmrSeOKLugUB4g4XC2zRg4pk5g==",
       "type": "package",
-      "path": "microsoft.csharp/4.0.1",
+      "path": "Microsoft.CSharp/4.0.1",
       "files": [
         "Microsoft.CSharp.4.0.1.nupkg.sha512",
         "Microsoft.CSharp.nuspec",
@@ -2457,9 +2458,9 @@
       ]
     },
     "Microsoft.Win32.Registry/4.0.0": {
-      "sha512": "8zbjdxGJ6/BP11x3Z8GhHHVx6EMEc+4Uk9wU0azLJHUY4WC7GnoQ49dBnajsd6sAJWb9LTObHZUdbyw/35Uq6g==",
+      "sha512": "RUQ2UNQFvYY0s8HcrkAk3qgSfTvWZICoDjS+HjB55bQ8QS6L5XxXqaLk9IxN9zCMWg3pNd/Xau2jCEIKRjR/RQ==",
       "type": "package",
-      "path": "microsoft.win32.registry/4.0.0",
+      "path": "Microsoft.Win32.Registry/4.0.0",
       "files": [
         "Microsoft.Win32.Registry.4.0.0.nupkg.sha512",
         "Microsoft.Win32.Registry.nuspec",
@@ -3161,9 +3162,9 @@
       ]
     },
     "System.Diagnostics.Process/4.1.0": {
-      "sha512": "5JgOkEOeAl5mouMi49AJDnX/5/IyOk9BUi39dqEOwoP5lhAadjFMLGXLe0RohuIDMJPtrWe7zMosyhYc21ievw==",
+      "sha512": "iPr+LXSrrZB9MKm0mUDwkVWtTFACDqQ0OYqJWbinCEr7ucA++9fWXRxozWdaqdyVCuFfJh+HdHq6XaMDP+34Pw==",
       "type": "package",
-      "path": "system.diagnostics.process/4.1.0",
+      "path": "System.Diagnostics.Process/4.1.0",
       "files": [
         "System.Diagnostics.Process.4.1.0.nupkg.sha512",
         "System.Diagnostics.Process.nuspec",
@@ -3397,9 +3398,9 @@
       ]
     },
     "System.Dynamic.Runtime/4.0.11": {
-      "sha512": "/rC8xM1X8xvCMPKiuIhiIggQuAbMxDxMAZgUWQNz6dxq8JApvMPtDgGHApRn3xsw5wkoQtp9Xz+JFda3gpFHkw==",
+      "sha512": "rFAqwjtPti6BmwTtYq/RKfxifkFBjuwXx9GGBJtlsal5ml1tgASUpt+Bwc9tJA9+umPaPuWflHnK4HV91k7epg==",
       "type": "package",
-      "path": "system.dynamic.runtime/4.0.11",
+      "path": "System.Dynamic.Runtime/4.0.11",
       "files": [
         "System.Dynamic.Runtime.4.0.11.nupkg.sha512",
         "System.Dynamic.Runtime.nuspec",
@@ -6051,9 +6052,9 @@
       ]
     },
     "System.Threading.ThreadPool/4.0.10": {
-      "sha512": "fEE6NjZmXhlEHzISD30+FcLeozR1ZJtz5cov4EPKhQyFFEcqrrq9ialZoj+hfa2qLte5kQFi8sehGjl+Lk1XiQ==",
+      "sha512": "9WCj2T/rn2lTTngIsJBjjNkn4N77KD5bVR0pkJDPk7JsaJt1Yk/+uCoCNZRRv7soygakKjf3JrSQDIOFdC7GJQ==",
       "type": "package",
-      "path": "system.threading.threadpool/4.0.10",
+      "path": "System.Threading.ThreadPool/4.0.10",
       "files": [
         "System.Threading.ThreadPool.4.0.10.nupkg.sha512",
         "System.Threading.ThreadPool.nuspec",
@@ -6280,9 +6281,9 @@
       ]
     },
     "System.Xml.XmlDocument/4.0.1": {
-      "sha512": "VLf5WFuxklB9yvHBuU8dGCzbtXCrqyhaavMzOjLWidGqa7kwCJu3er/M5AgQbDyqEvk6bNyKxrz/uxjR9bUaHg==",
+      "sha512": "mLMZObAjEaOFhNlex1yykaD83/ADCku6gEJMrxgWsZnTNo7u3+hkyMs/gx+MfcovWj+VtiqVzyyIqhDHM4mtEA==",
       "type": "package",
-      "path": "system.xml.xmldocument/4.0.1",
+      "path": "System.Xml.XmlDocument/4.0.1",
       "files": [
         "System.Xml.XmlDocument.4.0.1.nupkg.sha512",
         "System.Xml.XmlDocument.nuspec",
@@ -6400,36 +6401,6 @@
       "NETStandard.Library >= 1.6.1"
     ]
   },
-  "packageFolders": {
-    "/Users/jeremill/.nuget/packages/": {}
-  },
-  "project": {
-    "version": "1.0.0-alpha",
-    "restore": {
-      "projectUniqueName": "/Users/jeremill/code/alba/src/Alba",
-      "projectName": "Alba",
-      "projectPath": "/Users/jeremill/code/alba/src/Alba",
-      "projectJsonPath": "/Users/jeremill/code/alba/src/Alba/project.json",
-      "projectStyle": "ProjectJson"
-    },
-    "dependencies": {
-      "Baseline": "1.1.0",
-      "System.Xml.XmlDocument": "4.0.1",
-      "Microsoft.AspNetCore.Http.Abstractions": "1.1.0",
-      "Microsoft.AspNetCore.Http": "1.1.0",
-      "Microsoft.AspNetCore.Hosting": "1.1.0",
-      "Microsoft.AspNetCore.WebUtilities": "1.1.0",
-      "Newtonsoft.Json": "9.0.1"
-    },
-    "frameworks": {
-      "netstandard1.6": {
-        "dependencies": {
-          "NETStandard.Library": "1.6.1"
-        },
-        "imports": [
-          "dnxcore50"
-        ]
-      }
-    }
-  }
+  "tools": {},
+  "projectFileToolGroups": {}
 }
