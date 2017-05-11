@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using Baseline;
 #if NET46
+using System.Runtime.Serialization;
 #endif
 
 namespace Alba
