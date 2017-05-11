@@ -1,23 +1,36 @@
 {
   "version": "1.1.0",
+  "title": "Alba",
+  "description": "Easy integration testing helper for ASP.Net Core applications",
+  "packOptions": {
+    "projectUrl": "http://jasperfx.github.io/alba/",
+    "licenseUrl": "https://raw.githubusercontent.com/JasperFx/alba/master/LICENSE",
+    "repository": {
+      "type": "git",
+      "url": "git://github.com/JasperFx/alba"
+    }
+  },
   "buildOptions": {
     "debugType": "portable"
   },
   "dependencies": {
     "Baseline": "1.1.0",
-    "System.Xml.XmlDocument": "4.0.1",
     "Microsoft.AspNetCore.Http.Abstractions": "1.1.0",
     "Microsoft.AspNetCore.Http": "1.1.0",
-    "Microsoft.AspNetCore.Hosting":"1.1.0",
+    "Microsoft.AspNetCore.Hosting": "1.1.0",
     "Microsoft.AspNetCore.WebUtilities": "1.1.0",
     "Newtonsoft.Json": "9.0.1"
   },
   "frameworks": {
+    "net46": {
+    },
     "netstandard1.6": {
       "dependencies": {
-        "NETStandard.Library": "1.6.1"
+        "NETStandard.Library": "1.6.1",
+        "System.AppContext": "4.3.0",
+        "System.Xml.XmlDocument": "4.0.1"
       },
-      "imports": ["dnxcore50"]
+      "imports": [ "dnxcore50" ]
     }
   }
 }
