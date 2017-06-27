@@ -113,5 +113,34 @@ namespace Alba.Testing.Acceptance
                 _.Get.Url("/query-string");
             });
         }
+
+        [Fact]
+        public Task returns_successfully_when_passed_input_is_passes_to_URL_query_string()
+        {
+            return run(_ =>
+            {
+                _.Get.Url("/query-string?test=value");
+            });
+        }
+
+        [Fact]
+        public Task returns_successfully_when_passed_string_is_passed_to_Input()
+        {
+            return run(_ =>
+            {
+                _.Get.Input("value");
+                _.Get.Url("/query-string");
+            });
+        }
+
+        [Fact]
+        public Task returns_successfully_when_passed_object_is_passed_to_Input()
+        {
+            return run(_ =>
+            {
+                _.Get.Input(new { test = "value"});
+                _.Get.Url("/query-string");
+            });
+        }
     }
 }
