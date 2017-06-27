@@ -102,5 +102,16 @@ namespace Alba.Testing.Acceptance
             person.FirstName.ShouldBe("Peyton");
             person.LastName.ShouldBe("Manning");
         }
+
+
+        [Fact]
+        public Task can_send_querystring_parameters()
+        {
+            return run(_ =>
+            {
+                _.Get.QueryString("test", "value");
+                _.Get.Url("/query-string");
+            });
+        }
     }
 }

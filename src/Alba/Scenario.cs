@@ -208,6 +208,13 @@ namespace Alba
         }
 
 
+        public SendExpression QueryString(string paramName, string paramValue)
+        {
+            Context.Request.QueryString = Context.Request.QueryString.Add(paramName, paramValue);
+            return new SendExpression(Context);
+        }
+
+
         public HeaderExpectations Header(string headerKey)
         {
             return new HeaderExpectations(this, headerKey);
