@@ -1,13 +1,13 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26114.2
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Alba", "Alba\Alba.xproj", "{81D9EFA5-F846-40F3-B36C-8E82111EDDF6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alba", "Alba\Alba.csproj", "{81D9EFA5-F846-40F3-B36C-8E82111EDDF6}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Alba.Testing", "Alba.Testing\Alba.Testing.xproj", "{3CEBB819-9841-4353-B3A2-2331902E6228}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alba.Testing", "Alba.Testing\Alba.Testing.csproj", "{3CEBB819-9841-4353-B3A2-2331902E6228}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "WebApp", "WebApp\WebApp.xproj", "{52733A25-1E8D-4250-A9B5-D135EE6C1557}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApp", "WebApp\WebApp.csproj", "{52733A25-1E8D-4250-A9B5-D135EE6C1557}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Easy integration testing helper for ASP.Net Core applications</Description>
+    <AssemblyTitle>Alba</AssemblyTitle>
+    <VersionPrefix>1.1.1</VersionPrefix>
+    <TargetFrameworks>net46;netstandard1.6</TargetFrameworks>
+    <DebugType>portable</DebugType>
+    <AssemblyName>Alba</AssemblyName>
+    <PackageId>Alba</PackageId>
+    <PackageProjectUrl>http://jasperfx.github.io/alba/</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/JasperFx/alba/master/LICENSE</PackageLicenseUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>git://github.com/JasperFx/alba</RepositoryUrl>
+    <PackageTargetFallback Condition=" '$(TargetFramework)' == 'netstandard1.6' ">$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
+    <NetStandardImplicitPackageVersion Condition=" '$(TargetFramework)' == 'netstandard1.6' ">1.6.1</NetStandardImplicitPackageVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Baseline" Version="1.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="1.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="1.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="1.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="1.1.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net46' ">
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.6' ">
+    <PackageReference Include="System.AppContext" Version="4.3.0" />
+    <PackageReference Include="System.Xml.XmlDocument" Version="4.0.1" />
+  </ItemGroup>
+
+</Project>

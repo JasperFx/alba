@@ -1,6 +1,6 @@
 COMPILE_TARGET = ENV['config'].nil? ? "debug" : ENV['config']
 RESULTS_DIR = "results"
-BUILD_VERSION = '1.1.1'
+BUILD_VERSION = '1.1.2'
 
 tc_build_number = ENV["BUILD_NUMBER"]
 build_revision = tc_build_number || Time.new.strftime('5%H%M')
@@ -60,19 +60,19 @@ end
 desc 'Compile the code'
 task :compile => [:clean] do
 	sh "dotnet restore src"
-	sh "dotnet build src/Alba.Testing"
+	sh "dotnet build src/Alba.Testing/Alba.Testing.csproj"
 end
 
 desc 'Run the unit tests'
 task :test => [:compile] do
 	Dir.mkdir RESULTS_DIR
 
-	sh "dotnet test src/Alba.Testing"
+	sh "dotnet test src/Alba.Testing/Alba.Testing.csproj"
 end
 
 desc "Pack up the nupkg file"
 task :pack => [:compile] do
-	sh "dotnet pack src/Alba -o artifacts --configuration Release --version-suffix #{build_revision}"
+	sh "dotnet pack src/Alba/Alba.csproj -o ./../../artifacts --configuration Release --version-suffix #{build_revision}"
 end
 
 # TODO -- redo these tasks
