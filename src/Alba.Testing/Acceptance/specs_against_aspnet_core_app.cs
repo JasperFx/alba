@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using NSubstitute.Core;
 using Shouldly;
 using WebApp;
 using WebApp.Controllers;
@@ -109,7 +110,7 @@ namespace Alba.Testing.Acceptance
         }
 
         [Fact]
-        public Task returns_successfully_when_passed_input_is_passes_to_URL_query_string_with_multiple_values()
+        public Task query_string_with_multiple_values()
         {
             return run(_ =>
             {
@@ -117,6 +118,34 @@ namespace Alba.Testing.Acceptance
                 _.ContentShouldContain("test=value");
                 _.ContentShouldContain("foo=bar");
             });
+        }
+
+        [Fact]
+        public Task query_string_with_multiple_values_by_target()
+        {
+            return run(_ =>
+            {
+                _.Get.Url("/querystring2").QueryString(new {test = "value", foo = "bar"});
+                _.ContentShouldContain("test=value");
+                _.ContentShouldContain("foo=bar");
+            });
+        }
+
+        [Fact]
+        public Task query_string_with_multiple_values_by_target_with_strong_typed_argument()
+        {
+            return run(_ =>
+            {
+                _.Get.Url("/querystring2").QueryString(new QueryStringTarget{ test = "value", foo = "bar" });
+                _.ContentShouldContain("test=value");
+                _.ContentShouldContain("foo=bar");
+            });
+        }
+
+        public class QueryStringTarget
+        {
+            public string test;
+            public string foo { get; set; }
         }
 
         [Fact]

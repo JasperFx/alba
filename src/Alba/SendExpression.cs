@@ -1,3 +1,5 @@
+using System.Linq;
+using System.Reflection;
 using Alba.Stubs;
 using Baseline;
 using Microsoft.AspNetCore.Hosting.Internal;
@@ -67,6 +69,31 @@ namespace Alba
         public SendExpression QueryString(string paramName, string paramValue)
         {
             _request.AddQueryString(paramName, paramValue);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Appends query string parameters for the values of all the public 
+        /// read/write properties and all public fields of the target object
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        public SendExpression QueryString<T>(T target)
+        {
+            typeof(T).GetProperties().Where(x => x.CanRead).Each(prop =>
+            {
+                var rawValue = prop.GetValue(target, null);
+                QueryString(prop.Name, rawValue?.ToString() ?? string.Empty);
+            });
+
+            typeof(T).GetFields().Each(field =>
+            {
+                var rawValue = field.GetValue(target);
+                QueryString(field.Name, rawValue?.ToString() ?? string.Empty);
+            });
+
 
             return this;
         }
