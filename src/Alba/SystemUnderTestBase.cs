@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.Extensions.FileProviders;
 using Newtonsoft.Json;
 
 namespace Alba
@@ -28,6 +29,16 @@ namespace Alba
             });
 
             Environment = environment ?? new HostingEnvironment();
+
+            if (Environment.ContentRootPath.IsNotEmpty() && Environment.ContentRootFileProvider == null)
+            {
+                Environment.ContentRootFileProvider = new PhysicalFileProvider(Environment.ContentRootPath);
+            }
+
+            if (Environment.WebRootPath.IsNotEmpty() && Environment.WebRootFileProvider == null)
+            {
+                Environment.WebRootFileProvider = new PhysicalFileProvider(Environment.WebRootPath);
+            }
         }
 
         protected abstract IWebHost buildHost();

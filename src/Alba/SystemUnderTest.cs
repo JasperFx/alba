@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Newtonsoft.Json;
 
 namespace Alba
@@ -34,7 +35,13 @@ namespace Alba
         /// <returns></returns>
         public static SystemUnderTest ForStartup<T>(string rootPath = null) where T : class
         {
-            var environment = new HostingEnvironment {ContentRootPath = rootPath ?? DirectoryFinder.FindParallelFolder(typeof(T).GetTypeInfo().Assembly.GetName().Name) ?? AppContext.BaseDirectory};
+            var environment = new HostingEnvironment
+            {
+                ContentRootPath = rootPath ?? DirectoryFinder.FindParallelFolder(typeof(T).GetTypeInfo().Assembly.GetName().Name) ?? AppContext.BaseDirectory
+            };
+
+            environment.WebRootPath = environment.ContentRootPath;
+
 
             var system = new SystemUnderTest(environment);
             system.UseStartup<T>();
@@ -51,9 +58,8 @@ namespace Alba
             return system;
         }
 
-        private SystemUnderTest(IHostingEnvironment environment = null)
+        private SystemUnderTest(IHostingEnvironment environment = null) : base(environment)
         {
-            
             _builder = new WebHostBuilder();
         }
 
@@ -70,6 +76,7 @@ namespace Alba
             if (Environment.ContentRootPath.IsEmpty())
             {
                 Environment.ContentRootPath = DirectoryFinder.FindParallelFolder(typeof(T).GetTypeInfo().Assembly.GetName().Name) ?? Directory.GetCurrentDirectory();
+                Environment.ContentRootFileProvider = new PhysicalFileProvider(Environment.ContentRootPath);
             }
 
             Configure(x => x.UseStartup<T>());
