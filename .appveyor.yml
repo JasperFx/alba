@@ -1,0 +1,36 @@
+version: 1.0.0.{build}
+pull_requests:
+  do_not_increment_build_number: true
+skip_tags: true
+environment:
+  CI: true
+  RUBY_VERSION: 23
+nuget:
+  account_feed: false
+  project_feed: true
+  disable_publish_on_pr: true
+
+install:
+  - set PATH=C:\Ruby%RUBY_VERSION%\bin;%PATH%
+  - ruby --version
+  - gem install bundler
+  - bundle config --local path vendor/bundle
+  - bundle install
+  - dotnet --version
+
+build_script:
+- cmd: >-
+    rake ci
+
+test: off
+
+deploy:
+- provider: NuGet
+  server: https://www.myget.org/F/jasperfx/api/v2/package
+  api_key:
+    secure: oszaafgovFR3EwWUTYbLM0MMusfsUDWXmwQnqU0BY8CbE1IZMpUc7qMxn6Fy/1XU
+  skip_symbols: true
+  on:
+    branch:
+      - master
+      - AppVeyor
