@@ -1,14 +1,17 @@
+using Alba.Stubs;
+using Baseline;
+using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.AspNetCore.Http;
 
 namespace Alba
 {
     public class SendExpression
     {
-        private readonly HttpRequest _request;
+        private readonly StubHttpRequest _request;
 
         public SendExpression(HttpContext context)
         {
-            _request = context.Request;
+            _request = context.Request.As<StubHttpRequest>();
         }
 
         /// <summary>
@@ -52,6 +55,19 @@ namespace Alba
         public SendExpression ToUrl(string url)
         {
             _request.Path = url;
+            return this;
+        }
+
+        /// <summary>
+        /// Appends a query string paramater to the HttpRequest
+        /// </summary>
+        /// <param name="paramName"></param>
+        /// <param name="paramValue"></param>
+        /// <returns></returns>
+        public SendExpression QueryString(string paramName, string paramValue)
+        {
+            _request.AddQueryString(paramName, paramValue);
+
             return this;
         }
     }

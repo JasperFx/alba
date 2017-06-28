@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Baseline;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Newtonsoft.Json;
@@ -36,6 +37,20 @@ namespace WebApp.Controllers
         public string LastName = "Miller";
     }
 
+    public class TextInputFormatter : IInputFormatter
+    {
+        public bool CanRead(InputFormatterContext context)
+        {
+            return context.HttpContext.Request.ContentType == "text/plain";
+        }
+
+        public async Task<InputFormatterResult> ReadAsync(InputFormatterContext context)
+        {
+            var text = await context.HttpContext.Request.Body.ReadAllTextAsync();
+            return InputFormatterResult.Success(text);
+        }
+    }
+
     public class JsonInputFormatter : IInputFormatter
     {
         public JsonInputFormatter()
@@ -47,7 +62,7 @@ namespace WebApp.Controllers
         {
             var contentType = context.HttpContext.Request.ContentType;
 
-            var supported = new[] { "text/plain", "text/json", "application/json"};
+            var supported = new[] { "text/json", "application/json"};
 
             return supported.Any(x => contentType?.StartsWith(x) ?? false);
         }

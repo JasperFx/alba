@@ -1,6 +1,10 @@
 ﻿using System.IO;
+using System.Net;
 using System.Text;
+using Alba.Stubs;
+using Baseline;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace Alba
 {
@@ -18,7 +22,30 @@ namespace Alba
 
         public static void RelativeUrl(this HttpContext context, string relativeUrl)
         {
-            context.Request.Path = relativeUrl;
+            if (relativeUrl != null && relativeUrl.Contains("?"))
+            {
+                var parts = relativeUrl.Trim().Split('?');
+                context.Request.Path = parts[0];
+
+                if (parts[1].IsNotEmpty())
+                {
+                    var dict = QueryHelpers.ParseQuery(parts[1]);
+
+                    var request = context.Request.As<StubHttpRequest>();
+
+                    foreach (var pair in dict)
+                    {
+                        request.AddQueryString(pair.Key, pair.Value);
+                    }
+                }
+                
+            }
+            else
+            {
+                context.Request.Path = relativeUrl;
+            }
+
+            
         }
 
         public static void Accepts(this HttpContext context, string mimeType)

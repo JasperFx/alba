@@ -6,6 +6,7 @@ using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
 using Alba.Assertions;
+using Alba.Stubs;
 using Baseline;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -208,11 +209,7 @@ namespace Alba
         }
 
 
-        public SendExpression QueryString(string paramName, string paramValue)
-        {
-            Context.Request.QueryString = Context.Request.QueryString.Add(paramName, paramValue);
-            return new SendExpression(Context);
-        }
+
 
 
         public HeaderExpectations Header(string headerKey)

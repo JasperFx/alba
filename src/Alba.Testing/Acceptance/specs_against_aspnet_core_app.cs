@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Shouldly;
 using WebApp;
@@ -86,31 +87,14 @@ namespace Alba.Testing.Acceptance
             person.LastName.ShouldBe("Brady");
         }
 
-        [Fact]
-        public async Task can_post_text_to_mvc_endpoint()
-        {
-            var json = "{'FirstName': 'Peyton', 'LastName': 'Manning'}"
-                .Replace("'", "\"");
-
-            var result = await run(_ =>
-            {
-                _.Post.Text(json).ToUrl("/api/json");
-            });
-
-            var person = result.ResponseBody.ReadAsJson<Person>();
-
-            person.FirstName.ShouldBe("Peyton");
-            person.LastName.ShouldBe("Manning");
-        }
-
 
         [Fact]
         public Task can_send_querystring_parameters()
         {
             return run(_ =>
             {
-                _.Get.QueryString("test", "value");
-                _.Get.Url("/query-string");
+                _.Get.Url("/querystring2").QueryString("test", "value");
+                _.ContentShouldContain("test=value");
             });
         }
 
@@ -119,17 +103,43 @@ namespace Alba.Testing.Acceptance
         {
             return run(_ =>
             {
-                _.Get.Url("/query-string?test=value");
+                _.Get.Url("/querystring2?test=value");
+                _.ContentShouldContain("test=value");
             });
         }
 
         [Fact]
-        public Task returns_successfully_when_passed_string_is_passed_to_Input()
+        public Task returns_successfully_when_passed_input_is_passes_to_URL_query_string_with_multiple_values()
         {
             return run(_ =>
             {
-                _.Get.Input("value");
-                _.Get.Url("/query-string");
+                _.Get.Url("/querystring2?test=value&foo=bar");
+                _.ContentShouldContain("test=value");
+                _.ContentShouldContain("foo=bar");
+            });
+        }
+
+        [Fact]
+        public Task send_form_to_aspnetcore_with_FromForm()
+        {
+            return run(_ =>
+            {
+                _.Post.Url("/sendform");
+                _.Body.WriteFormData(new Dictionary<string, string>{{"test", "foo"}});
+
+                _.ContentShouldContain("foo");
+            });
+        }
+
+        [Fact]
+        public Task send_body_to_aspnetcore_with_FromBody()
+        {
+            return run(_ =>
+            {
+                _.Post.Url("/sendbody");
+                _.Body.TextIs("some stuff");
+
+                _.ContentShouldContain("some stuff");
             });
         }
 
@@ -138,8 +148,9 @@ namespace Alba.Testing.Acceptance
         {
             return run(_ =>
             {
-                _.Get.Input(new { test = "value"});
-                _.Get.Url("/query-string");
+                _.Get.Url("/querystring?test=somevalue");
+
+                _.ContentShouldContain("somevalue");
             });
         }
     }

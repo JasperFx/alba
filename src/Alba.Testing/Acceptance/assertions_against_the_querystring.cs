@@ -17,7 +17,7 @@ namespace Alba.Testing.Acceptance
 
             return host.Scenario(_ =>
             {
-                _.Get.QueryString("test", "value");
+                _.Get.Url("/one").QueryString("test", "value");
 
                 _.Context.Request.Query["test"].ToString().ShouldBe("value");
             });

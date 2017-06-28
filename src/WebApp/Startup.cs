@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
+using WebApp.Controllers;
 using JsonInputFormatter = WebApp.Controllers.JsonInputFormatter;
 
 namespace WebApp
@@ -32,7 +33,9 @@ namespace WebApp
             {
                 config.RespectBrowserAcceptHeader = true;
                 config.InputFormatters.Clear();
+                config.InputFormatters.Add(new TextInputFormatter());
                 config.InputFormatters.Add(new JsonInputFormatter());
+                
             });
         }
 
