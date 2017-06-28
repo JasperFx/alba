@@ -72,7 +72,7 @@ end
 
 desc "Pack up the nupkg file"
 task :pack => [:compile] do
-	sh "dotnet pack src/Alba/Alba.csproj -o ./../../artifacts --configuration Release --version-suffix #{build_revision}"
+	sh "dotnet pack src/Alba/Alba.csproj -o ./../../artifacts --configuration Release"
 end
 
 # TODO -- redo these tasks
