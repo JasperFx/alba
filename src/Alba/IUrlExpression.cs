@@ -72,5 +72,13 @@ namespace Alba
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         SendExpression FormData(Dictionary<string, string> input);
+
+        /// <summary>
+        /// Appends a query string paramater to the HttpRequest
+        /// </summary>
+        /// <param name="paramName"></param>
+        /// <param name="paramValue"></param>
+        /// <returns></returns>
+        SendExpression QueryString(string paramName, string paramValue);
     }
 }
