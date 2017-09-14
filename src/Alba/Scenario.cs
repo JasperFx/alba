@@ -44,7 +44,7 @@ namespace Alba
         {
             _system = system;
             Context = system.CreateContext();
-            Context.RequestServices = scope.ServiceProvider;
+            Context.RequestServices = new AlbaServiceProvider(scope.ServiceProvider);
         }
 
         HttpResponseBody IScenarioResult.ResponseBody => new HttpResponseBody(_system, Context);
@@ -111,10 +111,13 @@ namespace Alba
             _ignoreStatusCode = true;
         }
 
+        public void ConfigureServices(Action<IServiceCollection> configurationAction)
+        {
+            var services = new ServiceCollection();
+            configurationAction(services);
+            Context.RequestServices.As<AlbaServiceProvider>().AddServices(services);
+        }
 
-
-
-        
         SendExpression IUrlExpression.Action<T>(Expression<Action<T>> expression)
         {
             Context.RelativeUrl(_system.Urls.UrlFor(expression, Context.Request.Method));
@@ -265,6 +268,11 @@ namespace Alba
         internal void Rewind()
         {
             Context.Request.Body.Position = 0;
+        }
+
+        internal void Teardown()
+        {
+            Context.RequestServices.As<AlbaServiceProvider>().Teardown();
         }
     }
 }

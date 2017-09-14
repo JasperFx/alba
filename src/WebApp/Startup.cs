@@ -28,6 +28,7 @@ namespace WebApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient<IWidget, GreenWidget>();
+            services.AddTransient<ISimpleService, SimpleService>();
 
             services.AddMvc(config =>
             {
@@ -35,7 +36,6 @@ namespace WebApp
                 config.InputFormatters.Clear();
                 config.InputFormatters.Add(new TextInputFormatter());
                 config.InputFormatters.Add(new JsonInputFormatter());
-                
             });
         }
 

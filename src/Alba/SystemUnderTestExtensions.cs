@@ -49,6 +49,7 @@ namespace Alba
                 }
                 finally
                 {
+                    scenario.Teardown();
                     await system.AfterEach(scenario.Context).ConfigureAwait(false);
                 }
 
