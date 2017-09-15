@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using Alba.Assertions;
+using Alba.Authentication;
 
 namespace Alba
 {
@@ -73,6 +74,30 @@ namespace Alba
         public static Scenario ContentTypeShouldBe(this Scenario scenario, string mimeType)
         {
             scenario.Header("content-type").SingleValueShouldEqual(mimeType);
+            return scenario;
+        }
+
+        /// <summary>
+        /// Assert that the http response was redirected
+        /// </summary>
+        /// <param name="scenario"></param>
+        /// <param name="expected"></param>
+        /// <returns></returns>
+        public static Scenario RedirectShouldBe(this Scenario scenario, string expected)
+        {
+            scenario.AssertThat(new RedirectAssertion(expected, false));
+            return scenario;
+        }
+
+        /// <summary>
+        /// Assert that the http response was redirected permanently
+        /// </summary>
+        /// <param name="scenario"></param>
+        /// <param name="expected"></param>
+        /// <returns></returns>
+        public static Scenario RedirectPermanentShouldBe(this Scenario scenario, string expected)
+        {
+            scenario.AssertThat(new RedirectAssertion(expected, true));
             return scenario;
         }
     }

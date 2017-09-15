@@ -42,5 +42,14 @@ namespace Alba
         {
             _parent.AssertThat(new NoHeaderValueAssertion(_headerKey));
         }
+
+        /// <summary>
+        /// Asserts that there are the given values in the Http response
+        /// </summary>
+        /// <param name="expectedValues"></param>
+        public void ShouldHaveValues(params string[] expectedValues)
+        {
+            _parent.AssertThat(new HeaderMultiValueAssertion(_headerKey, expectedValues));
+        }
     }
 }

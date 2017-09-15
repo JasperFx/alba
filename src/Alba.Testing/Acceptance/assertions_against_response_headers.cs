@@ -105,7 +105,6 @@ namespace Alba.Testing.Acceptance
             ex.Message.ShouldContain("Expected no value for header 'Foo', but found values 'Bar1', 'Bar2'");
         }
 
-
         [Fact]
         public async Task should_have_on_non_null_value_sad_path_with_too_many_values()
         {
@@ -129,7 +128,6 @@ namespace Alba.Testing.Acceptance
             ex.Message.ShouldContain(
                 "Expected a single header value of 'Foo', but found multiple values on the response: 'Bar1', 'Bar2'");
         }
-
 
         [Fact]
         public Task should_have_on_non_null_header_value_happy_path()
@@ -168,7 +166,6 @@ namespace Alba.Testing.Acceptance
             ex.Message.ShouldContain("Expected a single header value of 'Foo', but no values were found on the response");
         }
 
-
         [Fact]
         public async Task single_header_value_is_negative_because_there_are_no_values()
         {
@@ -191,6 +188,61 @@ namespace Alba.Testing.Acceptance
                 "Expected a single header value of 'Foo'='Bar', but no values were found on the response");
         }
 
+        [Fact]
+        public Task muliple_header_values_happy_path()
+        {
+            host.Handlers["/one"] = c =>
+            {
+                c.Response.Headers.Append("Foo", "Anything");
+                c.Response.Headers.Append("Foo", "Bar");
+                return Task.CompletedTask;
+            };
 
+            return host.Scenario(x =>
+            {
+                x.Post.Url("/one");
+                x.Header("Foo").ShouldHaveValues("Anything", "Bar");
+            });
+        }
+
+        [Fact]
+        public async Task multiple_header_values_wrong_value()
+        {
+            host.Handlers["/one"] = c =>
+            {
+                c.Response.Headers.Append("Foo", "Anything");
+                return Task.CompletedTask;
+            };
+
+            var ex = await Exception<ScenarioAssertionException>.ShouldBeThrownBy(() =>
+            {
+                return host.Scenario(x =>
+                {
+                    x.Post.Url("/one");
+                    x.Header("Foo").ShouldHaveValues("Bar");
+                });
+            });
+
+            ex.Message.ShouldContain(
+                "Expected header values of 'Foo'='Bar', but the actual values were 'Anything'.");
+        }
+
+        [Fact]
+        public async Task multiple_header_values_no_values()
+        {
+            host.Handlers["/one"] = c => Task.CompletedTask;
+
+            var ex = await Exception<ScenarioAssertionException>.ShouldBeThrownBy(() =>
+            {
+                return host.Scenario(x =>
+                {
+                    x.Post.Url("/one");
+                    x.Header("Foo").ShouldHaveValues("Bar");
+                });
+            });
+
+            ex.Message.ShouldContain(
+                "Expected header values of 'Foo'='Bar', but no values were found on the response.");
+        }
     }
 }
