@@ -1,12 +1,10 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.Extensions.ObjectPool;
-using Microsoft.Extensions.Primitives;
 using Microsoft.Net.Http.Headers;
 
 namespace Alba.Stubs
@@ -45,14 +43,14 @@ namespace Alba.Stubs
 
         public override long? ContentLength
         {
-            get { return Headers.ContentLength(); }
-            set { Headers.ContentLength(value); }
+            get => Headers.ContentLength();
+            set => Headers.ContentLength(value);
         }
 
         public override string ContentType
         {
-            get { return Headers[HeaderNames.ContentType]; }
-            set { Headers[HeaderNames.ContentType] = value; }
+            get => Headers[HeaderNames.ContentType];
+            set => Headers[HeaderNames.ContentType] = value;
         }
 
         public override IResponseCookies Cookies { get; }
