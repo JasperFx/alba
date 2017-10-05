@@ -50,12 +50,13 @@ namespace Alba.Testing.Samples
                 // Only write one value for this header
                 _.Header("set-cookie").ShouldHaveOneNonNullValue();
 
+                // Assert that the header has the given values
+                _.Header("www-authenticate").ShouldHaveValues("NTLM", "Negotiate");
+
                 // Check the content-type header
                 _.ContentTypeShouldBe("text/json");
             });
         }
         // ENDSAMPLE
-
-
     }
 }

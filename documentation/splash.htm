@@ -50,7 +50,7 @@
                 <a href="https://gitter.im/JasperFx/Alba?utm_source=share-link&utm_medium=link&utm_campaign=share-link" onclick = $("#menu-close").click(); >Gitter Room</a>
             </li>
             <li>
-                <a href="http://build.fubu-project.org/project.html?projectId=Alba&branch_Alba=__all_branches__" onclick = $("#menu-close").click(); >TeamCity Page</a>
+                <a href="https://ci.appveyor.com/project/jasper-ci/alba/history" onclick = $("#menu-close").click(); >AppVeyor Page</a>
             </li>
             <li>
                 <a href="https://www.nuget.org/packages/Alba/" onclick = $("#menu-close").click(); >Nuget Downloads</a>
@@ -70,13 +70,13 @@
             <br />
             <br />
             <p class="lead center-block">
-                <a href="http://build.fubu-project.org/project.html?projectId=Alba&tab=projectOverview"><img src="https://img.shields.io/teamcity/http/build.fubu-project.org/s/Alba_master.svg"></img></a>
+                <a href="https://ci.appveyor.com/project/jasper-ci/alba/history"><img src="https://img.shields.io/appveyor/ci/jasper-ci/alba.svg"></img></a>
                 <a href="https://www.nuget.org/packages/Alba/"><img src="https://img.shields.io/nuget/v/Alba.svg"></img></a>
 
 
 <a href="https://gitter.im/jasperfx/Alba?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/jasperfx/Alba" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
             </p>
-            <i>The main drag of the bustling metropolis of Alba, Missouri</i>
+            <i class="subtitle">The main drag of the bustling metropolis of Alba, Missouri</i>
         </div>
     </header>
 
@@ -86,11 +86,11 @@
             <div class="row">
                 <div class="col-lg-12 text-center">
                     <h2>Supercharging ASP.Net Core development</h2>
-          <p style="margin:50px">Use the Alba library in your testing projects to quickly write declarative specifications against the HTTP endpoint of an ASP.Net Core application by simulating an HTTP request in memory. Inspired by the 
+          <p style="margin:50px">Use the Alba library in your testing projects to quickly write declarative specifications against the HTTP endpoint of an ASP.Net Core application by simulating an HTTP request in memory. Inspired by the
             <a href="https://jeremydmiller.com/2015/11/05/testing-http-handlers-with-no-web-server-in-sight/">"Scenario" testing mechanism in FubuMVC</a>. Alba supports the CoreCLR runtime (Netstandard 1.6).
 
 
-                    
+
                 </div>
             </div>
             <!-- /.row -->
@@ -108,18 +108,13 @@ $('#search').keyup(function(e){
     var url = 'https://www.google.com/#q=site:jasperfx.github.io ' + search;
     url = encodeURI(url);
 
-    //alert(url);
-
     window.location.href = url;
 
     e.stopPropagation();
     if (e.cancelBubble!=null) e.cancelBubble = true;
     return false;
   }
-
-
-
-}); 
+});
 
 </script>
 

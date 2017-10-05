@@ -2,6 +2,7 @@
 using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.Net.Http.Headers;
 using WebApp;
 using Xunit;
 
@@ -20,7 +21,7 @@ namespace Alba.Testing.Acceptance
                     _.Get.Url("/auth/windowschallenge");
 
                     _.StatusCodeShouldBe(HttpStatusCode.Unauthorized);
-                    _.Header("www-authenticate").ShouldHaveValues("NTLM", "Negotiate");
+                    _.Header(HeaderNames.WWWAuthenticate).ShouldHaveValues("NTLM", "Negotiate");
                 });
             }
         }
