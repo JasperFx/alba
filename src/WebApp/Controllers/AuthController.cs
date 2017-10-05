@@ -6,10 +6,12 @@ namespace WebApp.Controllers
     [Route("[controller]/[action]")]
     public class AuthController : Controller
     {
+        // SAMPLE: windows-challenge-endpoint
         public IActionResult WindowsChallenge()
         {
             return new ChallengeResult(new List<string> {"NTLM", "Negotiate"});
         }
+        // ENDSAMPLE
 
         public IActionResult Redirect()
         {

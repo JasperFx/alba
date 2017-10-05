@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http.Features.Authentication;
 
 namespace Alba.Authentication
 {
+    // SAMPLE: stub-windows-auth-handler
     public class StubWindowsAuthHandler : AuthenticationHandler
     {
         public StubWindowsAuthHandler(HttpContext httpContext)
@@ -31,4 +32,5 @@ namespace Alba.Authentication
                    || string.Equals("Negotiate", scheme, StringComparison.OrdinalIgnoreCase);
         }
     }
+    // ENDSAMPLE
 }

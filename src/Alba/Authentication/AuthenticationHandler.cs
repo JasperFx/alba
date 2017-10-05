@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features.Authentication;
+using Microsoft.Net.Http.Headers;
 
 namespace Alba.Authentication
 {
@@ -97,7 +98,7 @@ namespace Alba.Authentication
 
         protected virtual void On401(ChallengeContext context)
         {
-            HttpContext.Response.Headers.Append("www-authenticate", context.AuthenticationScheme);
+            HttpContext.Response.Headers.Append(HeaderNames.WWWAuthenticate, context.AuthenticationScheme);
         }
 
         protected virtual void On403(ChallengeContext context)

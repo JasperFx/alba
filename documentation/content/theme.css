@@ -1,9 +1,9 @@
 h2{
-	margin-top: 50px;
+  margin-top: 50px;
 }
 
 div.alert{
-	font-size: 14px !important;
+  font-size: 14px !important;
 }
 
 div.single-command-usage {
@@ -42,4 +42,8 @@ i.command-description {
 
 .command-section h4 {
     margin-bottom: 10px;
+}
+
+.navbar-inverse {
+	background-color: transparent;
 }
