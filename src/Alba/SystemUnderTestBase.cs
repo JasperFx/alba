@@ -24,7 +24,7 @@ namespace Alba
             _invoker = new Lazy<RequestDelegate>(() =>
             {
                 var host = _host.Value;
-                var field = typeof(WebHost).GetField("_application", BindingFlags.NonPublic | BindingFlags.Instance);
+                var field = host.GetType().GetField("_application", BindingFlags.NonPublic | BindingFlags.Instance);
                 return field.GetValue(host).As<RequestDelegate>();
             });
 

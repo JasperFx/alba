@@ -17,7 +17,7 @@ namespace Alba
 
             if (rawValue.Count == 1 &&
                 !string.IsNullOrWhiteSpace(rawValue[0]) &&
-                HeaderUtilities.TryParseInt64(rawValue[0], out length))
+                TryParseInt64(rawValue[0], out length))
             {
                 return length;
             }
@@ -34,12 +34,27 @@ namespace Alba
         {
             if (value.HasValue)
             {
-                headers[HeaderNames.ContentLength] = HeaderUtilities.FormatInt64(value.Value);
+                headers[HeaderNames.ContentLength] = FormatInt64(value.Value);
             }
             else
             {
                 headers.Remove(HeaderNames.ContentLength);
             }
+        }
+
+        private static bool TryParseInt64(string input, out long value) {
+#if NETSTANDARD2_0
+            return HeaderUtilities.TryParseNonNegativeInt64(input, out value);
+#else
+            return HeaderUtilities.TryParseInt64(input, out value);
+#endif
+        }
+        private static string FormatInt64(long input) {
+#if NETSTANDARD2_0
+            return HeaderUtilities.FormatNonNegativeInt64(input);
+#else
+            return HeaderUtilities.FormatInt64(input);
+#endif
         }
     }
 }
