@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Http.Features;
@@ -26,8 +27,28 @@ namespace Alba
 
         }
 
+#if NETSTANDARD2_0
+        public Task StartAsync<TContext>(IHttpApplication<TContext> application, CancellationToken cancellationToken)
+        {
+            createApplicationWrapper(application);
+
+            return Task.CompletedTask;
+        }
+
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            _application = null;
+
+            return Task.CompletedTask;
+        }
+#else
         void IServer.Start<TContext>(IHttpApplication<TContext> application)
         {
+            createApplicationWrapper(application);
+        }
+#endif
+
+        private void createApplicationWrapper<TContext>(IHttpApplication<TContext> application) {
             _application = new ApplicationWrapper<Context>((IHttpApplication<Context>)application, () =>
             {
                 if (_disposed)

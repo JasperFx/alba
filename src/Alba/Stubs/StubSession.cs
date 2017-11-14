@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
@@ -36,6 +37,18 @@ namespace Alba.Stubs
         {
             throw new NotImplementedException();
         }
+
+#if NETSTANDARD2_0
+        public Task LoadAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task CommitAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            throw new NotImplementedException();
+        }
+#endif
 
         public bool IsAvailable { get; }
         public string Id { get; }
