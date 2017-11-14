@@ -8,7 +8,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alba.Testing", "Alba.Testin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApp", "WebApp\WebApp.csproj", "{52733A25-1E8D-4250-A9B5-D135EE6C1557}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alba.AspNetCore2", "Alba\Alba.AspNetCore2.csproj", "{2788ACBD-012D-4541-8B92-15BE87D6291C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alba.AspNetCore2", "Alba.AspNetCore2\Alba.AspNetCore2.csproj", "{74E8674B-0470-40E0-ADC7-98A10930126F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -28,10 +28,10 @@ Global
 		{52733A25-1E8D-4250-A9B5-D135EE6C1557}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{52733A25-1E8D-4250-A9B5-D135EE6C1557}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{52733A25-1E8D-4250-A9B5-D135EE6C1557}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2788ACBD-012D-4541-8B92-15BE87D6291C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2788ACBD-012D-4541-8B92-15BE87D6291C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2788ACBD-012D-4541-8B92-15BE87D6291C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2788ACBD-012D-4541-8B92-15BE87D6291C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74E8674B-0470-40E0-ADC7-98A10930126F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74E8674B-0470-40E0-ADC7-98A10930126F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74E8674B-0470-40E0-ADC7-98A10930126F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74E8674B-0470-40E0-ADC7-98A10930126F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -14,6 +14,8 @@
     <RepositoryUrl>git://github.com/JasperFx/alba</RepositoryUrl>
     <PackageTargetFallback Condition=" '$(TargetFramework)' == 'netstandard1.6' ">$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
     <NetStandardImplicitPackageVersion Condition=" '$(TargetFramework)' == 'netstandard1.6' ">1.6.1</NetStandardImplicitPackageVersion>
+    <EnableDefaultItems>false</EnableDefaultItems>
+    <SourceRootFolder>../Alba</SourceRootFolder>
   </PropertyGroup>
 
   <ItemGroup>
@@ -28,4 +30,7 @@
     <PackageReference Include="System.Xml.XmlDocument" Version="4.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Include="$(SourceRootFolder)/**/*.cs" Exclude="$(SourceRootFolder)/obj/**/*" />
+  </ItemGroup>
 </Project>
