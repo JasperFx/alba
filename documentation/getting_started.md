@@ -14,6 +14,9 @@ Or, using paket:
 paket add nuget Alba
 </pre>
 
+**For ASP.Net Core 2.0, you'll need to instead use the Alba.AspNetCore2 Nuget.** There are no other public API differences, but the internals of ASP.Net Core are
+different enough that we had to use a separate Nuget package.
+
 ## How does Alba work?
 
 Alba is a test helper within some kind of unit testing tool (xUnit, NUnit, etc) that provides a little help to
