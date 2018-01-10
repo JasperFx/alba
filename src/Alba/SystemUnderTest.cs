@@ -14,6 +14,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Newtonsoft.Json;
 
+#if NETSTANDARD2_0
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
+#endif
+
 namespace Alba
 {
     /// <summary>
@@ -24,6 +28,8 @@ namespace Alba
         private readonly WebHostBuilder _builder;
         private readonly IList<Action<IServiceCollection>> _registrations = new List<Action<IServiceCollection>>();
         private readonly IList<Action<IWebHostBuilder>> _configurations = new List<Action<IWebHostBuilder>>();
+
+        private Type startupType;
 
 
         /// <summary>
@@ -80,6 +86,8 @@ namespace Alba
             }
 
             Configure(x => x.UseStartup<T>());
+
+            startupType = typeof(T);
         }
 
         /// <summary>
@@ -130,6 +138,11 @@ namespace Alba
             {
                 JsonSerializerSettings = settings;
             }
+
+            #if NETSTANDARD2_0
+            var manager = host.Services.GetService<ApplicationPartManager>();
+            manager?.ApplicationParts.Add(new AssemblyPart(startupType.Assembly));
+            #endif
 
             return host;
         }
