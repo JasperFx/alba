@@ -15,6 +15,7 @@ namespace Alba.Testing.Acceptance
         {
             using (var system = SystemUnderTest.ForStartup<Startup>())
             {
+                system.UseWindowsAuthentication();
                 await system.Scenario(_ =>
                 {
                     _.WithWindowsAuthentication();
@@ -29,11 +30,12 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task challenges_ntlm_negotiate_with_user()
         {
+            var user = new ClaimsPrincipal(new ClaimsIdentity(Enumerable.Empty<Claim>(), "Windows"));
             using (var system = SystemUnderTest.ForStartup<Startup>())
             {
+                system.UseWindowsAuthentication(user);
                 await system.Scenario(_ =>
                 {
-                    var user = new ClaimsPrincipal(new ClaimsIdentity(Enumerable.Empty<Claim>(), "Windows"));
                     _.WithWindowsAuthentication(user);
                     _.Get.Url("/auth/windowschallenge");
 
