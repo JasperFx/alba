@@ -1,7 +1,12 @@
 ﻿using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+
+#if NETSTANDARD2_0
+using Microsoft.AspNetCore.Authentication;
+#endif
 
 namespace Alba
 {
@@ -55,6 +60,24 @@ namespace Alba
 
                 return scenario;
             }
+        }
+
+
+        public static SystemUnderTest UseWindowsAuthentication(this SystemUnderTest system, ClaimsPrincipal user = null) {
+#if NETSTANDARD2_0
+            system.Configure(c => {
+                c.ConfigureServices(s => {
+                    s.AddAuthentication(conf => {
+                        conf.DefaultAuthenticateScheme = "NTLM";
+                        conf.DefaultChallengeScheme = "Negotiate";
+                    })
+                        .AddScheme<AuthenticationSchemeOptions, StubNtlmAuthenticationHandlerV2>("NTLM", "NTLM", options =>  { })
+                        .AddScheme<AuthenticationSchemeOptions, StubNtlmAuthenticationHandlerV2>("Negotiate", "NTLM", options =>  { });
+                    s.AddSingleton(new StubNtlmAuthenticationHandlerV2(user));
+                });
+            });
+#endif
+            return system;
         }
     }
 }
