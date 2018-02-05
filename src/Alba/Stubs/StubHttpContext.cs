@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Threading;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Authentication;
+using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.Http.Features;
 
 namespace Alba.Stubs
@@ -58,7 +59,7 @@ namespace Alba.Stubs
         public override ClaimsPrincipal User { get; set; } = new ClaimsPrincipal();
 
 
-        public override IDictionary<object, object> Items { get; set; } = new Dictionary<object, object>();
+        public override IDictionary<object, object> Items { get; set; } = new ItemsDictionary();
 
         public sealed override IServiceProvider RequestServices { get; set; }
 
