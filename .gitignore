@@ -201,3 +201,4 @@ src/.idea
 doc-target
 stresults.htm
 project.lock.json
+*.DS_Store
