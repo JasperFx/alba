@@ -5,13 +5,13 @@ Alba itself is just a class library. All you really need to do to start with Alb
 project for your application like so:
 
 <pre>
-PM> Install-Package Alba
+PM> Install-Package Alba.AspNetCore2
 </pre>
 
 Or, using paket:
 
 <pre>
-paket add nuget Alba
+paket add nuget Alba.AspNetCore2
 </pre>
 
 **For ASP.Net Core 2.0, you'll need to instead use the Alba.AspNetCore2 Nuget.** There are no other public API differences, but the internals of ASP.Net Core are
