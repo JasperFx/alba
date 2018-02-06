@@ -15,12 +15,22 @@ namespace Alba
         public static string FindParallelFolder(string folderName)
         {
             var starting = AppContext.BaseDirectory.ToFullPath();
+            
+            // HACK ALERT!! but it does work
+            if (starting.Contains("dotnet-xunit"))
+            {
+                starting = Directory.GetCurrentDirectory();
+            }
+            
+            
             while (starting.Contains(Path.DirectorySeparatorChar + "bin"))
             {
                 starting = starting.ParentDirectory();
             }
+            
 
             var candidate = starting.ParentDirectory().AppendPath(folderName);
+            
 
             return Directory.Exists(candidate) ? candidate : null;
         }
