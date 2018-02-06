@@ -62,7 +62,7 @@
       <div class="row">
           <!--left-->
           <div class="col-md-3" id="leftCol">
-            <h3>Alba 1.3.0</h3>
+            <h3>Alba 1.4.0</h3>
             <br />
 
             <ul class="nav nav-stacked affix" id="sidebar">
@@ -82,7 +82,7 @@
                 <!--title: Working with Redirects-->
 <h2 id="asserting-on-expected-redirect-responses">Asserting on Expected Redirect Responses</h2>
 <p>Alba comes with some out of the box assertions to declaratively check expected redirects.</p>
-<pre><code class="language-csharp">&#xD;&#xA;public Task asserting_redirects(ISystemUnderTest system)&#xD;&#xA;{&#xD;&#xA;    return system.Scenario(_ =&gt;&#xD;&#xA;    {&#xD;&#xA;        // should redirect to the url&#xD;&#xA;        _.RedirectShouldBe(&quot;/redirect&quot;);&#xD;&#xA;&#xD;&#xA;        // should redirect permanently to the url&#xD;&#xA;        _.RedirectPermanentShouldBe(&quot;/redirect&quot;);&#xD;&#xA;    });&#xD;&#xA;}&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public Task asserting_redirects(ISystemUnderTest system)&#xA;{&#xA;    return system.Scenario(_ =&gt;&#xA;    {&#xA;        // should redirect to the url&#xA;        _.RedirectShouldBe(&quot;/redirect&quot;);&#xA;&#xA;        // should redirect permanently to the url&#xA;        _.RedirectPermanentShouldBe(&quot;/redirect&quot;);&#xA;    });&#xA;}&#xA;</code></pre>
 
               </div>
 

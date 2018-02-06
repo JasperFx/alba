@@ -62,7 +62,7 @@
       <div class="row">
           <!--left-->
           <div class="col-md-3" id="leftCol">
-            <h3>Alba 1.3.0</h3>
+            <h3>Alba 1.4.0</h3>
             <br />
 
             <ul class="nav nav-stacked affix" id="sidebar">
@@ -85,14 +85,14 @@ failures will be reported out in the Exception message thrown by Alba on Scenari
 <p>The Scenario assertions in Alba are completely extensible and you can happily add your own via extension methods - but
 please send anything that's generally useful as a pull request to Alba itself;-)</p>
 <p>The first step is to write your own implementation of this interface:</p>
-<pre><code class="language-csharp">&#xD;&#xA;public interface IScenarioAssertion&#xD;&#xA;{&#xD;&#xA;    void Assert(Scenario scenario, ScenarioAssertionException ex);&#xD;&#xA;}&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public interface IScenarioAssertion&#xA;{&#xA;    void Assert(Scenario scenario, ScenarioAssertionException ex);&#xA;}&#xA;</code></pre>
 <p>As an example, here's the assertion from Alba that validates that the response body is supposed to</p>
-<pre><code class="language-csharp">&#xD;&#xA;public class BodyContainsAssertion : IScenarioAssertion&#xD;&#xA;{&#xD;&#xA;    public string Text { get; set; }&#xD;&#xA;&#xD;&#xA;    public BodyContainsAssertion(string text)&#xD;&#xA;    {&#xD;&#xA;        Text = text;&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    public void Assert(Scenario scenario, ScenarioAssertionException ex)&#xD;&#xA;    {&#xD;&#xA;        var body = ex.ReadBody(scenario);&#xD;&#xA;        if (!body.Contains(Text))&#xD;&#xA;        {&#xD;&#xA;            // Add the failure message to the exception. This exception only&#xD;&#xA;            // gets thrown if there are failures.&#xD;&#xA;            ex.Add($&quot;Expected text &#x27;{Text}&#x27; was not found in the response body&quot;);&#xD;&#xA;        }&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class BodyContainsAssertion : IScenarioAssertion&#xA;{&#xA;    public string Text { get; set; }&#xA;&#xA;    public BodyContainsAssertion(string text)&#xA;    {&#xA;        Text = text;&#xA;    }&#xA;&#xA;    public void Assert(Scenario scenario, ScenarioAssertionException ex)&#xA;    {&#xA;        var body = ex.ReadBody(scenario);&#xA;        if (!body.Contains(Text))&#xA;        {&#xA;            // Add the failure message to the exception. This exception only&#xA;            // gets thrown if there are failures.&#xA;            ex.Add($&quot;Expected text &#x27;{Text}&#x27; was not found in the response body&quot;);&#xA;        }&#xA;    }&#xA;}&#xA;</code></pre>
 <p>Once you have your assertion class, you can apply it to a scenario through an extension method against the
 <code>Scenario</code> class. Here's the <code>Scenario.ContentShouldContain(text)</code> implementation from Alba itself:</p>
-<pre><code class="language-csharp">&#xD;&#xA;/// &lt;summary&gt;&#xD;&#xA;/// Assert that the Http response contains the designated text&#xD;&#xA;/// &lt;/summary&gt;&#xD;&#xA;/// &lt;param name=&quot;scenario&quot;&gt;&lt;/param&gt;&#xD;&#xA;/// &lt;param name=&quot;text&quot;&gt;&lt;/param&gt;&#xD;&#xA;/// &lt;returns&gt;&lt;/returns&gt;&#xD;&#xA;public static Scenario ContentShouldContain(this Scenario scenario, string text)&#xD;&#xA;{&#xD;&#xA;    return scenario.AssertThat(new BodyContainsAssertion(text));&#xD;&#xA;}&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;/// &lt;summary&gt;&#xA;/// Assert that the Http response contains the designated text&#xA;/// &lt;/summary&gt;&#xA;/// &lt;param name=&quot;scenario&quot;&gt;&lt;/param&gt;&#xA;/// &lt;param name=&quot;text&quot;&gt;&lt;/param&gt;&#xA;/// &lt;returns&gt;&lt;/returns&gt;&#xA;public static Scenario ContentShouldContain(this Scenario scenario, string text)&#xA;{&#xA;    return scenario.AssertThat(new BodyContainsAssertion(text));&#xA;}&#xA;</code></pre>
 <p>Finally, use your new asssertion in a Scenario like this:</p>
-<pre><code class="language-csharp">&#xD;&#xA;[Fact]&#xD;&#xA;public Task using_scenario_with_ContentShouldContain_declaration_happy_path()&#xD;&#xA;{&#xD;&#xA;    host.Handlers[&quot;/one&quot;] = c =&gt;&#xD;&#xA;    {&#xD;&#xA;        c.Response.Write(&quot;**just the marker**&quot;);&#xD;&#xA;        return Task.CompletedTask;&#xD;&#xA;    };&#xD;&#xA;&#xD;&#xA;    return host.Scenario(x =&gt;&#xD;&#xA;    {&#xD;&#xA;        x.Get.Url(&quot;/one&quot;);&#xD;&#xA;        x.ContentShouldContain(&quot;just the marker&quot;);&#xD;&#xA;    });&#xD;&#xA;}&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;[Fact]&#xA;public Task using_scenario_with_ContentShouldContain_declaration_happy_path()&#xA;{&#xA;    host.Handlers[&quot;/one&quot;] = c =&gt;&#xA;    {&#xA;        c.Response.Write(&quot;**just the marker**&quot;);&#xA;        return Task.CompletedTask;&#xA;    };&#xA;&#xA;    return host.Scenario(x =&gt;&#xA;    {&#xA;        x.Get.Url(&quot;/one&quot;);&#xA;        x.ContentShouldContain(&quot;just the marker&quot;);&#xA;    });&#xA;}&#xA;</code></pre>
 
               </div>
 

@@ -62,7 +62,7 @@
       <div class="row">
           <!--left-->
           <div class="col-md-3" id="leftCol">
-            <h3>Alba 1.3.0</h3>
+            <h3>Alba 1.4.0</h3>
             <br />
 
             <ul class="nav nav-stacked affix" id="sidebar">
@@ -84,13 +84,13 @@
 has you covered with some built in helpers.</p>
 <h2 id="reading-the-response-text">Reading the Response Text</h2>
 <p>To read the response body as text, use this syntax:</p>
-<pre><code class="language-csharp">&#xD;&#xA;public async Task read_text(ISystemUnderTest system)&#xD;&#xA;{&#xD;&#xA;    var result = await system.Scenario(_ =&gt;&#xD;&#xA;    {&#xD;&#xA;        _.Get.Url(&quot;/output&quot;);&#xD;&#xA;    });&#xD;&#xA;&#xD;&#xA;    // This deserializes the response body to the&#xD;&#xA;    // designated Output type&#xD;&#xA;    var outputString = result.ResponseBody.ReadAsText();&#xD;&#xA;&#xD;&#xA;    // do assertions against the Output string&#xD;&#xA;}&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public async Task read_text(ISystemUnderTest system)&#xA;{&#xA;    var result = await system.Scenario(_ =&gt;&#xA;    {&#xA;        _.Get.Url(&quot;/output&quot;);&#xA;    });&#xA;&#xA;    // This deserializes the response body to the&#xA;    // designated Output type&#xA;    var outputString = result.ResponseBody.ReadAsText();&#xA;&#xA;    // do assertions against the Output string&#xA;}&#xA;</code></pre>
 <h2 id="assertions-against-the-response-text">Assertions against the Response Text</h2>
 <p>You have these built in operations for asserting on the response body text:</p>
-<pre><code class="language-csharp">&#xD;&#xA;public Task assert_on_content(ISystemUnderTest system)&#xD;&#xA;{&#xD;&#xA;    return system.Scenario(_ =&gt;&#xD;&#xA;    {&#xD;&#xA;        _.ContentShouldBe(&quot;exactly this&quot;);&#xD;&#xA;&#xD;&#xA;        _.ContentShouldContain(&quot;some snippet&quot;);&#xD;&#xA;&#xD;&#xA;        _.ContentShouldNotContain(&quot;some warning&quot;);&#xD;&#xA;    });&#xD;&#xA;}&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public Task assert_on_content(ISystemUnderTest system)&#xA;{&#xA;    return system.Scenario(_ =&gt;&#xA;    {&#xA;        _.ContentShouldBe(&quot;exactly this&quot;);&#xA;&#xA;        _.ContentShouldContain(&quot;some snippet&quot;);&#xA;&#xA;        _.ContentShouldNotContain(&quot;some warning&quot;);&#xA;    });&#xA;}&#xA;</code></pre>
 <h2 id="sending-text">Sending Text</h2>
 <p>Lastly, you can send text to an HTTP endpoint with this syntax:</p>
-<pre><code class="language-csharp">&#xD;&#xA;public Task send_text(ISystemUnderTest system)&#xD;&#xA;{&#xD;&#xA;    return system.Scenario(_ =&gt;&#xD;&#xA;    {&#xD;&#xA;        _.Post.Text(&quot;some text&quot;).ToUrl(&quot;/textdata&quot;);&#xD;&#xA;    });&#xD;&#xA;}&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public Task send_text(ISystemUnderTest system)&#xA;{&#xA;    return system.Scenario(_ =&gt;&#xA;    {&#xA;        _.Post.Text(&quot;some text&quot;).ToUrl(&quot;/textdata&quot;);&#xA;    });&#xA;}&#xA;</code></pre>
 <p>Do note that this also sets the <code>content-length</code> header to the string length and
 sets the <code>content-type</code> header of the request to &quot;text/plain.&quot;</p>
 

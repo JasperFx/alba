@@ -62,7 +62,7 @@
       <div class="row">
           <!--left-->
           <div class="col-md-3" id="leftCol">
-            <h3>Alba 1.3.0</h3>
+            <h3>Alba 1.4.0</h3>
             <br />
 
             <ul class="nav nav-stacked affix" id="sidebar">
@@ -84,11 +84,11 @@
 <p>Alba itself is just a class library. All you really need to do to start with Alba is to install the Nuget to your testing
 project for your application like so:</p>
 <pre>
-PM> Install-Package Alba
+PM> Install-Package Alba.AspNetCore2
 </pre>
 <p>Or, using paket:</p>
 <pre>
-paket add nuget Alba
+paket add nuget Alba.AspNetCore2
 </pre>
 <p><strong>For ASP.Net Core 2.0, you'll need to instead use the Alba.AspNetCore2 Nuget.</strong> There are no other public API differences, but the internals of ASP.Net Core are
 different enough that we had to use a separate Nuget package.</p>
@@ -101,15 +101,15 @@ by directly invoking the ASP.Net Core application's underlying <a href="https://
 making an HTTP request to a running web server</strong>.</p>
 <h2 id="testing-hello-world">Testing Hello, World</h2>
 <p>Now let's say that you built the obligatory hello world application for ASP.Net Core shown below:</p>
-<pre><code class="language-csharp">&#xD;&#xA;public class Startup&#xD;&#xA;{&#xD;&#xA;    public void Configure(IApplicationBuilder builder)&#xD;&#xA;    {&#xD;&#xA;        builder.Run(context =&gt;&#xD;&#xA;        {&#xD;&#xA;            context.Response.Headers[&quot;content-type&quot;] = &quot;text/plain&quot;;&#xD;&#xA;            return context.Response.WriteAsync(&quot;Hello, World!&quot;);&#xD;&#xA;        });&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class Startup&#xA;{&#xA;    public void Configure(IApplicationBuilder builder)&#xA;    {&#xA;        builder.Run(context =&gt;&#xA;        {&#xA;            context.Response.Headers[&quot;content-type&quot;] = &quot;text/plain&quot;;&#xA;            return context.Response.WriteAsync(&quot;Hello, World!&quot;);&#xA;        });&#xA;    }&#xA;}&#xA;</code></pre>
 <p>We can now use Alba to declare an integration test for our Hello, World application within an <a href="http://xunit.github.io/">xUnit</a>
 testing project:</p>
-<pre><code class="language-csharp">&#xD;&#xA;[Fact]&#xD;&#xA;public Task should_say_hello_world()&#xD;&#xA;{&#xD;&#xA;    using (var system = SystemUnderTest.ForStartup&lt;Startup&gt;())&#xD;&#xA;    {&#xD;&#xA;        // This runs an HTTP request and makes an assertion&#xD;&#xA;        // about the expected content of the response&#xD;&#xA;        return system.Scenario(_ =&gt;&#xD;&#xA;        {&#xD;&#xA;            _.Get.Url(&quot;/&quot;);&#xD;&#xA;            _.ContentShouldBe(&quot;Hello, World!&quot;);&#xD;&#xA;            _.StatusCodeShouldBeOk();&#xD;&#xA;        });&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;[Fact]&#xA;public Task should_say_hello_world()&#xA;{&#xA;    using (var system = SystemUnderTest.ForStartup&lt;Startup&gt;())&#xA;    {&#xA;        // This runs an HTTP request and makes an assertion&#xA;        // about the expected content of the response&#xA;        return system.Scenario(_ =&gt;&#xA;        {&#xA;            _.Get.Url(&quot;/&quot;);&#xA;            _.ContentShouldBe(&quot;Hello, World!&quot;);&#xA;            _.StatusCodeShouldBeOk();&#xA;        });&#xA;    }&#xA;}&#xA;</code></pre>
 <p>The sample up above bootstraps the application defined by our <code>Startup</code> and executes a <em>Scenario</em> against the running system.
 A Scenario in Alba defines how the HTTP request should be constructed (the request body, headers, url) and optionally gives you
 the ability to express assertions against the expected HTTP response.</p>
 <p>Alba comes with plenty of helpers in its <a href="https://www.martinfowler.com/bliki/FluentInterface.html">fluent interface</a> to work with the <code>HttpRequest</code> and <code>HttpResponse</code>, or you can work directly with the underlying ASP.Net Core objects:</p>
-<pre><code class="language-csharp">&#xD;&#xA;[Fact]&#xD;&#xA;public async Task should_say_hello_world_with_raw_objects()&#xD;&#xA;{&#xD;&#xA;    using (var system = SystemUnderTest.ForStartup&lt;Startup&gt;())&#xD;&#xA;    {&#xD;&#xA;        var response = await system.Scenario(_ =&gt;&#xD;&#xA;        {&#xD;&#xA;            _.Get.Url(&quot;/&quot;);&#xD;&#xA;            _.StatusCodeShouldBeOk();&#xD;&#xA;        });&#xD;&#xA;&#xD;&#xA;        response.ResponseBody.ReadAsText()&#xD;&#xA;            .ShouldBe(&quot;Hello, World!&quot;);&#xD;&#xA;&#xD;&#xA;        // or you can go straight at the HttpContext&#xD;&#xA;        // The ReadAllText() extension method is from Baseline&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;        var body = response.Context.Response.Body;&#xD;&#xA;        body.Position = 0; // need to rewind it because we read it above&#xD;&#xA;        body.ReadAllText().ShouldBe(&quot;Hello, World!&quot;);&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;[Fact]&#xA;public async Task should_say_hello_world_with_raw_objects()&#xA;{&#xA;    using (var system = SystemUnderTest.ForStartup&lt;Startup&gt;())&#xA;    {&#xA;        var response = await system.Scenario(_ =&gt;&#xA;        {&#xA;            _.Get.Url(&quot;/&quot;);&#xA;            _.StatusCodeShouldBeOk();&#xA;        });&#xA;&#xA;        response.ResponseBody.ReadAsText()&#xA;            .ShouldBe(&quot;Hello, World!&quot;);&#xA;&#xA;        // or you can go straight at the HttpContext&#xA;        // The ReadAllText() extension method is from Baseline&#xA;&#xA;&#xA;        var body = response.Context.Response.Body;&#xA;        body.Position = 0; // need to rewind it because we read it above&#xA;        body.ReadAllText().ShouldBe(&quot;Hello, World!&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
 <p>Do note that Alba is not directly coupled to xUnit and would be usable within any .Net unit testing library.</p>
 <p>To see where to go from here, see the <a href="/alba/documentation">Documentation</a></p>
 

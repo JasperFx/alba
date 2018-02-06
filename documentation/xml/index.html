@@ -62,7 +62,7 @@
       <div class="row">
           <!--left-->
           <div class="col-md-3" id="leftCol">
-            <h3>Alba 1.3.0</h3>
+            <h3>Alba 1.4.0</h3>
             <br />
 
             <ul class="nav nav-stacked affix" id="sidebar">
@@ -86,10 +86,10 @@ used Alba on turned out to be an Xml API, so here we are.</p>
 <h2 id="sending-xml-in-the-request">Sending Xml in the Request</h2>
 <p>There's a similar helper for Xml serialization that allows you to send an object
 as xml to the web request:</p>
-<pre><code class="language-csharp">&#xD;&#xA;public Task send_xml(ISystemUnderTest system)&#xD;&#xA;{&#xD;&#xA;    return system.Scenario(_ =&gt;&#xD;&#xA;    {&#xD;&#xA;        // This serializes the Input object to xml,&#xD;&#xA;        // writes it to the HttpRequest.Body, and sets&#xD;&#xA;        // the accepts &amp; content-type header values to&#xD;&#xA;        // application/xml&#xD;&#xA;        _.Post&#xD;&#xA;            .Xml(new Input {Name = &quot;Max&quot;, Age = 13})&#xD;&#xA;            .ToUrl(&quot;/person&quot;);&#xD;&#xA;&#xD;&#xA;        // OR, if url lookup is enabled, this is an equivalent:&#xD;&#xA;        _.Post.Xml(new Input {Name = &quot;Max&quot;, Age = 13});&#xD;&#xA;    });&#xD;&#xA;}&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public Task send_xml(ISystemUnderTest system)&#xA;{&#xA;    return system.Scenario(_ =&gt;&#xA;    {&#xA;        // This serializes the Input object to xml,&#xA;        // writes it to the HttpRequest.Body, and sets&#xA;        // the accepts &amp; content-type header values to&#xA;        // application/xml&#xA;        _.Post&#xA;            .Xml(new Input {Name = &quot;Max&quot;, Age = 13})&#xA;            .ToUrl(&quot;/person&quot;);&#xA;&#xA;        // OR, if url lookup is enabled, this is an equivalent:&#xA;        _.Post.Xml(new Input {Name = &quot;Max&quot;, Age = 13});&#xA;    });&#xA;}&#xA;</code></pre>
 <h2 id="reading-xml-from-the-response">Reading Xml from the Response</h2>
 <p>There's a helper off of the <code>HttpResponseBody</code> for reading Xml from the response:</p>
-<pre><code class="language-csharp">&#xD;&#xA;public async Task read_xml(ISystemUnderTest system)&#xD;&#xA;{&#xD;&#xA;    var result = await system.Scenario(_ =&gt;&#xD;&#xA;    {&#xD;&#xA;        _.Get.Url(&quot;/output&quot;);&#xD;&#xA;    });&#xD;&#xA;&#xD;&#xA;    // This deserializes the response body to the&#xD;&#xA;    // designated Output type&#xD;&#xA;    var output = result.ResponseBody.ReadAsXml&lt;Output&gt;();&#xD;&#xA;&#xD;&#xA;    // do assertions against the Output model&#xD;&#xA;&#xD;&#xA;    // OR, if you just want the XmlDocument itself:&#xD;&#xA;    XmlDocument document = result.ResponseBody.ReadAsXml();&#xD;&#xA;}&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public async Task read_xml(ISystemUnderTest system)&#xA;{&#xA;    var result = await system.Scenario(_ =&gt;&#xA;    {&#xA;        _.Get.Url(&quot;/output&quot;);&#xA;    });&#xA;&#xA;    // This deserializes the response body to the&#xA;    // designated Output type&#xA;    var output = result.ResponseBody.ReadAsXml&lt;Output&gt;();&#xA;&#xA;    // do assertions against the Output model&#xA;&#xA;    // OR, if you just want the XmlDocument itself:&#xA;    XmlDocument document = result.ResponseBody.ReadAsXml();&#xA;}&#xA;</code></pre>
 
               </div>
 

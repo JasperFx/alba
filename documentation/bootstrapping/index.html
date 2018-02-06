@@ -62,7 +62,7 @@
       <div class="row">
           <!--left-->
           <div class="col-md-3" id="leftCol">
-            <h3>Alba 1.3.0</h3>
+            <h3>Alba 1.4.0</h3>
             <br />
 
             <ul class="nav nav-stacked affix" id="sidebar">
@@ -82,25 +82,25 @@
                 <!--title: Bootstrapping and Configuration-->
 <p>Alba uses its <code>SystemUnderTest</code> class to manage the lifecycle of an ASP.Net Core application. The easiest way to use this
 class is to directly use the <code>Startup</code> class for your application like so:</p>
-<pre><code class="language-csharp">&#xD;&#xA;var system = SystemUnderTest.ForStartup&lt;Startup&gt;();&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;var system = SystemUnderTest.ForStartup&lt;Startup&gt;();&#xA;</code></pre>
 <p>Alba won't bootstrap your application until the first time you try to execute a <em>Scenario</em>, so you have the option
 to apply additional configuration to how the system under test will execute.</p>
 <h2 id="running-a-scenario">Running a Scenario</h2>
 <p>Once you have a <code>SystemUnderTest</code> object, you're ready to execute <em>Scenario's</em> through your system inside of tests.
 Below is a scenario for the &quot;hello, world&quot; application:</p>
-<pre><code class="language-csharp">&#xD;&#xA;[Fact]&#xD;&#xA;public Task should_say_hello_world()&#xD;&#xA;{&#xD;&#xA;    using (var system = SystemUnderTest.ForStartup&lt;Startup&gt;())&#xD;&#xA;    {&#xD;&#xA;        // This runs an HTTP request and makes an assertion&#xD;&#xA;        // about the expected content of the response&#xD;&#xA;        return system.Scenario(_ =&gt;&#xD;&#xA;        {&#xD;&#xA;            _.Get.Url(&quot;/&quot;);&#xD;&#xA;            _.ContentShouldBe(&quot;Hello, World!&quot;);&#xD;&#xA;            _.StatusCodeShouldBeOk();&#xD;&#xA;        });&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;[Fact]&#xA;public Task should_say_hello_world()&#xA;{&#xA;    using (var system = SystemUnderTest.ForStartup&lt;Startup&gt;())&#xA;    {&#xA;        // This runs an HTTP request and makes an assertion&#xA;        // about the expected content of the response&#xA;        return system.Scenario(_ =&gt;&#xA;        {&#xA;            _.Get.Url(&quot;/&quot;);&#xA;            _.ContentShouldBe(&quot;Hello, World!&quot;);&#xA;            _.StatusCodeShouldBeOk();&#xA;        });&#xA;    }&#xA;}&#xA;</code></pre>
 <p>The <code>Scenario()</code> method has this signature:</p>
-<pre><code class="language-csharp">&#xD;&#xA;/// &lt;summary&gt;&#xD;&#xA;/// Define and execute an integration test by running an Http request through&#xD;&#xA;/// your ASP.Net Core system&#xD;&#xA;/// &lt;/summary&gt;&#xD;&#xA;/// &lt;param name=&quot;system&quot;&gt;&lt;/param&gt;&#xD;&#xA;/// &lt;param name=&quot;configure&quot;&gt;&lt;/param&gt;&#xD;&#xA;/// &lt;returns&gt;&lt;/returns&gt;&#xD;&#xA;/// &lt;exception cref=&quot;InvalidOperationException&quot;&gt;&lt;/exception&gt;&#xD;&#xA;public static async Task&lt;IScenarioResult&gt; Scenario(&#xD;&#xA;    this ISystemUnderTest system,&#xD;&#xA;    Action&lt;Scenario&gt; configure)&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;/// &lt;summary&gt;&#xA;/// Define and execute an integration test by running an Http request through&#xA;/// your ASP.Net Core system&#xA;/// &lt;/summary&gt;&#xA;/// &lt;param name=&quot;system&quot;&gt;&lt;/param&gt;&#xA;/// &lt;param name=&quot;configure&quot;&gt;&lt;/param&gt;&#xA;/// &lt;returns&gt;&lt;/returns&gt;&#xA;/// &lt;exception cref=&quot;InvalidOperationException&quot;&gt;&lt;/exception&gt;&#xA;public static async Task&lt;IScenarioResult&gt; Scenario(&#xA;    this ISystemUnderTest system,&#xA;    Action&lt;Scenario&gt; configure)&#xA;</code></pre>
 <p>The single <code>Action&lt;Scenario&gt;</code> argument should completely configure the ASP.Net <code>HttpContext</code> for the request and apply
 any of the declarative response assertions. The actual HTTP request happens inside of the <code>Scenario()</code> method, and the response contains the raw <code>HttpContext</code> and a helper object to work with the response body:</p>
-<pre><code class="language-csharp">&#xD;&#xA;public interface IScenarioResult&#xD;&#xA;{&#xD;&#xA;    /// &lt;summary&gt;&#xD;&#xA;    /// Helpers to interrogate or read the HttpResponse.Body&#xD;&#xA;    /// of the request&#xD;&#xA;    /// &lt;/summary&gt;&#xD;&#xA;    HttpResponseBody ResponseBody { get; }&#xD;&#xA;&#xD;&#xA;    /// &lt;summary&gt;&#xD;&#xA;    /// The raw HttpContext used during the scenario&#xD;&#xA;    /// &lt;/summary&gt;&#xD;&#xA;    HttpContext Context { get; }&#xD;&#xA;}&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public interface IScenarioResult&#xA;{&#xA;    /// &lt;summary&gt;&#xA;    /// Helpers to interrogate or read the HttpResponse.Body&#xA;    /// of the request&#xA;    /// &lt;/summary&gt;&#xA;    HttpResponseBody ResponseBody { get; }&#xA;&#xA;    /// &lt;summary&gt;&#xA;    /// The raw HttpContext used during the scenario&#xA;    /// &lt;/summary&gt;&#xA;    HttpContext Context { get; }&#xA;}&#xA;</code></pre>
 <p>If the existing <em>Scenario</em> assertions aren't enough to verify your test case, you can work directly against the raw response:</p>
-<pre><code class="language-csharp">&#xD;&#xA;[Fact]&#xD;&#xA;public async Task should_say_hello_world_with_raw_objects()&#xD;&#xA;{&#xD;&#xA;    using (var system = SystemUnderTest.ForStartup&lt;Startup&gt;())&#xD;&#xA;    {&#xD;&#xA;        var response = await system.Scenario(_ =&gt;&#xD;&#xA;        {&#xD;&#xA;            _.Get.Url(&quot;/&quot;);&#xD;&#xA;            _.StatusCodeShouldBeOk();&#xD;&#xA;        });&#xD;&#xA;&#xD;&#xA;        response.ResponseBody.ReadAsText()&#xD;&#xA;            .ShouldBe(&quot;Hello, World!&quot;);&#xD;&#xA;&#xD;&#xA;        // or you can go straight at the HttpContext&#xD;&#xA;        // The ReadAllText() extension method is from Baseline&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;        var body = response.Context.Response.Body;&#xD;&#xA;        body.Position = 0; // need to rewind it because we read it above&#xD;&#xA;        body.ReadAllText().ShouldBe(&quot;Hello, World!&quot;);&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;[Fact]&#xA;public async Task should_say_hello_world_with_raw_objects()&#xA;{&#xA;    using (var system = SystemUnderTest.ForStartup&lt;Startup&gt;())&#xA;    {&#xA;        var response = await system.Scenario(_ =&gt;&#xA;        {&#xA;            _.Get.Url(&quot;/&quot;);&#xA;            _.StatusCodeShouldBeOk();&#xA;        });&#xA;&#xA;        response.ResponseBody.ReadAsText()&#xA;            .ShouldBe(&quot;Hello, World!&quot;);&#xA;&#xA;        // or you can go straight at the HttpContext&#xA;        // The ReadAllText() extension method is from Baseline&#xA;&#xA;&#xA;        var body = response.Context.Response.Body;&#xA;        body.Position = 0; // need to rewind it because we read it above&#xA;        body.ReadAllText().ShouldBe(&quot;Hello, World!&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
 <p>Do note that Alba quietly &quot;rewinds&quot; the <code>HttpContext.Response.Body</code> stream so that you can more readily read and work with the contents.</p>
 <h2 id="bootstrapping-without-startup">Bootstrapping without Startup</h2>
 <p>It's a little bit uglier, but you can bypass having a <code>Startup</code> code and work directly against the ASP.Net Core <code>IWebHostBuilder</code>
 interface like this:</p>
-<pre><code class="language-csharp">&#xD;&#xA;var system = SystemUnderTest.For(_ =&gt;&#xD;&#xA;{&#xD;&#xA;    _.Configure(app =&gt;&#xD;&#xA;    {&#xD;&#xA;        app.Run(c =&gt;&#xD;&#xA;        {&#xD;&#xA;            return c.Response.WriteAsync(&quot;Hello, World!&quot;);&#xD;&#xA;        });&#xD;&#xA;    });&#xD;&#xA;});&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;var system = SystemUnderTest.For(_ =&gt;&#xA;{&#xA;    _.Configure(app =&gt;&#xA;    {&#xA;        app.Run(c =&gt;&#xA;        {&#xA;            return c.Response.WriteAsync(&quot;Hello, World!&quot;);&#xA;        });&#xA;    });&#xA;});&#xA;</code></pre>
 <h2 id="the-hosting-environment">The Hosting Environment</h2>
 <p>By default, Alba will try to guess the content root path by trying to find a directory &quot;parallel&quot; to the current testing project
 that matches the name of the Assembly that contains the designated <code>Startup</code> class. To make that concrete, say that your
@@ -108,18 +108,18 @@ web application is in the directory <code>src/MyWebApp</code> and you are runnin
 In this case, Alba is able to find and apply the <code>src/MyWebApp</code> directory as the matching content root path. Otherwise, it just
 uses the current directory and you may have to help Alba out a little bit by modifying the <code>IHostingEnvironment</code> for the application.</p>
 <p>You can customize the <a href="https://docs.microsoft.com/en-us/aspnet/core/api/microsoft.aspnetcore.hosting.ihostingenvironment">hosting environment</a> settings like so:</p>
-<pre><code class="language-csharp">&#xD;&#xA;system.Environment.ApplicationName = &quot;My Application&quot;;&#xD;&#xA;system.Environment.ContentRootPath = &quot;c:\\somewhere\\else&quot;;&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;system.Environment.ApplicationName = &quot;My Application&quot;;&#xA;system.Environment.ContentRootPath = &quot;c:\\somewhere\\else&quot;;&#xA;</code></pre>
 <p>Alba does not set any default value for the <code>EnvironmentName</code> property.</p>
 <h2 id="hosting-and-other-configuration">Hosting and Other Configuration</h2>
 <p>If you also want to run real HTTP requests through your system in a test harness, you have more opportunities to configure the underlying <a href="https://docs.microsoft.com/en-us/aspnet/core/api/microsoft.aspnetcore.hosting.iwebhostbuilder">IWebHostBuilder</a> like so:</p>
-<pre><code class="language-csharp">&#xD;&#xA;system.Configure(builder =&gt;&#xD;&#xA;{&#xD;&#xA;    builder&#xD;&#xA;        .UseKestrel()&#xD;&#xA;        .UseUrls(&quot;http://localhost:5025&quot;);&#xD;&#xA;});&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;system.Configure(builder =&gt;&#xA;{&#xA;    builder&#xA;        .UseKestrel()&#xA;        .UseUrls(&quot;http://localhost:5025&quot;);&#xA;});&#xA;</code></pre>
 <p>My shop is also using Alba within <a href="http://storyteller.github.io">Storyteller</a> specifications where we use a mix of headless
 Alba Scenario's and full HTTP requests for testing.</p>
 <h2 id="service-registrations">Service Registrations</h2>
 <p>Maybe more commonly, you'll want to override the default service registrations with controlled stubs for your tests. In my shop's case, one of our biggest systems interacts with an external web service that would be very problematic in controlled automated
 testing scenarios. In order to reliably test <strong>our</strong> application, we override the service gateway wrapper with a stubbed version that
 can be easily controlled within the test harness. In Alba, you can use <code>SystemUnderTest.ConfigureServices()</code> to make service registration changes:</p>
-<pre><code class="language-csharp">&#xD;&#xA;system.ConfigureServices(services =&gt;&#xD;&#xA;{&#xD;&#xA;    services.AddTransient&lt;IExternalService, StubbedExternalService&gt;();&#xD;&#xA;});&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;system.ConfigureServices(services =&gt;&#xA;{&#xA;    services.AddTransient&lt;IExternalService, StubbedExternalService&gt;();&#xA;});&#xA;</code></pre>
 <h2 id="best-practices">Best Practices</h2>
 <p>Spinning up your ASP.Net Core system can become slow as the application grows, so you probably want to share the instance of
 <code>SystemUnderTest</code> between unit tests to avoid the cost of constantly bootstrapping and tearing down the underlying application.
