@@ -59,8 +59,7 @@ end
 
 desc 'Compile the code'
 task :compile => [:clean] do
-	sh "dotnet restore src"
-	sh "dotnet build src/Alba.Testing/Alba.Testing.csproj"
+	sh "dotnet restore src/Alba.sln"
 end
 
 desc 'Run the unit tests'
@@ -68,11 +67,16 @@ task :test => [:compile] do
 	Dir.mkdir RESULTS_DIR
 
 	sh "dotnet test src/Alba.Testing/Alba.Testing.csproj"
+	
+    Dir.chdir "src/Alba.Testing.AspNetCore2" do
+        sh "dotnet xunit"
+    end
 end
 
 desc "Pack up the nupkg file"
 task :pack => [:compile] do
 	sh "dotnet pack src/Alba/Alba.csproj -o ./../../artifacts --configuration Release"
+	sh "dotnet pack src/Alba.AspNetCore2/Alba.AspNetCore2.csproj -o ./../../artifacts --configuration Release"
 end
 
 # TODO -- redo these tasks

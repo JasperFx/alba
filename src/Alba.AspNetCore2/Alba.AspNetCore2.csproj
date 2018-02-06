@@ -1,9 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <Description>Easy integration testing helper for ASP.Net Core applications</Description>
     <AssemblyTitle>Alba.AspNetCore2</AssemblyTitle>
-    <VersionPrefix>1.3.0</VersionPrefix>
+    <VersionPrefix>1.4.0</VersionPrefix>
     <TargetFramework>netstandard2.0</TargetFramework>
     <DebugType>portable</DebugType>
     <AssemblyName>Alba.AspNetCore2</AssemblyName>
@@ -18,21 +17,18 @@
     <SourceRootFolder>../Alba</SourceRootFolder>
     <RootNamespace>Alba</RootNamespace>
   </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="Baseline" Version="1.1.0" />
+    <PackageReference Include="Baseline" Version="1.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
-
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.0.0" />
     <PackageReference Include="System.AppContext" Version="4.3.0" />
-    <PackageReference Include="System.Xml.XmlDocument" Version="4.0.1" />
+    <PackageReference Include="System.Xml.XmlDocument" Version="4.3.0" />
   </ItemGroup>
-
   <ItemGroup>
     <Compile Include="$(SourceRootFolder)/**/*.cs" Exclude="$(SourceRootFolder)/obj/**/*" />
   </ItemGroup>
