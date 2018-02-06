@@ -69,7 +69,7 @@ task :test => [:compile] do
 	sh "dotnet test src/Alba.Testing/Alba.Testing.csproj"
 	
     Dir.chdir "src/Alba.Testing.AspNetCore2" do
-        sh "dotnet xunit"
+        sh "dotnet xunit --fx-version 2.0.0"
     end
 end
 
