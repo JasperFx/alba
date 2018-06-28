@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Alba.Assertions;
 
 namespace Alba
@@ -33,6 +34,27 @@ namespace Alba
         {
             _parent.AssertThat(new HasSingleHeaderValueAssertion(_headerKey));
             return this;
+        }
+
+        /// <summary>
+        /// Asserts that there is a single header value matching 'expected'
+        /// regular expression in the Http response
+        /// </summary>
+        /// <returns></returns>
+        public HeaderExpectations SingleValueShouldMatch(Regex regex)
+        {
+            _parent.AssertThat(new HeaderMatchAssertion(_headerKey, regex));
+            return this;
+        }
+
+        /// <summary>
+        /// Asserts that there is a single header value matching 'expected'
+        /// regular expression in the Http response
+        /// </summary>
+        /// <returns></returns>
+        public HeaderExpectations SingleValueShouldMatch(string regex)
+        {
+            return SingleValueShouldMatch(new Regex(regex));
         }
 
         /// <summary>

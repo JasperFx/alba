@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace Alba.Testing.Samples
 {
@@ -52,6 +53,9 @@ namespace Alba.Testing.Samples
 
                 // Assert that the header has the given values
                 _.Header("www-authenticate").ShouldHaveValues("NTLM", "Negotiate");
+
+                // Assert that the header matches a regular expression
+                _.Header("location").SingleValueShouldMatch(new Regex(@"^/items/\d*$"));
 
                 // Check the content-type header
                 _.ContentTypeShouldBe("text/json");
