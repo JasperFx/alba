@@ -31,7 +31,10 @@ namespace Alba
                 var scenario = new Scenario(system, scope);
 
                 var contextAccessor = scope.ServiceProvider.GetService<IHttpContextAccessor>();
-                contextAccessor.HttpContext = scenario.Context;
+                if (contextAccessor != null)
+                {
+                    contextAccessor.HttpContext = scenario.Context;
+                }
 
                 configure(scenario);
 
