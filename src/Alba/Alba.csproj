@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Description>Easy integration testing helper for ASP.Net Core applications</Description>
     <AssemblyTitle>Alba</AssemblyTitle>
-    <VersionPrefix>1.4.0</VersionPrefix>
+    <VersionPrefix>1.4.1</VersionPrefix>
     <TargetFrameworks>net46;netstandard1.6</TargetFrameworks>
     <DebugType>portable</DebugType>
     <AssemblyName>Alba</AssemblyName>

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.DependencyInjection;
 
 #if NETSTANDARD2_0
@@ -10,8 +12,15 @@ using Microsoft.AspNetCore.Authentication;
 
 namespace Alba
 {
+
     public static class SystemUnderTestExtensions
     {
+        public static Task<IScenarioResult> Scenario(this IWebHost host, Action<Scenario> configure)
+        {
+            
+        }
+        
+        
         // SAMPLE: ScenarioSignature
         /// <summary>
         /// Define and execute an integration test by running an Http request through
