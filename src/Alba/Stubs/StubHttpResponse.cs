@@ -54,6 +54,6 @@ namespace Alba.Stubs
         }
 
         public override IResponseCookies Cookies { get; }
-        public override bool HasStarted { get; } = true;
+        public override bool HasStarted => Body.Length > 0;
     }
 }

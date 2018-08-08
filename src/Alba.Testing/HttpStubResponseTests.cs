@@ -1,4 +1,5 @@
-﻿using Alba.Stubs;
+﻿using System.IO;
+using Alba.Stubs;
 using Shouldly;
 using Xunit;
 
@@ -8,6 +9,17 @@ namespace Alba.Testing
     {
         private readonly StubHttpResponse theResponse = new StubHttpResponse(StubHttpContext.Empty());
 
+        [Fact]
+        public void has_started_is_smart_to_the_body()
+        {
+            theResponse.HasStarted.ShouldBeFalse();
+            var writer = new StreamWriter(theResponse.Body);
+            writer.Write("Something");
+            writer.Flush();
+            
+            theResponse.HasStarted.ShouldBeTrue();
+        }
+        
         [Fact]
         public void initial_content_type()
         {
