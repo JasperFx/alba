@@ -15,12 +15,6 @@ namespace Alba
 
     public static class SystemUnderTestExtensions
     {
-        public static Task<IScenarioResult> Scenario(this IWebHost host, Action<Scenario> configure)
-        {
-            
-        }
-        
-        
         // SAMPLE: ScenarioSignature
         /// <summary>
         /// Define and execute an integration test by running an Http request through
