@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Security.Claims;
 using System.Threading;
 using Microsoft.AspNetCore.Http;
@@ -19,6 +20,11 @@ namespace Alba.Stubs
         public StubHttpContext(IFeatureCollection features, IServiceProvider services)
         {
             Features = features;
+            
+            features.Set<IHttpResponseFeature>(new HttpResponseFeature
+            {
+                Body = new MemoryStream()
+            });
 
             // Watch this. What is this?
             RequestServices = services;
