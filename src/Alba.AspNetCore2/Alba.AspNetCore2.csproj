@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Description>Easy integration testing helper for ASP.Net Core applications</Description>
     <AssemblyTitle>Alba.AspNetCore2</AssemblyTitle>
-    <VersionPrefix>1.4.2</VersionPrefix>
+    <VersionPrefix>1.4.3</VersionPrefix>
     <TargetFramework>netstandard2.0</TargetFramework>
     <DebugType>portable</DebugType>
     <AssemblyName>Alba.AspNetCore2</AssemblyName>
