@@ -55,15 +55,35 @@ namespace Alba
 
         public IFeatureCollection Features => _host.Value.ServerFeatures;
 
+        private RequestDelegate _beforeEach = c => Task.CompletedTask;
+        private RequestDelegate _afterEach = c => Task.CompletedTask;
+        
         /// <summary>
         /// Override to take some kind of action just before an Http request
         /// is executed.
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public virtual Task BeforeEach(HttpContext context)
+        Task ISystemUnderTest.BeforeEach(HttpContext context)
         {
-            return Task.CompletedTask;
+            return _beforeEach(context);
+        }
+
+        public SystemUnderTestBase BeforeEach(RequestDelegate beforeEach)
+        {
+            _beforeEach = beforeEach;
+            return this;
+        }
+        
+        public SystemUnderTestBase BeforeEach(Action<HttpContext> action)
+        {
+            _beforeEach = c =>
+            {
+                action(c);
+                return Task.CompletedTask;
+            };
+            
+            return this;
         }
 
         /// <summary>
@@ -72,9 +92,26 @@ namespace Alba
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public virtual Task AfterEach(HttpContext context)
+        Task ISystemUnderTest.AfterEach(HttpContext context)
         {
-            return Task.CompletedTask;
+            return _afterEach(context);
+        }
+
+        public SystemUnderTestBase AfterEach(RequestDelegate afterEach)
+        {
+            _afterEach = afterEach;
+            return this;
+        }
+        
+        public SystemUnderTestBase AfterEach(Action<HttpContext> afterEach)
+        {
+            _afterEach = c =>
+            {
+                afterEach(c);
+                return Task.CompletedTask;
+            };
+            
+            return this;
         }
 
         public HttpContext CreateContext()

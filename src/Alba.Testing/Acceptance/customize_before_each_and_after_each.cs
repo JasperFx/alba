@@ -31,21 +31,16 @@ namespace Alba.Testing.Acceptance
         public SimpleHost()
         {
             UseStartup<Startup>();
-        }
 
-        public override Task BeforeEach(HttpContext context)
-        {
-            BeforeContext = context;
-            return Task.CompletedTask;
+            BeforeEach(c =>
+            {
+                BeforeContext = c;
+            });
+
+            AfterEach(c => AfterContext = c);
         }
 
         public HttpContext BeforeContext { get; set; }
-
-        public override Task AfterEach(HttpContext context)
-        {
-            AfterContext = context;
-            return Task.CompletedTask;
-        }
 
         public HttpContext AfterContext { get; set; }
     }

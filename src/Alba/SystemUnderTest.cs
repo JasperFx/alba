@@ -77,6 +77,7 @@ namespace Alba
         /// Use the Startup type T to configure the ASP.Net Core application
         /// </summary>
         /// <typeparam name="T"></typeparam>
+        [Obsolete("Make them use the iwebhostbuilder")]
         public void UseStartup<T>() where T : class
         {
             if (Environment.ContentRootPath.IsEmpty())
