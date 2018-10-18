@@ -45,9 +45,8 @@ namespace Alba.Testing
 
         public IFeatureCollection Features { get; } = new FeatureCollection();
         public IServiceProvider Services => new StructureMapServiceProvider(Container);
-        public RequestDelegate Invoker => Invoke;
-
-
+        
+        
         public readonly LightweightCache<string, RequestDelegate> Handlers = new LightweightCache<string, RequestDelegate>(
             path =>
             {

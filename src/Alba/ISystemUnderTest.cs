@@ -15,7 +15,9 @@ namespace Alba
         // Might be smarter to keep a hold of the RequestDelegate
         IFeatureCollection Features { get; }
         IServiceProvider Services { get; }
-        RequestDelegate Invoker { get; }
+
+
+        Task Invoke(HttpContext context);
 
 
         Task BeforeEach(HttpContext context);

@@ -52,7 +52,7 @@ namespace Alba
                         throw new InvalidOperationException("This scenario has no defined url");
                     }
 
-                    await system.Invoker(scenario.Context).ConfigureAwait(false);
+                    await system.Invoke(scenario.Context);
 
                     scenario.Context.Response.Body.Position = 0;
 

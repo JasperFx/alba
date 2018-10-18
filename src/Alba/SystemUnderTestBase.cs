@@ -48,7 +48,10 @@ namespace Alba
 
         public IHostingEnvironment Environment { get; }
 
-        public RequestDelegate Invoker => _invoker.Value;
+        public Task Invoke(HttpContext context)
+        {
+            return _invoker.Value(context);
+        }
 
         public IFeatureCollection Features => _host.Value.ServerFeatures;
 
