@@ -118,7 +118,6 @@ namespace Alba.Testing
             public MethodInfo Method;
             public string Url;
             public string HttpMethod;
-            public Type InputType;
         }
 
         private readonly IList<Route> _routes = new List<Route>();
