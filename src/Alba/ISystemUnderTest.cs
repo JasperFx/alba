@@ -9,12 +9,7 @@ namespace Alba
     {
         IUrlLookup Urls { get; set; }
 
-        [Obsolete]
-        HttpContext CreateContext();
 
-
-        // Might be smarter to keep a hold of the RequestDelegate
-        IFeatureCollection Features { get; }
         IServiceProvider Services { get; }
 
 
@@ -24,7 +19,21 @@ namespace Alba
         void BeforeEach(HttpContext context);
         void AfterEach(HttpContext context);
 
+        /// <summary>
+        /// Deserializes an object using the ASP.Net Core JsonSerializerSettings
+        /// for this application
+        /// </summary>
+        /// <param name="json"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         T FromJson<T>(string json);
+        
+        /// <summary>
+        /// Serializes an object using the ASP.Net Core JsonSerializerSettings
+        /// for this application
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns></returns>
         string ToJson(object target);
     }
 }

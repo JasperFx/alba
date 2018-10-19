@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+
 #if NETSTANDARD2_0
 
 #endif
@@ -53,28 +57,37 @@ namespace Alba
                 system.AfterEach(context);
             }
 
+            if (context.Response.Body.CanSeek)
+            {
+                context.Response.Body.Position = 0;
+            }
+
 
             return new ScenarioResult(context, system);
         }
 
 
-        [Obsolete("Move this to an extension method on IWebHostBuilder")]
-        public static SystemUnderTest UseWindowsAuthentication(this SystemUnderTest system, ClaimsPrincipal user = null)
+        /// <summary>
+        /// Stubs out windows authentication to allow testing against systems that have windows authentication applied
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public static IWebHostBuilder UseWindowsAuthentication(this IWebHostBuilder builder, ClaimsPrincipal user = null)
         {
-            throw new NotImplementedException();
-
-            //            system.Configure(c => {
-//                c.ConfigureServices(s => {
-//                    s.AddAuthentication(conf => {
-//                        conf.DefaultAuthenticateScheme = "NTLM";
-//                        conf.DefaultChallengeScheme = "Negotiate";
-//                    })
-//                        .AddScheme<AuthenticationSchemeOptions, StubNtlmAuthenticationHandlerV2>("NTLM", "NTLM", options =>  { })
-//                        .AddScheme<AuthenticationSchemeOptions, StubNtlmAuthenticationHandlerV2>("Negotiate", "NTLM", options =>  { });
-//                    s.AddSingleton(new StubNtlmAuthenticationHandlerV2(user));
-//                });
-//            });
-            return system;
+            return builder.ConfigureServices(s =>
+            {
+                s.AddAuthentication(conf =>
+                    {
+                        conf.DefaultAuthenticateScheme = "NTLM";
+                        conf.DefaultChallengeScheme = "Negotiate";
+                    })
+                    .AddScheme<AuthenticationSchemeOptions, StubNtlmAuthenticationHandlerV2>("NTLM", "NTLM",
+                        options => { })
+                    .AddScheme<AuthenticationSchemeOptions, StubNtlmAuthenticationHandlerV2>("Negotiate", "NTLM",
+                        options => { });
+                s.AddSingleton(new StubNtlmAuthenticationHandlerV2(user));
+            });
         }
     }
 }

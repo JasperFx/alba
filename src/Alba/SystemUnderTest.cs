@@ -74,14 +74,6 @@ namespace Alba
         }
 
 
-        IFeatureCollection ISystemUnderTest.Features => _server.Features;
-
-
-        HttpContext ISystemUnderTest.CreateContext()
-        {
-            return new StubHttpContext(_server.Features, _server.Host.Services);
-        }
-
         /// <summary>
         ///     The underlying IoC container for the application
         /// </summary>

@@ -40,10 +40,9 @@ namespace Alba.Testing
 
         public HttpContext CreateContext()
         {
-            return new StubHttpContext(Features, Services);
+            return new StubHttpContext(new FeatureCollection(), Services);
         }
 
-        public IFeatureCollection Features { get; } = new FeatureCollection();
         public IServiceProvider Services => new StructureMapServiceProvider(Container);
         
         
