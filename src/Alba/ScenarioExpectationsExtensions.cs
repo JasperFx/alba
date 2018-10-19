@@ -85,6 +85,7 @@ namespace Alba
         /// <returns></returns>
         public static Scenario RedirectShouldBe(this Scenario scenario, string expected)
         {
+            scenario.StatusCodeShouldBe(302);
             scenario.AssertThat(new RedirectAssertion(expected, false));
             return scenario;
         }
@@ -97,6 +98,7 @@ namespace Alba
         /// <returns></returns>
         public static Scenario RedirectPermanentShouldBe(this Scenario scenario, string expected)
         {
+            scenario.StatusCodeShouldBe(301);
             scenario.AssertThat(new RedirectAssertion(expected, true));
             return scenario;
         }

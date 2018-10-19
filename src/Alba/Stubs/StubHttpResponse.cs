@@ -35,6 +35,8 @@ namespace Alba.Stubs
 
         public override void Redirect(string location, bool permanent)
         {
+            StatusCode = permanent ? 301 : 302;
+            
             RedirectedTo = location;
             RedirectedPermanent = permanent;
         }

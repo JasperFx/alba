@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using Alba.Stubs;
 using Baseline;
 using Microsoft.AspNetCore.Http;
@@ -18,17 +19,36 @@ namespace Alba.Assertions
 
         public void Assert(Scenario scenario, HttpContext context, ScenarioAssertionException ex)
         {
-            var response = context.Response.As<StubHttpResponse>();
-
-            if (!string.Equals(response.RedirectedTo, Expected, StringComparison.OrdinalIgnoreCase))
+            if (context.Response is StubHttpResponse response)
             {
-                ex.Add($"Expected to be redirected to '{Expected}' but was '{response.RedirectedTo}'.");
-            }
+                if (!string.Equals(response.RedirectedTo, Expected, StringComparison.OrdinalIgnoreCase))
+                {
+                    ex.Add($"Expected to be redirected to '{Expected}' but was '{response.RedirectedTo}'.");
+                }
 
-            if (Permanent != response.RedirectedPermanent)
-            {
-                ex.Add($"Expected permanent redirect to be '{Permanent}' but it was not.");
+                if (Permanent != response.RedirectedPermanent)
+                {
+                    ex.Add($"Expected permanent redirect to be '{Permanent}' but it was not.");
+                }
             }
+            else
+            {
+                var location = context.Response.Headers["Location"];
+                if (!string.Equals(location, Expected, StringComparison.OrdinalIgnoreCase))
+                {
+                    ex.Add($"Expected to be redirected to '{Expected}' but was '{location}'.");
+                }
+                
+                
+
+                if (Permanent && context.Response.StatusCode != 301)
+                {
+                    ex.Add($"Expected permanent redirect to be '{Permanent}' but it was not.");
+                }
+            }
+            
+            
+
         }
     }
 }
