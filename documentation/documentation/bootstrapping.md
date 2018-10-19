@@ -37,19 +37,13 @@ interface like this:
 
 <[sample:programmatic-bootstrapping]>
 
-## The Hosting Environment
+## Overriding the Content Root Path
 
-By default, Alba will try to guess the content root path by trying to find a directory "parallel" to the current testing project
-that matches the name of the Assembly that contains the designated `Startup` class. To make that concrete, say that your
-web application is in the directory `src/MyWebApp` and you are running the Alba tests in a project at `src/MyWebApp.Tests`.
-In this case, Alba is able to find and apply the `src/MyWebApp` directory as the matching content root path. Otherwise, it just
-uses the current directory and you may have to help Alba out a little bit by modifying the `IHostingEnvironment` for the application.
+If you use Alba's `SystemUnderTest.UseStartup<T>()` helper, Alba can guess at what the content root path of the application can be by using the name of the assembly that contains your `T` class. If that guessing isn't right, you can explicitly tell Alba what the content root path should be to search for content with either of these options:
 
-You can customize the [hosting environment](https://docs.microsoft.com/en-us/aspnet/core/api/microsoft.aspnetcore.hosting.ihostingenvironment) settings like so:
+<[sample:override_the_content_path]>
 
-<[sample:configuring-IHostingEnvironment]>
-
-Alba does not set any default value for the `EnvironmentName` property.
+On a related note, Alba does not set any default value for the `EnvironmentName` property. That can be overridden through `IWebHostBuilder.UseEnvironment()` as normal.
 
 ## Hosting and Other Configuration
 
@@ -57,16 +51,15 @@ If you also want to run real HTTP requests through your system in a test harness
 
 <[sample:configuration-overrides]>
 
+A couple notes:
+
+* Alba does not do anything to set the hosting environment, but you can do that yourself against `IWebHostBuilder`
+* If you build a `SystemUnderTest` with `SystemUnderTest.ForStartup<T>()`, it will try to guess at the content root path by the name of assembly
+  that holds the `Startup` class, but you may need to override that yourself. 
+
 My shop is also using Alba within [Storyteller](http://storyteller.github.io) specifications where we use a mix of headless
 Alba Scenario's and full HTTP requests for testing.
 
-## Service Registrations
-
-Maybe more commonly, you'll want to override the default service registrations with controlled stubs for your tests. In my shop's case, one of our biggest systems interacts with an external web service that would be very problematic in controlled automated
-testing scenarios. In order to reliably test **our** application, we override the service gateway wrapper with a stubbed version that
-can be easily controlled within the test harness. In Alba, you can use `SystemUnderTest.ConfigureServices()` to make service registration changes:
-
-<[sample:configuration-overriding-services]>
 
 ## Best Practices
 

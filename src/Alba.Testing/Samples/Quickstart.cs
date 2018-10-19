@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Baseline;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using Xunit;
 
@@ -110,6 +112,87 @@ namespace Alba.Testing.Samples
                 response.Context.Response.Body.ReadAllText()
                     .ShouldBe("Hello, World!");
             }
+        }
+
+        // SAMPLE: SimplisticSystemUnderTest
+        [Fact]
+        public async Task the_home_page_does_not_blow_up()
+        {
+            using (var system = SystemUnderTest.ForStartup<Startup>())
+            {
+                var response = await system.Scenario(_ =>
+                {
+                    _.Get.Url("/");
+                    _.StatusCodeShouldBeOk();
+                });
+            }
+        }
+        // ENDSAMPLE
+
+
+        public void setting_up_system_under_test_examples()
+        {
+            // SAMPLE: override_the_content_path
+            
+            // Alba has a helper for overriding the root path
+            var system = SystemUnderTest
+                .ForStartup<Startup>(rootPath:"c:\\path_to_your_actual_application");
+
+            // or do it with idiomatic ASP.Net Core
+
+            var builder = WebHost.CreateDefaultBuilder()
+                .UseStartup<Startup>()
+                .UseContentRoot("c:\\path_to_your_actual_application");
+
+            var system2 = new SystemUnderTest(builder);
+
+            // ENDSAMPLE
+
+        }
+
+        public void configuration_overrides()
+        {
+            // SAMPLE: configuration-overrides
+            var stubbedWebService = new StubbedWebService();
+            
+            var builder = WebHost.CreateDefaultBuilder()
+                .UseStartup<Startup>()
+                
+                // override the environment if you need to
+                .UseEnvironment("Testing")
+                
+                // override service registrations if you need to
+                .ConfigureServices(s =>
+                {
+                    s.AddSingleton<IExternalWebService>(stubbedWebService);
+                });
+            
+            // Create the SystemUnderTest, and alternatively override what Alba
+            // thinks is the main application assembly
+            // THIS IS IMPORTANT FOR MVC CONTROLLER DISCOVERY
+            var system = new SystemUnderTest(builder, applicationAssembly:typeof(Startup).Assembly);
+
+            system.BeforeEach(httpContext =>
+            {
+                // do some data setup or clean up before every single test
+            });
+
+            system.AfterEach(httpContext =>
+            {
+                // do any kind of cleanup after each scenario completes
+            });
+            // ENDSAMPLE
+        }
+
+        public interface IExternalWebService
+        {
+
+
+        }
+
+        public class StubbedWebService : IExternalWebService
+        {
+            
         }
     }
 

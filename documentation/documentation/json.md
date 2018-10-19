@@ -24,7 +24,3 @@ the Json serialization. In order:
 
 <[sample:customizing-serialization]>
 
-If your application is using an alternative Json serializer, you'll probably need to just subclass `SystemUnderTest`
-like this example:
-
-<[sample:custom-system-for-json]>
