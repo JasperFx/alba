@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Baseline;
+using Microsoft.AspNetCore.Http;
 
 namespace Alba.Assertions
 {
@@ -15,9 +16,9 @@ namespace Alba.Assertions
             _expected = expected.ToList();
         }
 
-        public void Assert(Scenario scenario, ScenarioAssertionException ex)
+        public void Assert(Scenario scenario, HttpContext context, ScenarioAssertionException ex)
         {
-            var values = scenario.Context.Response.Headers[_headerKey];
+            var values = context.Response.Headers[_headerKey];
             var expectedText = _expected.Select(x => "'" + x + "'").Join(", ");
 
             switch (values.Count)

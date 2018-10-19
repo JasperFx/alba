@@ -14,13 +14,13 @@ namespace Alba.Testing.Samples
     {
         // SAMPLE: should_say_hello_world
         [Fact]
-        public Task should_say_hello_world()
+        public async Task should_say_hello_world()
         {
             using (var system = SystemUnderTest.ForStartup<Startup>())
             {
                 // This runs an HTTP request and makes an assertion
                 // about the expected content of the response
-                return system.Scenario(_ =>
+                await system.Scenario(_ =>
                 {
                     _.Get.Url("/");
                     _.ContentShouldBe("Hello, World!");
@@ -31,7 +31,7 @@ namespace Alba.Testing.Samples
         // ENDSAMPLE
 
         [Fact]
-        public Task should_say_hello_world_raw()
+        public async Task should_say_hello_world_raw()
         {
             // SAMPLE: programmatic-bootstrapping
             var system = SystemUnderTest.For(_ =>
@@ -48,7 +48,7 @@ namespace Alba.Testing.Samples
 
             try
             {
-                return system.Scenario(_ =>
+                await system.Scenario(_ =>
                 {
                     _.Get.Url("/");
                     _.ContentShouldContain("Hello, World!");
@@ -96,8 +96,13 @@ namespace Alba.Testing.Samples
             {
                 var response = await system.Scenario(_ =>
                 {
-                    _.Context.Request.Method = "GET";
-                    _.Context.Request.Path = "/";
+                    _.Configure = c =>
+                    {
+                        c.Request.Method = "GET";
+                        c.Request.Path = "/";
+                    };
+                    
+
 
                     _.StatusCodeShouldBeOk();
                 });

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 using Alba.Assertions;
 using Alba.Stubs;
 using Baseline;
+using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -29,30 +31,58 @@ namespace Alba
     }
     // ENDSAMPLE
 
-    public class Scenario : IUrlExpression, IScenarioResult
+
+    internal class ScenarioResult : IScenarioResult
+    {
+        public ScenarioResult(HttpContext context, ISystemUnderTest systemUnderTest)
+        {
+            Context = context;
+            ResponseBody = new HttpResponseBody(systemUnderTest, context);
+        }
+
+        public HttpResponseBody ResponseBody { get; }
+        public HttpContext Context { get; }
+    }
+    
+    
+    public class Scenario : IUrlExpression
     {
         private readonly ScenarioAssertionException _assertionRecords = new ScenarioAssertionException();
         private readonly ISystemUnderTest _system;
-        private readonly IList<Func<HttpContext, Task>> _befores = new List<Func<HttpContext, Task>>();
-        private readonly IList<Func<HttpContext, Task>> _afters = new List<Func<HttpContext, Task>>();
+        private readonly IList<Action<HttpContext>> _setups = new List<Action<HttpContext>>();
 
         private readonly IList<IScenarioAssertion> _assertions = new List<IScenarioAssertion>();
         private int _expectedStatusCode = 200;
         private bool _ignoreStatusCode;
 
-        public Scenario(ISystemUnderTest system, IServiceScope scope)
+        public Scenario(ISystemUnderTest system)
         {
             _system = system;
-            Context = system.CreateContext();
-            Context.RequestServices = scope.ServiceProvider;
+            Body = new HttpRequestBody(system, this);
+            
+            ConfigureHttpContext(c =>
+            {
+                c.Request.Body = new MemoryStream();
+                c.Response.Body = new MemoryStream();
+            });
         }
 
-        HttpResponseBody IScenarioResult.ResponseBody => new HttpResponseBody(_system, Context);
+        /// <summary>
+        /// Register any kind of custom setup of the HttpContext within the request
+        /// </summary>
+        /// <param name="configure"></param>
+        public void ConfigureHttpContext(Action<HttpContext> configure)
+        {
+            _setups.Add(configure);    
+        }
 
         /// <summary>
-        /// The HttpContext for this Scenario
+        /// Shorthand alternative to ConfigureHttpContext
         /// </summary>
-        public HttpContext Context { get; }
+        public Action<HttpContext> Configure
+        {
+            set => _setups.Add(value);
+        }
 
         /// <summary>
         /// Add an assertion to the Scenario that will be executed after the request
@@ -66,18 +96,17 @@ namespace Alba
             return this;
         }
 
-        public HttpRequestBody Body => new HttpRequestBody(_system, Context);
-
-
-        internal void RunAssertions()
+        internal void RunAssertions(HttpContext context)
         {
             if (!_ignoreStatusCode)
             {
-                new StatusCodeAssertion(_expectedStatusCode).Assert(this, _assertionRecords);
+                new StatusCodeAssertion(_expectedStatusCode).Assert(this, context, _assertionRecords);
             }
 
-            _assertions.Each(x => x.Assert(this, _assertionRecords));
-
+            foreach (var assertion in _assertions)
+            {
+                assertion.Assert(this, context, _assertionRecords);
+            }
 
             _assertionRecords.AssertAll();
         }
@@ -113,38 +142,44 @@ namespace Alba
 
 
 
-
+        public void WriteFormData(Dictionary<string, string> input)
+        {
+            Configure = c => c.WriteFormData(input);
+        }
         
         SendExpression IUrlExpression.Action<T>(Expression<Action<T>> expression)
         {
-            Context.RelativeUrl(_system.Urls.UrlFor(expression, Context.Request.Method));
-            return new SendExpression(Context);
+            Configure = context => context.RelativeUrl(_system.Urls.UrlFor(expression, context.Request.Method));
+            return new SendExpression(this);
         }
 
 
 
         SendExpression IUrlExpression.Url(string relativeUrl)
         {
-            Context.RelativeUrl(relativeUrl);
-            return new SendExpression(Context);
+            Configure = context => context.RelativeUrl(relativeUrl);
+            return new SendExpression(this);
         }
 
         SendExpression IUrlExpression.Input<T>(T input)
         {
-            if (!(_system.Urls is NulloUrlLookup))
+            Configure = context =>
             {
-                var url = input == null
-                    ? _system.Urls.UrlFor<T>(Context.Request.Method)
-                    : _system.Urls.UrlFor(input, Context.Request.Method);
+                if (!(_system.Urls is NulloUrlLookup))
+                {
+                    var url = input == null
+                        ? _system.Urls.UrlFor<T>(context.Request.Method)
+                        : _system.Urls.UrlFor(input, context.Request.Method);
 
-                Context.RelativeUrl(url);
-            }
-            else
-            {
-                Context.RelativeUrl(null);
-            }
-
-            return new SendExpression(Context);
+                    context.RelativeUrl(url);
+                }
+                else
+                {
+                    context.RelativeUrl(null);
+                }
+            };
+            
+            return new SendExpression(this);
         }
 
         SendExpression IUrlExpression.Json<T>(T input)
@@ -153,7 +188,7 @@ namespace Alba
 
             Body.JsonInputIs(_system.ToJson(input));
 
-            return new SendExpression(Context);
+            return new SendExpression(this);
         }
 
         SendExpression IUrlExpression.Xml<T>(T input) 
@@ -162,7 +197,7 @@ namespace Alba
 
             Body.XmlInputIs(input);
 
-            return new SendExpression(Context);
+            return new SendExpression(this);
         }
 
         SendExpression IUrlExpression.FormData<T>(T target)
@@ -187,7 +222,7 @@ namespace Alba
 
             Body.WriteFormData(values);
 
-            return new SendExpression(Context);
+            return new SendExpression(this);
         }
 
         SendExpression IUrlExpression.FormData(Dictionary<string, string> input)
@@ -196,20 +231,20 @@ namespace Alba
 
             Body.WriteFormData(input);
 
-            return new SendExpression(Context);
+            return new SendExpression(this);
         }
 
         public SendExpression Text(string text)
         {
             Body.TextIs(text);
-            Context.Request.ContentType = MimeType.Text.Value;
-            Context.Request.ContentLength = text.Length;
+            Configure = context => context.Request.ContentType = MimeType.Text.Value;
+            Configure = context => context.Request.ContentLength = text.Length;
 
-            return new SendExpression(Context);
+            return new SendExpression(this);
         }
 
 
-
+        public HttpRequestBody Body { get; }
 
 
         public HeaderExpectations Header(string headerKey)
@@ -221,7 +256,7 @@ namespace Alba
         {
             get
             {
-                Context.HttpMethod("GET");
+                Configure = context => context.HttpMethod("GET");
                 return this;
             }
         }
@@ -230,7 +265,7 @@ namespace Alba
         {
             get
             {
-                Context.HttpMethod("PUT");
+                Configure = context => context.HttpMethod("PUT");
                 return this;
             }
         }
@@ -239,7 +274,7 @@ namespace Alba
         {
             get
             {
-                Context.HttpMethod("DELETE");
+                Configure = context => context.HttpMethod("DELETE");
                 return this;
             }
         }
@@ -248,7 +283,7 @@ namespace Alba
         {
             get
             {
-                Context.HttpMethod("POST");
+                Configure = context => context.HttpMethod("POST");
                 return this;
             }
         }
@@ -257,14 +292,32 @@ namespace Alba
         {
             get
             {
-                Context.HttpMethod("HEAD");
+                Configure = context => context.HttpMethod("HEAD");
                 return this;
             }
         }
 
         internal void Rewind()
         {
-            Context.Request.Body.Position = 0;
+            Configure = context => context.Request.Body.Position = 0;
+        }
+
+        /// <summary>
+        /// Only for internal Alba testing, but this writes its input
+        /// to an HttpContext
+        /// </summary>
+        /// <param name="context"></param>
+        public void SetupHttpContext(HttpContext context)
+        {
+            foreach (var setup in _setups)
+            {
+                setup(context);
+            }
+        }
+
+        public void SetRequestHeader(string headerKey, string value)
+        {
+            Configure = c => c.Request.Headers[headerKey] = value;
         }
     }
 }

@@ -31,7 +31,8 @@ namespace Alba.Testing.Samples
         {
             return system.Scenario(_ =>
             {
-                _.Context.Request.Headers["foo"] = "bar";
+                _.SetRequestHeader("foo", "bar");
+                
             });
         }
         // ENDSAMPLE

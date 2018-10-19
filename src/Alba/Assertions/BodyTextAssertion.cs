@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Http;
+
 namespace Alba.Assertions
 {
     public class BodyTextAssertion : IScenarioAssertion
@@ -9,9 +11,9 @@ namespace Alba.Assertions
             Text = text;
         }
 
-        public void Assert(Scenario scenario, ScenarioAssertionException ex)
+        public void Assert(Scenario scenario, HttpContext context, ScenarioAssertionException ex)
         {
-            var body = ex.ReadBody(scenario);
+            var body = ex.ReadBody(context);
             if (!body.Equals(Text))
             {
                 ex.Add($"Expected the content to be '{Text}'");

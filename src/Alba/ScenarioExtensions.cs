@@ -8,7 +8,7 @@ namespace Alba
         // SAMPLE: with-windows-authentication-extension
         public static Scenario WithWindowsAuthentication(this Scenario scenario, ClaimsPrincipal user = null)
         {
-            scenario.Context.AttachAuthenticationHandler(new StubWindowsAuthHandler(scenario.Context), user);
+            scenario.Configure = context => context.AttachAuthenticationHandler(new StubWindowsAuthHandler(context), user);
             return scenario;
         }
         // ENDSAMPLE

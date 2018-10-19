@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Baseline;
+using Microsoft.AspNetCore.Http;
+
 #if NET46
 using System.Runtime.Serialization;
 #endif
@@ -68,21 +70,25 @@ namespace Alba
 
         public string Body { get; set; }
 
-        public string ReadBody(Scenario scenario)
+        public string ReadBody(HttpContext context)
         {
-            var stream = scenario.Context.Response.Body;
+            var stream = context.Response.Body;
             if (Body == null)
             {
-                stream.Position = 0;
+                if (stream.CanSeek)
+                {
+                    stream.Position = 0;
+                }
+                
                 Body = Encoding.UTF8.GetString(stream.ReadAllBytes());
             }
 
             return Body;
         }
 
-        public void ShowActualBodyInErrorMessage(Scenario scenario)
+        public void ShowActualBodyInErrorMessage(HttpContext context)
         {
-            ReadBody(scenario);
+            ReadBody(context);
         }
     }
 }

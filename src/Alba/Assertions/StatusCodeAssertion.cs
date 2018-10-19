@@ -1,4 +1,6 @@
-﻿namespace Alba.Assertions
+﻿using Microsoft.AspNetCore.Http;
+
+namespace Alba.Assertions
 {
     // SAMPLE: StatusCodeAssertion
     public class StatusCodeAssertion : IScenarioAssertion
@@ -10,14 +12,14 @@
             Expected = expected;
         }
 
-        public void Assert(Scenario scenario, ScenarioAssertionException ex)
+        public void Assert(Scenario scenario, HttpContext context, ScenarioAssertionException ex)
         {
-            var statusCode = scenario.Context.Response.StatusCode;
+            var statusCode = context.Response.StatusCode;
             if (statusCode != Expected)
             {
                 ex.Add($"Expected status code {Expected}, but was {statusCode}");
 
-                ex.ShowActualBodyInErrorMessage(scenario);
+                ex.ShowActualBodyInErrorMessage(context);
             }
         }
     }

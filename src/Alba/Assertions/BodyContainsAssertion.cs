@@ -1,4 +1,6 @@
-﻿namespace Alba.Assertions
+﻿using Microsoft.AspNetCore.Http;
+
+namespace Alba.Assertions
 {
     // SAMPLE: BodyContainsAssertion
     public class BodyContainsAssertion : IScenarioAssertion
@@ -10,9 +12,9 @@
             Text = text;
         }
 
-        public void Assert(Scenario scenario, ScenarioAssertionException ex)
+        public void Assert(Scenario scenario, HttpContext context, ScenarioAssertionException ex)
         {
-            var body = ex.ReadBody(scenario);
+            var body = ex.ReadBody(context);
             if (!body.Contains(Text))
             {
                 // Add the failure message to the exception. This exception only

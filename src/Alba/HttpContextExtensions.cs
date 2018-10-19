@@ -32,11 +32,11 @@ namespace Alba
                 {
                     var dict = QueryHelpers.ParseQuery(parts[1]);
 
-                    var request = context.Request.As<StubHttpRequest>();
+                    var request = context.Request;
 
                     foreach (var pair in dict)
                     {
-                        request.AddQueryString(pair.Key, pair.Value);
+                        request.QueryString = request.QueryString.Add(pair.Key, pair.Value);
                     }
                 }
                 

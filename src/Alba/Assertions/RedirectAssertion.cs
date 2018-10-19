@@ -1,6 +1,7 @@
 ﻿using System;
 using Alba.Stubs;
 using Baseline;
+using Microsoft.AspNetCore.Http;
 
 namespace Alba.Assertions
 {
@@ -15,9 +16,9 @@ namespace Alba.Assertions
         public string Expected { get; }
         public bool Permanent { get; }
 
-        public void Assert(Scenario scenario, ScenarioAssertionException ex)
+        public void Assert(Scenario scenario, HttpContext context, ScenarioAssertionException ex)
         {
-            var response = scenario.Context.Response.As<StubHttpResponse>();
+            var response = context.Response.As<StubHttpResponse>();
 
             if (!string.Equals(response.RedirectedTo, Expected, StringComparison.OrdinalIgnoreCase))
             {

@@ -134,25 +134,6 @@ namespace Alba.Testing.Samples
         // ENDSAMPLE
     }
 
-    // SAMPLE: custom-system-for-json
-    public class CustomSystem : SystemUnderTest
-    {
-        public CustomSystem()
-        {
-            UseStartup<Startup>();
-        }
-
-        public override T FromJson<T>(string json)
-        {
-            throw new NotImplementedException("Do your own Json serialization");
-        }
-
-        public override string ToJson(object target)
-        {
-            throw new NotImplementedException("Do your own Json serialization");
-        }
-    }
-    // ENDSAMPLE
 
     public class Input
     {

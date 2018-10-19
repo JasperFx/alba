@@ -9,6 +9,7 @@ namespace Alba
     {
         IUrlLookup Urls { get; set; }
 
+        [Obsolete]
         HttpContext CreateContext();
 
 
@@ -17,11 +18,11 @@ namespace Alba
         IServiceProvider Services { get; }
 
 
-        Task Invoke(HttpContext context);
+        Task<HttpContext> Invoke(Action<HttpContext> setup);
 
 
-        Task BeforeEach(HttpContext context);
-        Task AfterEach(HttpContext context);
+        void BeforeEach(HttpContext context);
+        void AfterEach(HttpContext context);
 
         T FromJson<T>(string json);
         string ToJson(object target);

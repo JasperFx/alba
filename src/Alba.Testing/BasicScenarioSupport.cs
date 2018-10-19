@@ -54,21 +54,30 @@ namespace Alba.Testing
             });
 
 
-
         public Task Invoke(HttpContext context)
         {
             return Handlers[context.Request.Path](context);
         }
-
-        public Task BeforeEach(HttpContext context)
+        
+        public async Task<HttpContext> Invoke(Action<HttpContext> setup)
         {
-            return Task.CompletedTask;
+            var context = CreateContext();
+            setup(context);
+            await Invoke(context);
+
+            return context;
         }
 
-        public Task AfterEach(HttpContext context)
+        void ISystemUnderTest.BeforeEach(HttpContext context)
         {
-            return Task.CompletedTask;
         }
+
+        void ISystemUnderTest.AfterEach(HttpContext context)
+        {
+        }
+
+
+
 
 
         public string ToJson(object document)

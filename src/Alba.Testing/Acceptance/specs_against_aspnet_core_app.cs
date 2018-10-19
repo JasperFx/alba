@@ -11,11 +11,11 @@ namespace Alba.Testing.Acceptance
 {
     public class specs_against_aspnet_core_app
     {
-        private Task<IScenarioResult> run(Action<Scenario> configuration)
+        private async Task<IScenarioResult> run(Action<Scenario> configuration)
         {
             using (var system = SystemUnderTest.ForStartup<Startup>())
             {
-                return system.Scenario(configuration);
+                return await system.Scenario(configuration);
             }
         }
 

@@ -1,151 +1,184 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Threading.Tasks;
 using Alba.Stubs;
-using Baseline;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Hosting.Internal;
-using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
-using Newtonsoft.Json;
-
-#if NETSTANDARD2_0
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
-#endif
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 
 namespace Alba
 {
     /// <summary>
-    /// Root host of Alba to govern and configure the underlying ASP.Net Core application
+    ///     Root host of Alba to govern and configure the underlying ASP.Net Core application
     /// </summary>
-    public class SystemUnderTest : SystemUnderTestBase
+    public class SystemUnderTest : ISystemUnderTest
     {
-        private readonly WebHostBuilder _builder;
-        private readonly IList<Action<IServiceCollection>> _registrations = new List<Action<IServiceCollection>>();
-        private readonly IList<Action<IWebHostBuilder>> _configurations = new List<Action<IWebHostBuilder>>();
+        private Action<HttpContext> _afterEach = c =>
+        {
+            
+        };
 
-        private Type startupType;
 
+        private Action<HttpContext> _beforeEach = c =>
+        {
+        };
+        
+        private readonly TestServer _server;
+
+        public SystemUnderTest(IWebHostBuilder builder, Assembly applicationAssembly = null)
+        {
+            builder.ConfigureServices(_ => { _.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); });
+
+            _server = new TestServer(builder);
+
+
+            var settings = _server.Host.Services.GetService<JsonSerializerSettings>();
+            if (settings != null) JsonSerializerSettings = settings;
+
+            var manager = _server.Host.Services.GetService<ApplicationPartManager>();
+            if (applicationAssembly != null) manager?.ApplicationParts.Add(new AssemblyPart(applicationAssembly));
+        }
 
         /// <summary>
-        /// Create a SystemUnderTest using the designated "Startup" type
-        /// to configure the ASP.Net Core system
+        ///     Governs the Json serialization of the out of the box SystemUnderTest.
         /// </summary>
+        public JsonSerializerSettings JsonSerializerSettings { get; } = new JsonSerializerSettings();
+
+        /// <summary>
+        ///     Override to take some kind of action just before an Http request
+        ///     is executed.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        void ISystemUnderTest.BeforeEach(HttpContext context)
+        {
+            _beforeEach(context);
+        }
+
+        /// <summary>
+        ///     Override to take some kind of action immediately after
+        ///     an Http request executes
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        void ISystemUnderTest.AfterEach(HttpContext context)
+        {
+            _afterEach(context);
+        }
+
+
+        IFeatureCollection ISystemUnderTest.Features => _server.Features;
+
+
+        HttpContext ISystemUnderTest.CreateContext()
+        {
+            return new StubHttpContext(_server.Features, _server.Host.Services);
+        }
+
+        /// <summary>
+        ///     The underlying IoC container for the application
+        /// </summary>
+        IServiceProvider ISystemUnderTest.Services => _server.Host.Services;
+
+        /// <summary>
+        ///     Can be overridden to customize the Json serialization
+        /// </summary>
+        /// <param name="json"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        T ISystemUnderTest.FromJson<T>(string json)
+        {
+            var serializer = JsonSerializer.Create(JsonSerializerSettings);
+
+            var reader = new JsonTextReader(new StringReader(json));
+            return serializer.Deserialize<T>(reader);
+        }
+
+        /// <summary>
+        ///     Can be overridden to customize the Json serialization
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        string ISystemUnderTest.ToJson(object target)
+        {
+            var serializer = JsonSerializer.Create(JsonSerializerSettings);
+
+            var writer = new StringWriter();
+            var jsonWriter = new JsonTextWriter(writer);
+            serializer.Serialize(jsonWriter, target);
+
+            return writer.ToString();
+        }
+
+
+        public void Dispose()
+        {
+            _server.Dispose();
+        }
+
+        /// <summary>
+        ///     Url lookup strategy for this system
+        /// </summary>
+        IUrlLookup ISystemUnderTest.Urls { get; set; } = new NulloUrlLookup();
+
+        public Task<HttpContext> Invoke(Action<HttpContext> setup)
+        {
+            return _server.SendAsync(setup);
+        }
+
+        /// <summary>
+        ///     Create a SystemUnderTest using the designated "Startup" type
+        ///     to configure the ASP.Net Core system
+        /// </summary>
+        /// <param name="configure">Optional configuration of the IWebHostBuilder to be applied *after* the call to UseStartup()</param>
         /// <param name="rootPath"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static SystemUnderTest ForStartup<T>(string rootPath = null) where T : class
+        public static SystemUnderTest ForStartup<T>(Func<IWebHostBuilder, IWebHostBuilder> configure = null,
+            string rootPath = null) where T : class
         {
-            var environment = new HostingEnvironment
-            {
-                ContentRootPath = rootPath ?? DirectoryFinder.FindParallelFolder(typeof(T).GetTypeInfo().Assembly.GetName().Name) ?? AppContext.BaseDirectory
-            };
+            var builder = WebHost.CreateDefaultBuilder();
+            builder.UseStartup<T>();
+            if (configure != null) builder = configure(builder);
 
-            environment.WebRootPath = environment.ContentRootPath;
+            builder.UseContentRoot(rootPath ?? DirectoryFinder.FindParallelFolder(typeof(T).Assembly.GetName().Name) ??
+                                   AppContext.BaseDirectory);
 
-
-            var system = new SystemUnderTest(environment);
-            system.UseStartup<T>();
+            var system = new SystemUnderTest(builder, typeof(T).Assembly);
 
             return system;
         }
 
         public static SystemUnderTest For(Action<IWebHostBuilder> configuration)
         {
-            var system = new SystemUnderTest(new HostingEnvironment());
+            var builder = new WebHostBuilder();
+            configuration(builder);
 
-            system.Configure(configuration);
+            var system = new SystemUnderTest(builder);
+
 
             return system;
         }
 
-        private SystemUnderTest(IHostingEnvironment environment = null) : base(environment)
+        public SystemUnderTest BeforeEach(Action<HttpContext> beforeEach)
         {
-            _builder = new WebHostBuilder();
-        }
-
-        public SystemUnderTest() : this(new HostingEnvironment())
-        {
-        }
-
-        /// <summary>
-        /// Use the Startup type T to configure the ASP.Net Core application
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        [Obsolete("Make them use the iwebhostbuilder")]
-        public void UseStartup<T>() where T : class
-        {
-            if (Environment.ContentRootPath.IsEmpty())
-            {
-                Environment.ContentRootPath = DirectoryFinder.FindParallelFolder(typeof(T).GetTypeInfo().Assembly.GetName().Name) ?? Directory.GetCurrentDirectory();
-                Environment.ContentRootFileProvider = new PhysicalFileProvider(Environment.ContentRootPath);
-            }
-
-            Configure(x => x.UseStartup<T>());
-
-            startupType = typeof(T);
-        }
-
-        /// <summary>
-        /// Add extra system configuration to the underlying ASP.Net Core application
-        /// </summary>
-        /// <param name="configure"></param>
-        public void Configure(Action<IWebHostBuilder> configure)
-        {
-            assertHostNotStarted();
-            _configurations.Add(configure);
-        }
-
-        /// <summary>
-        /// Modify the IoC service registrations for the underlying ASP.Net Core application
-        /// </summary>
-        /// <param name="configure"></param>
-        public void ConfigureServices(Action<IServiceCollection> configure)
-        {
-            assertHostNotStarted();
-            _registrations.Add(configure);
+            _beforeEach = beforeEach;
+            return this;
         }
 
 
-
-        protected override IWebHost buildHost()
+        public SystemUnderTest AfterEach(Action<HttpContext> afterEach)
         {
-            _builder.ConfigureServices(_ =>
-            {
-                _.AddSingleton(Environment);
-                _.AddSingleton<IServer>(new TestServer());
-                _.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            });
+            _afterEach = afterEach;
 
-            foreach (var registration in _registrations)
-            {
-                _builder.ConfigureServices(registration);
-            }
-
-            foreach (var configuration in _configurations)
-            {
-                configuration(_builder);
-            }
-
-            var host = _builder.Start();
-
-            var settings = host.Services.GetService<JsonSerializerSettings>();
-            if (settings != null)
-            {
-                JsonSerializerSettings = settings;
-            }
-
-            #if NETSTANDARD2_0
-            var manager = host.Services.GetService<ApplicationPartManager>();
-            manager?.ApplicationParts.Add(new AssemblyPart(startupType.Assembly));
-            #endif
-
-            return host;
+            return this;
         }
     }
 

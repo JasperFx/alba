@@ -1,5 +1,6 @@
 using System.Linq;
 using Baseline;
+using Microsoft.AspNetCore.Http;
 
 namespace Alba
 {
@@ -12,9 +13,9 @@ namespace Alba
             _headerKey = headerKey;
         }
 
-        public void Assert(Scenario scenario, ScenarioAssertionException ex)
+        public void Assert(Scenario scenario, HttpContext context, ScenarioAssertionException ex)
         {
-            var headers = scenario.Context.Response.Headers;
+            var headers = context.Response.Headers;
             if (headers.ContainsKey(_headerKey))
             {
                 var values = headers[_headerKey];

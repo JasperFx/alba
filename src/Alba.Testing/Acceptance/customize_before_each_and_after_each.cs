@@ -11,37 +11,29 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task before_each_and_after_each_is_called()
         {
-            using (var host = new SimpleHost())
+            using (var host = SystemUnderTest
+                .ForStartup<Startup>()
+            .BeforeEach(c =>
             {
-                host.BeforeContext = host.AfterContext = null;
+                BeforeContext = c;
+            })
+                .AfterEach(c => AfterContext = c))
+            {
+                BeforeContext = AfterContext = null;
 
                 await host.Scenario(_ =>
                 {
                     _.Get.Url("/api/values");
                 });
 
-                host.AfterContext.ShouldNotBeNull();
-                host.BeforeContext.ShouldNotBeNull();
+                AfterContext.ShouldNotBeNull();
+                BeforeContext.ShouldNotBeNull();
             }
         }
-    }
-
-    public class SimpleHost : SystemUnderTest
-    {
-        public SimpleHost()
-        {
-            UseStartup<Startup>();
-
-            BeforeEach(c =>
-            {
-                BeforeContext = c;
-            });
-
-            AfterEach(c => AfterContext = c);
-        }
-
+        
         public HttpContext BeforeContext { get; set; }
 
         public HttpContext AfterContext { get; set; }
     }
+
 }

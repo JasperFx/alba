@@ -1,19 +1,29 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Alba.Stubs;
 using Baseline;
 using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Internal;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Primitives;
 
 namespace Alba
 {
     public class SendExpression
     {
-        private readonly StubHttpRequest _request;
+        private readonly Scenario _context;
 
-        public SendExpression(HttpContext context)
+        public SendExpression(Scenario context)
         {
-            _request = context.Request.As<StubHttpRequest>();
+            _context = context;
+        }
+
+        private Action<HttpRequest> modify
+        {
+            set { _context.Configure = c => value(c.Request); }
         }
 
         /// <summary>
@@ -23,7 +33,7 @@ namespace Alba
         /// <returns></returns>
         public SendExpression ContentType(string contentType)
         {
-            _request.Headers["content-type"] = contentType;
+            modify = request => request.Headers["content-type"] = contentType;
             return this;
         }
 
@@ -34,7 +44,7 @@ namespace Alba
         /// <returns></returns>
         public SendExpression Accepts(string accepts)
         {
-            _request.Headers["accept"] = accepts;
+            modify = request => request.Headers["accept"] = accepts;
             return this;
         }
 
@@ -45,7 +55,7 @@ namespace Alba
         /// <returns></returns>
         public SendExpression Etag(string etag)
         {
-            _request.Headers["If-None-Match"] = etag;
+            modify = request => request.Headers["If-None-Match"] = etag;
             return this;
         }
 
@@ -56,7 +66,7 @@ namespace Alba
         /// <returns></returns>
         public SendExpression ToUrl(string url)
         {
-            _request.Path = url;
+            modify = request => request.Path = url;
             return this;
         }
 
@@ -68,7 +78,12 @@ namespace Alba
         /// <returns></returns>
         public SendExpression QueryString(string paramName, string paramValue)
         {
-            _request.AddQueryString(paramName, paramValue);
+            modify = request =>
+            {
+                request.QueryString = request.QueryString.Add(paramName, paramValue);
+                request.Query = new QueryCollection(QueryHelpers.ParseQuery(request.QueryString.Value));
+                
+            };
 
             return this;
         }

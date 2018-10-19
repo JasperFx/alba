@@ -27,7 +27,7 @@ namespace Alba.Testing.Acceptance
                     .Json(new { FirstName = "Tom" })
                     .ToUrl("/one");
 
-                x.Context.Request.ContentType.ShouldBe(MimeType.Json.Value);
+                x.Configure = c => c.Request.ContentType.ShouldBe(MimeType.Json.Value);
             });
         }
 
@@ -45,7 +45,7 @@ namespace Alba.Testing.Acceptance
                 x.Post
                     .Json(new { FirstName = "Tom" })
                     .ToUrl("/one");
-                x.Context.Request.ContentLength.ShouldNotBeNull();
+                x.Configure = c => c.Request.ContentLength.ShouldNotBeNull();
             });
         }
 
@@ -63,7 +63,7 @@ namespace Alba.Testing.Acceptance
                 x.Post
                     .Text("Hello, world")
                     .ToUrl("/one");
-                x.Context.Request.ContentType.ShouldBe(MimeType.Text.Value);
+                x.Configure = c => c.Request.ContentType.ShouldBe(MimeType.Text.Value);
             });
         }
 
@@ -81,7 +81,8 @@ namespace Alba.Testing.Acceptance
                 x.Post
                     .Text("Hello, world")
                     .ToUrl("/one");
-                x.Context.Request.ContentLength.ShouldNotBeNull();
+                
+                x.Configure = c => c.Request.ContentLength.ShouldNotBeNull();
             });
         }
 
@@ -99,7 +100,7 @@ namespace Alba.Testing.Acceptance
                 x.Post
                     .Xml(new Person {FirstName = "Tom"}) //xml serializer doesn't support anonymous obj
                     .ToUrl("/one");
-                x.Context.Request.ContentType.ShouldBe(MimeType.Xml.Value);
+                x.Configure = c => c.Request.ContentType.ShouldBe(MimeType.Xml.Value);
             });
         }
 
@@ -117,7 +118,7 @@ namespace Alba.Testing.Acceptance
                 x.Post
                     .Xml(new Person { FirstName = "Tom" })
                     .ToUrl("/one");
-                x.Context.Request.ContentLength.ShouldNotBeNull();
+                x.Configure = c => c.Request.ContentLength.ShouldNotBeNull();
             });
         }
 
@@ -135,7 +136,7 @@ namespace Alba.Testing.Acceptance
                 x.Post
                     .FormData(new Person { FirstName = "Tom" })
                     .ToUrl("/one");
-                x.Context.Request.ContentType.ShouldBe(MimeType.HttpFormMimetype);
+                x.Configure = c => c.Request.ContentType.ShouldBe(MimeType.HttpFormMimetype);
             });
         }
 
@@ -153,7 +154,7 @@ namespace Alba.Testing.Acceptance
                 x.Post
                     .FormData(new Person { FirstName = "Tom" })
                     .ToUrl("/one");
-                x.Context.Request.ContentLength.ShouldNotBeNull();
+                x.Configure = c => c.Request.ContentLength.ShouldNotBeNull();
             });
         }
 
@@ -171,7 +172,7 @@ namespace Alba.Testing.Acceptance
                 x.Post
                     .FormData(new Dictionary<string, string> { {"foo", "bar"} })
                     .ToUrl("/one");
-                x.Context.Request.ContentType.ShouldBe(MimeType.HttpFormMimetype);
+                x.Configure = c => c.Request.ContentType.ShouldBe(MimeType.HttpFormMimetype);
             });
         }
 
@@ -189,7 +190,7 @@ namespace Alba.Testing.Acceptance
                 x.Post
                     .FormData(new Dictionary<string, string> { {"foo", "bar"} })
                     .ToUrl("/one");
-                x.Context.Request.ContentLength.ShouldNotBeNull();
+                x.Configure = c => c.Request.ContentLength.ShouldNotBeNull();
             });
         }
     }

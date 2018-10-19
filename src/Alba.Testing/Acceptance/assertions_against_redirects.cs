@@ -24,11 +24,11 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task not_redirected()
         {
-            var result = await Exception<ScenarioAssertionException>.ShouldBeThrownBy(() =>
+            var result = await Exception<ScenarioAssertionException>.ShouldBeThrownBy(async () =>
             {
                 using (var system = SystemUnderTest.ForStartup<Startup>())
                 {
-                    return system.Scenario(_ =>
+                    await system.Scenario(_ =>
                     {
                         _.Get.Url("/api/values");
 
@@ -95,11 +95,11 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task redirect_permanent_non_permanent_result()
         {
-            var result = await Exception<ScenarioAssertionException>.ShouldBeThrownBy(() =>
+            var result = await Exception<ScenarioAssertionException>.ShouldBeThrownBy(async () =>
             {
                 using (var system = SystemUnderTest.ForStartup<Startup>())
                 {
-                    return system.Scenario(_ =>
+                    await system.Scenario(_ =>
                     {
                         _.Get.Url("/auth/redirect");
 

@@ -21,7 +21,7 @@ namespace Alba.Testing.Samples
                 // request as form data, and sets the content-length
                 // header as well as setting the content-type
                 // header to application/x-www-form-urlencoded
-                _.Context.WriteFormData(form1);
+                _.WriteFormData(form1);
             });
         }
         // ENDSAMPLE

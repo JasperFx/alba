@@ -46,8 +46,11 @@ namespace Alba.Testing
         public void can_write_xml_to_request()
         {
             var context = StubHttpContext.Empty();
-            new HttpRequestBody(null, context).XmlInputIs(new MyMessage { Age = 3, Name = "Declan" });
+            var system = new BasicScenarioSupport();
+            var scenario = new Scenario(system);
+            new HttpRequestBody(null, scenario).XmlInputIs(new MyMessage { Age = 3, Name = "Declan" });
 
+            scenario.SetupHttpContext(context);
 
             context.Request.Body.Position = 0;
 

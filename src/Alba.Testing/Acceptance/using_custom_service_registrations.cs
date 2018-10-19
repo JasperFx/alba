@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using WebApp;
@@ -14,13 +15,14 @@ namespace Alba.Testing.Acceptance
         {
             ValuesController.LastWidget = new IWidget[0];
 
-            using (var system = SystemUnderTest.ForStartup<Startup>())
-            {
-                system.ConfigureServices(_ =>
+            using (var system = SystemUnderTest.ForStartup<Startup>(builder =>
                 {
-                    _.AddTransient<IWidget, RedWidget>();
-                });
-
+                    return builder.ConfigureServices(_ =>
+                    {
+                        _.AddTransient<IWidget, RedWidget>();
+                    });
+                }))
+            {
                 ValuesController.LastWidget = null;
 
                 // The default registration is a GreenWidget

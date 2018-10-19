@@ -1,4 +1,6 @@
-﻿namespace Alba.Assertions
+﻿using Microsoft.AspNetCore.Http;
+
+namespace Alba.Assertions
 {
     public class BodyDoesNotContainAssertion : IScenarioAssertion
     {
@@ -9,9 +11,9 @@
             Text = text;
         }
 
-        public void Assert(Scenario scenario, ScenarioAssertionException ex)
+        public void Assert(Scenario scenario, HttpContext context, ScenarioAssertionException ex)
         {
-            var body = ex.ReadBody(scenario);
+            var body = ex.ReadBody(context);
             if (body.Contains(Text))
             {
                 ex.Add($"Text '{Text}' should not be found in the response body");

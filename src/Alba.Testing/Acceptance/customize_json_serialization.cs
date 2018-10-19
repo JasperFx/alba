@@ -1,5 +1,7 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Threading.Tasks;
+using Baseline;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Shouldly;
@@ -15,7 +17,7 @@ namespace Alba.Testing.Acceptance
         {
             using (var host = SystemUnderTest.ForStartup<Startup>())
             {
-                host.ToJson(new MyMessage { Name = "Jeremy" })
+                ((ISystemUnderTest) host).ToJson(new MyMessage { Name = "Jeremy" })
                     .ShouldNotContain(typeof(MyMessage).FullName);
             }
         }
@@ -23,18 +25,21 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public void customize_by_injecting_settings()
         {
-            using (var host = SystemUnderTest.ForStartup<Startup>())
+            using (var host = SystemUnderTest.ForStartup<Startup>(builder =>
             {
-                host.ConfigureServices(_ =>
+                return builder.ConfigureServices(_ =>
                 {
                     _.AddTransient<JsonSerializerSettings>(p => new JsonSerializerSettings
                     {
                         TypeNameHandling = TypeNameHandling.All
                     });
                 });
+            }))
+            {
 
 
-                host.ToJson(new MyMessage {Name = "Jeremy"})
+
+                host.As<ISystemUnderTest>().ToJson(new MyMessage {Name = "Jeremy"})
                     .ShouldContain(typeof(MyMessage).FullName);
             }
         }
@@ -46,7 +51,7 @@ namespace Alba.Testing.Acceptance
             {
                 host.JsonSerializerSettings.TypeNameHandling = TypeNameHandling.All;
 
-                host.ToJson(new MyMessage {Name = "Jeremy"})
+                ((ISystemUnderTest) host).ToJson(new MyMessage {Name = "Jeremy"})
                     .ShouldContain(typeof(MyMessage).FullName);
             }
         }

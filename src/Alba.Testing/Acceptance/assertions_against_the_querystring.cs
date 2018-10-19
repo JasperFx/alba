@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Shouldly;
 using Xunit;
 
@@ -12,14 +13,17 @@ namespace Alba.Testing.Acceptance
             host.Handlers["/one"] = c =>
             {
                 c.Response.StatusCode = 200;
-                return Task.CompletedTask;
+                return c.Response.WriteAsync(c.Request.Query["test"]);
             };
 
             return host.Scenario(_ =>
             {
                 _.Get.Url("/one").QueryString("test", "value");
-
-                _.Context.Request.Query["test"].ToString().ShouldBe("value");
+                
+                _.Configure = c =>
+                {
+                    c.Request.Query["test"].ToString().ShouldBe("value");
+                };
             });
         }
     }

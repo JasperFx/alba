@@ -1,4 +1,5 @@
 using System;
+using Alba.Stubs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
@@ -11,15 +12,16 @@ namespace Alba.Testing.Assertions
             Action<HttpContext> configuration)
         {
             var ex = new ScenarioAssertionException();
-            var support = new BasicScenarioSupport();
 
-            var scenario = new Scenario(support, Substitute.For<IServiceScope>());
-            configuration(scenario.Context);
+            var context = StubHttpContext.Empty();
 
-            var stream = scenario.Context.Response.Body;
-            if (stream != null) stream.Position = 0;
 
-            assertion.Assert(scenario, ex);
+            configuration(context);
+            
+            var stream = context.Response.Body;
+            stream.Position = 0;
+
+            assertion.Assert(null, context, ex);
 
             return ex;
         }

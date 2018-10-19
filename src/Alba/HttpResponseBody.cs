@@ -31,7 +31,10 @@ namespace Alba
 
         public T Read<T>(Func<Stream, T> read)
         {
-            _stream.Position = 0;
+            if (_stream.CanSeek)
+            {
+                _stream.Position = 0;
+            }
             return read(_stream);
         }
 

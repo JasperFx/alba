@@ -9,9 +9,9 @@ namespace Alba
     public class HttpRequestBody
     {
         private readonly ISystemUnderTest _system;
-        private readonly HttpContext _parent;
+        private readonly Scenario _parent;
 
-        public HttpRequestBody(ISystemUnderTest system, HttpContext parent)
+        public HttpRequestBody(ISystemUnderTest system, Scenario parent)
         {
             _system = system;
             _parent = parent;
@@ -26,13 +26,18 @@ namespace Alba
             var xml = writer.ToString();
             var bytes = Encoding.UTF8.GetBytes(xml);
 
-            var stream = _parent.Request.Body;
-            stream.Write(bytes, 0, bytes.Length);
-            stream.Position = 0;
+            _parent.Configure = context =>
+            {
+                var stream = context.Request.Body;
+                stream.Write(bytes, 0, bytes.Length);
+                stream.Position = 0;
 
-            _parent.Request.ContentType = MimeType.Xml.Value;
-            _parent.Accepts(MimeType.Xml.Value);
-            _parent.Request.ContentLength = xml.Length;
+                context.Request.ContentType = MimeType.Xml.Value;
+                context.Accepts(MimeType.Xml.Value);
+                context.Request.ContentLength = xml.Length;
+            };
+
+
         }
 
         public void JsonInputIs(object target)
@@ -44,15 +49,23 @@ namespace Alba
 
         public void JsonInputIs(string json)
         {
-            writeTextToBody(json);
-            _parent.Request.ContentType = MimeType.Json.Value;
-            _parent.Accepts(MimeType.Json.Value);
-            _parent.Request.ContentLength = json.Length;
+            
+
+            _parent.Configure = context =>
+            {
+                writeTextToBody(json, context);
+                
+                context.Request.ContentType = MimeType.Json.Value;
+                context.Accepts(MimeType.Json.Value);
+                context.Request.ContentLength = json.Length;
+            };
+
+
         }
 
-        private void writeTextToBody(string json)
+        private void writeTextToBody(string json, HttpContext context)
         {
-            var stream = _parent.Request.Body;
+            var stream = context.Request.Body;
 
             var writer = new StreamWriter(stream);
             writer.Write(json);
@@ -60,26 +73,41 @@ namespace Alba
 
             stream.Position = 0;
 
-            _parent.Request.ContentLength = stream.Length;
+            context.Request.ContentLength = stream.Length;
         }
 
         public void WriteFormData(Dictionary<string, string> input)
         {
-            _parent.Request.ContentType(MimeType.HttpFormMimetype);
-            _parent.WriteFormData(input);
+            _parent.Configure = context =>
+            {
+                context.Request.ContentType(MimeType.HttpFormMimetype);
+                context.WriteFormData(input);
+            };
+
+
         }
 
         public void ReplaceBody(Stream stream)
         {
-            stream.Position = 0;
-            _parent.Request.Body = stream;
+            _parent.Configure = context =>
+            {
+                stream.Position = 0;
+                context.Request.Body = stream;
+            };
+
+
         }
 
         public void TextIs(string body)
         {
-            writeTextToBody(body);
-            _parent.Request.ContentType = MimeType.Text.Value;
-            _parent.Request.ContentLength = body.Length;
+            _parent.Configure = context =>
+            {
+                writeTextToBody(body, context);
+                context.Request.ContentType = MimeType.Text.Value;
+                context.Request.ContentLength = body.Length;
+            };
+
+
         }
     }
 }
