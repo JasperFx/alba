@@ -46,6 +46,8 @@ namespace Alba
             if (applicationAssembly != null) manager?.ApplicationParts.Add(new AssemblyPart(applicationAssembly));
         }
 
+        public IServiceProvider Services => _server.Host.Services;
+
         /// <summary>
         ///     Governs the Json serialization of the out of the box SystemUnderTest.
         /// </summary>
