@@ -110,6 +110,28 @@ namespace Alba.Testing.Acceptance
         }
 
         [Fact]
+        public Task returns_succesfully_with_array_values_by_index()
+        {
+            return run(_ =>
+            {
+                _.Get.Url("/querystringarray?tests[0]=value1&tests[1]=value2");
+                _.ContentShouldContain("value1");
+                _.ContentShouldContain("value2");
+            });
+        }
+
+        [Fact]
+        public Task returns_successfully_with_array_and_duplicate_keys()
+        {
+            return run(_ =>
+            {
+                _.Get.Url("/querystringarray?tests=value1&tests=value2");
+                _.ContentShouldContain("value1");
+                _.ContentShouldContain("value2");
+            });
+        }
+
+        [Fact]
         public Task query_string_with_multiple_values()
         {
             return run(_ =>

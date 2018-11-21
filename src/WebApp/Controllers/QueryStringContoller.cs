@@ -11,6 +11,12 @@ namespace WebApp.Controllers
         {
             return test;
         }
+        
+        [HttpGet("querystringarray")]
+        public string QueryStringList([FromQuery] string[] tests)
+        {
+            return string.Join(',', tests);
+        }
 
         [HttpPost("sendform")]
         public string SendForm([FromForm] string test)

@@ -30,16 +30,8 @@ namespace Alba
 
                 if (parts[1].IsNotEmpty())
                 {
-                    var dict = QueryHelpers.ParseQuery(parts[1]);
-
-                    var request = context.Request;
-
-                    foreach (var pair in dict)
-                    {
-                        request.QueryString = request.QueryString.Add(pair.Key, pair.Value);
-                    }
+                    context.Request.QueryString = QueryString.Create(QueryHelpers.ParseQuery(parts[1]));
                 }
-                
             }
             else
             {
