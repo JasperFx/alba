@@ -288,6 +288,15 @@ namespace Alba
             }
         }
 
+        public IUrlExpression Patch
+        {
+            get
+            {
+                Configure = context => context.HttpMethod("PATCH");
+                return this;
+            }
+        }
+
         public IUrlExpression Head
         {
             get

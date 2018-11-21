@@ -45,6 +45,13 @@ namespace WebApp.Controllers
             return HttpContext.Response.WriteAsync("I ran a POST with value " + value);
         }
 
+        // PATCH api/values
+        [HttpPatch()]
+        public string Patch([FromBody] string value)
+        {
+            return "I ran a PATCH with value " + value;
+        }
+
         // PUT api/values/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)

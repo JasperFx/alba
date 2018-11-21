@@ -40,6 +40,14 @@ namespace Alba.Testing.Acceptance
 
                 _.ContentShouldBe("I ran a POST with value Blue");
             });
+
+            await run(_ =>
+            {
+                _.Patch.Url("/api/values");
+                _.Body.TextIs("Blue");
+
+                _.ContentShouldBe("I ran a PATCH with value Blue");
+            });
         }
 
         [Fact]
