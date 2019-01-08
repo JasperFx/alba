@@ -13,10 +13,7 @@ namespace Alba.Testing
         protected IWebHostBuilder EmptyHostBuilder()
         {
             return new WebHostBuilder()
-                .Configure(app => app.Run(c =>
-                {
-                    return c.Response.WriteAsync("Hey.")
-                }));
+                .Configure(app => app.Run(c => c.Response.WriteAsync("Hey.")));
         }
         
         [Fact]
