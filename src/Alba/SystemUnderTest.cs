@@ -20,66 +20,68 @@ namespace Alba
     /// </summary>
     public class SystemUnderTest : ISystemUnderTest
     {
-        private Action<HttpContext> _afterEach = c =>
-        {
-            
-        };
+        private Func<HttpContext, Task> _afterEach = c => Task.CompletedTask;
 
 
-        private Action<HttpContext> _beforeEach = c =>
-        {
-        };
-        
-        private readonly TestServer _server;
+        private Func<HttpContext, Task> _beforeEach = c => Task.CompletedTask;
 
         public SystemUnderTest(IWebHostBuilder builder, Assembly applicationAssembly = null)
         {
             builder.ConfigureServices(_ => { _.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); });
 
-            _server = new TestServer(builder);
+            Server = new TestServer(builder);
 
 
-            var settings = _server.Host.Services.GetService<JsonSerializerSettings>();
+            var settings = Server.Host.Services.GetService<JsonSerializerSettings>();
             if (settings != null) JsonSerializerSettings = settings;
 
-            var manager = _server.Host.Services.GetService<ApplicationPartManager>();
+            var manager = Server.Host.Services.GetService<ApplicationPartManager>();
             if (applicationAssembly != null) manager?.ApplicationParts.Add(new AssemblyPart(applicationAssembly));
         }
 
-        public IServiceProvider Services => _server.Host.Services;
+         
+        /// <summary>
+        /// The underlying TestServer for additional functionality
+        /// </summary>
+        public TestServer Server { get; }
+
+        /// <summary>
+        /// The root IoC container of the running application
+        /// </summary>
+        public IServiceProvider Services => Server.Host.Services;
 
         /// <summary>
         ///     Governs the Json serialization of the out of the box SystemUnderTest.
         /// </summary>
-        public JsonSerializerSettings JsonSerializerSettings { get; } = new JsonSerializerSettings();
+        public JsonSerializerSettings JsonSerializerSettings { get; set; } = new JsonSerializerSettings();
 
         /// <summary>
-        ///     Override to take some kind of action just before an Http request
-        ///     is executed.
+        /// Called immediately before a scenario is executed. Useful for setting up
+        /// system state
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        void ISystemUnderTest.BeforeEach(HttpContext context)
+        Task ISystemUnderTest.BeforeEach(HttpContext context)
         {
-            _beforeEach(context);
+            return _beforeEach(context);
         }
 
         /// <summary>
-        ///     Override to take some kind of action immediately after
-        ///     an Http request executes
+        /// Called immediately after the scenario is executed. Useful for cleaning up
+        /// test state left behind
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        void ISystemUnderTest.AfterEach(HttpContext context)
+        Task ISystemUnderTest.AfterEach(HttpContext context)
         {
-            _afterEach(context);
+            return _afterEach(context);
         }
 
 
         /// <summary>
         ///     The underlying IoC container for the application
         /// </summary>
-        IServiceProvider ISystemUnderTest.Services => _server.Host.Services;
+        IServiceProvider ISystemUnderTest.Services => Server.Host.Services;
 
         /// <summary>
         ///     Can be overridden to customize the Json serialization
@@ -114,7 +116,7 @@ namespace Alba
 
         public void Dispose()
         {
-            _server.Dispose();
+            Server.Dispose();
         }
 
         /// <summary>
@@ -124,7 +126,7 @@ namespace Alba
 
         public Task<HttpContext> Invoke(Action<HttpContext> setup)
         {
-            return _server.SendAsync(setup);
+            return Server.SendAsync(setup);
         }
 
         /// <summary>
@@ -161,14 +163,57 @@ namespace Alba
             return system;
         }
 
+        /// <summary>
+        /// Execute some kind of action before each scenario. This is NOT additive
+        /// </summary>
+        /// <param name="beforeEach"></param>
+        /// <returns></returns>
         public SystemUnderTest BeforeEach(Action<HttpContext> beforeEach)
         {
-            _beforeEach = beforeEach;
+            _beforeEach = c =>
+            {
+                beforeEach(c);
+                return Task.CompletedTask;
+            };
+            
             return this;
         }
 
 
+        /// <summary>
+        /// Execute some clean up action immediately after executing each HTTP execution. This is NOT additive
+        /// </summary>
+        /// <param name="afterEach"></param>
+        /// <returns></returns>
         public SystemUnderTest AfterEach(Action<HttpContext> afterEach)
+        {
+            _afterEach = c =>
+            {
+                afterEach(c);
+                return Task.CompletedTask;
+            };
+
+            return this;
+        }
+        
+        /// <summary>
+        /// Run some kind of set up action immediately before executing an HTTP request
+        /// </summary>
+        /// <param name="beforeEach"></param>
+        /// <returns></returns>
+        public SystemUnderTest BeforeEachAsync(Func<HttpContext, Task> beforeEach)
+        {
+            _beforeEach = beforeEach;
+            
+            return this;
+        }
+
+        /// <summary>
+        /// Execute some clean up action immediately after executing each HTTP execution. This is NOT additive
+        /// </summary>
+        /// <param name="afterEach"></param>
+        /// <returns></returns>
+        public SystemUnderTest AfterEachAsync(Func<HttpContext, Task> afterEach)
         {
             _afterEach = afterEach;
 

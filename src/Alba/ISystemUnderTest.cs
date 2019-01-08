@@ -16,8 +16,8 @@ namespace Alba
         Task<HttpContext> Invoke(Action<HttpContext> setup);
 
 
-        void BeforeEach(HttpContext context);
-        void AfterEach(HttpContext context);
+        Task BeforeEach(HttpContext context);
+        Task AfterEach(HttpContext context);
 
         /// <summary>
         /// Deserializes an object using the ASP.Net Core JsonSerializerSettings

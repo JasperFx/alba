@@ -38,9 +38,9 @@ namespace Alba
             HttpContext context = null;
             try
             {
-                context = await system.Invoke(c =>
+                context = await system.Invoke(async c =>
                 {
-                    system.BeforeEach(c);
+                    await system.BeforeEach(c);
 
                     c.Request.Body.Position = 0;
 
@@ -54,7 +54,7 @@ namespace Alba
             }
             finally
             {
-                system.AfterEach(context);
+                await system.AfterEach(context);
             }
 
             if (context.Response.Body.CanSeek)

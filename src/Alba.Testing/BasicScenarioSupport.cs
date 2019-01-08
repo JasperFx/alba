@@ -67,12 +67,14 @@ namespace Alba.Testing
             return context;
         }
 
-        void ISystemUnderTest.BeforeEach(HttpContext context)
+        Task ISystemUnderTest.BeforeEach(HttpContext context)
         {
+            return Task.CompletedTask;
         }
 
-        void ISystemUnderTest.AfterEach(HttpContext context)
+        Task ISystemUnderTest.AfterEach(HttpContext context)
         {
+            return Task.CompletedTask;
         }
 
 
