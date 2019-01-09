@@ -67,28 +67,6 @@ namespace Alba
         }
 
 
-        /// <summary>
-        /// Stubs out windows authentication to allow testing against systems that have windows authentication applied
-        /// </summary>
-        /// <param name="builder"></param>
-        /// <param name="user"></param>
-        /// <returns></returns>
-        public static IWebHostBuilder UseWindowsAuthentication(this IWebHostBuilder builder, ClaimsPrincipal user = null)
-        {
-            return builder.ConfigureServices(s =>
-            {
-                s.AddAuthentication(conf =>
-                    {
-                        conf.DefaultAuthenticateScheme = "NTLM";
-                        conf.DefaultChallengeScheme = "Negotiate";
-                    })
-                    .AddScheme<AuthenticationSchemeOptions, StubNtlmAuthenticationHandlerV2>("NTLM", "NTLM",
-                        options => { })
-                    .AddScheme<AuthenticationSchemeOptions, StubNtlmAuthenticationHandlerV2>("Negotiate", "NTLM",
-                        options => { });
-                s.AddSingleton(new StubNtlmAuthenticationHandlerV2(user));
-            });
-        }
 
         /// <summary>
         /// Shortcut to issue a POST with a Json serialized request body and a Json serialized

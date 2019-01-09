@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using Alba.Assertions;
-using Alba.Authentication;
 
 namespace Alba
 {

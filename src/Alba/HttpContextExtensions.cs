@@ -1,7 +1,5 @@
 ﻿using System.Security.Claims;
 using System.Text;
-using Alba.Authentication;
-using Alba.Stubs;
 using Baseline;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features.Authentication;
@@ -63,29 +61,5 @@ namespace Alba
             response.Body.Flush();
         }
 
-        public static void AttachAuthenticationHandler(this HttpContext context, IForwardingAuthenticationHandler handler, ClaimsPrincipal user = null)
-        {
-            var auth = context.Features.Get<IHttpAuthenticationFeature>();
-            if (auth == null)
-            {
-                auth = new HttpAuthenticationFeature();
-                context.Features.Set(auth);
-            }
-
-            auth.User = user;
-            context.User = user;
-
-            handler.PriorHandler = auth.Handler;
-            auth.Handler = handler;
-        }
-
-        public static void DetachAuthenticationHandler(this HttpContext context, IForwardingAuthenticationHandler handler)
-        {
-            var auth = context.Features.Get<IHttpAuthenticationFeature>();
-            if (auth != null)
-            {
-                auth.Handler = handler.PriorHandler;
-            }
-        }
     }
 }
