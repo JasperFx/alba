@@ -11,7 +11,6 @@
   <ItemGroup>
     <PackageReference Include="Baseline" Version="1.5.0" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.1" />
-    <PackageReference Include="StructureMap.Microsoft.DependencyInjection" Version="1.4.0" />
   </ItemGroup>
 
 
