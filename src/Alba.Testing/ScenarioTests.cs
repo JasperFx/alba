@@ -15,7 +15,7 @@ namespace Alba.Testing
         [Fact]
         public Task invoke_a_simple_string_endpoint()
         {
-            host.Handlers["/memory/hello"] = c =>
+            router.Handlers["/memory/hello"] = c =>
             {
                 c.Response.Write("hello from the in memory host");
                 return Task.CompletedTask;
@@ -72,7 +72,7 @@ namespace Alba.Testing
         [Fact]
         public Task using_scenario_with_string_text_and_relative_url()
         {
-            host.Handlers["/memory/hello"] = c =>
+            router.Handlers["/memory/hello"] = c =>
             {
                 c.Response.Write("hello from the in memory host");
                 return Task.CompletedTask;

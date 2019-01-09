@@ -10,7 +10,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public Task using_scenario_with_QueryString_should_set_query_string_parameter()
         {
-            host.Handlers["/one"] = c =>
+            router.Handlers["/one"] = c =>
             {
                 c.Response.StatusCode = 200;
                 return c.Response.WriteAsync(c.Request.Query["test"]);

@@ -10,7 +10,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public Task single_header_value_is_positive()
         {
-            host.Handlers["/one"] = c => {
+            router.Handlers["/one"] = c => {
                 c.Response.Headers.Append("Foo", "Bar");
 
                 return Task.CompletedTask;
@@ -28,7 +28,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task single_header_value_is_negative_with_the_wrong_value()
         {
-            host.Handlers["/one"] = c => {
+            router.Handlers["/one"] = c => {
                 c.Response.Headers.Append("Foo", "NotBar");
 
                 return Task.CompletedTask;
@@ -50,7 +50,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task single_header_value_is_negative_with_the_too_many_values()
         {
-            host.Handlers["/one"] = c => {
+            router.Handlers["/one"] = c => {
                 c.Response.Headers.Append("Foo", "NotBar");
                 c.Response.Headers.Append("Foo", "AnotherBar");
 
@@ -74,7 +74,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public Task header_should_not_be_written_happy_path()
         {
-            host.Handlers["/one"] = c => Task.CompletedTask;
+            router.Handlers["/one"] = c => Task.CompletedTask;
 
             return host.Scenario(x =>
             {
@@ -86,7 +86,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task header_should_not_be_written_sad_path_with_values()
         {
-            host.Handlers["/one"] = c => {
+            router.Handlers["/one"] = c => {
                 c.Response.Headers.Append("Foo", "Bar1");
                 c.Response.Headers.Append("Foo", "Bar2");
 
@@ -108,7 +108,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task should_have_on_non_null_value_sad_path_with_too_many_values()
         {
-            host.Handlers["/one"] = c =>
+            router.Handlers["/one"] = c =>
             {
                 c.Response.Headers.Append("Foo", "Bar1");
                 c.Response.Headers.Append("Foo", "Bar2");
@@ -132,7 +132,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public Task should_have_on_non_null_header_value_happy_path()
         {
-            host.Handlers["/one"] = c =>
+            router.Handlers["/one"] = c =>
             {
                 c.Response.Headers.Append("Foo", "Anything");
 
@@ -149,7 +149,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task should_have_one_non_null_value_sad_path()
         {
-            host.Handlers["/one"] = c =>
+            router.Handlers["/one"] = c =>
             {
                 return Task.CompletedTask;
             };
@@ -169,7 +169,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task single_header_value_is_negative_because_there_are_no_values()
         {
-            host.Handlers["/one"] = c =>
+            router.Handlers["/one"] = c =>
             {
                 return Task.CompletedTask;
             };
@@ -191,7 +191,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public Task muliple_header_values_happy_path()
         {
-            host.Handlers["/one"] = c =>
+            router.Handlers["/one"] = c =>
             {
                 c.Response.Headers.Append("Foo", "Anything");
                 c.Response.Headers.Append("Foo", "Bar");
@@ -208,7 +208,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task multiple_header_values_wrong_value()
         {
-            host.Handlers["/one"] = c =>
+            router.Handlers["/one"] = c =>
             {
                 c.Response.Headers.Append("Foo", "Anything");
                 return Task.CompletedTask;
@@ -230,7 +230,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task multiple_header_values_no_values()
         {
-            host.Handlers["/one"] = c => Task.CompletedTask;
+            router.Handlers["/one"] = c => Task.CompletedTask;
 
             var ex = await Exception<ScenarioAssertionException>.ShouldBeThrownBy(() =>
             {

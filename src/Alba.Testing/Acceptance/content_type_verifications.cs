@@ -10,7 +10,7 @@ namespace Alba.Testing
         [Fact]
         public Task content_type_should_be_happy_path()
         {
-            host.Handlers["/memory/hello"] = c =>
+            router.Handlers["/memory/hello"] = c =>
             {
                 c.Response.ContentType("text/plain");
                 c.Response.Write("some text");
@@ -30,8 +30,8 @@ namespace Alba.Testing
         [Fact]
         public async Task content_type_sad_path()
         {
-            host.RegisterRoute<InMemoryEndpoint>(x => x.get_memory_hello(), "GET", "/memory/hello");
-            host.Handlers["/memory/hello"] = c =>
+            router.RegisterRoute<InMemoryEndpoint>(x => x.get_memory_hello(), "GET", "/memory/hello");
+            router.Handlers["/memory/hello"] = c =>
             {
                 c.Response.ContentType("text/plain");
                 c.Response.Write("Some text");

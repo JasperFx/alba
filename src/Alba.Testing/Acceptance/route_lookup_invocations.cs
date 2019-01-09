@@ -9,9 +9,9 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public Task using_scenario_with_controller_expression()
         {
-            host.RegisterRoute<InMemoryEndpoint>(e => e.get_memory_hello(), "GET", "/memory/hello");
+            router.RegisterRoute<InMemoryEndpoint>(e => e.get_memory_hello(), "GET", "/memory/hello");
 
-            host.Handlers["/memory/hello"] = c =>
+            router.Handlers["/memory/hello"] = c =>
             {
                 c.Response.Write("hello from the in memory host");
                 c.Response.ContentType("text/plain");

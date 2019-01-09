@@ -11,7 +11,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public Task using_scenario_with_ContentShouldContain_declaration_happy_path()
         {
-            host.Handlers["/one"] = c =>
+            router.Handlers["/one"] = c =>
             {
                 c.Response.Write("**just the marker**");
                 return Task.CompletedTask;
@@ -29,7 +29,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task using_scenario_with_ContentShouldContain_declaration_sad_path()
         {
-            host.Handlers["/one"] = c =>
+            router.Handlers["/one"] = c =>
             {
                 c.Response.Write("**just the marker**");
                 return Task.CompletedTask;
@@ -47,7 +47,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public Task using_scenario_with_ContentShouldNotContain_declaration_happy_path()
         {
-            host.Handlers["/one"] = c =>
+            router.Handlers["/one"] = c =>
             {
                 c.Response.Write("**just the marker**");
                 return Task.CompletedTask;
@@ -63,7 +63,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task using_scenario_with_ContentShouldNotContain_declaration_sad_path()
         {
-            host.Handlers["/one"] = c =>
+            router.Handlers["/one"] = c =>
             {
                 c.Response.Write("**just the marker**");
                 return Task.CompletedTask;
@@ -89,7 +89,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task exact_content_sad_path()
         {
-            host.Handlers["/memory/hello"] = c =>
+            router.Handlers["/memory/hello"] = c =>
             {
                 c.Response.ContentType("text/plain");
                 c.Response.Write("some text");
@@ -113,7 +113,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public Task exact_content_happy_path()
         {
-            host.Handlers["/memory/hello"] = c =>
+            router.Handlers["/memory/hello"] = c =>
             {
                 c.Response.ContentType("text/plain");
                 c.Response.Write("hello from the in memory host");

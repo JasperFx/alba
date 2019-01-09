@@ -11,7 +11,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task will_write_out_the_body_on_500()
         {
-            host.Handlers["/one"] = c =>
+            router.Handlers["/one"] = c =>
             {
                 c.Response.StatusCode = 500;
                 return c.Response.WriteAsync(new NotSupportedException().ToString());
@@ -29,7 +29,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task will_write_out_the_body_on_501()
         {
-            host.Handlers["/one"] = c =>
+            router.Handlers["/one"] = c =>
             {
                 c.Response.StatusCode = 501;
                 return c.Response.WriteAsync(new NotSupportedException().ToString());
@@ -47,7 +47,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task will_write_out_the_body_on_502()
         {
-            host.Handlers["/one"] = c =>
+            router.Handlers["/one"] = c =>
             {
                 c.Response.StatusCode = 501;
                 return c.Response.WriteAsync(new DivideByZeroException().ToString());

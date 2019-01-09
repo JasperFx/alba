@@ -15,7 +15,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public Task using_scenario_with_JsonInputIs_should_set_content_type()
         {
-            host.Handlers["/one"] = c =>
+            router.Handlers["/one"] = c =>
             {
                 c.Response.StatusCode = 200;
                 return Task.CompletedTask;
@@ -34,7 +34,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public Task using_scenario_with_JsonInputIs_should_set_content_length()
         {
-            host.Handlers["/one"] = c =>
+            router.Handlers["/one"] = c =>
             {
                 c.Response.StatusCode = 200;
                 return Task.CompletedTask;
@@ -52,7 +52,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public Task using_scenario_with_TextInputIs_should_set_content_type()
         {
-            host.Handlers["/one"] = c =>
+            router.Handlers["/one"] = c =>
             {
                 c.Response.StatusCode = 200;
                 return Task.CompletedTask;
@@ -70,7 +70,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public Task using_scenario_with_TextInputIs_should_set_content_length()
         {
-            host.Handlers["/one"] = c =>
+            router.Handlers["/one"] = c =>
             {
                 c.Response.StatusCode = 200;
                 return Task.CompletedTask;
@@ -89,7 +89,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public Task using_scenario_with_XmlInputIs_should_set_content_type()
         {
-            host.Handlers["/one"] = c =>
+            router.Handlers["/one"] = c =>
             {
                 c.Response.StatusCode = 200;
                 return Task.CompletedTask;
@@ -107,7 +107,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public Task using_scenario_with_XmlInputIs_should_set_content_length()
         {
-            host.Handlers["/one"] = c =>
+            router.Handlers["/one"] = c =>
             {
                 c.Response.StatusCode = 200;
                 return Task.CompletedTask;
@@ -125,7 +125,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public Task using_scenario_with_FormDataIs_should_set_content_type()
         {
-            host.Handlers["/one"] = c =>
+            router.Handlers["/one"] = c =>
             {
                 c.Response.StatusCode = 200;
                 return Task.CompletedTask;
@@ -143,7 +143,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public Task using_scenario_with_FormDataIs_should_set_content_length()
         {
-            host.Handlers["/one"] = c =>
+            router.Handlers["/one"] = c =>
             {
                 c.Response.StatusCode = 200;
                 return Task.CompletedTask;
@@ -161,7 +161,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public Task using_scenario_with_DictionaryFormData_should_set_content_type()
         {
-            host.Handlers["/one"] = c =>
+            router.Handlers["/one"] = c =>
             {
                 c.Response.StatusCode = 200;
                 return Task.CompletedTask;
@@ -179,7 +179,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public Task using_scenario_with_DictionaryFormData_should_set_content_length()
         {
-            host.Handlers["/one"] = c =>
+            router.Handlers["/one"] = c =>
             {
                 c.Response.StatusCode = 200;
                 return Task.CompletedTask;

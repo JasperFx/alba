@@ -10,7 +10,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public Task using_scenario_with_StatusCodeShouldBe_happy_path()
         {
-            host.Handlers["/one"] = c =>
+            router.Handlers["/one"] = c =>
             {
                 c.Response.StatusCode = 200;
                 c.Response.ContentType("text/plain");
@@ -29,7 +29,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task using_scenario_with_StatusCodeShouldBe_sad_path()
         {
-            host.Handlers["/one"] = c =>
+            router.Handlers["/one"] = c =>
             {
                 c.Response.StatusCode = 200;
                 c.Response.ContentType("text/plain");
@@ -56,7 +56,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task happily_blows_up_on_an_unexpected_500()
         {
-            host.Handlers["/wrong/status/code"] = c =>
+            router.Handlers["/wrong/status/code"] = c =>
             {
                 c.Response.StatusCode = 500;
                 c.Response.Write("the error text");

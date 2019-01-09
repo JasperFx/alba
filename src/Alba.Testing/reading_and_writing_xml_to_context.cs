@@ -2,6 +2,9 @@
 using System.Xml.Serialization;
 using Alba.Stubs;
 using Baseline;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Shouldly;
 using Xunit;
 
@@ -46,19 +49,21 @@ namespace Alba.Testing
         public void can_write_xml_to_request()
         {
             var context = StubHttpContext.Empty();
-            var system = new BasicScenarioSupport();
-            var scenario = new Scenario(system);
-            new HttpRequestBody(null, scenario).XmlInputIs(new MyMessage { Age = 3, Name = "Declan" });
+            using (var system = SystemUnderTest.For(b => b.Configure(app => app.Run(c => c.Response.WriteAsync("Hello")))))
+            {
+                var scenario = new Scenario(system);
+                new HttpRequestBody(null, scenario).XmlInputIs(new MyMessage { Age = 3, Name = "Declan" });
 
-            scenario.SetupHttpContext(context);
+                scenario.SetupHttpContext(context);
 
-            context.Request.Body.Position = 0;
+                context.Request.Body.Position = 0;
 
-            var xml = context.Request.Body.ReadAllText();
-            var doc = new XmlDocument();
-            doc.LoadXml(xml);
+                var xml = context.Request.Body.ReadAllText();
+                var doc = new XmlDocument();
+                doc.LoadXml(xml);
 
-            doc.DocumentElement["Name"].InnerText.ShouldBe("Declan");
+                doc.DocumentElement["Name"].InnerText.ShouldBe("Declan");
+            }
         }
 
         public class MyMessage
