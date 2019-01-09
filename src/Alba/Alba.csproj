@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>Easy integration testing helper for ASP.Net Core applications</Description>
+    <Description>Supercharged integration testing for ASP.Net Core HTTP endpoints</Description>
     <AssemblyTitle>Alba</AssemblyTitle>
     <VersionPrefix>3.0.0</VersionPrefix>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>

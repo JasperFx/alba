@@ -5,8 +5,7 @@ class is to directly use the `Startup` class for your application like so:
 
 <[sample:SimplisticSystemUnderTest]>
 
-Alba won't bootstrap your application until the first time you try to execute a *Scenario*, so you have the option
-to apply additional configuration to how the system under test will execute.
+This is the bootstrapping equivalent in ASP.Net Core of using `WebHost.CreateDefaultBuilder().UseStartup<T>()`.
 
 ## Running a Scenario
 

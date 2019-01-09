@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Hellang.Middleware.ProblemDetails;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -49,6 +50,13 @@ namespace WebApp
             {
                 ServeUnknownFileTypes = true,
                 FileProvider = new PhysicalFileProvider(env.ContentRootPath)
+            });
+            
+            app.UseProblemDetails(x =>
+            {
+                
+                // This is the default behavior; only include exception details in a development environment.
+                x.IncludeExceptionDetails = ctx => env.IsDevelopment();
             });
 
             app.UseMvc();

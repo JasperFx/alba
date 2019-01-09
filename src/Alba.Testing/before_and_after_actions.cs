@@ -15,6 +15,41 @@ namespace Alba.Testing
             return new WebHostBuilder()
                 .Configure(app => app.Run(c => c.Response.WriteAsync("Hey.")));
         }
+
+        // SAMPLE: before-and-after
+        public void sample_usage(SystemUnderTest system)
+        {
+            // Synchronously
+            system.BeforeEach(context =>
+            {
+                // Modify the HttpContext immediately before each
+                // Scenario()/HTTP request is executed
+                context.Request.Headers.Add("trace", "something");
+            });
+            
+            system.AfterEach(context =>
+            {
+                // perform an action immediately after the scenario/HTTP request
+                // is executed
+            });
+            
+            
+            // Asynchronously
+            system.BeforeEachAsync(context =>
+            {
+                // do something asynchronous here
+                return Task.CompletedTask;
+            });
+            
+            system.AfterEachAsync(context =>
+            {
+                // do something asynchronous here
+                return Task.CompletedTask;
+            });
+
+
+        }
+        // ENDSAMPLE
         
         [Fact]
         public async Task synchronous_before_and_after()

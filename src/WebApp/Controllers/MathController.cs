@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApp.Controllers
 {
-
+    // SAMPLE: MathController
     public enum OperationType
     {
         Add,
@@ -74,5 +74,7 @@ namespace WebApp.Controllers
                     throw new ArgumentOutOfRangeException(nameof(request.Type));
             }
         }
+        
+        // ENDSAMPLE
     }
 }

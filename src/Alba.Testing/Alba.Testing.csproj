@@ -4,9 +4,9 @@
     <DebugType>portable</DebugType>
     <AssemblyName>Alba.Testing</AssemblyName>
     <PackageId>Alba.Testing</PackageId>
-
-    <MvcRazorCompileOnPublish>false</MvcRazorCompileOnPublish>
-
+    
+    <!--THIS IS IMPORTANT TO PREVENT NUGET CONFLICTS BETWEEN ALBA
+        AND YOUR APPLICATION  -->
     <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
   </PropertyGroup>
   <ItemGroup>
@@ -22,6 +22,8 @@
     <PackageReference Include="Microsoft.DotNet.InternalAbstractions" Version="1.0.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
 
+    <!-- This is still important to reference explicitly even though it's
+         a transitive dependency of your web application  -->
     <PackageReference Include="Microsoft.AspNetCore.All" />
   </ItemGroup>
 

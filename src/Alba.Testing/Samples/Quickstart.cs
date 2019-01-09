@@ -46,6 +46,21 @@ namespace Alba.Testing.Samples
                     });
                 });
             });
+            
+            // or pass an IWebHostBuilder into the constructor function
+            // of SystemUnderTest
+
+            var builder = WebHost
+                .CreateDefaultBuilder()
+                .UseStartup<Startup>()
+                .ConfigureServices(services =>
+                {
+                    // override any service registrations you need,
+                    // like maybe using stubs for problematic dependencies
+                });
+            
+            var system2 = new SystemUnderTest(builder);
+            
             // ENDSAMPLE
 
             try
