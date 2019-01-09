@@ -37,7 +37,7 @@
             <li>
               <a href="https://gitter.im/jasperfx/Alba?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/jasperfx/Alba" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
             </li>
-            <li><a href="/alba/documentation/assertions" title="Writing Custom Assertions">Previous</a></li>
+            <li><a href="/alba/documentation/before-and-after" title="Before and after actions">Previous</a></li>
             <li><a href="/alba/documentation/redirects" title="Working with Redirects">Next</a></li>
           </ul>
           <div class="navbar-form navbar-left" role="search">
@@ -62,14 +62,14 @@
       <div class="row">
           <!--left-->
           <div class="col-md-3" id="leftCol">
-            <h3>Alba 1.4.0</h3>
+            <h3>Alba 3.0.0</h3>
             <br />
 
             <ul class="nav nav-stacked affix" id="sidebar">
             </ul>
 
             <h3 class="no-margin">Next</h3><p><a href="/alba/documentation/redirects">Working with Redirects</a></p>
-            <h3 class="no-margin">Previous</h3><a href="/alba/documentation/assertions">Writing Custom Assertions</a></p>
+            <h3 class="no-margin">Previous</h3><a href="/alba/documentation/before-and-after">Before and after actions</a></p>
           </div><!--/left-->
 
           <!--right-->
@@ -80,19 +80,10 @@
 
               <div id="main-pane">
                 <!--title: Working with Authentication-->
-<p>You may need to do assertions against an endpoint that requires authentication.  This is usually done by issuing a <code>Challenge</code>.  Typically you don't need to do anything additonal though Windows Authentication is an exception.  Since Alba is ran through <code>Kestrel</code> it does not register a <code>IAuthenticationHandler</code> that understands <code>NTLM</code> or <code>Negotiate</code> authentication schemes.</p>
-<h2 id="windows-authentication">Windows Authentication</h2>
-<p>The endpoint issues a challenge.</p>
-<pre><code class="language-csharp">&#xA;public IActionResult WindowsChallenge()&#xA;{&#xA;    return new ChallengeResult(new List&lt;string&gt; {&quot;NTLM&quot;, &quot;Negotiate&quot;});&#xA;}&#xA;</code></pre>
-<p>Add a stub authentication handler for Windows and assert the result.</p>
-<pre><code class="language-csharp">&#xA;public Task asserting_authentication(ISystemUnderTest system)&#xA;{&#xA;    return system.Scenario(_ =&gt;&#xA;    {&#xA;        _.WithWindowsAuthentication();&#xA;        _.Get.Url(&quot;/&quot;);&#xA;&#xA;        _.StatusCodeShouldBe(HttpStatusCode.Unauthorized);&#xA;        _.Header(&quot;www-authenticate&quot;).ShouldHaveValues(&quot;NTLM&quot;, &quot;Negotiate&quot;);&#xA;    });&#xA;}&#xA;</code></pre>
-<p>You can also add a user to test the result with an authenticated user.</p>
-<pre><code class="language-csharp">&#xA;public Task asserting_authentication_with_user(ISystemUnderTest system)&#xA;{&#xA;    return system.Scenario(_ =&gt;&#xA;    {&#xA;        var user = new ClaimsPrincipal(new ClaimsIdentity(Enumerable.Empty&lt;Claim&gt;(), &quot;Windows&quot;));&#xA;        _.WithWindowsAuthentication(user);&#xA;        _.Get.Url(&quot;/&quot;);&#xA;&#xA;        _.StatusCodeShouldBe(HttpStatusCode.Forbidden);&#xA;    });&#xA;}&#xA;</code></pre>
-<h2 id="authenticationhandler">AuthenticationHandler</h2>
-<p>You can write your own handler inheriting from <code>AuthenticationHandler</code> and adding an extension method to add it to the <code>Scenario</code>.</p>
-<pre><code class="language-csharp">&#xA;public class StubWindowsAuthHandler : AuthenticationHandler&#xA;{&#xA;    public StubWindowsAuthHandler(HttpContext httpContext)&#xA;        : base(httpContext)&#xA;    {&#xA;    }&#xA;&#xA;    public override void GetDescriptions(DescribeSchemesContext context)&#xA;    {&#xA;        var schemes = new Dictionary&lt;string, object&gt;&#xA;        {&#xA;            {&quot;DisplayName&quot;, &quot;NTLM&quot;},&#xA;            {&quot;AuthenticationScheme&quot;, &quot;NTLM&quot;}&#xA;        };&#xA;&#xA;        context.Accept(schemes);&#xA;&#xA;        base.GetDescriptions(context);&#xA;    }&#xA;&#xA;    protected override bool ShouldHandleScheme(string scheme)&#xA;    {&#xA;        return string.Equals(&quot;NTLM&quot;, scheme, StringComparison.OrdinalIgnoreCase)&#xA;               || string.Equals(&quot;Negotiate&quot;, scheme, StringComparison.OrdinalIgnoreCase);&#xA;    }&#xA;}&#xA;</code></pre>
-<p>Add an extention method to add it to the <code>Scenario</code>.</p>
-<pre><code class="language-csharp">&#xA;public static Scenario WithWindowsAuthentication(this Scenario scenario, ClaimsPrincipal user = null)&#xA;{&#xA;    scenario.Context.AttachAuthenticationHandler(new StubWindowsAuthHandler(scenario.Context), user);&#xA;    return scenario;&#xA;}&#xA;</code></pre>
+<div class="alert-warning alert"><p><strong>Note!</strong>
+Alba 3.0+ removed the previous, built in support for windows authentication.</p>
+</div>
+<p>To add support for windows authentication in your Alba specifications, we recommend checking out the <a href="https://github.com/IntelliTect/AspNetCore.TestHost.WindowsAuth">AspNetCore.TestHost.WindowsAuth</a> project.</p>
 
               </div>
 
@@ -100,7 +91,7 @@
 
               <nav>
                 <span>
-                  <strong>Previous: </strong><a href="/alba/documentation/assertions">Writing Custom Assertions</a>
+                  <strong>Previous: </strong><a href="/alba/documentation/before-and-after">Before and after actions</a>
 
                 </span>
                 <span class="pull-right">

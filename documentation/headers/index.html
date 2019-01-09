@@ -62,7 +62,7 @@
       <div class="row">
           <!--left-->
           <div class="col-md-3" id="leftCol">
-            <h3>Alba 1.4.0</h3>
+            <h3>Alba 3.0.0</h3>
             <br />
 
             <ul class="nav nav-stacked affix" id="sidebar">
@@ -85,14 +85,14 @@ can no longer get away with that in today's world. To more correctly use HTTP, A
 to deal with HTTP header values.</p>
 <h2 id="setting-request-headers">Setting Request Headers</h2>
 <p>To set request headers, you can directly write against the <code>HttpContext.Request.Headers</code> collection:</p>
-<pre><code class="language-csharp">&#xA;public Task setting_request_headers(ISystemUnderTest system)&#xA;{&#xA;    return system.Scenario(_ =&gt;&#xA;    {&#xA;        _.Context.Request.Headers[&quot;foo&quot;] = &quot;bar&quot;;&#xA;    });&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public Task setting_request_headers(ISystemUnderTest system)&#xA;{&#xA;    return system.Scenario(_ =&gt;&#xA;    {&#xA;        _.SetRequestHeader(&quot;foo&quot;, &quot;bar&quot;);&#xA;        &#xA;    });&#xA;}&#xA;</code></pre>
 <p>There are also some specific helpers for very common <a href="https://en.wikipedia.org/wiki/Content_negotiation">content negotiation-related</a> headers:</p>
 <pre><code class="language-csharp">&#xA;public Task conneg_helpers(ISystemUnderTest system)&#xA;{&#xA;    return system.Scenario(_ =&gt;&#xA;    {&#xA;        // Set the accepts header on the request&#xA;        _.Get.Url(&quot;/&quot;).Accepts(&quot;text/plain&quot;);&#xA;&#xA;        // Specify the etag header value&#xA;        _.Get.Url(&quot;/&quot;).Etag(&quot;12345&quot;);&#xA;&#xA;        // Set the content-type header on the request&#xA;        _.Post.Url(&quot;/&quot;).ContentType(&quot;text/json&quot;);&#xA;&#xA;        // This is a superset of the code above that&#xA;        // will set the content-type header as well&#xA;        _.Post.Json(new InputModel()).ToUrl(&quot;/&quot;);&#xA;    });&#xA;}&#xA;</code></pre>
 <p><strong>Do add extension methods off of the Alba <code>Scenario</code> class for common operations in your tests to remove
 some of the tedium.</strong></p>
 <h2 id="asserting-on-expected-response-headers">Asserting on Expected Response Headers</h2>
 <p>Alba comes with some out of the box assertions to declaratively check expected header values:</p>
-<pre><code class="language-csharp">&#xA;public Task asserting_on_header_values(ISystemUnderTest system)&#xA;{&#xA;    return system.Scenario(_ =&gt;&#xA;    {&#xA;        // Assert that there is one and only one value equal to &quot;150&quot;&#xA;        _.Header(&quot;content-length&quot;).SingleValueShouldEqual(&quot;150&quot;);&#xA;&#xA;        // Assert that there is no value for this response header&#xA;        _.Header(&quot;connection&quot;).ShouldNotBeWritten();&#xA;&#xA;        // Only write one value for this header&#xA;        _.Header(&quot;set-cookie&quot;).ShouldHaveOneNonNullValue();&#xA;&#xA;        // Assert that the header has the given values&#xA;        _.Header(&quot;www-authenticate&quot;).ShouldHaveValues(&quot;NTLM&quot;, &quot;Negotiate&quot;);&#xA;&#xA;        // Check the content-type header&#xA;        _.ContentTypeShouldBe(&quot;text/json&quot;);&#xA;    });&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public Task asserting_on_header_values(ISystemUnderTest system)&#xA;{&#xA;    return system.Scenario(_ =&gt;&#xA;    {&#xA;        // Assert that there is one and only one value equal to &quot;150&quot;&#xA;        _.Header(&quot;content-length&quot;).SingleValueShouldEqual(&quot;150&quot;);&#xA;&#xA;        // Assert that there is no value for this response header&#xA;        _.Header(&quot;connection&quot;).ShouldNotBeWritten();&#xA;&#xA;        // Only write one value for this header&#xA;        _.Header(&quot;set-cookie&quot;).ShouldHaveOneNonNullValue();&#xA;&#xA;        // Assert that the header has the given values&#xA;        _.Header(&quot;www-authenticate&quot;).ShouldHaveValues(&quot;NTLM&quot;, &quot;Negotiate&quot;);&#xA;&#xA;        // Assert that the header matches a regular expression&#xA;        _.Header(&quot;location&quot;).SingleValueShouldMatch(new Regex(@&quot;^/items/\d*$&quot;));&#xA;&#xA;        // Check the content-type header&#xA;        _.ContentTypeShouldBe(&quot;text/json&quot;);&#xA;    });&#xA;}&#xA;</code></pre>
 <p>You do also have the ability to just interrogate the <code>HttpContext.Response</code> in your unit test methods for
 anything not covered in the helpers above. To add your own custom assertions, see <a href="/alba/documentation/assertions">Writing Custom Assertions</a>.</p>
 

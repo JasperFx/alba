@@ -5,7 +5,7 @@
         <meta charset="utf-8">
         <meta name="generator" content="Bootply" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-        <title>Alba - Working with Plain Text Requests</title>
+        <title>Alba - Integrating Alba with xUnit.Net</title>
         <link href="/alba/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
         <link href="/alba/content/prism.css" rel="stylesheet" type="text/css" />
         <link href="/alba/content/theme.css" rel="stylesheet" type="text/css" />
@@ -37,8 +37,8 @@
             <li>
               <a href="https://gitter.im/jasperfx/Alba?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/jasperfx/Alba" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
             </li>
-            <li><a href="/alba/documentation/xml" title="Sending and Checking Xml">Previous</a></li>
-            <li><a href="/alba/documentation/formdata" title="Sending Http Form Data">Next</a></li>
+            <li><a href="/alba/documentation/bootstrapping" title="Bootstrapping and Configuration">Previous</a></li>
+            <li><a href="/alba/documentation/urls" title="Working with Url's">Next</a></li>
           </ul>
           <div class="navbar-form navbar-left" role="search">
             <div class="form-group">
@@ -53,7 +53,7 @@
 
     <div class="container">
       <nav class="navbar-inverse">
-        <ol class="breadcrumb"><li><a href="/alba/">Alba</a></li><li><a href="/alba/documentation">Documentation</a></li><li class="active">Working with Plain Text Requests</li></ol>
+        <ol class="breadcrumb"><li><a href="/alba/">Alba</a></li><li><a href="/alba/documentation">Documentation</a></li><li class="active">Integrating Alba with xUnit.Net</li></ol>
       </nav>
     </div>
 
@@ -68,31 +68,31 @@
             <ul class="nav nav-stacked affix" id="sidebar">
             </ul>
 
-            <h3 class="no-margin">Next</h3><p><a href="/alba/documentation/formdata">Sending Http Form Data</a></p>
-            <h3 class="no-margin">Previous</h3><a href="/alba/documentation/xml">Sending and Checking Xml</a></p>
+            <h3 class="no-margin">Next</h3><p><a href="/alba/documentation/urls">Working with Url's</a></p>
+            <h3 class="no-margin">Previous</h3><a href="/alba/documentation/bootstrapping">Bootstrapping and Configuration</a></p>
           </div><!--/left-->
 
           <!--right-->
           <div class="col-md-9">
-              <h1>Working with Plain Text Requests</h1>
+              <h1>Integrating Alba with xUnit.Net</h1>
 
               <hr />
 
               <div id="main-pane">
-                <!--title: Working with Plain Text Requests-->
-<p>If you find yourself needing to test HTTP endpoints that either send text or return text, Alba
-has you covered with some built in helpers.</p>
-<h2 id="reading-the-response-text">Reading the Response Text</h2>
-<p>To read the response body as text, use this syntax:</p>
-<pre><code class="language-csharp">&#xA;public async Task read_text(ISystemUnderTest system)&#xA;{&#xA;    var result = await system.Scenario(_ =&gt;&#xA;    {&#xA;        _.Get.Url(&quot;/output&quot;);&#xA;    });&#xA;&#xA;    // This deserializes the response body to the&#xA;    // designated Output type&#xA;    var outputString = result.ResponseBody.ReadAsText();&#xA;&#xA;    // do assertions against the Output string&#xA;}&#xA;</code></pre>
-<h2 id="assertions-against-the-response-text">Assertions against the Response Text</h2>
-<p>You have these built in operations for asserting on the response body text:</p>
-<pre><code class="language-csharp">&#xA;public Task assert_on_content(ISystemUnderTest system)&#xA;{&#xA;    return system.Scenario(_ =&gt;&#xA;    {&#xA;        _.ContentShouldBe(&quot;exactly this&quot;);&#xA;&#xA;        _.ContentShouldContain(&quot;some snippet&quot;);&#xA;&#xA;        _.ContentShouldNotContain(&quot;some warning&quot;);&#xA;    });&#xA;}&#xA;</code></pre>
-<h2 id="sending-text">Sending Text</h2>
-<p>Lastly, you can send text to an HTTP endpoint with this syntax:</p>
-<pre><code class="language-csharp">&#xA;public Task send_text(ISystemUnderTest system)&#xA;{&#xA;    return system.Scenario(_ =&gt;&#xA;    {&#xA;        _.Post.Text(&quot;some text&quot;).ToUrl(&quot;/textdata&quot;);&#xA;    });&#xA;}&#xA;</code></pre>
-<p>Do note that this also sets the <code>content-length</code> header to the string length and
-sets the <code>content-type</code> header of the request to &quot;text/plain.&quot;</p>
+                <!--title: Integrating Alba with xUnit.Net-->
+<div class="alert-info alert"><p><strong>Note!</strong>
+While this is using xUnit.Net, the mechanics should be similar for other unit test frameworks. The key point is just to share the
+hosted application test between tests while still cleaning up after yourself when you're done.</p>
+</div>
+<p>If you are writing only a few Alba specifications in your testing project and your application spins up very quickly, you can just happily write tests like this:</p>
+<pre><code class="language-csharp">&#xA;[Fact]&#xA;public async Task should_say_hello_world()&#xA;{&#xA;    using (var system = SystemUnderTest.ForStartup&lt;Startup&gt;())&#xA;    {&#xA;        // This runs an HTTP request and makes an assertion&#xA;        // about the expected content of the response&#xA;        await system.Scenario(_ =&gt;&#xA;        {&#xA;            _.Get.Url(&quot;/&quot;);&#xA;            _.ContentShouldBe(&quot;Hello, World!&quot;);&#xA;            _.StatusCodeShouldBeOk();&#xA;        });&#xA;    }&#xA;}&#xA;</code></pre>
+<p>Do note that your <code>[Fact]</code> method needs to be declared as <code>async Task</code> to ensure that xUnit finishes the specification before disposing the system or
+you'll get <em>unusual</em> behavior. Also note that you really need to dispose the <code>SystemUnderTest</code> to shut down your application and dispose any internal services that might be holding on to computer resources.</p>
+<p>If your application startup time becomes a performance problem, and especially in larger test suites, you probably want to share the <code>SystemUnderTest</code> object between tests. xUnit helpfully provides the <a href="https://xunit.github.io/docs/shared-context">class fixture feature</a> for just this use case.</p>
+<p>In this case, build out your <code>SystemUnderTest</code> in a class like this:</p>
+<pre><code class="language-csharp">&#xA;public class WebAppFixture : IDisposable&#xA;{&#xA;    public readonly SystemUnderTest SystemUnderTest = SystemUnderTest.ForStartup&lt;WebApp.Startup&gt;();&#xA;&#xA;    public void Dispose()&#xA;    {&#xA;        SystemUnderTest?.Dispose();&#xA;    }&#xA;}&#xA;</code></pre>
+<p>Then in your actual xUnit fixture classes, implement the <code>IClassFixture&lt;T&gt;</code> class like this:</p>
+<pre><code class="language-csharp">&#xA;public class ContractTestWithAlba : IClassFixture&lt;WebAppFixture&gt;&#xA;{&#xA;    public ContractTestWithAlba(WebAppFixture app)&#xA;    {&#xA;        _system = app.SystemUnderTest;&#xA;    }&#xA;&#xA;    private readonly SystemUnderTest _system;&#xA;</code></pre>
 
               </div>
 
@@ -100,12 +100,12 @@ sets the <code>content-type</code> header of the request to &quot;text/plain.&qu
 
               <nav>
                 <span>
-                  <strong>Previous: </strong><a href="/alba/documentation/xml">Sending and Checking Xml</a>
+                  <strong>Previous: </strong><a href="/alba/documentation/bootstrapping">Bootstrapping and Configuration</a>
 
                 </span>
                 <span class="pull-right">
 
-                  <strong>Next: </strong><a href="/alba/documentation/formdata">Sending Http Form Data</a>
+                  <strong>Next: </strong><a href="/alba/documentation/urls">Working with Url's</a>
 
                 </span>
               </nav>

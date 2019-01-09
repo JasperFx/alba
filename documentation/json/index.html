@@ -62,7 +62,7 @@
       <div class="row">
           <!--left-->
           <div class="col-md-3" id="leftCol">
-            <h3>Alba 1.4.0</h3>
+            <h3>Alba 3.0.0</h3>
             <br />
 
             <ul class="nav nav-stacked affix" id="sidebar">
@@ -95,9 +95,6 @@ the Json serialization. In order:</p>
 <li>Failing that, Alba exposes a <code>JsonSerializerSettings</code> property as shown below:</li>
 </ol>
 <pre><code class="language-csharp">&#xA;var system = SystemUnderTest.ForStartup&lt;Startup&gt;();&#xA;system.JsonSerializerSettings.DateFormatHandling = DateFormatHandling.IsoDateFormat;&#xA;</code></pre>
-<p>If your application is using an alternative Json serializer, you'll probably need to just subclass <code>SystemUnderTest</code>
-like this example:</p>
-<pre><code class="language-csharp">&#xA;public class CustomSystem : SystemUnderTest&#xA;{&#xA;    public CustomSystem()&#xA;    {&#xA;        UseStartup&lt;Startup&gt;();&#xA;    }&#xA;&#xA;    public override T FromJson&lt;T&gt;(string json)&#xA;    {&#xA;        throw new NotImplementedException(&quot;Do your own Json serialization&quot;);&#xA;    }&#xA;&#xA;    public override string ToJson(object target)&#xA;    {&#xA;        throw new NotImplementedException(&quot;Do your own Json serialization&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
 
               </div>
 

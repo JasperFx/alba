@@ -62,7 +62,7 @@
       <div class="row">
           <!--left-->
           <div class="col-md-3" id="leftCol">
-            <h3>Alba 1.4.0</h3>
+            <h3>Alba 3.0.0</h3>
             <br />
 
             <ul class="nav nav-stacked affix" id="sidebar">
@@ -81,30 +81,84 @@
               <div id="main-pane">
                 <!--Title:Getting Started-->
 <!--Url:getting_started-->
-<p>Alba itself is just a class library. All you really need to do to start with Alba is to install the Nuget to your testing
-project for your application like so:</p>
+<div class="alert-info alert"><p><strong>Note!</strong>
+As of Alba 2.0+, there is now only the main Alba library and it only supports netcoreapp2.1+ applications. We have dropped all support for any version of ASP.Net Core before 2.1. The Alba.AspNetCore2 package has been deprecated, please switch to Alba proper.</p>
+</div>
+<p>Alba is a class library that you use in combination with unit testing tools like <a href="https://xunit.github.io">xUnit.Net</a> to author integration tests
+against ASP.Net Core HTTP endpoints that actually exercises the full application stack by running HTTP requests through your ASP.Net system in memory. As of version 2.0, Alba uses the built in <a href="https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-2.2">TestHost</a> internally
+to greatly improve its compatibility with many quirks of the ASP.Net Core model.</p>
+<div class="alert-warning alert"><p><strong>Note!</strong>
+With the advent of the Microsoft.AspNetCore.All metapackage that is part of the new official guidance, ASP.Net Core projects are <em>very</em> susceptible
+to Nuget version incompatibility issues and <a href="https://en.wikipedia.org/wiki/Dependency_hell">diamond dependency conflicts</a> at runtime. Please see the comments in the csproj file shown below for workarounds</p>
+</div>
+<p>To start using Alba to write integration tests, make sure you have a test project for your web application and add a Nuget reference to Alba. If your application is called &quot;WebApp,&quot; the csproj file should look like this (<strong>please note the comments for workarounds to possible Nuget issues</strong>):</p>
 <pre>
-PM> Install-Package Alba.AspNetCore2
+&lt;Project Sdk="Microsoft.NET.Sdk"&gt;
+  &lt;PropertyGroup&gt;
+    &lt;TargetFrameworks&gt;netcoreapp2.1;netcoreapp2.2&lt;/TargetFrameworks&gt;
+    &lt;DebugType&gt;portable&lt;/DebugType&gt;
+
+    &lt;!--THIS IS IMPORTANT TO PREVENT NUGET CONFLICTS BETWEEN ALBA
+        AND YOUR APPLICATION  --&gt;
+    &lt;TargetLatestRuntimePatch&gt;true&lt;/TargetLatestRuntimePatch&gt;
+  &lt;/PropertyGroup&gt;
+  &lt;ItemGroup&gt;
+    &lt;!-- The reference to your ASP.Net Core application project  --&gt;
+    &lt;ProjectReference Include="..\WebApp\WebApp.csproj" /&gt;
+  &lt;/ItemGroup&gt;
+  &lt;ItemGroup&gt;
+    &lt;PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" /&gt;
+    &lt;PackageReference Include="xunit" Version="2.4.0" /&gt;
+    &lt;PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" /&gt;
+
+    &lt;!-- This is still important to reference explicitly even though it's
+         a transitive dependency of your web application  --&gt;
+    &lt;PackageReference Include="Microsoft.AspNetCore.All" /&gt;
+  &lt;/ItemGroup&gt;
+
+
+&lt;/Project&gt;
 </pre>
-<p>Or, using paket:</p>
-<pre>
-paket add nuget Alba.AspNetCore2
-</pre>
-<p><strong>For ASP.Net Core 2.0, you'll need to instead use the Alba.AspNetCore2 Nuget.</strong> There are no other public API differences, but the internals of ASP.Net Core are
-different enough that we had to use a separate Nuget package.</p>
-<h2 id="how-does-alba-work">How does Alba work?</h2>
-<p>Alba is a test helper within some kind of unit testing tool (xUnit, NUnit, etc) that provides a little help to
-bootstrap an ASP.Net Core application in memory <em>the way that the application itself is configured</em> and to subsequently
-execute and verify HTTP requests through the full application's middleware pipeline.</p>
-<p>You can choose to spin up a Kestrel web host as part of bootstrapping a system with Alba, but the Alba <em>Scenario's</em> work
-by directly invoking the ASP.Net Core application's underlying <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware">RequestDelegate</a> to exercise the full stack of middleware <strong>without actually
-making an HTTP request to a running web server</strong>.</p>
+<p>In addition, another workaround to potential binding conflicts is to explicitly specify the version of <code>Microsoft.AspNetCore.All</code> in your test project.</p>
+<h2 id="writing-your-first-specification">Writing your first specification</h2>
+<p>For the purpose of this sample, let's say you generate a new web api project with the standard <code>dotnet new webapi</code> template. If you do that, you'll have this bootstrapping code in your <code>Program.Main()</code> method:</p>
+<pre><code>    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            CreateWebHostBuilder(args).Build().Run();
+        }
+
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =&gt;
+            WebHost.CreateDefaultBuilder(args)
+                .UseStartup&amp;lt;Startup&amp;gt;();
+    }
+</code></pre>
+<p>In this default setup, your application is more or less defined by the <code>Startup</code> class and there are no other customizations to the <code>WebHostBuilder</code>.</p>
+<p>Back in your test project, the easiest, and probably most common, usage of Alba is to send and verify JSON message bodies to <code>Controller</code> actions. To that end, let's say you have this very contrived controller and web models:</p>
+<pre><code class="language-csharp">&#xA;public enum OperationType&#xA;{&#xA;    Add,&#xA;    Subtract,&#xA;    Multiply,&#xA;    Divide&#xA;}&#xA;&#xA;public class OperationRequest&#xA;{&#xA;    public OperationType Type { get; set; }&#xA;    public int One { get; set; }&#xA;    public int Two { get; set; }&#xA;}&#xA;&#xA;public class OperationResult&#xA;{&#xA;    public int Answer { get; set; }&#xA;    public string Method { get; set; }&#xA;}&#xA;&#xA;&#xA;public class MathController : Controller&#xA;{&#xA;    [HttpGet(&quot;/math/add/{one}/{two}&quot;)]&#xA;    public OperationResult Add(int one, int two)&#xA;    {&#xA;        return new OperationResult&#xA;        {&#xA;            Answer = one &#x2B; two&#xA;        };&#xA;    }&#xA;&#xA;    [HttpPut(&quot;/math&quot;)]&#xA;    public OperationResult Put([FromBody]OperationRequest request)&#xA;    {&#xA;        switch (request.Type)&#xA;        {&#xA;            case OperationType.Add:&#xA;                return new OperationResult{Answer = request.One &#x2B; request.Two, Method = &quot;PUT&quot;};&#xA;            &#xA;            case OperationType.Multiply:&#xA;                return new OperationResult{Answer = request.One * request.Two, Method = &quot;PUT&quot;};&#xA;            &#xA;            case OperationType.Subtract:&#xA;                return new OperationResult{Answer = request.One - request.Two, Method = &quot;PUT&quot;};&#xA;            &#xA;            default:&#xA;                throw new ArgumentOutOfRangeException(nameof(request.Type));&#xA;        }&#xA;    }&#xA;    &#xA;    [HttpPost(&quot;/math&quot;)]&#xA;    public OperationResult Post([FromBody]OperationRequest request)&#xA;    {&#xA;        switch (request.Type)&#xA;        {&#xA;            case OperationType.Add:&#xA;                return new OperationResult{Answer = request.One &#x2B; request.Two, Method = &quot;POST&quot;};&#xA;                &#xA;            case OperationType.Multiply:&#xA;                return new OperationResult{Answer = request.One * request.Two, Method = &quot;POST&quot;};&#xA;            &#xA;            case OperationType.Subtract:&#xA;                return new OperationResult{Answer = request.One - request.Two, Method = &quot;POST&quot;};&#xA;            &#xA;            default:&#xA;                throw new ArgumentOutOfRangeException(nameof(request.Type));&#xA;        }&#xA;    }&#xA;    &#xA;</code></pre>
+<p>First off, let's test the GET method in that controller above by passing a url and verifying the results:</p>
+<pre><code class="language-csharp">&#xA;[Fact]&#xA;public async Task get_happy_path()&#xA;{&#xA;    // SystemUnderTest is from Alba&#xA;    // The &quot;Startup&quot; type would be the Startup class from your&#xA;    // web application. &#xA;    using (var system = SystemUnderTest.ForStartup&lt;WebApp.Startup&gt;())&#xA;    {&#xA;        // Issue a request, and check the results&#xA;        var result = await system.GetAsJson&lt;OperationResult&gt;(&quot;/math/add/3/4&quot;);&#xA;        &#xA;        result.Answer.ShouldBe(7);&#xA;    }&#xA;}&#xA;</code></pre>
+<p>So what just happened in that test? First off, the call to <code>SystemUnderTest.For&lt;T&gt;()</code> bootstraps your web application using the <code>Startup</code> type from your web application. Behind the scenes, Alba is using the same <code>WebHost.CreateDefaultBuilder().UseStartup&lt;T&gt;()</code> mechanism, but the difference is that Alba uses <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.testhost.testserver?view=aspnetcore-2.2">TestServer</a> as a replacement for Kestrel (i.e., Alba does not spin up Kestrel during testing so there's no port conflicts). See <a href="/alba/documentation/bootstrapping">Bootstrapping and Configuration</a> for more information on advanced configuration options.</p>
+<p>The call to <code>system.GetAsJson&lt;OperationResult&gt;(&quot;/math/add/3/4&quot;)</code> is performing these steps internally:</p>
+<ol>
+<li>Formulate an <a href="https://docs.microsoft.com/en-us/dotnet/api/system.web.httprequest?view=netframework-4.7.2">HttpRequest</a> object that will be passed to the application</li>
+<li>Execute the web request against your application, which will run all configured middleware and any MVC controller classes that match the requested url</li>
+<li>Assert that the response status code is <code>200 OK</code></li>
+<li>Read the raw JSON coming off the <a href="https://docs.microsoft.com/en-us/dotnet/api/system.web.httpresponse?view=netframework-4.7.2">HttpResponse</a></li>
+<li>Deserialize the raw JSON to the requested <code>OperationResult</code> type using the Json serialization settings of the running application</li>
+<li>Returns the resulting <code>OperationResult</code></li>
+</ol>
+<p>Alright then, let's try posting JSON in and examining the JSON out:</p>
+<pre><code class="language-csharp">&#xA;[Fact]&#xA;public async Task post_and_expect_response()&#xA;{&#xA;    using (var system = SystemUnderTest.ForStartup&lt;WebApp.Startup&gt;())&#xA;    {&#xA;        var request = new OperationRequest&#xA;        {&#xA;            Type = OperationType.Multiply,&#xA;            One = 3,&#xA;            Two = 4&#xA;        };&#xA;&#xA;        var result = await system.PostJson(request, &quot;/math&quot;)&#xA;            .Receive&lt;OperationResult&gt;();&#xA;        &#xA;        result.Answer.ShouldBe(12);&#xA;        result.Method.ShouldBe(&quot;POST&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
+<p>It's a little more complicated, but the same goal is realized here. Allow the test author to work in terms of the application model objects while still exercising the entire HTTP middleware stack.</p>
+<p>Don't stop here though, Alba also gives you the ability to declaratively assert on elements of the <code>HttpResponse</code> like expected header values, status codes, and assertions against the response body. In addition, Alba provides a lot of helper facilities to work with the raw <code>HttpResponse</code> data.</p>
 <h2 id="testing-hello-world">Testing Hello, World</h2>
 <p>Now let's say that you built the obligatory hello world application for ASP.Net Core shown below:</p>
 <pre><code class="language-csharp">&#xA;public class Startup&#xA;{&#xA;    public void Configure(IApplicationBuilder builder)&#xA;    {&#xA;        builder.Run(context =&gt;&#xA;        {&#xA;            context.Response.Headers[&quot;content-type&quot;] = &quot;text/plain&quot;;&#xA;            return context.Response.WriteAsync(&quot;Hello, World!&quot;);&#xA;        });&#xA;    }&#xA;}&#xA;</code></pre>
 <p>We can now use Alba to declare an integration test for our Hello, World application within an <a href="http://xunit.github.io/">xUnit</a>
 testing project:</p>
-<pre><code class="language-csharp">&#xA;[Fact]&#xA;public Task should_say_hello_world()&#xA;{&#xA;    using (var system = SystemUnderTest.ForStartup&lt;Startup&gt;())&#xA;    {&#xA;        // This runs an HTTP request and makes an assertion&#xA;        // about the expected content of the response&#xA;        return system.Scenario(_ =&gt;&#xA;        {&#xA;            _.Get.Url(&quot;/&quot;);&#xA;            _.ContentShouldBe(&quot;Hello, World!&quot;);&#xA;            _.StatusCodeShouldBeOk();&#xA;        });&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;[Fact]&#xA;public async Task should_say_hello_world()&#xA;{&#xA;    using (var system = SystemUnderTest.ForStartup&lt;Startup&gt;())&#xA;    {&#xA;        // This runs an HTTP request and makes an assertion&#xA;        // about the expected content of the response&#xA;        await system.Scenario(_ =&gt;&#xA;        {&#xA;            _.Get.Url(&quot;/&quot;);&#xA;            _.ContentShouldBe(&quot;Hello, World!&quot;);&#xA;            _.StatusCodeShouldBeOk();&#xA;        });&#xA;    }&#xA;}&#xA;</code></pre>
 <p>The sample up above bootstraps the application defined by our <code>Startup</code> and executes a <em>Scenario</em> against the running system.
 A Scenario in Alba defines how the HTTP request should be constructed (the request body, headers, url) and optionally gives you
 the ability to express assertions against the expected HTTP response.</p>

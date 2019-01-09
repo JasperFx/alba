@@ -62,7 +62,7 @@
       <div class="row">
           <!--left-->
           <div class="col-md-3" id="leftCol">
-            <h3>Alba 1.4.0</h3>
+            <h3>Alba 3.0.0</h3>
             <br />
 
             <ul class="nav nav-stacked affix" id="sidebar">
@@ -81,7 +81,7 @@
               <div id="main-pane">
                 <!--title: Sending Http Form Data-->
 <p>Posting HTTP form data in the request can be done with the extension method shown below:</p>
-<pre><code class="language-csharp">&#xA;public Task write_form_data(ISystemUnderTest system)&#xA;{&#xA;    var form1 = new Dictionary&lt;string, string&gt;&#xA;    {&#xA;        [&quot;a&quot;] = &quot;what?&quot;,&#xA;        [&quot;b&quot;] = &quot;now?&quot;,&#xA;        [&quot;c&quot;] = &quot;really?&quot;&#xA;    };&#xA;&#xA;    return system.Scenario(_ =&gt;&#xA;    {&#xA;        // This writes the dictionary values to the HTTP&#xA;        // request as form data, and sets the content-length&#xA;        // header as well as setting the content-type&#xA;        // header to application/x-www-form-urlencoded&#xA;        _.Context.WriteFormData(form1);&#xA;    });&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public Task write_form_data(ISystemUnderTest system)&#xA;{&#xA;    var form1 = new Dictionary&lt;string, string&gt;&#xA;    {&#xA;        [&quot;a&quot;] = &quot;what?&quot;,&#xA;        [&quot;b&quot;] = &quot;now?&quot;,&#xA;        [&quot;c&quot;] = &quot;really?&quot;&#xA;    };&#xA;&#xA;    return system.Scenario(_ =&gt;&#xA;    {&#xA;        // This writes the dictionary values to the HTTP&#xA;        // request as form data, and sets the content-length&#xA;        // header as well as setting the content-type&#xA;        // header to application/x-www-form-urlencoded&#xA;        _.WriteFormData(form1);&#xA;    });&#xA;}&#xA;</code></pre>
 <p>There's a second overload that attempts to use an object and its properties to populate the form data:</p>
 <pre><code class="language-csharp">&#xA;[Fact]&#xA;public async Task can_bind_to_form_data()&#xA;{&#xA;&#xA;    using (var system = SystemUnderTest.ForStartup&lt;Startup&gt;())&#xA;    {&#xA;&#xA;        var input = new InputModel {&#xA;            One = &quot;one&quot;,&#xA;            Two = &quot;two&quot;,&#xA;            Three = &quot;three&quot;&#xA;        };&#xA;&#xA;        await system.Scenario(_ =&gt;&#xA;        {&#xA;            _.Post.FormData(input)&#xA;                .ToUrl(&quot;/gateway/insert&quot;);&#xA;        });&#xA;&#xA;&#xA;        GatewayController.LastInput.ShouldNotBeNull();&#xA;&#xA;        GatewayController.LastInput.One.ShouldBe(&quot;one&quot;);&#xA;        GatewayController.LastInput.Two.ShouldBe(&quot;two&quot;);&#xA;        GatewayController.LastInput.Three.ShouldBe(&quot;three&quot;);&#xA;    }&#xA;}&#xA;&#xA;</code></pre>
 <p>Do note that this only adds first level properties, so if you need to deeper accessors like add &quot;Prop1.Prop2.Prop3,&quot;
