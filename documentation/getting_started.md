@@ -60,7 +60,7 @@ For the purpose of this sample, let's say you generate a new web api project wit
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup&lt;Startup&gt;();
+                .UseStartup<Startup>();
     }
 ```
 
