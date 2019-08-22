@@ -4,9 +4,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Net.Http.Headers;
+
+#if !NETCOREAPP3_0
+using Microsoft.AspNetCore.Http.Internal;
+#endif
 
 namespace Alba.Stubs
 {
@@ -20,10 +23,14 @@ namespace Alba.Stubs
 
             _feature = context.Features.Get<IHttpResponseFeature>();
 
+#if NETCOREAPP3_0
+            Cookies = new StubResponseCookieCollection();
+#else
             Cookies = new ResponseCookies(Headers, new DefaultObjectPool<StringBuilder>(new DefaultPooledObjectPolicy<StringBuilder>()));
+#endif
         }
-        
-        
+
+
 
         public override void OnStarting(Func<object, Task> callback, object state)
         {

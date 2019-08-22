@@ -6,9 +6,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.Extensions.Primitives;
 using Microsoft.Net.Http.Headers;
+
+#if !NETCOREAPP3_0
+using Microsoft.AspNetCore.Http.Internal;
+#endif
 
 namespace Alba.Stubs
 {
@@ -44,7 +47,11 @@ namespace Alba.Stubs
 
         public override string Protocol { get; set; }
         public override IHeaderDictionary Headers { get; } = new HeaderDictionary();
+#if NETCOREAPP3_0
+        public override IRequestCookieCollection Cookies { get; set; } = new StubRequestCookieCollection();
+#else
         public override IRequestCookieCollection Cookies { get; set; } = new RequestCookieCollection();
+#endif
 
         public override long? ContentLength
         {

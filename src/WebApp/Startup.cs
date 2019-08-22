@@ -30,22 +30,26 @@ namespace WebApp
         {
             services.AddTransient<IWidget, GreenWidget>();
 
-            services.AddMvc(config =>
+            var mvcBuilder = services.AddMvc(config =>
             {
                 config.RespectBrowserAcceptHeader = true;
                 config.InputFormatters.Clear();
                 config.InputFormatters.Add(new TextInputFormatter());
                 config.InputFormatters.Add(new JsonInputFormatter());
-                
+
+#if NETCOREAPP3_0
+                config.EnableEndpointRouting = false;
+#endif
             });
+            
+#if NETCOREAPP3_0
+            mvcBuilder.AddNewtonsoftJson();
+#endif
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
-
             app.UseStaticFiles(new StaticFileOptions
             {
                 ServeUnknownFileTypes = true,

@@ -98,9 +98,13 @@ namespace Alba.Testing.Samples
                 // The ReadAllText() extension method is from Baseline
 
 
+                // TestServer 3.0 doesn't really work with overridden response streams,
+                // so we can't rewind the stream here.
+#if !NETCOREAPP3_0
                 var body = response.Context.Response.Body;
                 body.Position = 0; // need to rewind it because we read it above
                 body.ReadAllText().ShouldBe("Hello, World!");
+#endif
             }
         }
         // ENDSAMPLE

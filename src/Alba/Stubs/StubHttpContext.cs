@@ -4,9 +4,12 @@ using System.IO;
 using System.Security.Claims;
 using System.Threading;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
+
+#if !NETCOREAPP3_0
 using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Http.Internal;
-using Microsoft.AspNetCore.Http.Features;
+#endif
 
 namespace Alba.Stubs
 {
@@ -20,7 +23,7 @@ namespace Alba.Stubs
         public StubHttpContext(IFeatureCollection features, IServiceProvider services)
         {
             Features = features;
-            
+
             features.Set<IHttpResponseFeature>(new HttpResponseFeature
             {
                 Body = new MemoryStream()
@@ -34,7 +37,9 @@ namespace Alba.Stubs
 
             Cancellation = new CancellationTokenSource();
 
+#if !NETCOREAPP3_0
             Authentication = new StubAuthenticationManager(this);
+#endif
         }
 
         public CancellationTokenSource Cancellation { get; }
@@ -53,19 +58,24 @@ namespace Alba.Stubs
 
         public override WebSocketManager WebSockets
         {
-            get
-            {
-                throw new NotSupportedException();
-            }
+            get { throw new NotSupportedException(); }
         }
 
 
+#if !NETCOREAPP3_0
         // TODO -- need to see how this puppy is used
         public override AuthenticationManager Authentication { get; }
+#endif
+
         public override ClaimsPrincipal User { get; set; } = new ClaimsPrincipal();
 
 
+#if !NETCOREAPP3_0
         public override IDictionary<object, object> Items { get; set; } = new ItemsDictionary();
+#else
+        public override IDictionary<object, object> Items { get; set; } = new ItemsDictionary<object, object>();
+#endif
+        
 
         public sealed override IServiceProvider RequestServices { get; set; }
 

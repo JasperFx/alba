@@ -13,8 +13,8 @@ namespace Alba.Testing.Acceptance
 
             router.Handlers["/memory/hello"] = c =>
             {
-                c.Response.Write("hello from the in memory host");
                 c.Response.ContentType("text/plain");
+                c.Response.Write("hello from the in memory host");
 
                 return Task.CompletedTask;
             };
