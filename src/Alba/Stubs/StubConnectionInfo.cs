@@ -19,9 +19,6 @@ namespace Alba.Stubs
         public override IPAddress LocalIpAddress { get; set; }
         public override int LocalPort { get; set; }
         public override X509Certificate2 ClientCertificate { get; set; }
-
-#if NETSTANDARD2_0
         public override string Id { get; set; }
-#endif
     }
 }

@@ -38,7 +38,6 @@ namespace Alba.Stubs
             throw new NotImplementedException();
         }
 
-#if NETSTANDARD2_0
         public Task LoadAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             throw new NotImplementedException();
@@ -48,7 +47,6 @@ namespace Alba.Stubs
         {
             throw new NotImplementedException();
         }
-#endif
 
         public bool IsAvailable { get; }
         public string Id { get; }

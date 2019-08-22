@@ -1,6 +1,6 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.1;netcoreapp2.2</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.1;netcoreapp2.2;netcoreapp3.0</TargetFrameworks>
     <DebugType>portable</DebugType>
     <AssemblyName>Alba.Testing</AssemblyName>
     <PackageId>Alba.Testing</PackageId>
@@ -13,6 +13,7 @@
     <ProjectReference Include="..\Alba\Alba.csproj" />
     <ProjectReference Include="..\WebApp\WebApp.csproj" />
   </ItemGroup>
+    
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
     <PackageReference Include="NSubstitute" Version="3.1.0" />
@@ -22,10 +23,11 @@
     <PackageReference Include="Microsoft.DotNet.InternalAbstractions" Version="1.0.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
 
+  </ItemGroup>
+    
+  <ItemGroup Condition="'$(TargetFramework)' != 'netcoreapp3.0'">
     <!-- This is still important to reference explicitly even though it's
          a transitive dependency of your web application  -->
     <PackageReference Include="Microsoft.AspNetCore.All" />
   </ItemGroup>
-
-
 </Project>

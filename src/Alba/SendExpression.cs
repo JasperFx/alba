@@ -1,14 +1,12 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using Alba.Stubs;
 using Baseline;
-using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Primitives;
+
+#if !NETCOREAPP3_0
+using Microsoft.AspNetCore.Http.Internal;
+#endif
 
 namespace Alba
 {

@@ -4,14 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
-using System.Reflection;
-using System.Threading.Tasks;
 using Alba.Assertions;
-using Alba.Stubs;
 using Baseline;
-using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Alba
 {
@@ -63,7 +58,11 @@ namespace Alba
             ConfigureHttpContext(c =>
             {
                 c.Request.Body = new MemoryStream();
+                // For Core 3.0 TestServer, replacing the response stream causes issues. For earlier versions,
+                // _not_ replacing it causes issues.
+#if !NETCOREAPP3_0
                 c.Response.Body = new MemoryStream();
+#endif
             });
         }
 

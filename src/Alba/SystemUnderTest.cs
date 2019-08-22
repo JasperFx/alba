@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Alba.Stubs;
 using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
@@ -30,6 +31,9 @@ namespace Alba
             builder.ConfigureServices(_ => { _.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); });
 
             Server = new TestServer(builder);
+#if NETCOREAPP3_0
+            Server.AllowSynchronousIO = true;
+#endif
 
 
             var settings = Server.Host.Services.GetService<JsonSerializerSettings>();
@@ -39,7 +43,7 @@ namespace Alba
             if (applicationAssembly != null) manager?.ApplicationParts.Add(new AssemblyPart(applicationAssembly));
         }
 
-         
+
         /// <summary>
         /// The underlying TestServer for additional functionality
         /// </summary>
@@ -142,6 +146,7 @@ namespace Alba
         {
             var builder = WebHost.CreateDefaultBuilder();
             builder.UseStartup<T>();
+            
             if (configure != null) builder = configure(builder);
 
             builder.UseContentRoot(rootPath ?? DirectoryFinder.FindParallelFolder(typeof(T).Assembly.GetName().Name) ??
