@@ -64,6 +64,7 @@ namespace Alba.Stubs
 
 #if !NETCOREAPP3_0
         // TODO -- need to see how this puppy is used
+        [Obsolete("This is obsolete and will be removed in a future version. The recommended alternative is to use Microsoft.AspNetCore.Authentication.AuthenticationHttpContextExtensions. See https://go.microsoft.com/fwlink/?linkid=845470.")]
         public override AuthenticationManager Authentication { get; }
 #endif
 
