@@ -41,19 +41,6 @@ task :version do
 	:informational_version => asm_version
 
   }
-
-  puts "Writing src/CommonAssemblyInfo.cs..."
-	File.open('src/CommonAssemblyInfo.cs', 'w') do |file|
-		file.write "using System.Reflection;\n"
-		file.write "using System.Runtime.InteropServices;\n"
-		file.write "[assembly: AssemblyDescription(\"#{options[:description]}\")]\n"
-		file.write "[assembly: AssemblyProduct(\"#{options[:product_name]}\")]\n"
-		file.write "[assembly: AssemblyCopyright(\"#{options[:copyright]}\")]\n"
-		file.write "[assembly: AssemblyTrademark(\"#{options[:trademark]}\")]\n"
-		file.write "[assembly: AssemblyVersion(\"#{options[:version]}\")]\n"
-		file.write "[assembly: AssemblyFileVersion(\"#{options[:file_version]}\")]\n"
-		file.write "[assembly: AssemblyInformationalVersion(\"#{options[:informational_version]}\")]\n"
-	end
 end
 
 
