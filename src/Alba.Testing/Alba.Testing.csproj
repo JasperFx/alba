@@ -6,8 +6,9 @@
     <PackageId>Alba.Testing</PackageId>
     
     <!--THIS IS IMPORTANT TO PREVENT NUGET CONFLICTS BETWEEN ALBA
-        AND YOUR APPLICATION  -->
+        AND YOUR APPLICATION 
     <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
+    -->
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Alba\Alba.csproj" />
