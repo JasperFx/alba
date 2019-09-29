@@ -4,11 +4,7 @@
     <DebugType>portable</DebugType>
     <AssemblyName>Alba.Testing</AssemblyName>
     <PackageId>Alba.Testing</PackageId>
-    
-    <!--THIS IS IMPORTANT TO PREVENT NUGET CONFLICTS BETWEEN ALBA
-        AND YOUR APPLICATION 
-    <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
-    -->
+      
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Alba\Alba.csproj" />
@@ -30,5 +26,9 @@
     <!-- This is still important to reference explicitly even though it's
          a transitive dependency of your web application  -->
     <PackageReference Include="Microsoft.AspNetCore.All" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
+    <ProjectReference Include="..\WebApiAspNetCore3\WebApiAspNetCore3.csproj" />
   </ItemGroup>
 </Project>

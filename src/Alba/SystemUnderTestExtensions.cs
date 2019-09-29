@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 #if NETSTANDARD2_0
 
@@ -134,6 +135,26 @@ namespace Alba
                 var response = await _system.Scenario(_configure);
                 return response.ResponseBody.ReadAsJson<TResponse>();
             }
+        }
+
+        /// <summary>
+        /// Shortcut to create an Alba SystemUnderTest for the configured IWebHostBuilder
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        public static ISystemUnderTest ToSystemUnderTest(this IWebHostBuilder builder)
+        {
+            return new SystemUnderTest(builder);
+        }
+        
+        /// <summary>
+        /// Shortcut to create an Alba SystemUnderTest for the configured IWebHostBuilder
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        public static ISystemUnderTest ToSystemUnderTest(this IHostBuilder builder)
+        {
+            return new SystemUnderTest(builder);
         }
     }
 }

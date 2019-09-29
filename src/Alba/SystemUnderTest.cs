@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -12,6 +13,7 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 
 namespace Alba
@@ -21,10 +23,30 @@ namespace Alba
     /// </summary>
     public class SystemUnderTest : ISystemUnderTest
     {
+        
         private Func<HttpContext, Task> _afterEach = c => Task.CompletedTask;
 
 
         private Func<HttpContext, Task> _beforeEach = c => Task.CompletedTask;
+
+        public SystemUnderTest(IHostBuilder builder, Assembly applicationAssembly = null)
+        {
+            builder.ConfigureServices(_ => { _.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); });
+
+            var host = builder.Start();
+
+            Server = host.GetTestServer();
+#if NETCOREAPP3_0
+            Server.AllowSynchronousIO = true;
+#endif
+
+
+            var settings = Server.Host.Services.GetService<JsonSerializerSettings>();
+            if (settings != null) JsonSerializerSettings = settings;
+
+            var manager = Server.Host.Services.GetService<ApplicationPartManager>();
+            if (applicationAssembly != null) manager?.ApplicationParts.Add(new AssemblyPart(applicationAssembly));
+        }
 
         public SystemUnderTest(IWebHostBuilder builder, Assembly applicationAssembly = null)
         {

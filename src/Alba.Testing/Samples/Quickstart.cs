@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
+using WebApp;
 using Xunit;
 
 namespace Alba.Testing.Samples
@@ -133,6 +134,7 @@ namespace Alba.Testing.Samples
             }
         }
 
+
         // SAMPLE: SimplisticSystemUnderTest
         [Fact]
         public async Task the_home_page_does_not_blow_up()
@@ -228,6 +230,8 @@ namespace Alba.Testing.Samples
         }
     }
     // ENDSAMPLE
+    
+    
 
 
 

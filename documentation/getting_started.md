@@ -14,6 +14,23 @@ With the advent of the Microsoft.AspNetCore.All metapackage that is part of the 
 to Nuget version incompatibility issues and [diamond dependency conflicts](https://en.wikipedia.org/wiki/Dependency_hell) at runtime. Please see the comments in the csproj file shown below for workarounds
 <[/warning]>
 
+## ASP.Net Core 3.0
+
+If you start a new ASP.Net Core 3.0 project with `dotnet new webapi`, you'll get this code in your `Program` file:
+
+<[sample:WebApi3StandardTemplate]>
+
+To connect that to Alba, create a `SystemUnderTest` like this using the definition of your `IHostBuilder`:
+
+<[sample:Quickstart3]>
+
+In reality though, you probably want to check out the <[linkto:documentation/xunit]> to do it a little more efficiently.
+
+
+
+
+## ASP.Net Core 2.*
+
 To start using Alba to write integration tests, make sure you have a test project for your web application and add a Nuget reference to Alba. If your application is called "WebApp," the csproj file should look like this (**please note the comments for workarounds to possible Nuget issues**):
 
 <pre>
