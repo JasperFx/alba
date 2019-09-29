@@ -146,7 +146,8 @@ namespace Alba
         {
             return new SystemUnderTest(builder);
         }
-        
+
+#if NETCOREAPP3_0
         /// <summary>
         /// Shortcut to create an Alba SystemUnderTest for the configured IWebHostBuilder
         /// </summary>
@@ -156,5 +157,6 @@ namespace Alba
         {
             return new SystemUnderTest(builder);
         }
+#endif
     }
 }

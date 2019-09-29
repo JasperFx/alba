@@ -8,6 +8,7 @@ using Alba.Stubs;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
@@ -28,25 +29,31 @@ namespace Alba
 
 
         private Func<HttpContext, Task> _beforeEach = c => Task.CompletedTask;
-
+#if NETCOREAPP3_0
         public SystemUnderTest(IHostBuilder builder, Assembly applicationAssembly = null)
         {
-            builder.ConfigureServices(_ => { _.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); });
+            builder
+                .ConfigureServices(_ =>
+                {
+                    _.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+                    _.AddSingleton<IServer>(x => new TestServer(x));
+                });
 
             var host = builder.Start();
 
             Server = host.GetTestServer();
-#if NETCOREAPP3_0
+
             Server.AllowSynchronousIO = true;
-#endif
 
 
-            var settings = Server.Host.Services.GetService<JsonSerializerSettings>();
+
+            var settings = host.Services.GetService<JsonSerializerSettings>();
             if (settings != null) JsonSerializerSettings = settings;
 
-            var manager = Server.Host.Services.GetService<ApplicationPartManager>();
+            var manager = host.Services.GetService<ApplicationPartManager>();
             if (applicationAssembly != null) manager?.ApplicationParts.Add(new AssemblyPart(applicationAssembly));
         }
+#endif
 
         public SystemUnderTest(IWebHostBuilder builder, Assembly applicationAssembly = null)
         {
