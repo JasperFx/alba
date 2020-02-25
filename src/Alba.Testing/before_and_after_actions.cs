@@ -56,6 +56,9 @@ namespace Alba.Testing
         {
             using (var system = new SystemUnderTest(EmptyHostBuilder()))
             {
+                // Quick check
+                system.Services.ShouldNotBeNull();
+                
                 int count = 0;
 
                 system.BeforeEach(c =>

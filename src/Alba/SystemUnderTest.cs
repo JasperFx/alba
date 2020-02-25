@@ -40,6 +40,7 @@ namespace Alba
                 });
 
             var host = builder.Start();
+            Services = host.Services;
 
             Server = host.GetTestServer();
 
@@ -60,6 +61,8 @@ namespace Alba
             builder.ConfigureServices(_ => { _.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); });
 
             Server = new TestServer(builder);
+            Services = Server.Host.Services;
+            
 #if NETCOREAPP3_0
             Server.AllowSynchronousIO = true;
 #endif
@@ -81,7 +84,7 @@ namespace Alba
         /// <summary>
         /// The root IoC container of the running application
         /// </summary>
-        public IServiceProvider Services => Server.Host.Services;
+        public IServiceProvider Services { get; }
 
         /// <summary>
         ///     Governs the Json serialization of the out of the box SystemUnderTest.
