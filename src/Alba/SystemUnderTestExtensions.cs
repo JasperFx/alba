@@ -40,9 +40,9 @@ namespace Alba
             HttpContext context = null;
             try
             {
-                context = await system.Invoke(async c =>
+                context = await system.Invoke(c =>
                 {
-                    await system.BeforeEach(c);
+                    system.BeforeEach(c).GetAwaiter().GetResult();
 
                     c.Request.Body.Position = 0;
 

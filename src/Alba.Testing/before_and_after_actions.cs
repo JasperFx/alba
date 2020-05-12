@@ -156,21 +156,26 @@ namespace Alba.Testing
         [Fact]
         public async Task authentication_with_long_running_before()
         {
-            var authenticatedUser = new ClaimsPrincipal(new ClaimsIdentity(null, "Basic"));
+            
 
             //This doesn't
             using (var system = new SystemUnderTest(AuthenticatedHostBuilder())
-                .BeforeEachAsync(c => Task.Run(() =>
-                {
-                    _output.WriteLine("Start BeforeEach");
-                    Thread.Sleep(100);
-                    c.User = authenticatedUser;
-                    _output.WriteLine("End BeforeEach");
-                })))
+                .BeforeEachAsync(doSecurity))
             {
                 var result = await system.Scenario(x => x.Get.Url("/"));
                 result.Context.Response.StatusCode.ShouldBe(200);
             }
+        }
+
+        private async Task doSecurity(HttpContext context)
+        {
+            var authenticatedUser = new ClaimsPrincipal(new ClaimsIdentity(null, "Basic"));
+            
+            _output.WriteLine("Start BeforeEach");
+            await Task.Delay(100);
+            //Thread.Sleep(100);
+            context.User = authenticatedUser;
+            _output.WriteLine("End BeforeEach");
         }
     }
 }
