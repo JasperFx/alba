@@ -145,7 +145,12 @@ namespace Alba
         {
             Configure = c => c.WriteFormData(input);
         }
-        
+
+        public void WriteMultipartFormData(Dictionary<string, string> input, string filePath, string name)
+        {
+            Configure = c => c.WriteMultipartFormData(input, filePath, name);
+        }
+
         SendExpression IUrlExpression.Action<T>(Expression<Action<T>> expression)
         {
             Configure = context => context.RelativeUrl(_system.Urls.UrlFor(expression, context.Request.Method));

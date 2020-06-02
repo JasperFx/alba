@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using Alba.Stubs;
 using Baseline;
 using Shouldly;
@@ -28,6 +30,21 @@ namespace Alba.Testing
 
         }
 
+        [Fact]
+        public void round_trip_writing_file()
+        {
+            var form1 = new Dictionary<string, string> { ["a"] = "what?" };
+            var projectDirectory = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
+            
+            var context = StubHttpContext.Empty();
+            
+            context.WriteMultipartFormData(form1, Path.Combine(projectDirectory, "IFormFile.txt"), "document");
 
+            context.Request.Form.Files[0].ContentDisposition
+                .ShouldBe("form-data; filename=IFormFile.txt; name=document");
+
+            context.Request.Form.Files[0].ContentType
+                .ShouldBe("text/plain");
+        }
     }
 }
