@@ -11,10 +11,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
 namespace Alba
@@ -48,7 +50,8 @@ namespace Alba
 
 
 
-            var settings = host.Services.GetService<JsonSerializerSettings>();
+            var options = host.Services.GetService<IOptions<MvcNewtonsoftJsonOptions>>()?.Value;
+            var settings = options?.SerializerSettings;
             if (settings != null) JsonSerializerSettings = settings;
 
             var manager = host.Services.GetService<ApplicationPartManager>();
