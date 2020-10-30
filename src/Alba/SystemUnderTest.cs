@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq.Expressions;
@@ -29,6 +29,9 @@ namespace Alba
         
         private Func<HttpContext, Task> _afterEach = c => Task.CompletedTask;
 
+#if NETCOREAPP3_0
+        private IHost _host;
+#endif
 
         private Func<HttpContext, Task> _beforeEach = c => Task.CompletedTask;
 #if NETCOREAPP3_0
@@ -41,20 +44,20 @@ namespace Alba
                     _.AddSingleton<IServer>(x => new TestServer(x));
                 });
 
-            var host = builder.Start();
-            Services = host.Services;
+            _host = builder.Start();
+            Services = _host.Services;
 
-            Server = host.GetTestServer();
+            Server = _host.GetTestServer();
 
             Server.AllowSynchronousIO = true;
 
 
 
-            var options = host.Services.GetService<IOptions<MvcNewtonsoftJsonOptions>>()?.Value;
+            var options = _host.Services.GetService<IOptions<MvcNewtonsoftJsonOptions>>()?.Value;
             var settings = options?.SerializerSettings;
             if (settings != null) JsonSerializerSettings = settings;
 
-            var manager = host.Services.GetService<ApplicationPartManager>();
+            var manager = _host.Services.GetService<ApplicationPartManager>();
             if (applicationAssembly != null) manager?.ApplicationParts.Add(new AssemblyPart(applicationAssembly));
         }
 #endif
@@ -156,6 +159,10 @@ namespace Alba
         public void Dispose()
         {
             Server.Dispose();
+
+#if NETCOREAPP3_0
+            _host?.Dispose();
+#endif
         }
 
         /// <summary>
