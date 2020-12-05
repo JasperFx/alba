@@ -24,8 +24,8 @@ namespace WebApp.Controllers
         public int Answer { get; set; }
         public string Method { get; set; }
     }
-    
-    
+
+    [ApiController]
     public class MathController : Controller
     {
         [HttpGet("/math/add/{one}/{two}")]

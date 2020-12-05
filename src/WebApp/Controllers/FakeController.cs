@@ -4,9 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApp.Controllers
 {
+    [ApiController]
+    [Route("[controller]")]
     public class FakeController : ControllerBase
     {
-        [HttpGet("/fake/{status}")]
+        [HttpGet("{status}")]
         public string Fake(string status)
         {
             switch (status)

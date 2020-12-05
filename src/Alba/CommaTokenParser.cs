@@ -4,7 +4,7 @@ namespace Alba
 {
     internal class CommaTokenParser
     {
-        private readonly List<string> _tokens = new List<string>();
+        private readonly List<string> _tokens = new();
         private List<char> _characters;
         private IMode _mode;
 

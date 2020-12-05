@@ -13,10 +13,7 @@ namespace Alba.Testing
     public class CrudeRouter : IUrlLookup
     {
         public readonly LightweightCache<string, RequestDelegate> Handlers = new LightweightCache<string, RequestDelegate>(
-            path =>
-            {
-                throw new NotImplementedException();
-            });
+            path => throw new NotImplementedException());
 
 
         public Task Invoke(HttpContext context)

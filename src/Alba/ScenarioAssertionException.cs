@@ -6,15 +6,10 @@ using System.Text;
 using Baseline;
 using Microsoft.AspNetCore.Http;
 
-#if NET46
-using System.Runtime.Serialization;
-#endif
 
 namespace Alba
 {
-#if NET46
-    [Serializable]
-#endif
+
     public class ScenarioAssertionException : Exception
     {
         private readonly IList<string> _messages = new List<string>();
@@ -23,12 +18,6 @@ namespace Alba
         {
         }
 
-#if NET46
-        protected ScenarioAssertionException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
-#endif
         /// <summary>
         /// Add an assertion failure message
         /// </summary>

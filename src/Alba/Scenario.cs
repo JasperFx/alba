@@ -54,16 +54,6 @@ namespace Alba
         {
             _system = system;
             Body = new HttpRequestBody(system, this);
-            
-            ConfigureHttpContext(c =>
-            {
-                c.Request.Body = new MemoryStream();
-                // For Core 3.0 TestServer, replacing the response stream causes issues. For earlier versions,
-                // _not_ replacing it causes issues.
-#if !NETCOREAPP3_0
-                c.Response.Body = new MemoryStream();
-#endif
-            });
         }
 
         /// <summary>

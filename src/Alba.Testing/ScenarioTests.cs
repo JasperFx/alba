@@ -13,7 +13,7 @@ namespace Alba.Testing
 
 
         [Fact]
-        public Task invoke_a_simple_string_endpoint()
+        public async Task invoke_a_simple_string_endpoint()
         {
             router.Handlers["/memory/hello"] = c =>
             {
@@ -21,7 +21,7 @@ namespace Alba.Testing
                 return Task.CompletedTask;
             };
 
-            return host.Scenario(_ =>
+            await host.Scenario(_ =>
             {
                 _.Get.Url("/memory/hello");
                 _.ContentShouldBe("hello from the in memory host");
@@ -70,7 +70,7 @@ namespace Alba.Testing
         }
 
         [Fact]
-        public Task using_scenario_with_string_text_and_relative_url()
+        public async Task using_scenario_with_string_text_and_relative_url()
         {
             router.Handlers["/memory/hello"] = c =>
             {
@@ -78,11 +78,15 @@ namespace Alba.Testing
                 return Task.CompletedTask;
             };
 
-            return host.Scenario(x =>
+            var res = await host.Scenario(x =>
             {
                 x.Get.Url("/memory/hello");
+                x.StatusCodeShouldBeOk();
+                
                 x.ContentShouldBe("hello from the in memory host");
             });
+
+            //var ting = res.ResponseBody.ReadAsText();
         }
 
 

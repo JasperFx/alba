@@ -1,4 +1,3 @@
-#if NETCOREAPP3_0
 using Microsoft.AspNetCore.Http;
 
 namespace Alba.Stubs
@@ -22,4 +21,4 @@ namespace Alba.Stubs
         }
     }
 }
-#endif
+

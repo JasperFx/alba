@@ -8,9 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-#if NETSTANDARD2_0
 
-#endif
 
 namespace Alba
 {
@@ -147,7 +145,7 @@ namespace Alba
             return new SystemUnderTest(builder);
         }
 
-#if NETCOREAPP3_0
+
         /// <summary>
         /// Shortcut to create an Alba SystemUnderTest for the configured IWebHostBuilder
         /// </summary>
@@ -157,6 +155,6 @@ namespace Alba
         {
             return new SystemUnderTest(builder);
         }
-#endif
+
     }
 }

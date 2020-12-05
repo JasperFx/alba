@@ -31,7 +31,7 @@ namespace Alba
 
 
         private Func<HttpContext, Task> _beforeEach = c => Task.CompletedTask;
-#if NETCOREAPP3_0
+
         public SystemUnderTest(IHostBuilder builder, Assembly applicationAssembly = null)
         {
             builder
@@ -57,7 +57,7 @@ namespace Alba
             var manager = host.Services.GetService<ApplicationPartManager>();
             if (applicationAssembly != null) manager?.ApplicationParts.Add(new AssemblyPart(applicationAssembly));
         }
-#endif
+
 
         public SystemUnderTest(IWebHostBuilder builder, Assembly applicationAssembly = null)
         {
@@ -65,11 +65,8 @@ namespace Alba
 
             Server = new TestServer(builder);
             Services = Server.Host.Services;
-            
-#if NETCOREAPP3_0
-            Server.AllowSynchronousIO = true;
-#endif
 
+            Server.AllowSynchronousIO = true;
 
             var settings = Server.Host.Services.GetService<JsonSerializerSettings>();
             if (settings != null) JsonSerializerSettings = settings;
