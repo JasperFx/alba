@@ -38,12 +38,12 @@ namespace Alba.Stubs
             throw new NotImplementedException();
         }
 
-        public Task LoadAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public Task LoadAsync(CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
-        public Task CommitAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public Task CommitAsync(CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }

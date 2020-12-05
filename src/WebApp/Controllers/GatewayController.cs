@@ -3,16 +3,16 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApp.Controllers
 {
+    [ApiController]
     [Route("[controller]/[action]")]
     public class GatewayController : Controller
     {
         [HttpPost]
-        public Task<IActionResult> Insert(InputModel callInfo)
+        public IActionResult Insert([FromForm]InputModel callInfo)
         {
             LastInput = callInfo;
-            
-            IActionResult result = Ok();
-            return Task.FromResult(result);
+
+            return Ok();
         }
 
         public static InputModel LastInput { get; set; }

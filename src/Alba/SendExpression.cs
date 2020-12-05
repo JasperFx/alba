@@ -4,9 +4,6 @@ using Baseline;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
 
-#if !NETCOREAPP3_0
-using Microsoft.AspNetCore.Http.Internal;
-#endif
 
 namespace Alba
 {

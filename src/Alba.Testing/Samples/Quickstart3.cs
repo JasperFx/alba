@@ -1,14 +1,14 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-#if NETCOREAPP3_0
+
 using Microsoft.Extensions.Configuration;
 using WebApiAspNetCore3;    
-#endif
+
 using Xunit;
 
 namespace Alba.Testing.Samples
 {
-#if NETCOREAPP3_0
+
     public class Quickstart3
     {
         // SAMPLE: Quickstart3
@@ -36,5 +36,5 @@ namespace Alba.Testing.Samples
 
     }
     
-#endif
+
 }

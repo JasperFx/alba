@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>Supercharged integration testing for ASP.Net Core HTTP endpoints</Description>
+    <Description>Supercharged integration testing for ASP.NET Core HTTP endpoints</Description>
     <AssemblyTitle>Alba</AssemblyTitle>
-    <VersionPrefix>3.1.2</VersionPrefix>
-    <TargetFrameworks>netcoreapp2.1;netcoreapp2.2;netcoreapp3.0</TargetFrameworks>
+    <VersionPrefix>4.0.0</VersionPrefix>
+    <TargetFrameworks>netcoreapp3.1;net5.0</TargetFrameworks>
     <DebugType>portable</DebugType>
     <AssemblyName>Alba</AssemblyName>
     <PackageId>Alba</PackageId>
@@ -14,28 +14,25 @@
     <RepositoryUrl>git://github.com/JasperFx/alba</RepositoryUrl>
     <OutputType>library</OutputType>
     <PackageIconUrl>https://avatars2.githubusercontent.com/u/10048186?v=3&amp;s=200</PackageIconUrl>
+    <langversion>9</langversion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Baseline" Version="1.5.0" />
+    <PackageReference Include="Baseline" Version="2.1.0" />
     <PackageReference Include="System.AppContext" Version="4.3.0" />
     <PackageReference Include="System.Xml.XmlDocument" Version="4.3.0" />
   </ItemGroup>
   
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="3.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="3.1.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.10" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1'">
-    <PackageReference Include="Microsoft.AspNetCore.All" />
-    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="2.1.*" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.2'">
-    <PackageReference Include="Microsoft.AspNetCore.All" />
-    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="2.2.*" />
+  <ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="5.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.0" />
   </ItemGroup>
 
 </Project>

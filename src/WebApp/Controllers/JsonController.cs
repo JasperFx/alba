@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 
 namespace WebApp.Controllers
 {
+    [ApiController]
     [Route("api/[controller]")]
     public class JsonController : Controller
     {

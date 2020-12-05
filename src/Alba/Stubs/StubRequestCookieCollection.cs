@@ -1,4 +1,3 @@
-#if NETCOREAPP3_0
 using System.Collections;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
@@ -35,4 +34,3 @@ namespace Alba.Stubs
         public ICollection<string> Keys => dict.Keys;
     }
 }
-#endif

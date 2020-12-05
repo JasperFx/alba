@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApp.Controllers
 {
+    [ApiController]
     [Route("[controller]/[action]")]
     public class AuthController : Controller
     {

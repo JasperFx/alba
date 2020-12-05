@@ -7,33 +7,26 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Net.Http.Headers;
 
-#if !NETCOREAPP3_0
-using Microsoft.AspNetCore.Http.Internal;
-#endif
 
 namespace Alba.Stubs
 {
     public class StubHttpResponse : HttpResponse
     {
         private IHttpResponseFeature _httpResponseFeature;
-#if NETCOREAPP3_0
+
         private IFeatureCollection _features;
-#endif
+
 
         public StubHttpResponse(StubHttpContext context)
         {
             HttpContext = context;
 
             _httpResponseFeature = context.Features.Get<IHttpResponseFeature>();
-            
-#if NETCOREAPP3_0
+
             Cookies = new StubResponseCookieCollection();
             _features = context.Features;
             _features.Set<IHttpResponseBodyFeature>(new StreamResponseBodyFeature(new MemoryStream()));
-#else
-            Cookies =
- new ResponseCookies(Headers, new DefaultObjectPool<StringBuilder>(new DefaultPooledObjectPolicy<StringBuilder>()));
-#endif
+
         }
 
 
@@ -68,13 +61,6 @@ namespace Alba.Stubs
         public override IHeaderDictionary Headers => _httpResponseFeature.Headers;
 
         
-#if !NETCOREAPP3_0
-        public override Stream Body
-        {
-            get => _httpResponseFeature.Body;
-            set => _httpResponseFeature.Body = value;
-        } 
-#else
         public override Stream Body
         {
             get => _features.Get<IHttpResponseBodyFeature>().Stream;
@@ -97,7 +83,7 @@ namespace Alba.Stubs
                 }
             }
         }
-#endif
+
 
         public override long? ContentLength
         {

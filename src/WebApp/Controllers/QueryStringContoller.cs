@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApp.Controllers
 {
+    [ApiController]
     public class QueryStringContoller : Controller
     {
         [HttpGet("querystring")]
