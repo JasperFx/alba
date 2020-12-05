@@ -26,9 +26,10 @@ namespace WebApp.Controllers
     }
 
     [ApiController]
+    [Route("[controller]")]
     public class MathController : Controller
     {
-        [HttpGet("/math/add/{one}/{two}")]
+        [HttpGet("add/{one}/{two}")]
         public OperationResult Add(int one, int two)
         {
             return new OperationResult
@@ -37,7 +38,7 @@ namespace WebApp.Controllers
             };
         }
 
-        [HttpPut("/math")]
+        [HttpPut]
         public OperationResult Put([FromBody]OperationRequest request)
         {
             switch (request.Type)
@@ -56,7 +57,7 @@ namespace WebApp.Controllers
             }
         }
         
-        [HttpPost("/math")]
+        [HttpPost]
         public OperationResult Post([FromBody]OperationRequest request)
         {
             switch (request.Type)

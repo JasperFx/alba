@@ -54,6 +54,11 @@ namespace Alba
         {
             _system = system;
             Body = new HttpRequestBody(system, this);
+            
+            ConfigureHttpContext(c =>
+            {
+                c.Request.Body = new MemoryStream();
+            });
         }
 
         /// <summary>

@@ -21,9 +21,7 @@ namespace WebApp
             services.AddControllers(config =>
             {
                 config.RespectBrowserAcceptHeader = true;
-                config.InputFormatters.Clear();
                 config.InputFormatters.Add(new TextInputFormatter());
-                config.InputFormatters.Add(new JsonInputFormatter());
             }).AddNewtonsoftJson();
 
             services.AddProblemDetails();

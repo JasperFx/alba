@@ -38,17 +38,21 @@ namespace WebApp.Controllers
         public string LastName = "Miller";
     }
 
-    public class TextInputFormatter : IInputFormatter
+    public class TextInputFormatter : InputFormatter
     {
-        public bool CanRead(InputFormatterContext context)
+        public TextInputFormatter()
+        {
+            SupportedMediaTypes.Add("text/plain");
+        }
+        public override bool CanRead(InputFormatterContext context)
         {
             return context.HttpContext.Request.ContentType == "text/plain";
         }
-
-        public async Task<InputFormatterResult> ReadAsync(InputFormatterContext context)
+        
+        public override async Task<InputFormatterResult> ReadRequestBodyAsync(InputFormatterContext context)
         {
             var text = await context.HttpContext.Request.Body.ReadAllTextAsync();
-            return InputFormatterResult.Success(text);
+            return await InputFormatterResult.SuccessAsync(text);
         }
     }
 
