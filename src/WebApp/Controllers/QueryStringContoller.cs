@@ -28,8 +28,6 @@ namespace WebApp.Controllers
         [HttpPost("sendbody")]
         public string SendBody([FromBody] string text)
         {
-            var request = HttpContext.Request.Body;
-
             return text;
         }
 
