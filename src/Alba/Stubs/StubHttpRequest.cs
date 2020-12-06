@@ -23,7 +23,7 @@ namespace Alba.Stubs
             Query = new QueryCollection(_queryStringValues);
         }   
 
-        public override Task<IFormCollection> ReadFormAsync(CancellationToken cancellationToken = new CancellationToken())
+        public override Task<IFormCollection> ReadFormAsync(CancellationToken cancellationToken = default)
         {
             return _formFeature.ReadFormAsync(cancellationToken);
         }

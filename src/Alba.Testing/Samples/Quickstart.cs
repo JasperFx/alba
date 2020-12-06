@@ -5,7 +5,10 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
 using Shouldly;
 using WebApp;
 using Xunit;
@@ -37,47 +40,36 @@ namespace Alba.Testing.Samples
         public async Task should_say_hello_world_raw()
         {
             // SAMPLE: programmatic-bootstrapping
-            var system = SystemUnderTest.For(_ =>
+            using var system = SystemUnderTest.For(_ =>
             {
                 _.Configure(app =>
                 {
-                    app.Run(c =>
-                    {
-                        return c.Response.WriteAsync("Hello, World!");
-                    });
+                    app.Run(async c => await c.Response.WriteAsync("Hello, World!"));
                 });
             });
             
-            // or pass an IWebHostBuilder into the constructor function
+            // or pass an IHostBuilder into the constructor function
             // of SystemUnderTest
 
-            var builder = WebHost
+            var builder = Host
                 .CreateDefaultBuilder()
-                .UseStartup<Startup>()
+                .ConfigureWebHostDefaults(c=> c.UseStartup<Startup>())
                 .ConfigureServices(services =>
                 {
                     // override any service registrations you need,
                     // like maybe using stubs for problematic dependencies
                 });
             
-            var system2 = new SystemUnderTest(builder);
-            
+            using var system2 = new SystemUnderTest(builder);
+
             // ENDSAMPLE
 
-            try
-            {
-                await system.Scenario(_ =>
-                {
-                    _.Get.Url("/");
-                    _.ContentShouldContain("Hello, World!");
-                });
-            }
-            finally
-            {
-                system.Dispose();
-            }
 
-
+            await system.Scenario(_ =>
+            {
+                _.Get.Url("/");
+                _.ContentShouldContain("Hello, World!");
+            });
         }
 
         // SAMPLE: should_say_hello_world_with_raw_objects
@@ -152,8 +144,8 @@ namespace Alba.Testing.Samples
 
             // or do it with idiomatic ASP.Net Core
 
-            var builder = WebHost.CreateDefaultBuilder()
-                .UseStartup<Startup>()
+            var builder = Host.CreateDefaultBuilder()
+                .ConfigureWebHostDefaults(c=> c.UseStartup<Startup>())
                 .UseContentRoot("c:\\path_to_your_actual_application");
 
             var system2 = new SystemUnderTest(builder);
@@ -166,19 +158,21 @@ namespace Alba.Testing.Samples
         {
             // SAMPLE: configuration-overrides
             var stubbedWebService = new StubbedWebService();
-            
-            var builder = WebHost.CreateDefaultBuilder()
-                .UseStartup<Startup>()
-                
+
+            var builder = Host.CreateDefaultBuilder()
+                .ConfigureWebHostDefaults(c => c.UseStartup<Startup>())
+
                 // override the environment if you need to
                 .UseEnvironment("Testing")
-                
-                // override service registrations if you need to
+
+                // override service registrations or internal options if you need to
                 .ConfigureServices(s =>
                 {
                     s.AddSingleton<IExternalWebService>(stubbedWebService);
+                    s.PostConfigure<MvcNewtonsoftJsonOptions>(o =>
+                        o.SerializerSettings.TypeNameHandling = TypeNameHandling.All);
                 });
-            
+
             // Create the SystemUnderTest, and alternatively override what Alba
             // thinks is the main application assembly
             // THIS IS IMPORTANT FOR MVC CONTROLLER DISCOVERY

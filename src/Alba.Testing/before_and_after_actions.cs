@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Hosting;
 using Shouldly;
 using Xunit;
 using Xunit.Abstractions;
@@ -20,10 +21,13 @@ namespace Alba.Testing
             _output = output;
         }
 
-        protected IWebHostBuilder EmptyHostBuilder()
+        protected IHostBuilder EmptyHostBuilder()
         {
-            return new WebHostBuilder()
-                .Configure(app => app.Run(c => c.Response.WriteAsync("Hey.")));
+            return new HostBuilder().ConfigureWebHost(x =>
+            {
+                x.Configure(app => app.Run(c => c.Response.WriteAsync("Hey.")));
+            });
+
         }
 
         // SAMPLE: before-and-after
@@ -122,10 +126,11 @@ namespace Alba.Testing
             }
         }
 
-        protected IWebHostBuilder AuthenticatedHostBuilder()
+        protected IHostBuilder AuthenticatedHostBuilder()
         {
-            return new WebHostBuilder()
-                .Configure(app => app.Run(c =>
+            return new HostBuilder().ConfigureWebHost(x =>
+            {
+                x.Configure(app => app.Run(c =>
                 {
                     _output.WriteLine("In app.Run");
                     c.Response.StatusCode = c.User.Identity.IsAuthenticated
@@ -133,6 +138,8 @@ namespace Alba.Testing
                         : 401;
                     return Task.CompletedTask;
                 }));
+            });
+
         }
 
         [Fact]

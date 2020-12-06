@@ -17,7 +17,7 @@ namespace Alba.Testing.Acceptance
 
             using (var system = SystemUnderTest.ForStartup<Startup>(builder =>
                 {
-                    return builder.ConfigureServices(_ =>
+                    return builder.ConfigureServices((c, _) =>
                     {
                         _.AddTransient<IWidget, RedWidget>();
                     });
