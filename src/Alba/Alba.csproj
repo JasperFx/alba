@@ -15,6 +15,7 @@
     <OutputType>library</OutputType>
     <PackageIconUrl>https://avatars2.githubusercontent.com/u/10048186?v=3&amp;s=200</PackageIconUrl>
     <langversion>9</langversion>
+    <nullable>enable</nullable>
   </PropertyGroup>
 
   <ItemGroup>

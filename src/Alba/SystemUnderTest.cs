@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
-using Alba.Stubs;
 using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.TestHost;
@@ -27,12 +23,14 @@ namespace Alba
     public class SystemUnderTest : ISystemUnderTest
     {
         
-        private Func<HttpContext, Task> _afterEach = c => Task.CompletedTask;
+        private Func<HttpContext?, Task> _afterEach = c => Task.CompletedTask;
 
 
         private Func<HttpContext, Task> _beforeEach = c => Task.CompletedTask;
 
-        public SystemUnderTest(IHostBuilder builder, Assembly applicationAssembly = null)
+        private readonly IHost _host;
+
+        public SystemUnderTest(IHostBuilder builder, Assembly? applicationAssembly = null)
         {
             builder
                 .ConfigureServices(_ =>
@@ -41,25 +39,25 @@ namespace Alba
                     _.AddSingleton<IServer>(x => new TestServer(x));
                 });
 
-            var host = builder.Start();
-            Services = host.Services;
+            _host = builder.Start();
+            Services = _host.Services;
 
-            Server = host.GetTestServer();
+            Server = _host.GetTestServer();
 
             Server.AllowSynchronousIO = true;
 
 
 
-            var options = host.Services.GetService<IOptions<MvcNewtonsoftJsonOptions>>()?.Value;
+            var options = _host.Services.GetService<IOptions<MvcNewtonsoftJsonOptions>>()?.Value;
             var settings = options?.SerializerSettings;
             if (settings != null) JsonSerializerSettings = settings;
 
-            var manager = host.Services.GetService<ApplicationPartManager>();
+            var manager = _host.Services.GetService<ApplicationPartManager>();
             if (applicationAssembly != null) manager?.ApplicationParts.Add(new AssemblyPart(applicationAssembly));
         }
 
 
-        public SystemUnderTest(IWebHostBuilder builder, Assembly applicationAssembly = null)
+        public SystemUnderTest(IWebHostBuilder builder, Assembly? applicationAssembly = null)
         {
             builder.ConfigureServices(_ => { _.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); });
 
@@ -108,7 +106,7 @@ namespace Alba
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        Task ISystemUnderTest.AfterEach(HttpContext context)
+        Task ISystemUnderTest.AfterEach(HttpContext? context)
         {
             return _afterEach(context);
         }
@@ -153,6 +151,7 @@ namespace Alba
         public void Dispose()
         {
             Server.Dispose();
+            _host?.Dispose();
         }
 
         /// <summary>
@@ -173,8 +172,8 @@ namespace Alba
         /// <param name="rootPath"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static SystemUnderTest ForStartup<T>(Func<IWebHostBuilder, IWebHostBuilder> configure = null,
-            string rootPath = null) where T : class
+        public static SystemUnderTest ForStartup<T>(Func<IWebHostBuilder, IWebHostBuilder>? configure = null,
+            string? rootPath = null) where T : class
         {
             var builder = WebHost.CreateDefaultBuilder();
             builder.UseStartup<T>();
@@ -222,7 +221,7 @@ namespace Alba
         /// </summary>
         /// <param name="afterEach"></param>
         /// <returns></returns>
-        public SystemUnderTest AfterEach(Action<HttpContext> afterEach)
+        public SystemUnderTest AfterEach(Action<HttpContext?> afterEach)
         {
             _afterEach = c =>
             {
@@ -250,7 +249,7 @@ namespace Alba
         /// </summary>
         /// <param name="afterEach"></param>
         /// <returns></returns>
-        public SystemUnderTest AfterEachAsync(Func<HttpContext, Task> afterEach)
+        public SystemUnderTest AfterEachAsync(Func<HttpContext?, Task> afterEach)
         {
             _afterEach = afterEach;
 

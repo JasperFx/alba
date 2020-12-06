@@ -48,8 +48,8 @@ namespace Alba.Stubs
             throw new NotImplementedException();
         }
 
-        public bool IsAvailable { get; }
-        public string Id { get; }
-        public IEnumerable<string> Keys { get; }
+        public bool IsAvailable { get; } = default!;
+        public string Id { get; } = default!;
+        public IEnumerable<string> Keys { get; } = default!;
     }
 }

@@ -55,32 +55,4 @@ namespace WebApp.Controllers
             return await InputFormatterResult.SuccessAsync(text);
         }
     }
-
-    public class JsonInputFormatter : IInputFormatter
-    {
-        public JsonInputFormatter()
-        {
-            Console.WriteLine("I was called");
-        }
-
-        public bool CanRead(InputFormatterContext context)
-        {
-            var contentType = context.HttpContext.Request.ContentType;
-
-            var supported = new[] { "text/json", "application/json"};
-
-            return supported.Any(x => contentType?.StartsWith(x) ?? false);
-        }
-
-        public Task<InputFormatterResult> ReadAsync(InputFormatterContext context)
-        {
-            var serializer = new JsonSerializer();
-
-            var model = serializer.Deserialize(new JsonTextReader(new StreamReader(context.HttpContext.Request.Body)), context.ModelType);
-
-            var result = InputFormatterResult.Success(model);
-
-            return Task.FromResult(result);
-        }
-    }
 }

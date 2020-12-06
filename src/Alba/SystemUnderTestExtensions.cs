@@ -35,7 +35,7 @@ namespace Alba
 
             scenario.Rewind();
 
-            HttpContext context = null;
+            HttpContext? context = null;
             try
             {
                 context = await system.Invoke(c =>

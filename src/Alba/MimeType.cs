@@ -83,12 +83,12 @@ namespace Alba
             return _extensions.Contains(extension);
         }
 
-        public string DefaultExtension()
+        public string? DefaultExtension()
         {
             return _extensions.FirstOrDefault();
         }
 
-        public static MimeType MimeTypeByFileName(string name)
+        public static MimeType? MimeTypeByFileName(string name)
         {
             var extension = Path.GetExtension(name);
 
@@ -97,13 +97,13 @@ namespace Alba
 
         public IEnumerable<string> Extensions => _extensions;
 
-        private static readonly LightweightCache<string, MimeType> _mappingFromExtension;
+        private static readonly LightweightCache<string, MimeType?> _mappingFromExtension;
 
         static MimeType()
         {
             _fileExtensions.Each(pair => _mimeTypes[pair.Value].AddExtension(pair.Key));
 
-            _mappingFromExtension = new LightweightCache<string, MimeType>(extension => {
+            _mappingFromExtension = new LightweightCache<string, MimeType?>(extension => {
                                                                                  return _mimeTypes.GetAll().FirstOrDefault(x => x.HasExtension(extension));
             });
         }

@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Alba.Stubs
 {
@@ -12,7 +13,7 @@ namespace Alba.Stubs
     {
         public static StubHttpContext Empty()
         {
-            return new StubHttpContext(new FeatureCollection(), null);
+            return new(new FeatureCollection(), new ServiceCollection().BuildServiceProvider());
         }
 
         public StubHttpContext(IFeatureCollection features, IServiceProvider services)
@@ -51,7 +52,7 @@ namespace Alba.Stubs
 
 
         public override ClaimsPrincipal User { get; set; } = new ClaimsPrincipal();
-        public override IDictionary<object, object> Items { get; set; } = new ItemsDictionary<object, object>();
+        public override IDictionary<object, object?> Items { get; set; } = new ItemsDictionary<object, object?>();
 
 
         public sealed override IServiceProvider RequestServices { get; set; }

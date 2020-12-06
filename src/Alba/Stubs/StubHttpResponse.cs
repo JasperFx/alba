@@ -12,9 +12,9 @@ namespace Alba.Stubs
 {
     public class StubHttpResponse : HttpResponse
     {
-        private IHttpResponseFeature _httpResponseFeature;
+        private readonly IHttpResponseFeature _httpResponseFeature;
 
-        private IFeatureCollection _features;
+        private readonly IFeatureCollection _features;
 
 
         public StubHttpResponse(StubHttpContext context)
@@ -49,7 +49,7 @@ namespace Alba.Stubs
 
         public bool RedirectedPermanent { get; set; }
 
-        public string RedirectedTo { get; set; }
+        public string RedirectedTo { get; set; } = default!;
 
         public override HttpContext HttpContext { get; }
 

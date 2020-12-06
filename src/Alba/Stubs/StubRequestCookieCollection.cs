@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Http;
 
 namespace Alba.Stubs
@@ -22,7 +23,7 @@ namespace Alba.Stubs
             return dict.ContainsKey(key);
         }
 
-        public bool TryGetValue(string key, out string value)
+        public bool TryGetValue(string key, [MaybeNullWhen(false)] out string value)
         {
             return dict.TryGetValue(key, out value);
         }

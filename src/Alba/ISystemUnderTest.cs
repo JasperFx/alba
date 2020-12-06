@@ -17,7 +17,7 @@ namespace Alba
 
 
         Task BeforeEach(HttpContext context);
-        Task AfterEach(HttpContext context);
+        Task AfterEach(HttpContext? context);
 
         /// <summary>
         /// Deserializes an object using the ASP.Net Core JsonSerializerSettings

@@ -41,7 +41,7 @@ namespace Alba.Stubs
         private readonly Dictionary<string, StringValues> _queryStringValues = new Dictionary<string, StringValues>();
 
 
-        public override string Protocol { get; set; }
+        public override string Protocol { get; set; } = default!;
         public override IHeaderDictionary Headers { get; } = new HeaderDictionary();
         public override IRequestCookieCollection Cookies { get; set; } = new StubRequestCookieCollection();
 
