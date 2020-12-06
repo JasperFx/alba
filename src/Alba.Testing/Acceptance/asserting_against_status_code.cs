@@ -50,9 +50,6 @@ namespace Alba.Testing.Acceptance
             ex.Message.ShouldContain("Expected status code 500, but was 200");
         }
 
-
-
-
         [Fact]
         public async Task happily_blows_up_on_an_unexpected_500()
         {

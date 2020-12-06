@@ -2,7 +2,9 @@
 using System.Net;
 using System.Threading.Tasks;
 using Baseline;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using Shouldly;
 using WebApp;
@@ -23,29 +25,27 @@ namespace Alba.Testing.Acceptance
         }
 
         [Fact]
-        public void customize_by_injecting_settings()
+        public void customize_by_configuring_settings()
         {
             using (var host = SystemUnderTest.ForStartup<Startup>(builder =>
             {
-                return builder.ConfigureServices(_ =>
+                return builder.ConfigureServices((c, _) =>
                 {
-                    _.AddTransient<JsonSerializerSettings>(p => new JsonSerializerSettings
+                    _.Configure<MvcNewtonsoftJsonOptions>(o =>
                     {
-                        TypeNameHandling = TypeNameHandling.All
+                        o.SerializerSettings.TypeNameHandling = TypeNameHandling.All;
                     });
                 });
             }))
             {
-
-
-
+                
                 host.As<ISystemUnderTest>().ToJson(new MyMessage {Name = "Jeremy"})
                     .ShouldContain(typeof(MyMessage).FullName);
             }
         }
 
         [Fact]
-        public void customize_by_altering_settings()
+        public void customize_by_altering_settings_directly()
         {
             using (var host = SystemUnderTest.ForStartup<Startup>())
             {

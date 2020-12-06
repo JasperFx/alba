@@ -1,14 +1,8 @@
 ﻿using System;
-using System.IO;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
-
 
 namespace Alba
 {
@@ -140,6 +134,7 @@ namespace Alba
         /// </summary>
         /// <param name="builder"></param>
         /// <returns></returns>
+        [Obsolete("Use a IHostBuilder generic host instead. See: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/generic-host", true)]
         public static ISystemUnderTest ToSystemUnderTest(this IWebHostBuilder builder)
         {
             return new SystemUnderTest(builder);

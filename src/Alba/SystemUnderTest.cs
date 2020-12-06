@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -30,6 +30,8 @@ namespace Alba
 
         private readonly IHost _host;
 
+        private readonly IDisposable? _lifetime;
+
         public SystemUnderTest(IHostBuilder builder, Assembly? applicationAssembly = null)
         {
             builder
@@ -46,8 +48,7 @@ namespace Alba
 
             Server.AllowSynchronousIO = true;
 
-
-
+            _lifetime = _host.Services.GetRequiredService<IHostLifetime>() as IDisposable;
             var options = _host.Services.GetService<IOptions<MvcNewtonsoftJsonOptions>>()?.Value;
             var settings = options?.SerializerSettings;
             if (settings != null) JsonSerializerSettings = settings;
@@ -56,21 +57,10 @@ namespace Alba
             if (applicationAssembly != null) manager?.ApplicationParts.Add(new AssemblyPart(applicationAssembly));
         }
 
-
+        [Obsolete("Pass in a IHostBuilder generic host instead. See: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/generic-host", true)]
         public SystemUnderTest(IWebHostBuilder builder, Assembly? applicationAssembly = null)
         {
-            builder.ConfigureServices(_ => { _.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); });
-
-            Server = new TestServer(builder);
-            Services = Server.Host.Services;
-
-            Server.AllowSynchronousIO = true;
-
-            var settings = Server.Host.Services.GetService<JsonSerializerSettings>();
-            if (settings != null) JsonSerializerSettings = settings;
-
-            var manager = Server.Host.Services.GetService<ApplicationPartManager>();
-            if (applicationAssembly != null) manager?.ApplicationParts.Add(new AssemblyPart(applicationAssembly));
+            throw new NotImplementedException();
         }
 
 
@@ -150,6 +140,7 @@ namespace Alba
 
         public void Dispose()
         {
+            _lifetime?.Dispose();
             Server.Dispose();
             _host?.Dispose();
         }
@@ -168,16 +159,16 @@ namespace Alba
         ///     Create a SystemUnderTest using the designated "Startup" type
         ///     to configure the ASP.Net Core system
         /// </summary>
-        /// <param name="configure">Optional configuration of the IWebHostBuilder to be applied *after* the call to UseStartup()</param>
+        /// <param name="configure">Optional configuration of the IHostBuilder to be applied *after* the call to UseStartup()</param>
         /// <param name="rootPath"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static SystemUnderTest ForStartup<T>(Func<IWebHostBuilder, IWebHostBuilder>? configure = null,
+        public static SystemUnderTest ForStartup<T>(Func<IHostBuilder, IHostBuilder>? configure = null,
             string? rootPath = null) where T : class
         {
-            var builder = WebHost.CreateDefaultBuilder();
-            builder.UseStartup<T>();
-            
+            var builder = Host.CreateDefaultBuilder();
+            builder.ConfigureWebHostDefaults(config => config.UseStartup<T>());
+
             if (configure != null) builder = configure(builder);
 
             builder.UseContentRoot(rootPath ?? DirectoryFinder.FindParallelFolder(typeof(T).Assembly.GetName().Name) ??
@@ -190,13 +181,11 @@ namespace Alba
 
         public static SystemUnderTest For(Action<IWebHostBuilder> configuration)
         {
-            var builder = new WebHostBuilder();
-            configuration(builder);
+            var builder = Host.CreateDefaultBuilder();
 
-            var system = new SystemUnderTest(builder);
+            builder.ConfigureWebHostDefaults(configuration);
 
-
-            return system;
+            return new SystemUnderTest(builder);
         }
 
         /// <summary>
