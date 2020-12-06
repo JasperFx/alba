@@ -29,9 +29,7 @@ namespace Alba
         private Func<HttpContext, Task> _beforeEach = c => Task.CompletedTask;
 
         private readonly IHost _host;
-
-        private readonly IDisposable? _lifetime;
-
+        
         public SystemUnderTest(IHostBuilder builder, Assembly? applicationAssembly = null)
         {
             builder
@@ -48,7 +46,7 @@ namespace Alba
 
             Server.AllowSynchronousIO = true;
 
-            _lifetime = _host.Services.GetRequiredService<IHostLifetime>() as IDisposable;
+
             var options = _host.Services.GetService<IOptions<MvcNewtonsoftJsonOptions>>()?.Value;
             var settings = options?.SerializerSettings;
             if (settings != null) JsonSerializerSettings = settings;
@@ -140,7 +138,6 @@ namespace Alba
 
         public void Dispose()
         {
-            _lifetime?.Dispose();
             Server.Dispose();
             _host?.Dispose();
         }
