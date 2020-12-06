@@ -10,6 +10,7 @@ namespace Alba
 
         public CommaTokenParser()
         {
+            _characters = new List<char>();
             _mode = new Searching(this);
         }
 
@@ -23,13 +24,7 @@ namespace Alba
             _characters.Add(c);
         }
 
-        public IEnumerable<string> Tokens
-        {
-            get
-            {
-                return _tokens;
-            }
-        }
+        public IEnumerable<string> Tokens => _tokens;
 
         private void startToken(IMode mode)
         {

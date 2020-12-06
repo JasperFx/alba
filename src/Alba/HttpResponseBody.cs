@@ -42,9 +42,9 @@ namespace Alba
         /// Read the contents of the HttpResponse.Body into an XmlDocument object
         /// </summary>
         /// <returns></returns>
-        public XmlDocument ReadAsXml()
+        public XmlDocument? ReadAsXml()
         {
-            Func<Stream, XmlDocument> read = s =>
+            Func<Stream, XmlDocument?> read = s =>
             {
                 var body = s.ReadAllText();
 
@@ -65,7 +65,7 @@ namespace Alba
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public T ReadAsXml<T>() where T : class
+        public T? ReadAsXml<T>() where T : class
         {
             _stream.Position = 0;
             var serializer = new XmlSerializer(typeof (T));

@@ -12,7 +12,7 @@ namespace Alba
         /// </summary>
         /// <param name="folderName"></param>
         /// <returns></returns>
-        public static string FindParallelFolder(string folderName)
+        public static string? FindParallelFolder(string? folderName)
         {
             var starting = AppContext.BaseDirectory.ToFullPath();
             

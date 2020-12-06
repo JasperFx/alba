@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Alba.Stubs
 {
-    public class ItemsDictionary<TKey, TValue> : IDictionary<TKey, TValue>
+    public class ItemsDictionary<TKey, TValue> : IDictionary<TKey, TValue> where TKey: notnull
     {
-        private IDictionary<TKey, TValue> dict = new Dictionary<TKey, TValue>();
+        private readonly IDictionary<TKey, TValue> dict = new Dictionary<TKey, TValue>();
 
 
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
@@ -62,7 +63,7 @@ namespace Alba.Stubs
             return dict.Remove(key);
         }
 
-        public bool TryGetValue(TKey key, out TValue value)
+        public bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value)
         {
             return dict.TryGetValue(key, out value);
         }
@@ -71,12 +72,12 @@ namespace Alba.Stubs
         {
             get
             {
-                if (dict.TryGetValue(key, out TValue value))
+                if (dict.TryGetValue(key, out TValue? value))
                 {
                     return value;
                 }
 
-                return default;
+                throw new KeyNotFoundException();
             }
             set => dict[key] = value;
         }

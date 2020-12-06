@@ -76,7 +76,7 @@ namespace Alba
             modify = request =>
             {
                 request.QueryString = request.QueryString.Add(paramName, paramValue);
-                request.Query = new QueryCollection(QueryHelpers.ParseQuery(request.QueryString.Value));
+                request.Query = new QueryCollection(QueryHelpers.ParseQuery(request.QueryString.Value!));
                 
             };
 

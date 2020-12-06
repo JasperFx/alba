@@ -5,7 +5,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using WebApp.Controllers;
-using JsonInputFormatter = WebApp.Controllers.JsonInputFormatter;
 
 namespace WebApp
 {
@@ -21,7 +20,7 @@ namespace WebApp
             services.AddControllers(config =>
             {
                 config.RespectBrowserAcceptHeader = true;
-                config.InputFormatters.Add(new TextInputFormatter());
+                config.InputFormatters.Insert(0,new TextInputFormatter());
             }).AddNewtonsoftJson();
 
             services.AddProblemDetails();

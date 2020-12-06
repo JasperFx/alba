@@ -19,7 +19,7 @@ namespace Alba
             response.Headers["content-type"] = mimeType;
         }
 
-        public static void RelativeUrl(this HttpContext context, string relativeUrl)
+        public static void RelativeUrl(this HttpContext context, string? relativeUrl)
         {
             if (relativeUrl != null && relativeUrl.Contains("?"))
             {

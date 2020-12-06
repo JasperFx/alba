@@ -57,7 +57,7 @@ namespace Alba
             }
         }
 
-        public string Body { get; set; }
+        public string? Body { get; set; }
 
         public string ReadBody(HttpContext context)
         {
