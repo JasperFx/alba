@@ -134,7 +134,7 @@ namespace Alba
         /// </summary>
         /// <param name="builder"></param>
         /// <returns></returns>
-        [Obsolete("Use a IHostBuilder generic host instead. See: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/generic-host", true)]
+        [Obsolete("Use a IHostBuilder generic host instead. See: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/generic-host")]
         public static ISystemUnderTest ToSystemUnderTest(this IWebHostBuilder builder)
         {
             return new SystemUnderTest(builder);

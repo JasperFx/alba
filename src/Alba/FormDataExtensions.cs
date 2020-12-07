@@ -12,7 +12,7 @@ namespace Alba
     {
         /// <summary>
         /// Write the dictionary values to the HttpContext.Request.Body.
-        /// Also sets content-length & content-type header to
+        /// Also sets content-length and content-type header to
         /// application/x-www-form-urlencoded
         /// </summary>
         /// <param name="context"></param>

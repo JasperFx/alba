@@ -16,6 +16,8 @@
     <PackageIconUrl>https://avatars2.githubusercontent.com/u/10048186?v=3&amp;s=200</PackageIconUrl>
     <langversion>9</langversion>
     <nullable>enable</nullable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>CS1591;</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
