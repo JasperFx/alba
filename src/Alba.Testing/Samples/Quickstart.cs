@@ -44,7 +44,7 @@ namespace Alba.Testing.Samples
             {
                 _.Configure(app =>
                 {
-                    app.Run(async c => await c.Response.WriteAsync("Hello, World!"));
+                    app.Run(c => c.Response.WriteAsync("Hello, World!"));
                 });
             });
             
