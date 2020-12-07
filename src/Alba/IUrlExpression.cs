@@ -69,7 +69,6 @@ namespace Alba
         /// Writes the dictionary data to form data in the Http request
         /// </summary>
         /// <param name="input"></param>
-        /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         SendExpression FormData(Dictionary<string, string> input);
 

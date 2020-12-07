@@ -54,13 +54,23 @@ namespace Alba
             var manager = _host.Services.GetService<ApplicationPartManager>();
             if (applicationAssembly != null) manager?.ApplicationParts.Add(new AssemblyPart(applicationAssembly));
         }
-
-        [Obsolete("Pass in a IHostBuilder generic host instead. See: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/generic-host", true)]
+        
+        [Obsolete("Pass in a IHostBuilder generic host instead. See: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/generic-host")]
         public SystemUnderTest(IWebHostBuilder builder, Assembly? applicationAssembly = null)
         {
-            throw new NotImplementedException();
-        }
+            builder.ConfigureServices(_ => { _.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); });
 
+            Server = new TestServer(builder);
+            Services = Server.Host.Services;
+            
+            Server.AllowSynchronousIO = true;
+
+            var settings = Server.Host.Services.GetService<JsonSerializerSettings>();
+            if (settings != null) JsonSerializerSettings = settings;
+
+            var manager = Server.Host.Services.GetService<ApplicationPartManager>();
+            if (applicationAssembly != null) manager?.ApplicationParts.Add(new AssemblyPart(applicationAssembly));
+        }
 
         /// <summary>
         /// The underlying TestServer for additional functionality
@@ -154,12 +164,12 @@ namespace Alba
 
         /// <summary>
         ///     Create a SystemUnderTest using the designated "Startup" type
-        ///     to configure the ASP.Net Core system
+        ///     to configure the ASP.NET Core system
         /// </summary>
-        /// <param name="configure">Optional configuration of the IHostBuilder to be applied *after* the call to UseStartup()</param>
-        /// <param name="rootPath"></param>
+        /// <param name="configure">Optional configuration of the IHostBuilder to be applied *after* the call to <c>IWebHostBuilder.UseStartup()</c></param>
+        /// <param name="rootPath">Specify the content root directory to be used by the host.</param>
         /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
+        /// <returns>The system under test</returns>
         public static SystemUnderTest ForStartup<T>(Func<IHostBuilder, IHostBuilder>? configure = null,
             string? rootPath = null) where T : class
         {
@@ -171,19 +181,39 @@ namespace Alba
             builder.UseContentRoot(rootPath ?? DirectoryFinder.FindParallelFolder(typeof(T).Assembly.GetName().Name) ??
                                    AppContext.BaseDirectory);
 
-            var system = new SystemUnderTest(builder, typeof(T).Assembly);
-
-            return system;
+            return new SystemUnderTest(builder, typeof(T).Assembly);
         }
 
-        public static SystemUnderTest For(Action<IWebHostBuilder> configuration)
+
+        /// <summary>
+        ///     Creates a SystemUnderTest from a default HostBuilder using the provided configuration.
+        /// </summary>
+        /// <param name="configuration">Optional configuration of the IHostBuilder to be applied *after* the call to UseStartup()</param>
+        /// <returns>The system under test</returns>
+        public static SystemUnderTest For(Action<IHostBuilder> configuration)
         {
             var builder = Host.CreateDefaultBuilder();
 
-            builder.ConfigureWebHostDefaults(configuration);
+            configuration(builder);
 
             return new SystemUnderTest(builder);
         }
+
+        /// <summary>
+        ///     Creates a SystemUnderTest from a default HostBuilder using the provided <c>IWebHostBuilder</c>
+        /// </summary>
+        /// <param name="configuration">Optional configuration of the IWebHostBuilder to be applied *after* the call to UseStartup()</param>
+        /// <returns>The system under test</returns>
+        public static SystemUnderTest For(Action<IWebHostBuilder> configuration)
+        {
+            var builder = Host.CreateDefaultBuilder();
+            
+            builder.ConfigureWebHostDefaults(configuration);
+            
+            return new SystemUnderTest(builder);
+
+        }
+
 
         /// <summary>
         /// Execute some kind of action before each scenario. This is NOT additive
