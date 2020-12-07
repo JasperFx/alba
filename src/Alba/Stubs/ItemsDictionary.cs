@@ -77,7 +77,7 @@ namespace Alba.Stubs
                     return value;
                 }
 
-                throw new KeyNotFoundException();
+                return default!;
             }
             set => dict[key] = value;
         }
