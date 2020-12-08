@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,7 +16,7 @@ namespace Alba.Testing.Samples
         [Fact]
         public async Task build_system_under_test_from_Program()    
         {
-            var hostBuilder = Program.CreateHostBuilder(new string[0]);
+            var hostBuilder = Program.CreateHostBuilder(Array.Empty<string>());
             // You can also call hostBuilder.ConfigureServices() here to further customize
             // your application, and that's frequently valuable in testing scenarios
             
