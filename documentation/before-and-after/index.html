@@ -62,7 +62,7 @@
       <div class="row">
           <!--left-->
           <div class="col-md-3" id="leftCol">
-            <h3>Alba 3.1.0</h3>
+            <h3>Alba 4.0.0</h3>
             <br />
 
             <ul class="nav nav-stacked affix" id="sidebar">
@@ -86,7 +86,7 @@ The Before/After actions are <strong>not</strong> additive. The last one specifi
 <p>As of Alba 2.0, you can specify actions that run immediately before or after an HTTP request is executed for common setup or teardown
 work like setting up authentication credentials or tracing or whatever.</p>
 <p>Here's a sample:</p>
-<pre><code class="language-csharp">&#xA;public void sample_usage(SystemUnderTest system)&#xA;{&#xA;    // Synchronously&#xA;    system.BeforeEach(context =&gt;&#xA;    {&#xA;        // Modify the HttpContext immediately before each&#xA;        // Scenario()/HTTP request is executed&#xA;        context.Request.Headers.Add(&quot;trace&quot;, &quot;something&quot;);&#xA;    });&#xA;    &#xA;    system.AfterEach(context =&gt;&#xA;    {&#xA;        // perform an action immediately after the scenario/HTTP request&#xA;        // is executed&#xA;    });&#xA;    &#xA;    &#xA;    // Asynchronously&#xA;    system.BeforeEachAsync(context =&gt;&#xA;    {&#xA;        // do something asynchronous here&#xA;        return Task.CompletedTask;&#xA;    });&#xA;    &#xA;    system.AfterEachAsync(context =&gt;&#xA;    {&#xA;        // do something asynchronous here&#xA;        return Task.CompletedTask;&#xA;    });&#xA;&#xA;&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public void sample_usage(SystemUnderTest system)&#xA;{&#xA;    // Synchronously&#xA;    system.BeforeEach(context =&gt;&#xA;    {&#xA;        // Modify the HttpContext immediately before each&#xA;        // Scenario()/HTTP request is executed&#xA;        context.Request.Headers.Add(&quot;trace&quot;, &quot;something&quot;);&#xA;    });&#xA;&#xA;    system.AfterEach(context =&gt;&#xA;    {&#xA;        // perform an action immediately after the scenario/HTTP request&#xA;        // is executed&#xA;    });&#xA;&#xA;&#xA;    // Asynchronously&#xA;    system.BeforeEachAsync(context =&gt;&#xA;    {&#xA;        // do something asynchronous here&#xA;        return Task.CompletedTask;&#xA;    });&#xA;&#xA;    system.AfterEachAsync(context =&gt;&#xA;    {&#xA;        // do something asynchronous here&#xA;        return Task.CompletedTask;&#xA;    });&#xA;&#xA;&#xA;}&#xA;</code></pre>
 
               </div>
 
