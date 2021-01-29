@@ -111,11 +111,6 @@ namespace Alba
 
 
         /// <summary>
-        ///     The underlying IoC container for the application
-        /// </summary>
-        IServiceProvider ISystemUnderTest.Services => Server.Host.Services;
-
-        /// <summary>
         ///     Can be overridden to customize the Json serialization
         /// </summary>
         /// <param name="json"></param>
