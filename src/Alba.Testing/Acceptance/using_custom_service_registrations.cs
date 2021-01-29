@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using WebApp;
@@ -35,6 +36,24 @@ namespace Alba.Testing.Acceptance
 
                 ValuesController.LastWidget.Length.ShouldBe(2);
             }
+        }
+
+        [Fact]
+        public void can_request_services()
+        {
+            using var system = SystemUnderTest.ForStartup<Startup>(builder =>
+            {
+                return builder.ConfigureServices((c, _) => { _.AddHttpContextAccessor(); });
+            });
+
+            var accessor1 = system.Services.GetService<IHttpContextAccessor>();
+            Assert.NotNull(accessor1);
+
+            var accessor2 = system.Server.Services.GetService<IHttpContextAccessor>();
+            Assert.NotNull(accessor2);
+
+            var accessor3 = ((ISystemUnderTest)system).Services.GetService<IHttpContextAccessor>();
+            Assert.NotNull(accessor3);
         }
     }
 
