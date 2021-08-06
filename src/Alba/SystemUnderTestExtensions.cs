@@ -8,9 +8,9 @@ namespace Alba
 {
     public static class SystemUnderTestExtensions
     {
-        public static Task<IAlbaTestHost> StartAlbaHostAsync(this IHostBuilder builder)
+        public static Task<IAlbaHost> StartAlbaHostAsync(this IHostBuilder builder)
         {
-            return AlbaTestHost.For(builder);
+            return AlbaHost.For(builder);
         }
 
         /// <summary>
@@ -22,7 +22,7 @@ namespace Alba
         /// <param name="url"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static ResponseExpression PostJson<T>(this IAlbaTestHost system, T request, string url) where T : class
+        public static ResponseExpression PostJson<T>(this IAlbaHost system, T request, string url) where T : class
         {
             return new ResponseExpression(system, s =>
             {
@@ -39,7 +39,7 @@ namespace Alba
         /// <param name="url"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static ResponseExpression PutJson<T>(this IAlbaTestHost system, T request, string url) where T : class
+        public static ResponseExpression PutJson<T>(this IAlbaHost system, T request, string url) where T : class
         {
             return new ResponseExpression(system, s =>
             {
@@ -55,7 +55,7 @@ namespace Alba
         /// <param name="url"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static async Task<T> GetAsJson<T>(this IAlbaTestHost system, string url)
+        public static async Task<T> GetAsJson<T>(this IAlbaHost system, string url)
         {
             var response = await system.Scenario(x => x.Get.Url(url).Accepts("application/json;text/json"));
             return response.ResponseBody.ReadAsJson<T>();
@@ -63,11 +63,11 @@ namespace Alba
 
         public class ResponseExpression
         {
-            private readonly IAlbaTestHost _system;
+            private readonly IAlbaHost _system;
             private readonly Action<Scenario> _configure;
 
 
-            public ResponseExpression(IAlbaTestHost system, Action<Scenario> configure)
+            public ResponseExpression(IAlbaHost system, Action<Scenario> configure)
             {
                 _system = system;
                 _configure = configure;

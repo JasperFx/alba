@@ -13,7 +13,7 @@ namespace Alba.Testing.Acceptance
     {
         private async Task<IScenarioResult> run(Action<Scenario> configuration)
         {
-            using (var system = AlbaTestHost.ForStartup<Startup>())
+            using (var system = AlbaHost.ForStartup<Startup>())
             {
                 return await system.Scenario(configuration);
             }

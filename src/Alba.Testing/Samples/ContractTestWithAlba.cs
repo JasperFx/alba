@@ -9,11 +9,11 @@ namespace Alba.Testing.Samples
     // SAMPLE: xUnit-Fixture
     public class WebAppFixture : IDisposable
     {
-        public readonly AlbaTestHost AlbaTestHost = AlbaTestHost.ForStartup<WebApp.Startup>();
+        public readonly AlbaHost AlbaHost = AlbaHost.ForStartup<WebApp.Startup>();
 
         public void Dispose()
         {
-            AlbaTestHost?.Dispose();
+            AlbaHost?.Dispose();
         }
     }
     // ENDSAMPLE
@@ -23,10 +23,10 @@ namespace Alba.Testing.Samples
     {
         public ContractTestWithAlba(WebAppFixture app)
         {
-            _system = app.AlbaTestHost;
+            _system = app.AlbaHost;
         }
 
-        private readonly AlbaTestHost _system;
+        private readonly AlbaHost _system;
     // ENDSAMPLE
         [Fact]
         public Task happy_path()

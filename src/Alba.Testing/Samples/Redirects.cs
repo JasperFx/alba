@@ -5,7 +5,7 @@ namespace Alba.Testing.Samples
     public class Redirects
     {
         // SAMPLE: asserting-redirects
-        public Task asserting_redirects(IAlbaTestHost system)
+        public Task asserting_redirects(IAlbaHost system)
         {
             return system.Scenario(_ =>
             {

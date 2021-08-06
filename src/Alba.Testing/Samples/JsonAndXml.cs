@@ -8,7 +8,7 @@ namespace Alba.Testing.Samples
     public class JsonAndXml
     {
         // SAMPLE: sending-json
-        public Task send_json(IAlbaTestHost system)
+        public Task send_json(IAlbaHost system)
         {
             return system.Scenario(_ =>
             {
@@ -27,7 +27,7 @@ namespace Alba.Testing.Samples
         // ENDSAMPLE
 
         // SAMPLE: sending-xml
-        public Task send_xml(IAlbaTestHost system)
+        public Task send_xml(IAlbaHost system)
         {
             return system.Scenario(_ =>
             {
@@ -48,14 +48,14 @@ namespace Alba.Testing.Samples
         public void customizing_serialization()
         {
             // SAMPLE: customizing-serialization
-            var system = AlbaTestHost.ForStartup<Startup>();
+            var system = AlbaHost.ForStartup<Startup>();
             system.JsonSerializerSettings.DateFormatHandling = DateFormatHandling.IsoDateFormat;
             // ENDSAMPLE
 
         }
 
         // SAMPLE: read-json
-        public async Task read_json(IAlbaTestHost system)
+        public async Task read_json(IAlbaHost system)
         {
             var result = await system.Scenario(_ =>
             {
@@ -72,7 +72,7 @@ namespace Alba.Testing.Samples
 
 
         // SAMPLE: read-text
-        public async Task read_text(IAlbaTestHost system)
+        public async Task read_text(IAlbaHost system)
         {
             var result = await system.Scenario(_ =>
             {
@@ -88,7 +88,7 @@ namespace Alba.Testing.Samples
         // ENDSAMPLE
 
         // SAMPLE: assert-on-text
-        public Task assert_on_content(IAlbaTestHost system)
+        public Task assert_on_content(IAlbaHost system)
         {
             return system.Scenario(_ =>
             {
@@ -103,7 +103,7 @@ namespace Alba.Testing.Samples
 
 
         // SAMPLE: send-text
-        public Task send_text(IAlbaTestHost system)
+        public Task send_text(IAlbaHost system)
         {
             return system.Scenario(_ =>
             {
@@ -115,7 +115,7 @@ namespace Alba.Testing.Samples
 
 
         // SAMPLE: read-xml
-        public async Task read_xml(IAlbaTestHost system)
+        public async Task read_xml(IAlbaHost system)
         {
             var result = await system.Scenario(_ =>
             {

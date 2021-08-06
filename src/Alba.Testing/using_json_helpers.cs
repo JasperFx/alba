@@ -15,7 +15,7 @@ namespace Alba.Testing
             // SystemUnderTest is from Alba
             // The "Startup" type would be the Startup class from your
             // web application. 
-            using (var system = AlbaTestHost.ForStartup<WebApp.Startup>())
+            using (var system = AlbaHost.ForStartup<WebApp.Startup>())
             {
                 // Issue a request, and check the results
                 var result = await system.GetAsJson<OperationResult>("/math/add/3/4");
@@ -29,7 +29,7 @@ namespace Alba.Testing
         [Fact]
         public async Task post_and_expect_response()
         {
-            using (var system = AlbaTestHost.ForStartup<WebApp.Startup>())
+            using (var system = AlbaHost.ForStartup<WebApp.Startup>())
             {
                 var request = new OperationRequest
                 {
@@ -50,7 +50,7 @@ namespace Alba.Testing
         [Fact]
         public async Task put_and_expect_response()
         {
-            using (var system = AlbaTestHost.ForStartup<WebApp.Startup>())
+            using (var system = AlbaHost.ForStartup<WebApp.Startup>())
             {
                 var request = new OperationRequest
                 {

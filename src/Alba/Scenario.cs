@@ -29,10 +29,10 @@ namespace Alba
 
     internal class ScenarioResult : IScenarioResult
     {
-        public ScenarioResult(HttpContext context, IAlbaTestHost albaTestHost)
+        public ScenarioResult(HttpContext context, IAlbaHost albaHost)
         {
             Context = context;
-            ResponseBody = new HttpResponseBody(albaTestHost, context);
+            ResponseBody = new HttpResponseBody(albaHost, context);
         }
 
         public HttpResponseBody ResponseBody { get; }
@@ -43,14 +43,14 @@ namespace Alba
     public class Scenario : IUrlExpression
     {
         private readonly ScenarioAssertionException _assertionRecords = new ScenarioAssertionException();
-        private readonly IAlbaTestHost _system;
+        private readonly IAlbaHost _system;
         private readonly IList<Action<HttpContext>> _setups = new List<Action<HttpContext>>();
 
         private readonly IList<IScenarioAssertion> _assertions = new List<IScenarioAssertion>();
         private int _expectedStatusCode = 200;
         private bool _ignoreStatusCode;
 
-        internal Scenario(IAlbaTestHost system)
+        internal Scenario(IAlbaHost system)
         {
             _system = system;
             Body = new HttpRequestBody(system, this);

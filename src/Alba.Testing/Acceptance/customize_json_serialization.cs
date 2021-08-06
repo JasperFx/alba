@@ -17,9 +17,9 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public void all_defaults()
         {
-            using (var host = AlbaTestHost.ForStartup<Startup>())
+            using (var host = AlbaHost.ForStartup<Startup>())
             {
-                ((IAlbaTestHost) host).ToJson(new MyMessage { Name = "Jeremy" })
+                ((IAlbaHost) host).ToJson(new MyMessage { Name = "Jeremy" })
                     .ShouldNotContain(typeof(MyMessage).FullName);
             }
         }
@@ -27,7 +27,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public void customize_by_configuring_settings()
         {
-            using (var host = AlbaTestHost.ForStartup<Startup>(builder =>
+            using (var host = AlbaHost.ForStartup<Startup>(builder =>
             {
                 return builder.ConfigureServices((c, _) =>
                 {
@@ -39,7 +39,7 @@ namespace Alba.Testing.Acceptance
             }))
             {
                 
-                host.As<IAlbaTestHost>().ToJson(new MyMessage {Name = "Jeremy"})
+                host.As<IAlbaHost>().ToJson(new MyMessage {Name = "Jeremy"})
                     .ShouldContain(typeof(MyMessage).FullName);
             }
         }
@@ -47,11 +47,11 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public void customize_by_altering_settings_directly()
         {
-            using (var host = AlbaTestHost.ForStartup<Startup>())
+            using (var host = AlbaHost.ForStartup<Startup>())
             {
                 host.JsonSerializerSettings.TypeNameHandling = TypeNameHandling.All;
 
-                ((IAlbaTestHost) host).ToJson(new MyMessage {Name = "Jeremy"})
+                ((IAlbaHost) host).ToJson(new MyMessage {Name = "Jeremy"})
                     .ShouldContain(typeof(MyMessage).FullName);
             }
         }

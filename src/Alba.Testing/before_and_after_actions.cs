@@ -31,7 +31,7 @@ namespace Alba.Testing
         }
 
         // SAMPLE: before-and-after
-        public void sample_usage(AlbaTestHost system)
+        public void sample_usage(AlbaHost system)
         {
             // Synchronously
             system.BeforeEach(context =>
@@ -68,7 +68,7 @@ namespace Alba.Testing
         [Fact]
         public async Task synchronous_before_and_after()
         {
-            using (var system = new AlbaTestHost(EmptyHostBuilder()))
+            using (var system = new AlbaHost(EmptyHostBuilder()))
             {
                 // Quick check
                 system.Services.ShouldNotBeNull();
@@ -146,7 +146,7 @@ namespace Alba.Testing
             var authenticatedUser = new ClaimsPrincipal(new ClaimsIdentity(null, "Basic"));
 
             //This works
-            using (var system = new AlbaTestHost(AuthenticatedHostBuilder())
+            using (var system = new AlbaHost(AuthenticatedHostBuilder())
                 .BeforeEachAsync(c => Task.Run(() =>
                 {
                     _output.WriteLine("In BeforeEach");
@@ -164,7 +164,7 @@ namespace Alba.Testing
             
 
             //This doesn't
-            using (var system = new AlbaTestHost(AuthenticatedHostBuilder())
+            using (var system = new AlbaHost(AuthenticatedHostBuilder())
                 .BeforeEachAsync(doSecurity))
             {
                 var result = await system.Scenario(x => x.Get.Url("/"));

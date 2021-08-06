@@ -6,7 +6,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace Alba
 {
-    public interface IAlbaTestHost : IHost
+    public interface IAlbaHost : IHost
     {
         IUrlLookup Urls { get; set; }
 
@@ -45,27 +45,27 @@ namespace Alba
         /// </summary>
         /// <param name="beforeEach"></param>
         /// <returns></returns>
-        IAlbaTestHost BeforeEach(Action<HttpContext> beforeEach);
+        IAlbaHost BeforeEach(Action<HttpContext> beforeEach);
 
         /// <summary>
         /// Execute some clean up action immediately after executing each HTTP execution. This is NOT additive
         /// </summary>
         /// <param name="afterEach"></param>
         /// <returns></returns>
-        IAlbaTestHost AfterEach(Action<HttpContext?> afterEach);
+        IAlbaHost AfterEach(Action<HttpContext?> afterEach);
 
         /// <summary>
         /// Run some kind of set up action immediately before executing an HTTP request
         /// </summary>
         /// <param name="beforeEach"></param>
         /// <returns></returns>
-        IAlbaTestHost BeforeEachAsync(Func<HttpContext, Task> beforeEach);
+        IAlbaHost BeforeEachAsync(Func<HttpContext, Task> beforeEach);
 
         /// <summary>
         /// Execute some clean up action immediately after executing each HTTP execution. This is NOT additive
         /// </summary>
         /// <param name="afterEach"></param>
         /// <returns></returns>
-        IAlbaTestHost AfterEachAsync(Func<HttpContext?, Task> afterEach);
+        IAlbaHost AfterEachAsync(Func<HttpContext?, Task> afterEach);
     }
 }

@@ -6,7 +6,7 @@ namespace Alba.Testing.Samples
     public class Headers
     {
         // SAMPLE: conneg-helpers
-        public Task conneg_helpers(IAlbaTestHost system)
+        public Task conneg_helpers(IAlbaHost system)
         {
             return system.Scenario(_ =>
             {
@@ -27,7 +27,7 @@ namespace Alba.Testing.Samples
         // ENDSAMPLE
 
         // SAMPLE: setting-request-headers
-        public Task setting_request_headers(IAlbaTestHost system)
+        public Task setting_request_headers(IAlbaHost system)
         {
             return system.Scenario(_ =>
             {
@@ -39,7 +39,7 @@ namespace Alba.Testing.Samples
 
 
         // SAMPLE: asserting-on-header-values
-        public Task asserting_on_header_values(IAlbaTestHost system)
+        public Task asserting_on_header_values(IAlbaHost system)
         {
             return system.Scenario(_ =>
             {

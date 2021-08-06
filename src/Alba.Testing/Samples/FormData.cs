@@ -6,7 +6,7 @@ namespace Alba.Testing.Samples
     public class FormData
     {
         // SAMPLE: write-form-data
-        public Task write_form_data(IAlbaTestHost system)
+        public Task write_form_data(IAlbaHost system)
         {
             var form1 = new Dictionary<string, string>
             {

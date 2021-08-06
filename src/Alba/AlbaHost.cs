@@ -20,7 +20,7 @@ namespace Alba
     /// <summary>
     ///     Root host of Alba to govern and configure the underlying ASP.Net Core application
     /// </summary>
-    public class AlbaTestHost : IAlbaTestHost
+    public class AlbaHost : IAlbaHost
     {
         
         private Func<HttpContext?, Task> _afterEach = c => Task.CompletedTask;
@@ -30,7 +30,7 @@ namespace Alba
 
         private readonly IHost _host;
 
-        public static async Task<IAlbaTestHost> For(IHostBuilder builder)
+        public static async Task<IAlbaHost> For(IHostBuilder builder, params IAlbaExtension[] extensions)
         {
             var host = await builder
                 .ConfigureServices(_ =>
@@ -40,10 +40,10 @@ namespace Alba
                 })
                 .StartAsync();
             
-            return new AlbaTestHost(host);
+            return new AlbaHost(host, extensions);
         }
 
-        private AlbaTestHost(IHost host, Assembly? applicationAssembly = null)
+        private AlbaHost(IHost host, params IAlbaExtension[] extensions)
         {
             _host = host;
             Server = host.GetTestServer();
@@ -54,19 +54,15 @@ namespace Alba
             var options = _host.Services.GetService<IOptions<MvcNewtonsoftJsonOptions>>()?.Value;
             var settings = options?.SerializerSettings;
             if (settings != null) JsonSerializerSettings = settings;
-
-            // TODO -- might be unnecessary in newer ASP.Net Core
-            var manager = _host.Services.GetService<ApplicationPartManager>();
-            if (applicationAssembly != null) manager?.ApplicationParts.Add(new AssemblyPart(applicationAssembly));
         }
 
-        public AlbaTestHost(IHostBuilder builder, Assembly? applicationAssembly = null)
+        public AlbaHost(IHostBuilder builder, params IAlbaExtension[] extensions)
             : this(builder
                 .ConfigureServices(_ =>
                 {
                     _.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
                     _.AddSingleton<IServer>(x => new TestServer(x));
-                }).Start())
+                }).Start(), extensions)
             
         {
 
@@ -79,7 +75,7 @@ namespace Alba
 
         public Task StartAsync(CancellationToken cancellationToken = new CancellationToken())
         {
-            throw new NotSupportedException();
+            return Task.CompletedTask;
         }
 
         public Task StopAsync(CancellationToken cancellationToken = new CancellationToken())
@@ -104,7 +100,7 @@ namespace Alba
         /// <param name="json"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        T IAlbaTestHost.FromJson<T>(string json)
+        T IAlbaHost.FromJson<T>(string json)
         {
             var serializer = JsonSerializer.Create(JsonSerializerSettings);
 
@@ -117,7 +113,7 @@ namespace Alba
         /// </summary>
         /// <param name="target"></param>
         /// <returns></returns>
-        string IAlbaTestHost.ToJson(object target)
+        string IAlbaHost.ToJson(object target)
         {
             var serializer = JsonSerializer.Create(JsonSerializerSettings);
 
@@ -138,7 +134,7 @@ namespace Alba
         /// <summary>
         ///     Url lookup strategy for this system
         /// </summary>
-        IUrlLookup IAlbaTestHost.Urls { get; set; } = new NulloUrlLookup();
+        IUrlLookup IAlbaHost.Urls { get; set; } = new NulloUrlLookup();
 
         public Task<HttpContext> Invoke(Action<HttpContext> setup)
         {
@@ -153,7 +149,7 @@ namespace Alba
         /// <param name="rootPath">Specify the content root directory to be used by the host.</param>
         /// <typeparam name="T"></typeparam>
         /// <returns>The system under test</returns>
-        public static AlbaTestHost ForStartup<T>(Func<IHostBuilder, IHostBuilder>? configure = null,
+        public static AlbaHost ForStartup<T>(Func<IHostBuilder, IHostBuilder>? configure = null,
             string? rootPath = null) where T : class
         {
             var builder = Host.CreateDefaultBuilder();
@@ -164,7 +160,7 @@ namespace Alba
             builder.UseContentRoot(rootPath ?? DirectoryFinder.FindParallelFolder(typeof(T).Assembly.GetName().Name) ??
                                    AppContext.BaseDirectory);
 
-            return new AlbaTestHost(builder, typeof(T).Assembly);
+            return new AlbaHost(builder);
         }
 
 
@@ -173,13 +169,13 @@ namespace Alba
         /// </summary>
         /// <param name="configuration">Optional configuration of the IWebHostBuilder to be applied *after* the call to UseStartup()</param>
         /// <returns>The system under test</returns>
-        public static AlbaTestHost For(Action<IWebHostBuilder> configuration)
+        public static AlbaHost For(Action<IWebHostBuilder> configuration)
         {
             var builder = Host.CreateDefaultBuilder();
             
             builder.ConfigureWebHostDefaults(configuration);
             
-            return new AlbaTestHost(builder);
+            return new AlbaHost(builder);
 
         }
 
@@ -189,7 +185,7 @@ namespace Alba
         /// </summary>
         /// <param name="beforeEach"></param>
         /// <returns></returns>
-        public IAlbaTestHost BeforeEach(Action<HttpContext> beforeEach)
+        public IAlbaHost BeforeEach(Action<HttpContext> beforeEach)
         {
             _beforeEach = c =>
             {
@@ -206,7 +202,7 @@ namespace Alba
         /// </summary>
         /// <param name="afterEach"></param>
         /// <returns></returns>
-        public IAlbaTestHost AfterEach(Action<HttpContext?> afterEach)
+        public IAlbaHost AfterEach(Action<HttpContext?> afterEach)
         {
             _afterEach = c =>
             {
@@ -222,7 +218,7 @@ namespace Alba
         /// </summary>
         /// <param name="beforeEach"></param>
         /// <returns></returns>
-        public IAlbaTestHost BeforeEachAsync(Func<HttpContext, Task> beforeEach)
+        public IAlbaHost BeforeEachAsync(Func<HttpContext, Task> beforeEach)
         {
             _beforeEach = beforeEach;
             
@@ -234,7 +230,7 @@ namespace Alba
         /// </summary>
         /// <param name="afterEach"></param>
         /// <returns></returns>
-        public IAlbaTestHost AfterEachAsync(Func<HttpContext?, Task> afterEach)
+        public IAlbaHost AfterEachAsync(Func<HttpContext?, Task> afterEach)
         {
             _afterEach = afterEach;
 

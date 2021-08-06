@@ -14,7 +14,7 @@ namespace Alba.Testing.Acceptance
         public async Task can_bind_to_form_data()
         {
 
-            using (var system = AlbaTestHost.ForStartup<Startup>())
+            using (var system = AlbaHost.ForStartup<Startup>())
             {
 
                 var input = new InputModel {
@@ -43,7 +43,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task can_bind_to_form_data_as_dictionary()
         {
-            using (var system = AlbaTestHost.ForStartup<Startup>())
+            using (var system = AlbaHost.ForStartup<Startup>())
             {
                 var dict = new Dictionary<string, string> {{"One", "one"}, {"Two", "two"}, {"Three", "three"}};
 

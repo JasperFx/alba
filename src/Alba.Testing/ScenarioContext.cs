@@ -9,11 +9,11 @@ namespace Alba.Testing
     public class ScenarioContext : IDisposable
     {
         protected CrudeRouter router = new CrudeRouter();
-        protected readonly IAlbaTestHost host;
+        protected readonly IAlbaHost host;
 
         public ScenarioContext()
         {
-            host = new AlbaTestHost(Host.CreateDefaultBuilder().ConfigureWebHostDefaults(c =>
+            host = new AlbaHost(Host.CreateDefaultBuilder().ConfigureWebHostDefaults(c =>
                 c.Configure(app => { app.Run(router.Invoke); })));
             host.Urls = router;
         }
