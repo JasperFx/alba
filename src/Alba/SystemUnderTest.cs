@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
+using Baseline;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
@@ -20,7 +21,7 @@ namespace Alba
     /// <summary>
     ///     Root host of Alba to govern and configure the underlying ASP.Net Core application
     /// </summary>
-    public class SystemUnderTest : ISystemUnderTest
+    public class SystemUnderTest : IScenarioRunner
     {
         
         private Func<HttpContext?, Task> _afterEach = c => Task.CompletedTask;
@@ -87,28 +88,6 @@ namespace Alba
         /// </summary>
         public JsonSerializerSettings JsonSerializerSettings { get; set; } = new JsonSerializerSettings();
 
-        /// <summary>
-        /// Called immediately before a scenario is executed. Useful for setting up
-        /// system state
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        Task ISystemUnderTest.BeforeEach(HttpContext context)
-        {
-            return _beforeEach(context);
-        }
-
-        /// <summary>
-        /// Called immediately after the scenario is executed. Useful for cleaning up
-        /// test state left behind
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        Task ISystemUnderTest.AfterEach(HttpContext? context)
-        {
-            return _afterEach(context);
-        }
-
 
         /// <summary>
         ///     Can be overridden to customize the Json serialization
@@ -116,7 +95,7 @@ namespace Alba
         /// <param name="json"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        T ISystemUnderTest.FromJson<T>(string json)
+        T IScenarioRunner.FromJson<T>(string json)
         {
             var serializer = JsonSerializer.Create(JsonSerializerSettings);
 
@@ -129,7 +108,7 @@ namespace Alba
         /// </summary>
         /// <param name="target"></param>
         /// <returns></returns>
-        string ISystemUnderTest.ToJson(object target)
+        string IScenarioRunner.ToJson(object target)
         {
             var serializer = JsonSerializer.Create(JsonSerializerSettings);
 
@@ -150,7 +129,7 @@ namespace Alba
         /// <summary>
         ///     Url lookup strategy for this system
         /// </summary>
-        IUrlLookup ISystemUnderTest.Urls { get; set; } = new NulloUrlLookup();
+        IUrlLookup IScenarioRunner.Urls { get; set; } = new NulloUrlLookup();
 
         public Task<HttpContext> Invoke(Action<HttpContext> setup)
         {
@@ -252,6 +231,64 @@ namespace Alba
 
             return this;
         }
+        
+        // SAMPLE: ScenarioSignature
+        /// <summary>
+        ///     Define and execute an integration test by running an Http request through
+        ///     your ASP.Net Core system
+        /// </summary>
+        /// <param name="system"></param>
+        /// <param name="configure"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        public async Task<IScenarioResult> Scenario(
+                Action<Scenario> configure)
+            // ENDSAMPLE
+        {
+            var scenario = new Scenario(this);
+
+
+            configure(scenario);
+
+            scenario.Rewind();
+
+            HttpContext? context = null;
+            try
+            {
+                context = await Invoke(async c =>
+                {
+                    // I know what you're saying, this is stupid, you shouldn't 
+                    // ever mix sync and async if you can help it, and yet tests
+                    // for long running before each *will* break if you try to 
+                    // use async _beforeEach here. I do NOT understand why this is so.
+                    _beforeEach(c).GetAwaiter().GetResult();
+
+                    c.Request.Body.Position = 0;
+
+
+                    scenario.SetupHttpContext(c);
+
+                    if (c.Request.Path == null) throw new InvalidOperationException("This scenario has no defined url");
+                });
+
+                scenario.RunAssertions(context);
+            }
+            finally
+            {
+                await _afterEach(context);
+            }
+
+            if (context.Response.Body.CanSeek)
+            {
+                context.Response.Body.Position = 0;
+            }
+
+
+            return new ScenarioResult(context, this);
+        }
+
+
+        
     }
 
     // SAMPLE: IUrlLookup

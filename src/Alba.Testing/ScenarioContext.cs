@@ -9,7 +9,7 @@ namespace Alba.Testing
     public class ScenarioContext : IDisposable
     {
         protected CrudeRouter router = new CrudeRouter();
-        protected readonly ISystemUnderTest host;
+        protected readonly IScenarioRunner host;
 
         public ScenarioContext()
         {

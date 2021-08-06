@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http.Features;
 
 namespace Alba
 {
-    public interface ISystemUnderTest : IDisposable
+    public interface IScenarioRunner : IDisposable
     {
         IUrlLookup Urls { get; set; }
 
@@ -15,9 +15,6 @@ namespace Alba
 
         Task<HttpContext> Invoke(Action<HttpContext> setup);
 
-
-        Task BeforeEach(HttpContext context);
-        Task AfterEach(HttpContext? context);
 
         /// <summary>
         /// Deserializes an object using the ASP.Net Core JsonSerializerSettings
@@ -35,5 +32,18 @@ namespace Alba
         /// <param name="target"></param>
         /// <returns></returns>
         string ToJson(object target);
+
+        /// <summary>
+        ///     Define and execute an integration test by running an Http request through
+        ///     your ASP.Net Core system
+        /// </summary>
+        /// <param name="system"></param>
+        /// <param name="configure"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        Task<IScenarioResult> Scenario(
+                Action<Scenario> configure)
+            // ENDSAMPLE
+            ;
     }
 }
