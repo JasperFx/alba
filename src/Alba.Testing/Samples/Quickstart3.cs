@@ -20,7 +20,7 @@ namespace Alba.Testing.Samples
             // You can also call hostBuilder.ConfigureServices() here to further customize
             // your application, and that's frequently valuable in testing scenarios
             
-            using (var system = new SystemUnderTest(hostBuilder))
+            using (var system = new AlbaTestHost(hostBuilder))
             {
                 // You can use the IoC container for the SystemUnderTest
                 var configuration 

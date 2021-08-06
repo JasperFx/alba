@@ -22,7 +22,7 @@ namespace Alba.Testing.Samples
         [Fact]
         public async Task should_say_hello_world()
         {
-            using (var system = SystemUnderTest.ForStartup<Startup>())
+            using (var system = AlbaTestHost.ForStartup<Startup>())
             {
                 // This runs an HTTP request and makes an assertion
                 // about the expected content of the response
@@ -40,7 +40,7 @@ namespace Alba.Testing.Samples
         public async Task should_say_hello_world_raw()
         {
             // SAMPLE: programmatic-bootstrapping
-            using var system = SystemUnderTest.For(_ =>
+            using var system = AlbaTestHost.For(_ =>
             {
                 _.Configure(app =>
                 {
@@ -60,7 +60,7 @@ namespace Alba.Testing.Samples
                     // like maybe using stubs for problematic dependencies
                 });
             
-            using var system2 = new SystemUnderTest(builder);
+            using var system2 = new AlbaTestHost(builder);
 
             // ENDSAMPLE
 
@@ -76,7 +76,7 @@ namespace Alba.Testing.Samples
         [Fact]
         public async Task should_say_hello_world_with_raw_objects()
         {
-            using (var system = SystemUnderTest.ForStartup<Startup>())
+            using (var system = AlbaTestHost.ForStartup<Startup>())
             {
                 var response = await system.Scenario(_ =>
                 {
@@ -97,7 +97,7 @@ namespace Alba.Testing.Samples
         [Fact]
         public async Task working_with_the_raw_response()
         {
-            using (var system = SystemUnderTest.ForStartup<Startup>())
+            using (var system = AlbaTestHost.ForStartup<Startup>())
             {
                 var response = await system.Scenario(_ =>
                 {
@@ -122,7 +122,7 @@ namespace Alba.Testing.Samples
         [Fact]
         public async Task the_home_page_does_not_blow_up()
         {
-            using (var system = SystemUnderTest.ForStartup<Startup>())
+            using (var system = AlbaTestHost.ForStartup<Startup>())
             {
                 var response = await system.Scenario(_ =>
                 {
@@ -139,7 +139,7 @@ namespace Alba.Testing.Samples
             // SAMPLE: override_the_content_path
             
             // Alba has a helper for overriding the root path
-            var system = SystemUnderTest
+            var system = AlbaTestHost
                 .ForStartup<Startup>(rootPath:"c:\\path_to_your_actual_application");
 
             // or do it with idiomatic ASP.Net Core
@@ -148,7 +148,7 @@ namespace Alba.Testing.Samples
                 .ConfigureWebHostDefaults(c=> c.UseStartup<Startup>())
                 .UseContentRoot("c:\\path_to_your_actual_application");
 
-            var system2 = new SystemUnderTest(builder);
+            var system2 = new AlbaTestHost(builder);
 
             // ENDSAMPLE
 
@@ -176,7 +176,7 @@ namespace Alba.Testing.Samples
             // Create the SystemUnderTest, and alternatively override what Alba
             // thinks is the main application assembly
             // THIS IS IMPORTANT FOR MVC CONTROLLER DISCOVERY
-            var system = new SystemUnderTest(builder, applicationAssembly:typeof(Startup).Assembly);
+            var system = new AlbaTestHost(builder, applicationAssembly:typeof(Startup).Assembly);
 
             system.BeforeEach(httpContext =>
             {

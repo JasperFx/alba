@@ -10,7 +10,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task redirect()
         {
-            using (var system = SystemUnderTest.ForStartup<Startup>())
+            using (var system = AlbaTestHost.ForStartup<Startup>())
             {
                 await system.Scenario(_ =>
                 {
@@ -26,7 +26,7 @@ namespace Alba.Testing.Acceptance
         {
             var result = await Exception<ScenarioAssertionException>.ShouldBeThrownBy(async () =>
             {
-                using (var system = SystemUnderTest.ForStartup<Startup>())
+                using (var system = AlbaTestHost.ForStartup<Startup>())
                 {
                     await system.Scenario(_ =>
                     {
@@ -45,7 +45,7 @@ namespace Alba.Testing.Acceptance
         {
             var result = await Exception<ScenarioAssertionException>.ShouldBeThrownBy(async () =>
             {
-                using (var system = SystemUnderTest.ForStartup<Startup>())
+                using (var system = AlbaTestHost.ForStartup<Startup>())
                 {
                     await system.Scenario(_ =>
                     {
@@ -62,7 +62,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task redirect_permanent()
         {
-            using (var system = SystemUnderTest.ForStartup<Startup>())
+            using (var system = AlbaTestHost.ForStartup<Startup>())
             {
                 await system.Scenario(_ =>
                 {
@@ -78,7 +78,7 @@ namespace Alba.Testing.Acceptance
         {
             var result = await Exception<ScenarioAssertionException>.ShouldBeThrownBy(async () =>
             {
-                using (var system = SystemUnderTest.ForStartup<Startup>())
+                using (var system = AlbaTestHost.ForStartup<Startup>())
                 {
                     await system.Scenario(_ =>
                     {
@@ -97,7 +97,7 @@ namespace Alba.Testing.Acceptance
         {
             var result = await Exception<ScenarioAssertionException>.ShouldBeThrownBy(async () =>
             {
-                using (var system = SystemUnderTest.ForStartup<Startup>())
+                using (var system = AlbaTestHost.ForStartup<Startup>())
                 {
                     await system.Scenario(_ =>
                     {

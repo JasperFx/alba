@@ -5,7 +5,7 @@ namespace Alba.Testing.Samples
     public class Urls
     {
         // SAMPLE: specify-the-url-directly
-        public Task specify_url(SystemUnderTest system)
+        public Task specify_url(AlbaTestHost system)
         {
             return system.Scenario(_ =>
             {
@@ -22,7 +22,7 @@ namespace Alba.Testing.Samples
 
 
         // SAMPLE: reverse-url-lookup
-        public Task reverse_url_lookup(SystemUnderTest system)
+        public Task reverse_url_lookup(AlbaTestHost system)
         {
             return system.Scenario(_ =>
             {

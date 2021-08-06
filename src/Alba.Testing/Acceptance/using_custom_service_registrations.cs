@@ -16,7 +16,7 @@ namespace Alba.Testing.Acceptance
         {
             ValuesController.LastWidget = new IWidget[0];
 
-            using (var system = SystemUnderTest.ForStartup<Startup>(builder =>
+            using (var system = AlbaTestHost.ForStartup<Startup>(builder =>
                 {
                     return builder.ConfigureServices((c, _) =>
                     {
@@ -41,7 +41,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public void can_request_services()
         {
-            using var system = SystemUnderTest.ForStartup<Startup>(builder =>
+            using var system = AlbaTestHost.ForStartup<Startup>(builder =>
             {
                 return builder.ConfigureServices((c, _) => { _.AddHttpContextAccessor(); });
             });

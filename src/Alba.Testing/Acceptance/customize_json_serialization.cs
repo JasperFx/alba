@@ -17,7 +17,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public void all_defaults()
         {
-            using (var host = SystemUnderTest.ForStartup<Startup>())
+            using (var host = AlbaTestHost.ForStartup<Startup>())
             {
                 ((IAlbaTestHost) host).ToJson(new MyMessage { Name = "Jeremy" })
                     .ShouldNotContain(typeof(MyMessage).FullName);
@@ -27,7 +27,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public void customize_by_configuring_settings()
         {
-            using (var host = SystemUnderTest.ForStartup<Startup>(builder =>
+            using (var host = AlbaTestHost.ForStartup<Startup>(builder =>
             {
                 return builder.ConfigureServices((c, _) =>
                 {
@@ -47,7 +47,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public void customize_by_altering_settings_directly()
         {
-            using (var host = SystemUnderTest.ForStartup<Startup>())
+            using (var host = AlbaTestHost.ForStartup<Startup>())
             {
                 host.JsonSerializerSettings.TypeNameHandling = TypeNameHandling.All;
 

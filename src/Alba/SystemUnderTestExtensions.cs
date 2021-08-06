@@ -10,7 +10,7 @@ namespace Alba
     {
         public static Task<IAlbaTestHost> StartAlbaHostAsync(this IHostBuilder builder)
         {
-            return SystemUnderTest.For(builder);
+            return AlbaTestHost.For(builder);
         }
 
         /// <summary>

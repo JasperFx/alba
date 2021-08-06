@@ -20,7 +20,7 @@ namespace Alba
     /// <summary>
     ///     Root host of Alba to govern and configure the underlying ASP.Net Core application
     /// </summary>
-    public class SystemUnderTest : IAlbaTestHost
+    public class AlbaTestHost : IAlbaTestHost
     {
         
         private Func<HttpContext?, Task> _afterEach = c => Task.CompletedTask;
@@ -40,10 +40,10 @@ namespace Alba
                 })
                 .StartAsync();
             
-            return new SystemUnderTest(host);
+            return new AlbaTestHost(host);
         }
 
-        private SystemUnderTest(IHost host, Assembly? applicationAssembly = null)
+        private AlbaTestHost(IHost host, Assembly? applicationAssembly = null)
         {
             _host = host;
             Server = host.GetTestServer();
@@ -60,7 +60,7 @@ namespace Alba
             if (applicationAssembly != null) manager?.ApplicationParts.Add(new AssemblyPart(applicationAssembly));
         }
 
-        public SystemUnderTest(IHostBuilder builder, Assembly? applicationAssembly = null)
+        public AlbaTestHost(IHostBuilder builder, Assembly? applicationAssembly = null)
             : this(builder
                 .ConfigureServices(_ =>
                 {
@@ -153,7 +153,7 @@ namespace Alba
         /// <param name="rootPath">Specify the content root directory to be used by the host.</param>
         /// <typeparam name="T"></typeparam>
         /// <returns>The system under test</returns>
-        public static SystemUnderTest ForStartup<T>(Func<IHostBuilder, IHostBuilder>? configure = null,
+        public static AlbaTestHost ForStartup<T>(Func<IHostBuilder, IHostBuilder>? configure = null,
             string? rootPath = null) where T : class
         {
             var builder = Host.CreateDefaultBuilder();
@@ -164,7 +164,7 @@ namespace Alba
             builder.UseContentRoot(rootPath ?? DirectoryFinder.FindParallelFolder(typeof(T).Assembly.GetName().Name) ??
                                    AppContext.BaseDirectory);
 
-            return new SystemUnderTest(builder, typeof(T).Assembly);
+            return new AlbaTestHost(builder, typeof(T).Assembly);
         }
 
 
@@ -173,13 +173,13 @@ namespace Alba
         /// </summary>
         /// <param name="configuration">Optional configuration of the IWebHostBuilder to be applied *after* the call to UseStartup()</param>
         /// <returns>The system under test</returns>
-        public static SystemUnderTest For(Action<IWebHostBuilder> configuration)
+        public static AlbaTestHost For(Action<IWebHostBuilder> configuration)
         {
             var builder = Host.CreateDefaultBuilder();
             
             builder.ConfigureWebHostDefaults(configuration);
             
-            return new SystemUnderTest(builder);
+            return new AlbaTestHost(builder);
 
         }
 

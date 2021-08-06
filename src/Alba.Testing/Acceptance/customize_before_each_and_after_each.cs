@@ -11,7 +11,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task before_each_and_after_each_is_called()
         {
-            using (var host = SystemUnderTest
+            using (var host = AlbaTestHost
                 .ForStartup<Startup>()
             .BeforeEach(c =>
             {

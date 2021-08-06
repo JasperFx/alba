@@ -48,7 +48,7 @@ namespace Alba.Testing.Samples
         public void customizing_serialization()
         {
             // SAMPLE: customizing-serialization
-            var system = SystemUnderTest.ForStartup<Startup>();
+            var system = AlbaTestHost.ForStartup<Startup>();
             system.JsonSerializerSettings.DateFormatHandling = DateFormatHandling.IsoDateFormat;
             // ENDSAMPLE
 

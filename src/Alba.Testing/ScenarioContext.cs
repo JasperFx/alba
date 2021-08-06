@@ -13,7 +13,7 @@ namespace Alba.Testing
 
         public ScenarioContext()
         {
-            host = new SystemUnderTest(Host.CreateDefaultBuilder().ConfigureWebHostDefaults(c =>
+            host = new AlbaTestHost(Host.CreateDefaultBuilder().ConfigureWebHostDefaults(c =>
                 c.Configure(app => { app.Run(router.Invoke); })));
             host.Urls = router;
         }

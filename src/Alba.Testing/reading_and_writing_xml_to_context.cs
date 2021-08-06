@@ -49,7 +49,7 @@ namespace Alba.Testing
         public void can_write_xml_to_request()
         {
             var context = StubHttpContext.Empty();
-            using (var system = SystemUnderTest.For(b => b.Configure(app => app.Run(c => c.Response.WriteAsync("Hello")))))
+            using (var system = AlbaTestHost.For(b => b.Configure(app => app.Run(c => c.Response.WriteAsync("Hello")))))
             {
                 var scenario = new Scenario(system);
                 new HttpRequestBody(null, scenario).XmlInputIs(new MyMessage { Age = 3, Name = "Declan" });
