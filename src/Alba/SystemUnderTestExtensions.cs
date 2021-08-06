@@ -79,17 +79,6 @@ namespace Alba
                 return response.ResponseBody.ReadAsJson<TResponse>();
             }
         }
-        
-
-        /// <summary>
-        /// Shortcut to create an Alba SystemUnderTest for the configured IWebHostBuilder
-        /// </summary>
-        /// <param name="builder"></param>
-        /// <returns></returns>
-        public static IAlbaTestHost ToSystemUnderTest(this IHostBuilder builder)
-        {
-            return new SystemUnderTest(builder);
-        }
 
     }
 }
