@@ -98,32 +98,30 @@ namespace Alba.Testing
         [Fact]
         public async Task asynchronous_before_and_after()
         {
-            using (var system = new SystemUnderTest(EmptyHostBuilder()))
+            using var system = await EmptyHostBuilder().StartAlbaHostAsync();
+            int count = 0;
+
+            system.BeforeEachAsync(c =>
             {
-                int count = 0;
+                c.ShouldNotBeNull();
+                count = 1;
 
-                system.BeforeEachAsync(c =>
-                {
-                    c.ShouldNotBeNull();
-                    count = 1;
+                return Task.CompletedTask;
+            });
 
-                    return Task.CompletedTask;
-                });
+            system.AfterEachAsync(c =>
+            {
+                c.ShouldNotBeNull();
+                count.ShouldBe(1);
 
-                system.AfterEachAsync(c =>
-                {
-                    c.ShouldNotBeNull();
-                    count.ShouldBe(1);
+                count = 2;
 
-                    count = 2;
+                return Task.CompletedTask;
+            });
 
-                    return Task.CompletedTask;
-                });
+            var result = await system.Scenario(x => x.Get.Url("/"));
 
-                var result = await system.Scenario(x => x.Get.Url("/"));
-
-                count.ShouldBe(2);
-            }
+            count.ShouldBe(2);
         }
 
         protected IHostBuilder AuthenticatedHostBuilder()

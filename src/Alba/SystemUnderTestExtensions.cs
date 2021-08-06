@@ -8,7 +8,10 @@ namespace Alba
 {
     public static class SystemUnderTestExtensions
     {
-
+        public static Task<IAlbaTestHost> StartAlbaHostAsync(this IHostBuilder builder)
+        {
+            return SystemUnderTest.For(builder);
+        }
 
         /// <summary>
         /// Shortcut to issue a POST with a Json serialized request body and a Json serialized
@@ -76,18 +79,7 @@ namespace Alba
                 return response.ResponseBody.ReadAsJson<TResponse>();
             }
         }
-
-        /// <summary>
-        /// Shortcut to create an Alba SystemUnderTest for the configured IWebHostBuilder
-        /// </summary>
-        /// <param name="builder"></param>
-        /// <returns></returns>
-        [Obsolete("Use a IHostBuilder generic host instead. See: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/generic-host")]
-        public static IAlbaTestHost ToSystemUnderTest(this IWebHostBuilder builder)
-        {
-            return new SystemUnderTest(builder);
-        }
-
+        
 
         /// <summary>
         /// Shortcut to create an Alba SystemUnderTest for the configured IWebHostBuilder

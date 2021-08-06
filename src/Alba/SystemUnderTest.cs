@@ -4,8 +4,6 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Baseline;
-using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Http;
@@ -31,20 +29,25 @@ namespace Alba
         private Func<HttpContext, Task> _beforeEach = c => Task.CompletedTask;
 
         private readonly IHost _host;
-        
-        public SystemUnderTest(IHostBuilder builder, Assembly? applicationAssembly = null)
+
+        public static async Task<IAlbaTestHost> For(IHostBuilder builder)
         {
-            builder
+            var host = await builder
                 .ConfigureServices(_ =>
                 {
                     _.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
                     _.AddSingleton<IServer>(x => new TestServer(x));
-                });
+                })
+                .StartAsync();
+            
+            return new SystemUnderTest(host);
+        }
 
-            _host = builder.Start();
-
-            Server = _host.GetTestServer();
-
+        private SystemUnderTest(IHost host, Assembly? applicationAssembly = null)
+        {
+            _host = host;
+            Server = host.GetTestServer();
+            
             Server.AllowSynchronousIO = true;
 
             // TODO -- This will all need to change to be JSON serializer agnostic
@@ -56,23 +59,17 @@ namespace Alba
             var manager = _host.Services.GetService<ApplicationPartManager>();
             if (applicationAssembly != null) manager?.ApplicationParts.Add(new AssemblyPart(applicationAssembly));
         }
-        
-        [Obsolete("Pass in a IHostBuilder generic host instead. See: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/generic-host")]
-        public SystemUnderTest(IWebHostBuilder builder, Assembly? applicationAssembly = null)
+
+        public SystemUnderTest(IHostBuilder builder, Assembly? applicationAssembly = null)
+            : this(builder
+                .ConfigureServices(_ =>
+                {
+                    _.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+                    _.AddSingleton<IServer>(x => new TestServer(x));
+                }).Start())
+            
         {
-            builder.ConfigureServices(_ => { _.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); });
 
-            Server = new TestServer(builder)
-            {
-                AllowSynchronousIO = true
-            };
-
-
-            var settings = Server.Host.Services.GetService<JsonSerializerSettings>();
-            if (settings != null) JsonSerializerSettings = settings;
-
-            var manager = Server.Host.Services.GetService<ApplicationPartManager>();
-            if (applicationAssembly != null) manager?.ApplicationParts.Add(new AssemblyPart(applicationAssembly));
         }
 
         /// <summary>
@@ -82,7 +79,7 @@ namespace Alba
 
         public Task StartAsync(CancellationToken cancellationToken = new CancellationToken())
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public Task StopAsync(CancellationToken cancellationToken = new CancellationToken())
