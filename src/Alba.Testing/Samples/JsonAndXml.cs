@@ -8,7 +8,7 @@ namespace Alba.Testing.Samples
     public class JsonAndXml
     {
         // SAMPLE: sending-json
-        public Task send_json(IScenarioRunner system)
+        public Task send_json(IAlbaTestHost system)
         {
             return system.Scenario(_ =>
             {
@@ -27,7 +27,7 @@ namespace Alba.Testing.Samples
         // ENDSAMPLE
 
         // SAMPLE: sending-xml
-        public Task send_xml(IScenarioRunner system)
+        public Task send_xml(IAlbaTestHost system)
         {
             return system.Scenario(_ =>
             {
@@ -55,7 +55,7 @@ namespace Alba.Testing.Samples
         }
 
         // SAMPLE: read-json
-        public async Task read_json(IScenarioRunner system)
+        public async Task read_json(IAlbaTestHost system)
         {
             var result = await system.Scenario(_ =>
             {
@@ -72,7 +72,7 @@ namespace Alba.Testing.Samples
 
 
         // SAMPLE: read-text
-        public async Task read_text(IScenarioRunner system)
+        public async Task read_text(IAlbaTestHost system)
         {
             var result = await system.Scenario(_ =>
             {
@@ -88,7 +88,7 @@ namespace Alba.Testing.Samples
         // ENDSAMPLE
 
         // SAMPLE: assert-on-text
-        public Task assert_on_content(IScenarioRunner system)
+        public Task assert_on_content(IAlbaTestHost system)
         {
             return system.Scenario(_ =>
             {
@@ -103,7 +103,7 @@ namespace Alba.Testing.Samples
 
 
         // SAMPLE: send-text
-        public Task send_text(IScenarioRunner system)
+        public Task send_text(IAlbaTestHost system)
         {
             return system.Scenario(_ =>
             {
@@ -115,7 +115,7 @@ namespace Alba.Testing.Samples
 
 
         // SAMPLE: read-xml
-        public async Task read_xml(IScenarioRunner system)
+        public async Task read_xml(IAlbaTestHost system)
         {
             var result = await system.Scenario(_ =>
             {

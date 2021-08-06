@@ -8,10 +8,10 @@ namespace Alba
 {
     public class HttpRequestBody
     {
-        private readonly IScenarioRunner _system;
+        private readonly IAlbaTestHost _system;
         private readonly Scenario _parent;
 
-        internal HttpRequestBody(IScenarioRunner system, Scenario parent)
+        internal HttpRequestBody(IAlbaTestHost system, Scenario parent)
         {
             _system = system;
             _parent = parent;

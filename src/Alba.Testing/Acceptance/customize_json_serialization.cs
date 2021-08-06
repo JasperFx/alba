@@ -19,7 +19,7 @@ namespace Alba.Testing.Acceptance
         {
             using (var host = SystemUnderTest.ForStartup<Startup>())
             {
-                ((IScenarioRunner) host).ToJson(new MyMessage { Name = "Jeremy" })
+                ((IAlbaTestHost) host).ToJson(new MyMessage { Name = "Jeremy" })
                     .ShouldNotContain(typeof(MyMessage).FullName);
             }
         }
@@ -39,7 +39,7 @@ namespace Alba.Testing.Acceptance
             }))
             {
                 
-                host.As<IScenarioRunner>().ToJson(new MyMessage {Name = "Jeremy"})
+                host.As<IAlbaTestHost>().ToJson(new MyMessage {Name = "Jeremy"})
                     .ShouldContain(typeof(MyMessage).FullName);
             }
         }
@@ -51,7 +51,7 @@ namespace Alba.Testing.Acceptance
             {
                 host.JsonSerializerSettings.TypeNameHandling = TypeNameHandling.All;
 
-                ((IScenarioRunner) host).ToJson(new MyMessage {Name = "Jeremy"})
+                ((IAlbaTestHost) host).ToJson(new MyMessage {Name = "Jeremy"})
                     .ShouldContain(typeof(MyMessage).FullName);
             }
         }

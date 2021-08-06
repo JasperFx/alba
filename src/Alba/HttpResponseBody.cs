@@ -9,11 +9,11 @@ namespace Alba
 {
     public class HttpResponseBody
     {
-        private readonly IScenarioRunner _system;
+        private readonly IAlbaTestHost _system;
         private readonly Stream _stream;
         private HttpResponse _response;
 
-        internal HttpResponseBody(IScenarioRunner system, HttpContext context)
+        internal HttpResponseBody(IAlbaTestHost system, HttpContext context)
         {
             _system = system;
             _stream = context.Response.Body;

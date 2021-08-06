@@ -52,7 +52,7 @@ namespace Alba.Testing.Acceptance
             var accessor2 = system.Server.Services.GetService<IHttpContextAccessor>();
             Assert.NotNull(accessor2);
 
-            var accessor3 = ((IScenarioRunner)system).Services.GetService<IHttpContextAccessor>();
+            var accessor3 = ((IAlbaTestHost)system).Services.GetService<IHttpContextAccessor>();
             Assert.NotNull(accessor3);
         }
     }

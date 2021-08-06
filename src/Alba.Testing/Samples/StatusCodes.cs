@@ -5,7 +5,7 @@ namespace Alba.Testing.Samples
     public class StatusCodes
     {
         // SAMPLE: check-the-status-code
-        public Task check_the_status(IScenarioRunner system)
+        public Task check_the_status(IAlbaTestHost system)
         {
             return system.Scenario(_ =>
             {

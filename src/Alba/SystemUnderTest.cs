@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using Baseline;
 using Microsoft.AspNetCore;
@@ -21,7 +22,7 @@ namespace Alba
     /// <summary>
     ///     Root host of Alba to govern and configure the underlying ASP.Net Core application
     /// </summary>
-    public class SystemUnderTest : IScenarioRunner
+    public class SystemUnderTest : IAlbaTestHost
     {
         
         private Func<HttpContext?, Task> _afterEach = c => Task.CompletedTask;
@@ -41,17 +42,17 @@ namespace Alba
                 });
 
             _host = builder.Start();
-            Services = _host.Services;
 
             Server = _host.GetTestServer();
 
             Server.AllowSynchronousIO = true;
 
-
+            // TODO -- This will all need to change to be JSON serializer agnostic
             var options = _host.Services.GetService<IOptions<MvcNewtonsoftJsonOptions>>()?.Value;
             var settings = options?.SerializerSettings;
             if (settings != null) JsonSerializerSettings = settings;
 
+            // TODO -- might be unnecessary in newer ASP.Net Core
             var manager = _host.Services.GetService<ApplicationPartManager>();
             if (applicationAssembly != null) manager?.ApplicationParts.Add(new AssemblyPart(applicationAssembly));
         }
@@ -61,10 +62,11 @@ namespace Alba
         {
             builder.ConfigureServices(_ => { _.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); });
 
-            Server = new TestServer(builder);
-            Services = Server.Host.Services;
-            
-            Server.AllowSynchronousIO = true;
+            Server = new TestServer(builder)
+            {
+                AllowSynchronousIO = true
+            };
+
 
             var settings = Server.Host.Services.GetService<JsonSerializerSettings>();
             if (settings != null) JsonSerializerSettings = settings;
@@ -78,10 +80,20 @@ namespace Alba
         /// </summary>
         public TestServer Server { get; }
 
+        public Task StartAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task StopAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            return _host.StopAsync(cancellationToken);
+        }
+
         /// <summary>
         /// The root IoC container of the running application
         /// </summary>
-        public IServiceProvider Services { get; }
+        public IServiceProvider Services => _host.Services;
 
         /// <summary>
         ///     Governs the Json serialization of the out of the box SystemUnderTest.
@@ -95,7 +107,7 @@ namespace Alba
         /// <param name="json"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        T IScenarioRunner.FromJson<T>(string json)
+        T IAlbaTestHost.FromJson<T>(string json)
         {
             var serializer = JsonSerializer.Create(JsonSerializerSettings);
 
@@ -108,7 +120,7 @@ namespace Alba
         /// </summary>
         /// <param name="target"></param>
         /// <returns></returns>
-        string IScenarioRunner.ToJson(object target)
+        string IAlbaTestHost.ToJson(object target)
         {
             var serializer = JsonSerializer.Create(JsonSerializerSettings);
 
@@ -129,7 +141,7 @@ namespace Alba
         /// <summary>
         ///     Url lookup strategy for this system
         /// </summary>
-        IUrlLookup IScenarioRunner.Urls { get; set; } = new NulloUrlLookup();
+        IUrlLookup IAlbaTestHost.Urls { get; set; } = new NulloUrlLookup();
 
         public Task<HttpContext> Invoke(Action<HttpContext> setup)
         {
@@ -257,10 +269,10 @@ namespace Alba
             {
                 context = await Invoke(async c =>
                 {
-                    // I know what you're saying, this is stupid, you shouldn't 
+                    // I know what you're thinking, this is stupid, you shouldn't 
                     // ever mix sync and async if you can help it, and yet tests
-                    // for long running before each *will* break if you try to 
-                    // use async _beforeEach here. I do NOT understand why this is so.
+                    // for long running before each *wiI do NOT understand why this is soll* break if you try to 
+                    // use async _beforeEach here. .
                     _beforeEach(c).GetAwaiter().GetResult();
 
                     c.Request.Body.Position = 0;

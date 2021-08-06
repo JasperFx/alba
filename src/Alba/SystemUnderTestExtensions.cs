@@ -19,7 +19,7 @@ namespace Alba
         /// <param name="url"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static ResponseExpression PostJson<T>(this IScenarioRunner system, T request, string url) where T : class
+        public static ResponseExpression PostJson<T>(this IAlbaTestHost system, T request, string url) where T : class
         {
             return new ResponseExpression(system, s =>
             {
@@ -36,7 +36,7 @@ namespace Alba
         /// <param name="url"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static ResponseExpression PutJson<T>(this IScenarioRunner system, T request, string url) where T : class
+        public static ResponseExpression PutJson<T>(this IAlbaTestHost system, T request, string url) where T : class
         {
             return new ResponseExpression(system, s =>
             {
@@ -52,7 +52,7 @@ namespace Alba
         /// <param name="url"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static async Task<T> GetAsJson<T>(this IScenarioRunner system, string url)
+        public static async Task<T> GetAsJson<T>(this IAlbaTestHost system, string url)
         {
             var response = await system.Scenario(x => x.Get.Url(url).Accepts("application/json;text/json"));
             return response.ResponseBody.ReadAsJson<T>();
@@ -60,11 +60,11 @@ namespace Alba
 
         public class ResponseExpression
         {
-            private readonly IScenarioRunner _system;
+            private readonly IAlbaTestHost _system;
             private readonly Action<Scenario> _configure;
 
 
-            public ResponseExpression(IScenarioRunner system, Action<Scenario> configure)
+            public ResponseExpression(IAlbaTestHost system, Action<Scenario> configure)
             {
                 _system = system;
                 _configure = configure;
@@ -83,7 +83,7 @@ namespace Alba
         /// <param name="builder"></param>
         /// <returns></returns>
         [Obsolete("Use a IHostBuilder generic host instead. See: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/generic-host")]
-        public static IScenarioRunner ToSystemUnderTest(this IWebHostBuilder builder)
+        public static IAlbaTestHost ToSystemUnderTest(this IWebHostBuilder builder)
         {
             return new SystemUnderTest(builder);
         }
@@ -94,7 +94,7 @@ namespace Alba
         /// </summary>
         /// <param name="builder"></param>
         /// <returns></returns>
-        public static IScenarioRunner ToSystemUnderTest(this IHostBuilder builder)
+        public static IAlbaTestHost ToSystemUnderTest(this IHostBuilder builder)
         {
             return new SystemUnderTest(builder);
         }
