@@ -189,7 +189,7 @@ namespace Alba
         /// </summary>
         /// <param name="beforeEach"></param>
         /// <returns></returns>
-        public SystemUnderTest BeforeEach(Action<HttpContext> beforeEach)
+        public IAlbaTestHost BeforeEach(Action<HttpContext> beforeEach)
         {
             _beforeEach = c =>
             {
@@ -206,7 +206,7 @@ namespace Alba
         /// </summary>
         /// <param name="afterEach"></param>
         /// <returns></returns>
-        public SystemUnderTest AfterEach(Action<HttpContext?> afterEach)
+        public IAlbaTestHost AfterEach(Action<HttpContext?> afterEach)
         {
             _afterEach = c =>
             {
@@ -222,7 +222,7 @@ namespace Alba
         /// </summary>
         /// <param name="beforeEach"></param>
         /// <returns></returns>
-        public SystemUnderTest BeforeEachAsync(Func<HttpContext, Task> beforeEach)
+        public IAlbaTestHost BeforeEachAsync(Func<HttpContext, Task> beforeEach)
         {
             _beforeEach = beforeEach;
             
@@ -234,7 +234,7 @@ namespace Alba
         /// </summary>
         /// <param name="afterEach"></param>
         /// <returns></returns>
-        public SystemUnderTest AfterEachAsync(Func<HttpContext?, Task> afterEach)
+        public IAlbaTestHost AfterEachAsync(Func<HttpContext?, Task> afterEach)
         {
             _afterEach = afterEach;
 

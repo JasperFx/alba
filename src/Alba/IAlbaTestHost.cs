@@ -45,27 +45,27 @@ namespace Alba
         /// </summary>
         /// <param name="beforeEach"></param>
         /// <returns></returns>
-        SystemUnderTest BeforeEach(Action<HttpContext> beforeEach);
+        IAlbaTestHost BeforeEach(Action<HttpContext> beforeEach);
 
         /// <summary>
         /// Execute some clean up action immediately after executing each HTTP execution. This is NOT additive
         /// </summary>
         /// <param name="afterEach"></param>
         /// <returns></returns>
-        SystemUnderTest AfterEach(Action<HttpContext?> afterEach);
+        IAlbaTestHost AfterEach(Action<HttpContext?> afterEach);
 
         /// <summary>
         /// Run some kind of set up action immediately before executing an HTTP request
         /// </summary>
         /// <param name="beforeEach"></param>
         /// <returns></returns>
-        SystemUnderTest BeforeEachAsync(Func<HttpContext, Task> beforeEach);
+        IAlbaTestHost BeforeEachAsync(Func<HttpContext, Task> beforeEach);
 
         /// <summary>
         /// Execute some clean up action immediately after executing each HTTP execution. This is NOT additive
         /// </summary>
         /// <param name="afterEach"></param>
         /// <returns></returns>
-        SystemUnderTest AfterEachAsync(Func<HttpContext?, Task> afterEach);
+        IAlbaTestHost AfterEachAsync(Func<HttpContext?, Task> afterEach);
     }
 }
