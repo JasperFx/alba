@@ -98,7 +98,7 @@ namespace Alba.Testing
         [Fact]
         public async Task asynchronous_before_and_after()
         {
-            using var system = await EmptyHostBuilder().StartAlbaHostAsync();
+            using var system = await EmptyHostBuilder().StartAlbaAsync();
             int count = 0;
 
             system.BeforeEachAsync(c =>

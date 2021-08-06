@@ -8,9 +8,14 @@ namespace Alba
 {
     public static class SystemUnderTestExtensions
     {
-        public static Task<IAlbaHost> StartAlbaHostAsync(this IHostBuilder builder)
+        public static Task<IAlbaHost> StartAlbaAsync(this IHostBuilder builder, params IAlbaExtension[] extensions)
         {
-            return AlbaHost.For(builder);
+            return AlbaHost.For(builder, extensions);
+        }
+        
+        public static IAlbaHost StartAlba(this IHostBuilder builder, params IAlbaExtension[] extensions)
+        {
+            return new AlbaHost(builder, extensions);
         }
 
         /// <summary>

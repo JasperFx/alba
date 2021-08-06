@@ -1,14 +1,13 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq.Expressions;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -32,15 +31,28 @@ namespace Alba
 
         public static async Task<IAlbaHost> For(IHostBuilder builder, params IAlbaExtension[] extensions)
         {
-            var host = await builder
+            builder = builder
                 .ConfigureServices(_ =>
                 {
                     _.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
                     _.AddSingleton<IServer>(x => new TestServer(x));
-                })
-                .StartAsync();
+                });
+
+            foreach (var extension in extensions)
+            {
+                builder = extension.Configure(builder);
+            }
+
+            var host = await builder.StartAsync();
             
-            return new AlbaHost(host, extensions);
+            var albaHost = new AlbaHost(host, extensions);
+
+            foreach (var extension in extensions)
+            {
+                await extension.Start(albaHost);
+            }
+
+            return albaHost;
         }
 
         private AlbaHost(IHost host, params IAlbaExtension[] extensions)
@@ -50,22 +62,51 @@ namespace Alba
             
             Server.AllowSynchronousIO = true;
 
+            Extensions = extensions;
+
+            initializeJsonSerialization();
+        }
+
+        private void initializeJsonSerialization()
+        {
             // TODO -- This will all need to change to be JSON serializer agnostic
             var options = _host.Services.GetService<IOptions<MvcNewtonsoftJsonOptions>>()?.Value;
             var settings = options?.SerializerSettings;
             if (settings != null) JsonSerializerSettings = settings;
         }
 
+
+        public IReadOnlyList<IAlbaExtension> Extensions { get; }
+
         public AlbaHost(IHostBuilder builder, params IAlbaExtension[] extensions)
-            : this(builder
+        {
+            builder = builder
                 .ConfigureServices(_ =>
                 {
                     _.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
                     _.AddSingleton<IServer>(x => new TestServer(x));
-                }).Start(), extensions)
-            
-        {
+                });
 
+            foreach (var extension in extensions)
+            {
+                builder = extension.Configure(builder);
+            }
+
+            _host = builder.Start();
+
+            var server = _host.Services.GetService(typeof(IServer));
+            
+            Server = _host.GetTestServer();
+            Server.AllowSynchronousIO = true;
+
+            Extensions = extensions;
+
+            initializeJsonSerialization();
+
+            foreach (var extension in extensions)
+            {
+                extension.Start(this).GetAwaiter().GetResult();
+            }
         }
 
         /// <summary>
@@ -127,6 +168,10 @@ namespace Alba
 
         public void Dispose()
         {
+            foreach (var extension in Extensions)
+            {
+                extension.Dispose();
+            }
             Server.Dispose();
             _host?.Dispose();
         }
@@ -162,6 +207,8 @@ namespace Alba
 
             return new AlbaHost(builder);
         }
+        
+        
 
 
         /// <summary>
@@ -293,7 +340,17 @@ namespace Alba
         }
 
 
-        
+        public async ValueTask DisposeAsync()
+        {
+            foreach (var extension in Extensions)
+            {
+                await extension.DisposeAsync();
+            }
+            
+            await _host.StopAsync();
+            _host.Dispose();
+            Server.Dispose();
+        }
     }
 
     // SAMPLE: IUrlLookup
