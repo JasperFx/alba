@@ -16,7 +16,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Alba.Jwt
 {
-    public class StubJwt : IAlbaExtension, IHasClaims, IPostConfigureOptions<JwtBearerOptions>
+    public class JwtSecurityStub : IAlbaExtension, IHasClaims, IPostConfigureOptions<JwtBearerOptions>
     {
         private SecurityKey _signingKey;
         private readonly IList<Claim> _baselineClaims = new List<Claim>();
@@ -86,12 +86,15 @@ namespace Alba.Jwt
         public IEnumerable<Claim> allClaims(Claim[] claims)
         {
             yield return new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString());
-            if (_options.ClaimsIssuer != null)
+            if (_options?.ClaimsIssuer != null)
             {
                 yield return new Claim(JwtRegisteredClaimNames.Iss, _options.ClaimsIssuer);
             }
 
-            yield return new Claim(JwtRegisteredClaimNames.Aud, _options.Audience);
+            if (_options?.Audience != null)
+            {
+                yield return new Claim(JwtRegisteredClaimNames.Aud, _options.Audience);
+            }
 
             foreach (var claim in _baselineClaims)
             {
@@ -129,6 +132,16 @@ namespace Alba.Jwt
             options.MetadataAddress = null;
 
             _options = options;
+        }
+
+        public JwtBearerOptions Options
+        {
+            get => _options;
+            internal set
+            {
+                _options = value ?? throw new ArgumentNullException(nameof(value));
+                _options.TokenValidationParameters.IssuerSigningKey ??= new SymmetricSecurityKey(Encoding.UTF8.GetBytes("some really big key that should work"));
+            }
         }
     }
 }

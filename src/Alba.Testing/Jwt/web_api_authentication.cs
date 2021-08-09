@@ -67,7 +67,7 @@ namespace Alba.Testing.Jwt
         {
             var hostBuilder = WebAppSecuredWithJwt.Program.CreateHostBuilder(new string[0]);
                 ;
-            theSystem = new AlbaHost(hostBuilder, new StubJwt());
+            theSystem = new AlbaHost(hostBuilder, new JwtSecurityStub());
         }
 
 
