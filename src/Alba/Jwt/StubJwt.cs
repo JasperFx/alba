@@ -131,24 +131,4 @@ namespace Alba.Jwt
             _options = options;
         }
     }
-
-    public interface IHasClaims
-    {
-        void AddClaim(Claim claim);
-    }
-    
-    public static class ClaimsExtensions
-    {
-        public static T With<T>(this T claims, Claim claim) where T : IHasClaims
-        {
-            claims.AddClaim(claim);
-            return claims;
-        }
-        
-        public static T With<T>(this T claims, string type, string value) where T : IHasClaims
-        {
-            var claim = new Claim(type, value);
-            return claims.With(claim);
-        }
-    }
 }

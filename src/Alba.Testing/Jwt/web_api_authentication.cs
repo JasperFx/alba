@@ -95,7 +95,7 @@ namespace Alba.Testing.Jwt
         }
 
         [Fact]
-        public async Task post_to_a_secured_endpoint()
+        public async Task post_to_a_secured_endpoint_with_jwt_from_extension()
         {
             var input = new Numbers
             {
