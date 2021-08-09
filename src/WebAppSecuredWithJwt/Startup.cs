@@ -41,7 +41,7 @@ namespace WebAppSecuredWithJwt
                     options.Audience = "jwtsample";
                     options.ClaimsIssuer = "myapp";
                         
-
+            
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateAudience = false,

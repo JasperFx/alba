@@ -318,9 +318,23 @@ namespace Alba
             }
         }
 
+        /// <summary>
+        /// Set a value for a request header
+        /// </summary>
+        /// <param name="headerKey"></param>
+        /// <param name="value"></param>
         public void SetRequestHeader(string headerKey, string value)
         {
             Configure = c => c.Request.Headers[headerKey] = value;
+        }
+
+        /// <summary>
+        /// Remove all values for a request header
+        /// </summary>
+        /// <param name="headerKey"></param>
+        public void RemoveRequestHeader(string headerKey)
+        {
+            Configure = c => c.Request.Headers.Remove(headerKey);
         }
     }
 }
