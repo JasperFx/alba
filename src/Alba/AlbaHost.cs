@@ -22,10 +22,10 @@ namespace Alba
     public class AlbaHost : IAlbaHost
     {
         
-        private Func<HttpContext?, Task> _afterEach = c => Task.CompletedTask;
+        private List<Func<HttpContext?, Task>> _afterEach = new List<Func<HttpContext?, Task>>();
 
 
-        private Func<HttpContext, Task> _beforeEach = c => Task.CompletedTask;
+        private List<Func<HttpContext, Task>> _beforeEach = new List<Func<HttpContext, Task>>();
 
         private readonly IHost _host;
 
@@ -94,8 +94,6 @@ namespace Alba
 
             _host = builder.Start();
 
-            var server = _host.Services.GetService(typeof(IServer));
-            
             Server = _host.GetTestServer();
             Server.AllowSynchronousIO = true;
 
@@ -228,58 +226,58 @@ namespace Alba
 
 
         /// <summary>
-        /// Execute some kind of action before each scenario. This is NOT additive
+        /// Execute some kind of action before each scenario. This is additive as of Alba v5
         /// </summary>
         /// <param name="beforeEach"></param>
         /// <returns></returns>
         public IAlbaHost BeforeEach(Action<HttpContext> beforeEach)
         {
-            _beforeEach = c =>
+            _beforeEach.Add(c =>
             {
                 beforeEach(c);
                 return Task.CompletedTask;
-            };
+            });
             
             return this;
         }
 
 
         /// <summary>
-        /// Execute some clean up action immediately after executing each HTTP execution. This is NOT additive
+        /// Execute some clean up action immediately after executing each HTTP execution. This is additive as of Alba v5
         /// </summary>
         /// <param name="afterEach"></param>
         /// <returns></returns>
         public IAlbaHost AfterEach(Action<HttpContext?> afterEach)
         {
-            _afterEach = c =>
+            _afterEach.Add(c =>
             {
                 afterEach(c);
                 return Task.CompletedTask;
-            };
+            });
 
             return this;
         }
         
         /// <summary>
-        /// Run some kind of set up action immediately before executing an HTTP request
+        /// Run some kind of set up action immediately before executing an HTTP request. This is additive as of Alba v5
         /// </summary>
         /// <param name="beforeEach"></param>
         /// <returns></returns>
         public IAlbaHost BeforeEachAsync(Func<HttpContext, Task> beforeEach)
         {
-            _beforeEach = beforeEach;
+            _beforeEach.Add(beforeEach);
             
             return this;
         }
 
         /// <summary>
-        /// Execute some clean up action immediately after executing each HTTP execution. This is NOT additive
+        /// Execute some clean up action immediately after executing each HTTP execution. This is additive as of Alba v5
         /// </summary>
         /// <param name="afterEach"></param>
         /// <returns></returns>
         public IAlbaHost AfterEachAsync(Func<HttpContext?, Task> afterEach)
         {
-            _afterEach = afterEach;
+            _afterEach.Add(afterEach);
 
             return this;
         }
@@ -313,7 +311,10 @@ namespace Alba
                     // ever mix sync and async if you can help it, and yet tests
                     // for long running before each *wiI do NOT understand why this is soll* break if you try to 
                     // use async _beforeEach here. .
-                    _beforeEach(c).GetAwaiter().GetResult();
+                    foreach (var func in _beforeEach)
+                    {
+                        func(c).GetAwaiter().GetResult();
+                    }
 
                     c.Request.Body.Position = 0;
 
@@ -327,7 +328,10 @@ namespace Alba
             }
             finally
             {
-                await _afterEach(context);
+                foreach (var func in _afterEach)
+                {
+                    await func(context);
+                }
             }
 
             if (context.Response.Body.CanSeek)

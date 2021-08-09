@@ -104,7 +104,15 @@ namespace Alba.Testing
             system.BeforeEachAsync(c =>
             {
                 c.ShouldNotBeNull();
-                count = 1;
+                count++;
+
+                return Task.CompletedTask;
+            });
+            
+            system.BeforeEachAsync(c =>
+            {
+                c.ShouldNotBeNull();
+                count++;
 
                 return Task.CompletedTask;
             });
@@ -112,16 +120,26 @@ namespace Alba.Testing
             system.AfterEachAsync(c =>
             {
                 c.ShouldNotBeNull();
-                count.ShouldBe(1);
+                count.ShouldBe(2);
 
-                count = 2;
+                count++;
+
+                return Task.CompletedTask;
+            });
+            
+            system.AfterEachAsync(c =>
+            {
+                c.ShouldNotBeNull();
+                count.ShouldBe(3);
+
+                count++;
 
                 return Task.CompletedTask;
             });
 
             var result = await system.Scenario(x => x.Get.Url("/"));
 
-            count.ShouldBe(2);
+            count.ShouldBe(4);
         }
 
         protected IHostBuilder AuthenticatedHostBuilder()
