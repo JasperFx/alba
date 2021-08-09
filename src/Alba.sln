@@ -10,6 +10,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApp", "WebApp\WebApp.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiAspNetCore3", "WebApiAspNetCore3\WebApiAspNetCore3.csproj", "{28AAF423-75B5-4499-95BC-85CFDB994EDA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAppSecuredWithJwt", "WebAppSecuredWithJwt\WebAppSecuredWithJwt.csproj", "{91CA83AA-73DB-44B0-8A5D-5BB38532B897}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alba.Jwt", "Alba.Jwt\Alba.Jwt.csproj", "{D8124AA0-74B6-4E16-84B0-B58DA7C85FA3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +36,14 @@ Global
 		{28AAF423-75B5-4499-95BC-85CFDB994EDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28AAF423-75B5-4499-95BC-85CFDB994EDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{28AAF423-75B5-4499-95BC-85CFDB994EDA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91CA83AA-73DB-44B0-8A5D-5BB38532B897}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91CA83AA-73DB-44B0-8A5D-5BB38532B897}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91CA83AA-73DB-44B0-8A5D-5BB38532B897}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91CA83AA-73DB-44B0-8A5D-5BB38532B897}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8124AA0-74B6-4E16-84B0-B58DA7C85FA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8124AA0-74B6-4E16-84B0-B58DA7C85FA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8124AA0-74B6-4E16-84B0-B58DA7C85FA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8124AA0-74B6-4E16-84B0-B58DA7C85FA3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
