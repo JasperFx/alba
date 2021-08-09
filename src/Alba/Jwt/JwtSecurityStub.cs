@@ -5,6 +5,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Baseline;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -44,13 +45,16 @@ namespace Alba.Jwt
             return Task.CompletedTask;
         }
 
-        // TODO -- need to set custom claims on the HttpContext
         internal void ConfigureJwt(HttpContext context)
         {
-            var jwt = BuildJwtString();
+            Claim[] claims = new Claim[0];
+            if (context.Items.TryGetValue("alba_claims", out var raw))
+            {
+                claims = (Claim[]) raw;
+            }
+            var jwt = BuildJwtString(claims);
 
-            // TODO -- add a helper on Scenario and on HttpContext
-            context.Request.Headers["Authorization"] = $"Bearer {jwt}";
+            context.SetBearerToken(jwt);
         }
 
         public IHostBuilder Configure(IHostBuilder builder)
@@ -89,11 +93,6 @@ namespace Alba.Jwt
             if (_options?.ClaimsIssuer != null)
             {
                 yield return new Claim(JwtRegisteredClaimNames.Iss, _options.ClaimsIssuer);
-            }
-
-            if (_options?.Audience != null)
-            {
-                yield return new Claim(JwtRegisteredClaimNames.Aud, _options.Audience);
             }
 
             foreach (var claim in _baselineClaims)

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -307,6 +308,11 @@ namespace Alba
             {
                 context = await Invoke(async c =>
                 {
+                    if (scenario.Claims.Any())
+                    {
+                        c.Items.Add("alba_claims", scenario.Claims.ToArray());
+                    }
+                    
                     // I know what you're thinking, this is stupid, you shouldn't 
                     // ever mix sync and async if you can help it, and yet tests
                     // for long running before each *wiI do NOT understand why this is soll* break if you try to 

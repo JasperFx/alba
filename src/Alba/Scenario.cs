@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
+using System.Security.Claims;
 using Alba.Assertions;
 using Baseline;
 using Microsoft.AspNetCore.Http;
@@ -323,7 +324,18 @@ namespace Alba
         /// </summary>
         /// <param name="headerKey"></param>
         /// <param name="value"></param>
+        [Obsolete("Prefer the WithRequestHeader() method, and this will be removed in Alba v6")]
         public void SetRequestHeader(string headerKey, string value)
+        {
+            WithRequestHeader(headerKey, value);
+        }
+        
+        /// <summary>
+        /// Set a value for a request header
+        /// </summary>
+        /// <param name="headerKey"></param>
+        /// <param name="value"></param>
+        public void WithRequestHeader(string headerKey, string value)
         {
             Configure = c => c.Request.Headers[headerKey] = value;
         }
@@ -335,6 +347,26 @@ namespace Alba
         public void RemoveRequestHeader(string headerKey)
         {
             Configure = c => c.Request.Headers.Remove(headerKey);
+        }
+
+        /// <summary>
+        /// Add an additional claim to the HttpContext, but this requires using the JwtSecurityStub
+        /// </summary>
+        /// <param name="claim"></param>
+        public void WithClaim(Claim claim)
+        {
+            Claims.Add(claim);
+        }
+
+        internal List<Claim> Claims { get; } = new List<Claim>();
+
+        /// <summary>
+        /// Set the Authorization header value to "Bearer [jwt]" on the HTTP request
+        /// </summary>
+        /// <param name="jwt"></param>
+        public void WithBearerToken(string jwt)
+        {
+            Configure = c => c.SetBearerToken(jwt);
         }
     }
 }

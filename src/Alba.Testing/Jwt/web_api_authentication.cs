@@ -1,80 +1,37 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Alba.Jwt;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Protocols;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.IdentityModel.JsonWebTokens;
 using Shouldly;
 using WebApi;
+using WebAppSecuredWithJwt;
 using Xunit;
 
 namespace Alba.Testing.Jwt
 {
-
-    internal class SetAuthorityUrl : IPostConfigureOptions<JwtBearerOptions>
-    {
-        private readonly string _url;
-
-        public SetAuthorityUrl(string url)
-        {
-            _url = url;
-        }
-
-        public IHostBuilder Register(IHostBuilder builder)
-        {
-            return builder.ConfigureServices((c, s) =>
-            {
-                s.AddSingleton<IPostConfigureOptions<JwtBearerOptions>>(this);
-            });
-        }
-
-        public void PostConfigure(string name, JwtBearerOptions options)
-        {
-            // This will deactivate the callout to the OIDC server
-            options.ConfigurationManager =
-                new StaticConfigurationManager<OpenIdConnectConfiguration>(new OpenIdConnectConfiguration
-                {
-                    
-                });
-            
-            var original = options.TokenValidationParameters;
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                IssuerSigningKey = original.IssuerSigningKey,
-                ValidIssuer = original.ValidIssuer,
-                ValidAudience = original.ValidAudience,
-                ValidateIssuer = false
-            };
-            options.Authority = null;
-            options.MetadataAddress = null;
-        }
-    }
-    
     public class web_api_authentication : IDisposable
     {
-        private readonly IAlbaHost theSystem;
+        private readonly IAlbaHost theHost;
 
         public web_api_authentication()
         {
-            var hostBuilder = WebAppSecuredWithJwt.Program.CreateHostBuilder(new string[0]);
-                ;
-            theSystem = new AlbaHost(hostBuilder, new JwtSecurityStub());
-        }
+            var hostBuilder = Program.CreateHostBuilder(new string[0]);
 
+
+            var jwtSecurityStub = new JwtSecurityStub()
+                .With("foo", "bar")
+                .With(JwtRegisteredClaimNames.Email, "guy@company.com");
+
+            theHost = new AlbaHost(hostBuilder, jwtSecurityStub);
+        }
 
 
         public void Dispose()
         {
-            theSystem?.Dispose();
+            theHost?.Dispose();
         }
 
         [Fact]
@@ -85,9 +42,10 @@ namespace Alba.Testing.Jwt
                 Values = new[] {2, 3, 4}
             };
 
-            await theSystem.Scenario(x =>
+            await theHost.Scenario(x =>
             {
-                // override the StubJwt behavior
+                // override the StubJwt behavior to verify the authentication
+                // really exists
                 x.RemoveRequestHeader("Authorization");
                 x.Post.Json(input).ToUrl("/math");
                 x.StatusCodeShouldBe(HttpStatusCode.Unauthorized);
@@ -102,7 +60,7 @@ namespace Alba.Testing.Jwt
                 Values = new[] {2, 3, 4}
             };
 
-            var response = await theSystem.Scenario(x =>
+            var response = await theHost.Scenario(x =>
             {
                 x.Post.Json(input).ToUrl("/math");
                 x.StatusCodeShouldBeOk();
@@ -112,6 +70,46 @@ namespace Alba.Testing.Jwt
             output.Sum.ShouldBe(9);
             output.Product.ShouldBe(24);
         }
-    }
 
+        [Fact]
+        public async Task have_the_baseline_claims_on_the_principal()
+        {
+            var input = new Numbers
+            {
+                Values = new[] {2, 3, 4}
+            };
+
+            var response = await theHost.Scenario(x =>
+            {
+                x.Post.Json(input).ToUrl("/math");
+                x.StatusCodeShouldBeOk();
+            });
+
+            var principal = response.Context.User;
+            principal.ShouldNotBeNull();
+            principal.Claims.Single(x => x.Type == "foo").Value.ShouldBe("bar");
+            principal.Claims.Single(x => x.Type == JwtRegisteredClaimNames.Aud).Value.ShouldBe("jwtsample");
+        }
+
+        [Fact]
+        public async Task can_modify_claims_per_scenario()
+        {
+            var input = new Numbers
+            {
+                Values = new[] {2, 3, 4}
+            };
+
+            var response = await theHost.Scenario(x =>
+            {
+                x.WithClaim(new Claim("color", "green"));
+                x.Post.Json(input).ToUrl("/math");
+                x.StatusCodeShouldBeOk();
+            });
+
+            var principal = response.Context.User;
+            principal.ShouldNotBeNull();
+            
+            principal.Claims.Single(x => x.Type == "color").Value.ShouldBe("green");
+        }
+    }
 }

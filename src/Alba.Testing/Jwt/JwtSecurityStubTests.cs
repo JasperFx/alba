@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Security.Claims;
 using Alba.Jwt;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.JsonWebTokens;
@@ -57,6 +58,15 @@ namespace Alba.Testing.Jwt
             
             token.Claims.Single(x => x.Type == "team")
                 .Value.ShouldBe("chiefs");
+        }
+
+        [Fact]
+        public void additive_claims_on_the_token()
+        {
+            var token = theStub.BuildToken(new Claim("division", "afcwest"));
+            
+            token.Claims.Single(x => x.Type == "division")
+                .Value.ShouldBe("afcwest");
         }
     }
 }

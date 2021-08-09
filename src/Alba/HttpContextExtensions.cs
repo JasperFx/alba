@@ -35,8 +35,16 @@ namespace Alba
             {
                 context.Request.Path = relativeUrl;
             }
+        }
 
-            
+        /// <summary>
+        /// Set the Authorization header value to "Bearer [jwt]"
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="jwt"></param>
+        public static void SetBearerToken(this HttpContext context, string jwt)
+        {
+            context.Request.Headers["Authorization"] = $"Bearer {jwt}";
         }
 
         public static void Accepts(this HttpContext context, string mimeType)
