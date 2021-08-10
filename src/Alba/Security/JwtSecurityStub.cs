@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using Baseline;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,12 +13,12 @@ using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Alba.Jwt
+namespace Alba.Security
 {
-    public class JwtSecurityStub : IAlbaExtension, IHasClaims, IPostConfigureOptions<JwtBearerOptions>
+    public class JwtSecurityStub : SecurityStub, IAlbaExtension, IPostConfigureOptions<JwtBearerOptions>
     {
         private SecurityKey _signingKey;
-        private readonly IList<Claim> _baselineClaims = new List<Claim>();
+        
         private JwtBearerOptions _options;
 
 
@@ -34,7 +32,7 @@ namespace Alba.Jwt
             return ValueTask.CompletedTask;
         }
 
-        public Task Start(IAlbaHost host)
+        Task IAlbaExtension.Start(IAlbaHost host)
         {
             // This seems to be necessary to "bake" in the JwtBearerOptions modifications
             var options = host.Services.GetRequiredService<IOptionsMonitor<JwtBearerOptions>>()
@@ -47,11 +45,7 @@ namespace Alba.Jwt
 
         internal void ConfigureJwt(HttpContext context)
         {
-            Claim[] claims = new Claim[0];
-            if (context.Items.TryGetValue("alba_claims", out var raw))
-            {
-                claims = (Claim[]) raw;
-            }
+            Claim[] claims = extractScenarioSpecificClaims(context);
             var jwt = BuildJwtString(claims);
 
             context.SetBearerToken(jwt);
@@ -65,11 +59,6 @@ namespace Alba.Jwt
             });
         }
 
-        void IHasClaims.AddClaim(Claim claim)
-        {
-            _baselineClaims.Add(claim);
-        }
-        
         internal JwtSecurityToken BuildToken(params Claim[] claims)
         {
             // TODO -- get the algorithm from the options validation parameters,
@@ -86,23 +75,13 @@ namespace Alba.Jwt
             var token = BuildToken(claims);
             return new JwtSecurityTokenHandler().WriteToken(token); 
         }
-        
-        public IEnumerable<Claim> allClaims(Claim[] claims)
+
+        protected override IEnumerable<Claim> stubTypeSpecificClaims()
         {
             yield return new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString());
             if (_options?.ClaimsIssuer != null)
             {
                 yield return new Claim(JwtRegisteredClaimNames.Iss, _options.ClaimsIssuer);
-            }
-
-            foreach (var claim in _baselineClaims)
-            {
-                yield return claim;
-            }
-
-            foreach (var claim in claims)
-            {
-                yield return claim;
             }
         }
 

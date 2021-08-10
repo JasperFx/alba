@@ -1,6 +1,6 @@
 using System.Security.Claims;
 
-namespace Alba.Jwt
+namespace Alba.Security
 {
     public interface IHasClaims
     {

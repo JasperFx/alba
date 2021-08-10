@@ -1,12 +1,12 @@
 using System.Linq;
 using System.Security.Claims;
-using Alba.Jwt;
+using Alba.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Shouldly;
 using Xunit;
 
-namespace Alba.Testing.Jwt
+namespace Alba.Testing.Security
 {
     public class JwtSecurityStubTests
     {
