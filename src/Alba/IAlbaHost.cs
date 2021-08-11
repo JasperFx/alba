@@ -19,14 +19,6 @@ namespace Alba
         T FromJson<T>(string json);
         
         /// <summary>
-        /// Serializes an object using the ASP.Net Core JsonSerializerSettings
-        /// for this application
-        /// </summary>
-        /// <param name="target"></param>
-        /// <returns></returns>
-        string ToJson(object target);
-
-        /// <summary>
         ///     Define and execute an integration test by running an Http request through
         ///     your ASP.Net Core system
         /// </summary>

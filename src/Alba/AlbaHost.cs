@@ -149,22 +149,6 @@ namespace Alba
             return serializer.Deserialize<T>(reader);
         }
 
-        /// <summary>
-        ///     Can be overridden to customize the Json serialization
-        /// </summary>
-        /// <param name="target"></param>
-        /// <returns></returns>
-        string IAlbaHost.ToJson(object target)
-        {
-            var serializer = JsonSerializer.Create(JsonSerializerSettings);
-
-            var writer = new StringWriter();
-            var jsonWriter = new JsonTextWriter(writer);
-            serializer.Serialize(jsonWriter, target);
-
-            return writer.ToString();
-        }
-
 
         public void Dispose()
         {
