@@ -29,42 +29,38 @@ namespace Alba.Testing
         [Fact]
         public async Task post_and_expect_response()
         {
-            using (var system = AlbaHost.ForStartup<WebApp.Startup>())
+            using var system = AlbaHost.ForStartup<WebApp.Startup>();
+            var request = new OperationRequest
             {
-                var request = new OperationRequest
-                {
-                    Type = OperationType.Multiply,
-                    One = 3,
-                    Two = 4
-                };
+                Type = OperationType.Multiply,
+                One = 3,
+                Two = 4
+            };
 
-                var result = await system.PostJson(request, "/math")
-                    .Receive<OperationResult>();
+            var result = await system.PostJson(request, "/math")
+                .Receive<OperationResult>();
                 
-                result.Answer.ShouldBe(12);
-                result.Method.ShouldBe("POST");
-            }
+            result.Answer.ShouldBe(12);
+            result.Method.ShouldBe("POST");
         }
         // ENDSAMPLE
         
         [Fact]
         public async Task put_and_expect_response()
         {
-            using (var system = AlbaHost.ForStartup<WebApp.Startup>())
+            using var system = AlbaHost.ForStartup<WebApp.Startup>();
+            var request = new OperationRequest
             {
-                var request = new OperationRequest
-                {
-                    Type = OperationType.Subtract,
-                    One = 3,
-                    Two = 4
-                };
+                Type = OperationType.Subtract,
+                One = 3,
+                Two = 4
+            };
 
-                var result = await system.PutJson(request, "/math")
-                    .Receive<OperationResult>();
+            var result = await system.PutJson(request, "/math")
+                .Receive<OperationResult>();
                 
-                result.Answer.ShouldBe(-1);
-                result.Method.ShouldBe("PUT");
-            }
+            result.Answer.ShouldBe(-1);
+            result.Method.ShouldBe("PUT");
         }
     }
 }

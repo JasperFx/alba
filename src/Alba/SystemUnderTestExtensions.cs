@@ -31,6 +31,7 @@ namespace Alba
         {
             return new ResponseExpression(system, s =>
             {
+                s.WriteRequestBody(request, MimeType.Json.Value);
                 s.Post.Json(request).ToUrl(url);
             });
         }

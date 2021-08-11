@@ -4,10 +4,18 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
+using System.Reflection;
 using System.Security.Claims;
 using Alba.Assertions;
+using Alba.Stubs;
 using Baseline;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Alba
 {
@@ -69,6 +77,50 @@ namespace Alba
         public void ConfigureHttpContext(Action<HttpContext> configure)
         {
             _setups.Add(configure);    
+        }
+
+        internal class RewindableStream : MemoryStream
+        {
+            public RewindableStream()
+            {
+            }
+
+            protected override void Dispose(bool disposing)
+            {
+                // Nothing!
+            }
+        }
+
+        public void WriteRequestBody<T>(T input, string contentType)
+        {
+            ConfigureHttpContext(c =>
+            {
+                // TODO -- memoize things
+                var options = _system.Services.GetRequiredService<IOptionsMonitor<MvcOptions>>();
+                var formatter = options.Get("").OutputFormatters.OfType<OutputFormatter>()
+                    .FirstOrDefault(x => x.SupportedMediaTypes.Contains(contentType));
+
+                if (formatter == null)
+                {
+                    throw new InvalidOperationException(
+                        $"Alba was not able to find a registered formatter for content type '{contentType}'. Either specify the body contents explicitly, or try registering 'services.AddMvcCore()'");
+                }
+                
+                var stubContext = new DefaultHttpContext();
+                var stream = new RewindableStream();
+                stubContext.Response.Body = stream; // Has to be rewindable
+                var writer = new StreamWriter(stream);
+                
+                var outputContext =
+                    new OutputFormatterWriteContext(stubContext, (s, e) => writer, typeof(T), input);
+                
+                formatter.WriteAsync(outputContext).GetAwaiter().GetResult();
+                
+                c.Request.ContentType = contentType;
+                c.Request.Body = stream;
+                c.Request.Body.Position = 0;
+                c.Request.ContentLength = c.Request.Body.Length;
+            });
         }
 
         /// <summary>
@@ -180,8 +232,12 @@ namespace Alba
         SendExpression IUrlExpression.Json<T>(T input)
         {
             this.As<IUrlExpression>().Input(input);
+            
+            WriteRequestBody(input, MimeType.Json.Value);
+            
+            ConfigureHttpContext(x => x.Accepts(MimeType.Json.Value));
 
-            Body.JsonInputIs(_system.ToJson(input));
+            //Body.JsonInputIs(_system.ToJson(input));
 
             return new SendExpression(this);
         }
@@ -359,6 +415,7 @@ namespace Alba
         }
 
         internal List<Claim> Claims { get; } = new List<Claim>();
+        internal Exception Exception { get; set; }
 
         /// <summary>
         /// Set the Authorization header value to "Bearer [jwt]" on the HTTP request

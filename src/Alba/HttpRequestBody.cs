@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml.Serialization;
@@ -47,6 +48,7 @@ namespace Alba
             JsonInputIs(json);
         }
 
+        [Obsolete]
         public void JsonInputIs(string json)
         {
             

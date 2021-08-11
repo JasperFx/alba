@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace Alba.Testing
@@ -13,8 +14,13 @@ namespace Alba.Testing
 
         public ScenarioContext()
         {
-            host = new AlbaHost(Host.CreateDefaultBuilder().ConfigureWebHostDefaults(c =>
-                c.Configure(app => { app.Run(router.Invoke); })));
+            host = new AlbaHost(Host.CreateDefaultBuilder()
+                .ConfigureServices((s) => s.AddMvcCore())
+                .ConfigureWebHostDefaults(c =>
+                c.Configure(app =>
+                {
+                    app.Run(router.Invoke);
+                })));
             host.Urls = router;
         }
 

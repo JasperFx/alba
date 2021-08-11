@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
@@ -308,28 +309,40 @@ namespace Alba
             {
                 context = await Invoke(async c =>
                 {
-                    if (scenario.Claims.Any())
+                    try
                     {
-                        c.Items.Add("alba_claims", scenario.Claims.ToArray());
-                    }
+                        if (scenario.Claims.Any())
+                        {
+                            c.Items.Add("alba_claims", scenario.Claims.ToArray());
+                        }
                     
-                    // I know what you're thinking, this is stupid, you shouldn't 
-                    // ever mix sync and async if you can help it, and yet tests
-                    // for long running before each *wiI do NOT understand why this is soll* break if you try to 
-                    // use async _beforeEach here. .
-                    foreach (var func in _beforeEach)
-                    {
-                        func(c).GetAwaiter().GetResult();
+                        // I know what you're thinking, this is stupid, you shouldn't 
+                        // ever mix sync and async if you can help it, and yet tests
+                        // for long running before each *wiI do NOT understand why this is soll* break if you try to 
+                        // use async _beforeEach here. .
+                        foreach (var func in _beforeEach)
+                        {
+                            func(c).GetAwaiter().GetResult();
+                        }
+
+                        c.Request.Body.Position = 0;
+
+
+                        scenario.SetupHttpContext(c);
+
+                        if (c.Request.Path == null) throw new InvalidOperationException("This scenario has no defined url");
                     }
-
-                    c.Request.Body.Position = 0;
-
-
-                    scenario.SetupHttpContext(c);
-
-                    if (c.Request.Path == null) throw new InvalidOperationException("This scenario has no defined url");
+                    catch (Exception e)
+                    {
+                        scenario.Exception = e;
+                    }
                 });
 
+                if (scenario.Exception != null)
+                {
+                    ExceptionDispatchInfo.Throw(scenario.Exception);
+                }
+                
                 scenario.RunAssertions(context);
             }
             finally
