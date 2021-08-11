@@ -41,30 +41,6 @@ namespace Alba
 
         }
 
-        public void JsonInputIs(object target)
-        {
-            var json = _system.ToJson(target);
-
-            JsonInputIs(json);
-        }
-
-        [Obsolete]
-        public void JsonInputIs(string json)
-        {
-            
-
-            _parent.Configure = context =>
-            {
-                writeTextToBody(json, context);
-                
-                context.Request.ContentType = MimeType.Json.Value;
-                context.Accepts(MimeType.Json.Value);
-                context.Request.ContentLength = json.Length;
-            };
-
-
-        }
-
         private void writeTextToBody(string json, HttpContext context)
         {
             var stream = context.Request.Body;

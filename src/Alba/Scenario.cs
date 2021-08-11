@@ -237,8 +237,6 @@ namespace Alba
             
             ConfigureHttpContext(x => x.Accepts(MimeType.Json.Value));
 
-            //Body.JsonInputIs(_system.ToJson(input));
-
             return new SendExpression(this);
         }
 
