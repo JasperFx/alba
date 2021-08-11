@@ -10,15 +10,6 @@ namespace Alba
         IUrlLookup Urls { get; set; }
 
         /// <summary>
-        /// Deserializes an object using the ASP.Net Core JsonSerializerSettings
-        /// for this application
-        /// </summary>
-        /// <param name="json"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        T FromJson<T>(string json);
-        
-        /// <summary>
         ///     Define and execute an integration test by running an Http request through
         ///     your ASP.Net Core system
         /// </summary>

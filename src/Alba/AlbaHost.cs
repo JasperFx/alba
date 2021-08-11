@@ -65,18 +65,7 @@ namespace Alba
             Server.AllowSynchronousIO = true;
 
             Extensions = extensions;
-
-            initializeJsonSerialization();
         }
-
-        private void initializeJsonSerialization()
-        {
-            // TODO -- This will all need to change to be JSON serializer agnostic
-            var options = _host.Services.GetService<IOptions<MvcNewtonsoftJsonOptions>>()?.Value;
-            var settings = options?.SerializerSettings;
-            if (settings != null) JsonSerializerSettings = settings;
-        }
-
 
         public IReadOnlyList<IAlbaExtension> Extensions { get; }
 
@@ -100,8 +89,6 @@ namespace Alba
             Server.AllowSynchronousIO = true;
 
             Extensions = extensions;
-
-            initializeJsonSerialization();
 
             foreach (var extension in extensions)
             {
@@ -128,27 +115,6 @@ namespace Alba
         /// The root IoC container of the running application
         /// </summary>
         public IServiceProvider Services => _host.Services;
-
-        /// <summary>
-        ///     Governs the Json serialization of the out of the box SystemUnderTest.
-        /// </summary>
-        public JsonSerializerSettings JsonSerializerSettings { get; set; } = new JsonSerializerSettings();
-
-
-        /// <summary>
-        ///     Can be overridden to customize the Json serialization
-        /// </summary>
-        /// <param name="json"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        T IAlbaHost.FromJson<T>(string json)
-        {
-            var serializer = JsonSerializer.Create(JsonSerializerSettings);
-
-            var reader = new JsonTextReader(new StringReader(json));
-            return serializer.Deserialize<T>(reader);
-        }
-
 
         public void Dispose()
         {

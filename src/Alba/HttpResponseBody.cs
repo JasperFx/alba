@@ -85,9 +85,7 @@ namespace Alba
         /// <returns></returns>
         public T ReadAsJson<T>()
         {
-            //var json = ReadAsText();
             return Read<T>(MimeType.Json.Value);
-            //return _system.FromJson<T>(json);
         }
 
         public T Read<T>(string contentType)

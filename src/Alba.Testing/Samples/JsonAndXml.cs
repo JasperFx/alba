@@ -45,15 +45,6 @@ namespace Alba.Testing.Samples
         }
         // ENDSAMPLE
 
-        public void customizing_serialization()
-        {
-            // SAMPLE: customizing-serialization
-            var system = AlbaHost.ForStartup<Startup>();
-            system.JsonSerializerSettings.DateFormatHandling = DateFormatHandling.IsoDateFormat;
-            // ENDSAMPLE
-
-        }
-
         // SAMPLE: read-json
         public async Task read_json(IAlbaHost system)
         {
