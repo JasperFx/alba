@@ -65,17 +65,6 @@ namespace Alba
 
         }
 
-        public void ReplaceBody(Stream stream)
-        {
-            _parent.Configure = context =>
-            {
-                stream.Position = 0;
-                context.Request.Body = stream;
-            };
-
-
-        }
-
         public void TextIs(string body)
         {
             _parent.Configure = context =>
