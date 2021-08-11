@@ -1,9 +1,17 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using System.Xml.Serialization;
 using Baseline;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Alba
 {
@@ -12,13 +20,35 @@ namespace Alba
         private readonly IAlbaHost _system;
         private readonly Stream _stream;
         private HttpResponse _response;
+        private readonly HttpContext _context;
 
         internal HttpResponseBody(IAlbaHost system, HttpContext context)
         {
             _system = system;
             _stream = context.Response.Body;
             _response = context.Response;
+            _context = context;
         }
+
+        public T Read<T>(string contentType)
+        {
+            
+            _context.Response.Body.Position = 0;
+            
+            // TODO -- memoize the formatters
+            var options = _system.Services.GetRequiredService<IOptions<MvcOptions>>();
+            var formatter = options.Value.InputFormatters.OfType<InputFormatter>()
+                .FirstOrDefault(x => x.SupportedMediaTypes.Contains(contentType));
+
+            IModelMetadataProvider provider = _system.Services.GetRequiredService<IModelMetadataProvider>();
+            var metadata = provider.GetMetadataForType(typeof(T));
+            var context = new InputFormatterContext(_context, typeof(T).Name, new ModelStateDictionary(), metadata, (s, e) => new StreamReader(_context.Response.Body));
+
+            var result = formatter.ReadAsync(context).GetAwaiter().GetResult();
+
+            return (T) result.Model;
+        }
+
 
         /// <summary>
         /// Read the contents of the HttpResponse.Body as text
@@ -80,8 +110,9 @@ namespace Alba
         /// <returns></returns>
         public T ReadAsJson<T>()
         {
-            var json = ReadAsText();
-            return _system.FromJson<T>(json);
+            return Read<T>(MimeType.Json.Value);
+            // var json = ReadAsText();
+            // return _system.FromJson<T>(json);
         }
     }
 }

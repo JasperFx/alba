@@ -16,6 +16,7 @@ namespace Alba
         /// <param name="json"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
+        [Obsolete("needs to go away")]
         T FromJson<T>(string json);
         
         /// <summary>
@@ -24,6 +25,7 @@ namespace Alba
         /// </summary>
         /// <param name="target"></param>
         /// <returns></returns>
+        [Obsolete("needs to go away")]
         string ToJson(object target);
 
         /// <summary>

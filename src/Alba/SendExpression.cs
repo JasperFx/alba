@@ -16,9 +16,9 @@ namespace Alba
             _context = context;
         }
 
-        private Action<HttpRequest> modify
+        private void modify(Action<HttpRequest> configure)
         {
-            set { _context.Configure = c => value(c.Request); }
+            _context.ConfigureHttpContext(c => configure(c.Request));
         }
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace Alba
         /// <returns></returns>
         public SendExpression ContentType(string contentType)
         {
-            modify = request => request.Headers["content-type"] = contentType;
+            modify(request => request.Headers["content-type"] = contentType);
             return this;
         }
 
@@ -39,7 +39,7 @@ namespace Alba
         /// <returns></returns>
         public SendExpression Accepts(string accepts)
         {
-            modify = request => request.Headers["accept"] = accepts;
+            modify(request => request.Headers["accept"] = accepts);
             return this;
         }
 
@@ -50,7 +50,7 @@ namespace Alba
         /// <returns></returns>
         public SendExpression Etag(string etag)
         {
-            modify = request => request.Headers["If-None-Match"] = etag;
+            modify(request => request.Headers["If-None-Match"] = etag);
             return this;
         }
 
@@ -61,7 +61,7 @@ namespace Alba
         /// <returns></returns>
         public SendExpression ToUrl(string url)
         {
-            modify = request => request.Path = url;
+            modify(request => request.Path = url);
             return this;
         }
 
@@ -73,12 +73,12 @@ namespace Alba
         /// <returns></returns>
         public SendExpression QueryString(string paramName, string paramValue)
         {
-            modify = request =>
+            modify(request =>
             {
                 request.QueryString = request.QueryString.Add(paramName, paramValue);
                 request.Query = new QueryCollection(QueryHelpers.ParseQuery(request.QueryString.Value!));
                 
-            };
+            });
 
             return this;
         }

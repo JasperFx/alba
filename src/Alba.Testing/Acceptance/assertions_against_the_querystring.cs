@@ -20,10 +20,10 @@ namespace Alba.Testing.Acceptance
             {
                 _.Get.Url("/one").QueryString("test", "value");
                 
-                _.Configure = c =>
+                _.ConfigureHttpContext(c =>
                 {
                     c.Request.Query["test"].ToString().ShouldBe("value");
-                };
+                });
             });
         }
     }

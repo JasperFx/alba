@@ -4,10 +4,16 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
+using System.Runtime.ExceptionServices;
 using System.Security.Claims;
 using Alba.Assertions;
 using Baseline;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Alba
 {
@@ -43,6 +49,8 @@ namespace Alba
     
     public class Scenario : IUrlExpression
     {
+        public static readonly int DefaultBufferSize = 16 * 1024;
+
         private readonly ScenarioAssertionException _assertionRecords = new ScenarioAssertionException();
         private readonly IAlbaHost _system;
         private readonly IList<Action<HttpContext>> _setups = new List<Action<HttpContext>>();
@@ -59,6 +67,7 @@ namespace Alba
             ConfigureHttpContext(c =>
             {
                 c.Request.Body = new MemoryStream();
+                c.Response.Body = new MemoryStream();
             });
         }
 
@@ -72,13 +81,46 @@ namespace Alba
         }
 
         /// <summary>
-        /// Shorthand alternative to ConfigureHttpContext
+        /// Using the configured formatters in this system, write the input object to the
+        /// request stream 
         /// </summary>
-        public Action<HttpContext> Configure
+        /// <param name="input"></param>
+        /// <param name="contentType"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public Scenario WithInputBody<T>(T input, string contentType)
         {
-            set => _setups.Add(value);
-        }
+            ConfigureHttpContext(c =>
+            {
+                c.Request.ContentType = contentType;
+                
+                // TODO -- memoize the formatters
+                var options = _system.Services.GetRequiredService<IOptions<MvcOptions>>();
+                var formatter = options.Value.OutputFormatters.OfType<OutputFormatter>()
+                    .FirstOrDefault(x => x.SupportedMediaTypes.Contains(contentType));
 
+                var factory = _system.Services.GetRequiredService<IHttpResponseStreamWriterFactory>();
+                
+                // You *have* to use a separate HttpContext or all kinds of other things will get screwed up
+                // by writing to the response body of the original context
+                var stubHttpContext = new DefaultHttpContext();
+                stubHttpContext.Response.Body = new MemoryStream();
+                var context = new OutputFormatterWriteContext(stubHttpContext, factory.CreateWriter, typeof(T), input);
+                
+                // TODO -- switch to using async all the way down.
+                formatter.WriteAsync(context).GetAwaiter().GetResult();
+
+                c.Request.Body = stubHttpContext.Response.Body;
+                c.Request.Body.Position = 0;
+                c.Request.ContentLength = c.Request.Body.Length;
+
+            });
+
+            return this;
+        }
+        
+        
+        
         /// <summary>
         /// Add an assertion to the Scenario that will be executed after the request
         /// </summary>
@@ -93,6 +135,11 @@ namespace Alba
 
         internal void RunAssertions(HttpContext context)
         {
+            if (InvocationException != null)
+            {
+                ExceptionDispatchInfo.Throw(InvocationException);
+            }
+            
             if (!_ignoreStatusCode)
             {
                 new StatusCodeAssertion(_expectedStatusCode).Assert(this, context, _assertionRecords);
@@ -139,12 +186,12 @@ namespace Alba
 
         public void WriteFormData(Dictionary<string, string> input)
         {
-            Configure = c => c.WriteFormData(input);
+            ConfigureHttpContext(c => c.WriteFormData(input));
         }
         
         SendExpression IUrlExpression.Action<T>(Expression<Action<T>> expression)
         {
-            Configure = context => context.RelativeUrl(_system.Urls.UrlFor(expression, context.Request.Method));
+            ConfigureHttpContext(context => context.RelativeUrl(_system.Urls.UrlFor(expression, context.Request.Method)));
             return new SendExpression(this);
         }
 
@@ -152,13 +199,13 @@ namespace Alba
 
         SendExpression IUrlExpression.Url(string relativeUrl)
         {
-            Configure = context => context.RelativeUrl(relativeUrl);
+            ConfigureHttpContext(context => context.RelativeUrl(relativeUrl));
             return new SendExpression(this);
         }
 
         SendExpression IUrlExpression.Input<T>(T input)
         {
-            Configure = context =>
+            ConfigureHttpContext(context =>
             {
                 if (!(_system.Urls is NulloUrlLookup))
                 {
@@ -172,7 +219,7 @@ namespace Alba
                 {
                     context.RelativeUrl(null);
                 }
-            };
+            });
             
             return new SendExpression(this);
         }
@@ -181,7 +228,13 @@ namespace Alba
         {
             this.As<IUrlExpression>().Input(input);
 
-            Body.JsonInputIs(_system.ToJson(input));
+            ConfigureHttpContext(c =>
+            {
+                c.Accepts(MimeType.Json.Value);
+            });
+            
+            WithInputBody(input, MimeType.Json.Value);
+            //Body.JsonInputIs(_system.ToJson(input));
 
             return new SendExpression(this);
         }
@@ -232,8 +285,11 @@ namespace Alba
         public SendExpression Text(string text)
         {
             Body.TextIs(text);
-            Configure = context => context.Request.ContentType = MimeType.Text.Value;
-            Configure = context => context.Request.ContentLength = text.Length;
+            ConfigureHttpContext(context =>
+            {
+                context.Request.ContentType = MimeType.Text.Value;
+                context.Request.ContentLength = text.Length;
+            });
 
             return new SendExpression(this);
         }
@@ -251,7 +307,7 @@ namespace Alba
         {
             get
             {
-                Configure = context => context.HttpMethod("GET");
+                ConfigureHttpContext(context => context.HttpMethod("GET"));
                 return this;
             }
         }
@@ -260,7 +316,7 @@ namespace Alba
         {
             get
             {
-                Configure = context => context.HttpMethod("PUT");
+                ConfigureHttpContext(context => context.HttpMethod("PUT"));
                 return this;
             }
         }
@@ -269,7 +325,7 @@ namespace Alba
         {
             get
             {
-                Configure = context => context.HttpMethod("DELETE");
+                ConfigureHttpContext(context => context.HttpMethod("DELETE"));
                 return this;
             }
         }
@@ -278,7 +334,7 @@ namespace Alba
         {
             get
             {
-                Configure = context => context.HttpMethod("POST");
+                ConfigureHttpContext(context => context.HttpMethod("POST"));
                 return this;
             }
         }
@@ -287,7 +343,7 @@ namespace Alba
         {
             get
             {
-                Configure = context => context.HttpMethod("PATCH");
+                ConfigureHttpContext(context => context.HttpMethod("PATCH"));
                 return this;
             }
         }
@@ -296,14 +352,14 @@ namespace Alba
         {
             get
             {
-                Configure = context => context.HttpMethod("HEAD");
+                ConfigureHttpContext(context => context.HttpMethod("HEAD"));
                 return this;
             }
         }
 
         internal void Rewind()
         {
-            Configure = context => context.Request.Body.Position = 0;
+            ConfigureHttpContext(context => context.Request.Body.Position = 0);
         }
 
         /// <summary>
@@ -311,7 +367,7 @@ namespace Alba
         /// to an HttpContext
         /// </summary>
         /// <param name="context"></param>
-        public void SetupHttpContext(HttpContext context)
+        internal void SetupHttpContext(HttpContext context)
         {
             foreach (var setup in _setups)
             {
@@ -337,7 +393,7 @@ namespace Alba
         /// <param name="value"></param>
         public void WithRequestHeader(string headerKey, string value)
         {
-            Configure = c => c.Request.Headers[headerKey] = value;
+            ConfigureHttpContext(c => c.Request.Headers[headerKey] = value);
         }
 
         /// <summary>
@@ -346,7 +402,7 @@ namespace Alba
         /// <param name="headerKey"></param>
         public void RemoveRequestHeader(string headerKey)
         {
-            Configure = c => c.Request.Headers.Remove(headerKey);
+            ConfigureHttpContext(c => c.Request.Headers.Remove(headerKey));
         }
 
         /// <summary>
@@ -359,6 +415,7 @@ namespace Alba
         }
 
         internal List<Claim> Claims { get; } = new List<Claim>();
+        internal Exception InvocationException { get; set; }
 
         /// <summary>
         /// Set the Authorization header value to "Bearer [jwt]" on the HTTP request
@@ -366,7 +423,7 @@ namespace Alba
         /// <param name="jwt"></param>
         public void WithBearerToken(string jwt)
         {
-            Configure = c => c.SetBearerToken(jwt);
+            ConfigureHttpContext(c => c.SetBearerToken(jwt));
         }
     }
 }

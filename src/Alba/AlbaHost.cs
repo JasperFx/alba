@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -193,7 +195,7 @@ namespace Alba
         /// <param name="rootPath">Specify the content root directory to be used by the host.</param>
         /// <typeparam name="T"></typeparam>
         /// <returns>The system under test</returns>
-        public static AlbaHost ForStartup<T>(Func<IHostBuilder, IHostBuilder>? configure = null,
+        public static AlbaHost ForStartup<T>(Func<IHostBuilder, IHostBuilder> configure = null,
             string? rootPath = null) where T : class
         {
             var builder = Host.CreateDefaultBuilder();
@@ -308,28 +310,37 @@ namespace Alba
             {
                 context = await Invoke(async c =>
                 {
-                    if (scenario.Claims.Any())
+                    // TODO -- Catch any exceptions, and throw somehow. Might have to smuggle them through the HttpContext
+
+                    try
                     {
-                        c.Items.Add("alba_claims", scenario.Claims.ToArray());
-                    }
+                        if (scenario.Claims.Any())
+                        {
+                            c.Items.Add("alba_claims", scenario.Claims.ToArray());
+                        }
                     
-                    // I know what you're thinking, this is stupid, you shouldn't 
-                    // ever mix sync and async if you can help it, and yet tests
-                    // for long running before each *wiI do NOT understand why this is soll* break if you try to 
-                    // use async _beforeEach here. .
-                    foreach (var func in _beforeEach)
-                    {
-                        func(c).GetAwaiter().GetResult();
+                        // I know what you're thinking, this is stupid, you shouldn't 
+                        // ever mix sync and async if you can help it, and yet tests
+                        // for long running before each *wiI do NOT understand why this is soll* break if you try to 
+                        // use async _beforeEach here. .
+                        foreach (var func in _beforeEach)
+                        {
+                            func(c).GetAwaiter().GetResult();
+                        }
+
+                        c.Request.Body.Position = 0;
+
+
+                        scenario.SetupHttpContext(c);
+
+                        if (c.Request.Path == null) throw new InvalidOperationException("This scenario has no defined url");
                     }
-
-                    c.Request.Body.Position = 0;
-
-
-                    scenario.SetupHttpContext(c);
-
-                    if (c.Request.Path == null) throw new InvalidOperationException("This scenario has no defined url");
+                    catch (Exception e)
+                    {
+                        scenario.InvocationException = e;
+                    }
                 });
-
+                
                 scenario.RunAssertions(context);
             }
             finally

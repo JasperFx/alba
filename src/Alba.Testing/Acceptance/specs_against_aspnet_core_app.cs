@@ -9,14 +9,23 @@ using Xunit;
 
 namespace Alba.Testing.Acceptance
 {
-    public class specs_against_aspnet_core_app
+    public class specs_against_aspnet_core_app : IDisposable
     {
-        private async Task<IScenarioResult> run(Action<Scenario> configuration)
+        private readonly AlbaHost theHost;
+
+        public specs_against_aspnet_core_app()
         {
-            using (var system = AlbaHost.ForStartup<Startup>())
-            {
-                return await system.Scenario(configuration);
-            }
+            theHost = AlbaHost.ForStartup<Startup>();
+        }
+
+        public void Dispose()
+        {
+            theHost?.Dispose();
+        }
+
+        private Task<IScenarioResult> run(Action<Scenario> configuration)
+        {
+            return theHost.Scenario(configuration);
         }
 
         [Fact]

@@ -49,7 +49,7 @@ namespace Alba
 
         public static void Accepts(this HttpContext context, string mimeType)
         {
-            context.Request.Headers["accept"] = mimeType;
+            context.Request.Headers["Accept"] = mimeType;
         }
 
         public static void HttpMethod(this HttpContext context, string method)
