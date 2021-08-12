@@ -1,4 +1,3 @@
-using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using IdentityModel.Client;
@@ -8,13 +7,23 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
+#nullable enable
+
 namespace Alba.Security
 {
-    public class OpenConnectExtension : IAlbaExtension
+    public abstract class OpenConnectExtension : IAlbaExtension
     {
+        internal static readonly string OverrideKey = "alba_oidc_override";
+        
         private readonly HttpClient _client;
         private DiscoveryDocumentResponse _disco;
         private JwtBearerOptions _options;
+        private TokenResponse? _cached;
+
+        public static void StoreCustomization(HttpContext context, object customization)
+        {
+            context.Items.Add(OverrideKey, customization);
+        }
 
         public OpenConnectExtension()
         {
@@ -34,6 +43,8 @@ namespace Alba.Security
 
         public async Task Start(IAlbaHost host)
         {
+            AssertValid();
+            
             // This seems to be necessary to "bake" in the JwtBearerOptions modifications
             var options = host.Services.GetRequiredService<IOptionsMonitor<JwtBearerOptions>>()
                 .Get("Bearer");
@@ -47,35 +58,45 @@ namespace Alba.Security
             {
                 throw _disco.Exception;
             }
-            
-        }
 
-        protected virtual Task<TokenResponse> FetchToken(HttpContext context, object tokenCustomization)
+            host.BeforeEachAsync(ConfigureJwt);
+
+        }
+        
+        public string ClientId { get; set; }
+        public string ClientSecret { get; set; }
+
+        /// <summary>
+        /// Validate that all the necessary information like ClientSecret and ClientId have been
+        /// supplied to this extension
+        /// </summary>
+        public abstract void AssertValid();
+
+
+        public abstract Task<TokenResponse> FetchToken(HttpClient client, DiscoveryDocumentResponse disco,
+            HttpContext context, object? tokenCustomization);
+
+        private async Task<TokenResponse> determineJwt(HttpContext context)
         {
-            throw new NotImplementedException();
+            if (context.Items.TryGetValue(OverrideKey, out var scenarioOverride))
+            {
+                return await FetchToken(_client, _disco, context, scenarioOverride);
+            }
+
+            _cached ??= await FetchToken(_client, _disco, context, null);
+
+            return _cached;
         }
         
         internal async Task ConfigureJwt(HttpContext context)
         {
-            //var r = await -_client.Req
-            
-            var response = await _client.RequestTokenAsync(new PasswordTokenRequest
-            {
-                Address = _disco.TokenEndpoint,
-                ClientId = "",
-                ClientSecret = "",
-                
-            });
-            
-            // Claim[] claims = extractScenarioSpecificClaims(context);
-            // var jwt = BuildJwtString(claims);
-            //
-            // context.SetBearerToken(jwt);
+            var token = await determineJwt(context);
+            context.SetBearerToken(token.AccessToken);
         }
 
         public IHostBuilder Configure(IHostBuilder builder)
         {
-            throw new System.NotImplementedException();
+            return builder;
         }
     }
 }
