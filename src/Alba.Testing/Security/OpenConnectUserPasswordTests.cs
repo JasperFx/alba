@@ -132,6 +132,38 @@ namespace Alba.Testing.Security
             var output = response.ResponseBody.ReadAsJson<Result>();
             output.Sum.ShouldBe(9);
             output.Product.ShouldBe(24);
+
+            var user = response.Context.User;
+            user.FindFirst("name").Value.ShouldBe("Alice Smith");
+        }
+        
+        [Fact]
+        public async Task post_to_a_secured_endpoint_with_jwt_with_overridden_user_and_password()
+        {
+            // Building the input body
+            var input = new Numbers
+            {
+                Values = new[] {2, 3, 4}
+            };
+
+            var response = await theHost.Scenario(x =>
+            {
+                // Alba deals with Json serialization for us
+                x.Post.Json(input).ToUrl("/math");
+                
+                // Override the user credentials for just this scenario
+                x.UserAndPasswordIs("bob", "bob");
+                
+                // Enforce that the HTTP Status Code is 200 Ok
+                x.StatusCodeShouldBeOk();
+            });
+
+            var output = response.ResponseBody.ReadAsJson<Result>();
+            output.Sum.ShouldBe(9);
+            output.Product.ShouldBe(24);
+
+            var user = response.Context.User;
+            user.FindFirst("name").Value.ShouldBe("Bob Smith");
         }
 
         public void Dispose()

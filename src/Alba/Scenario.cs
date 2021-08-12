@@ -123,6 +123,8 @@ namespace Alba
             });
         }
 
+        internal Dictionary<string, object> Items { get; } = new Dictionary<string, object>();
+        
         /// <summary>
         /// Shorthand alternative to ConfigureHttpContext
         /// </summary>
