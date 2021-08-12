@@ -18,7 +18,8 @@ namespace Alba.Security
         
         public string? Scope { get; set; }
 
-        public override Task<TokenResponse> FetchToken(HttpClient client, DiscoveryDocumentResponse disco, HttpContext context, object? tokenCustomization)
+        public override Task<TokenResponse> FetchToken(HttpClient client, DiscoveryDocumentResponse disco,
+            object? tokenCustomization)
         {
             return client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
             {

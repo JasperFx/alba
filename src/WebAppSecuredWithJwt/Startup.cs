@@ -45,7 +45,7 @@ namespace WebAppSecuredWithJwt
                     
                     // don't worry about this, our JwtSecurityStub is gonna switch it off in
                     // tests
-                    options.Authority = "http://localhost:5010";
+                    options.Authority = "https://localhost:5010";
                     
                     
                         

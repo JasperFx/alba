@@ -9,6 +9,16 @@ namespace IdentityServer
 {
     public static class Config
     {
+        public static string ClientId;
+
+        static Config()
+        {
+            ClientId = "spa";
+        }
+
+        public const string ApiScope = "api";
+        public const string ClientSecret = "secret";
+
         public static IEnumerable<IdentityResource> IdentityResources =>
             new IdentityResource[]
             {
@@ -19,7 +29,7 @@ namespace IdentityServer
         public static IEnumerable<ApiScope> ApiScopes =>
             new ApiScope[]
             {
-                new ApiScope("api", new[] { "name" }),
+                new ApiScope(ApiScope, new[] { "name" }),
             };
 
         public static IEnumerable<Client> Clients =>
@@ -27,8 +37,8 @@ namespace IdentityServer
             {
                 new Client
                 {
-                    ClientId = "spa",
-                    ClientSecrets = { new Secret("secret".Sha256()) },
+                    ClientId = ClientId,
+                    ClientSecrets = { new Secret(ClientSecret.Sha256()) },
                     
                     AllowedGrantTypes = GrantTypes.CodeAndClientCredentials,
 
@@ -39,7 +49,7 @@ namespace IdentityServer
                     PostLogoutRedirectUris = { "https://localhost:5001/signout-callback-oidc" },
 
                     AllowOfflineAccess = true,
-                    AllowedScopes = { "openid", "profile", "api" }
+                    AllowedScopes = { "openid", "profile", ApiScope }
                 },
             };
     }

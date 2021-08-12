@@ -20,7 +20,7 @@ namespace IdentityServer
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseUrls("http://localhost:5010");
+                    webBuilder.UseUrls("https://localhost:5010");
                     webBuilder.UseStartup<Startup>();
                 });
     }

@@ -72,18 +72,22 @@ namespace Alba.Security
         /// </summary>
         public abstract void AssertValid();
 
+        public Task<TokenResponse> FetchToken(object? tokenCustomization)
+        {
+            return FetchToken(_client, _disco, tokenCustomization);
+        }
 
         public abstract Task<TokenResponse> FetchToken(HttpClient client, DiscoveryDocumentResponse disco,
-            HttpContext context, object? tokenCustomization);
+            object? tokenCustomization);
 
         private async Task<TokenResponse> determineJwt(HttpContext context)
         {
             if (context.Items.TryGetValue(OverrideKey, out var scenarioOverride))
             {
-                return await FetchToken(_client, _disco, context, scenarioOverride);
+                return await FetchToken(_client, _disco, scenarioOverride);
             }
 
-            _cached ??= await FetchToken(_client, _disco, context, null);
+            _cached ??= await FetchToken(_client, _disco, null);
 
             return _cached;
         }
