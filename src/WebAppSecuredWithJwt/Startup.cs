@@ -35,6 +35,7 @@ namespace WebAppSecuredWithJwt
             });
             
             services.AddAuthentication("Bearer")
+                
                 .AddJwtBearer("Bearer", options =>
                 {
                     // A real application would pull all this information from configuration
@@ -44,7 +45,9 @@ namespace WebAppSecuredWithJwt
                     
                     // don't worry about this, our JwtSecurityStub is gonna switch it off in
                     // tests
-                    options.Authority = "https://localhost:5001";
+                    options.Authority = "http://localhost:5010";
+                    
+                    
                         
             
                     options.TokenValidationParameters = new TokenValidationParameters
