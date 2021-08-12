@@ -7,6 +7,10 @@ using Microsoft.AspNetCore.Http;
 
 namespace Alba.Security
 {
+    /// <summary>
+    /// Apply OIDC security workflow to outgoing Alba scenario requests using the
+    /// Client Credentials workflow
+    /// </summary>
     public class OpenConnectClientCredentials : OpenConnectExtension
     {
         public override void AssertValid()

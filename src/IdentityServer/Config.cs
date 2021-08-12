@@ -40,7 +40,7 @@ namespace IdentityServer
                     ClientId = ClientId,
                     ClientSecrets = { new Secret(ClientSecret.Sha256()) },
                     
-                    AllowedGrantTypes = GrantTypes.CodeAndClientCredentials,
+                    AllowedGrantTypes =  GrantTypes.ResourceOwnerPasswordAndClientCredentials,
 
                     RedirectUris = { "https://localhost:5001/signin-oidc" },
 
