@@ -5,7 +5,10 @@ using Microsoft.AspNetCore.Http;
 
 namespace Alba.Security
 {
-    public abstract class SecurityStub : IHasClaims
+    /// <summary>
+    /// Base class for extensions that apply authentication mechanics to AlbaHosts
+    /// </summary>
+    public abstract class AuthenticationExtensionBase : IHasClaims
     {
         private readonly IList<Claim> _baselineClaims = new List<Claim>();
 

@@ -20,6 +20,9 @@ namespace Alba.Security
             if (Scope.IsEmpty()) throw new Exception($"{nameof(Scope)} cannot be null");
         }
         
+        /// <summary>
+        /// User supplied value for the Open Id Connect "Scope". This is required.
+        /// </summary>
         public string? Scope { get; set; }
 
         public override Task<TokenResponse> FetchToken(HttpClient client, DiscoveryDocumentResponse? disco,

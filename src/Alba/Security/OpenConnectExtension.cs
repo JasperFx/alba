@@ -20,28 +20,23 @@ namespace Alba.Security
         private DiscoveryDocumentResponse? _disco;
         private TokenResponse? _cached;
 
-        public static void StoreCustomization(HttpContext context, object customization)
-        {
-            context.Items.Add(OverrideKey, customization);
-        }
-
         public OpenConnectExtension()
         {
             _client = new HttpClient();
         }
 
-        public void Dispose()
+        void IDisposable.Dispose()
         {
             _client.Dispose();
         }
 
-        public ValueTask DisposeAsync()
+        ValueTask IAsyncDisposable.DisposeAsync()
         {
-            Dispose();
+            _client.Dispose();
             return ValueTask.CompletedTask;
         }
 
-        public async Task Start(IAlbaHost host)
+        async Task IAlbaExtension.Start(IAlbaHost host)
         {
             AssertValid();
             
@@ -60,7 +55,14 @@ namespace Alba.Security
 
         }
         
+        /// <summary>
+        /// User-supplied value for the Open Id Connect ClientId. This is required.
+        /// </summary>
         public string? ClientId { get; set; }
+        
+        /// <summary>
+        /// User-supplied value for the Open Id Connect ClientSecret. This is required.
+        /// </summary>
         public string? ClientSecret { get; set; }
 
         /// <summary>
@@ -98,7 +100,7 @@ namespace Alba.Security
             context.SetBearerToken(token.AccessToken);
         }
 
-        public IHostBuilder Configure(IHostBuilder builder)
+        IHostBuilder IAlbaExtension.Configure(IHostBuilder builder)
         {
             return builder;
         }

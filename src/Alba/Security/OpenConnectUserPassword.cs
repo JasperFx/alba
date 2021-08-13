@@ -45,7 +45,14 @@ namespace Alba.Security
             if (Password.IsEmpty()) throw new Exception($"{nameof(Password)} cannot be null");
         }
         
+        /// <summary>
+        /// The default UserName to use for authenticating each service call
+        /// </summary>
         public string? UserName { get; set; }
+        
+        /// <summary>
+        /// The default Password to use for authenticating each service call
+        /// </summary>
         public string? Password { get; set; }
 
         public override Task<TokenResponse> FetchToken(HttpClient client, DiscoveryDocumentResponse? disco,

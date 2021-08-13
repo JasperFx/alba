@@ -16,18 +16,21 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Alba.Security
 {
-    public class JwtSecurityStub : SecurityStub, IAlbaExtension, IPostConfigureOptions<JwtBearerOptions>
+    /// <summary>
+    /// Use this extension to generate and apply JWT tokens to scenario requests using
+    /// a set of baseline claims
+    /// </summary>
+    public class JwtSecurityStub : AuthenticationExtensionBase, IAlbaExtension, IPostConfigureOptions<JwtBearerOptions>
     {
         private SecurityKey? _signingKey;
         private JwtBearerOptions? _options;
 
-
-        public void Dispose()
+        void IDisposable.Dispose()
         {
             // Nothing
         }
 
-        public ValueTask DisposeAsync()
+        ValueTask IAsyncDisposable.DisposeAsync()
         {
             return ValueTask.CompletedTask;
         }
@@ -51,7 +54,7 @@ namespace Alba.Security
             context.SetBearerToken(jwt);
         }
 
-        public IHostBuilder Configure(IHostBuilder builder)
+        IHostBuilder IAlbaExtension.Configure(IHostBuilder builder)
         {
             return builder.ConfigureServices(services =>
             {
@@ -117,10 +120,10 @@ namespace Alba.Security
             _options = options;
         }
 
-        public JwtBearerOptions? Options
+        internal JwtBearerOptions? Options
         {
             get => _options;
-            internal set
+            set
             {
                 _options = value ?? throw new ArgumentNullException(nameof(value));
                 _options.TokenValidationParameters.IssuerSigningKey ??= new SymmetricSecurityKey(Encoding.UTF8.GetBytes("some really big key that should work"));
