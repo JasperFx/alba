@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Alba.Assertions
 {
-    public class BodyTextAssertion : IScenarioAssertion
+    internal class BodyTextAssertion : IScenarioAssertion
     {
         public string Text { get; set; }
 

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Alba.Assertions
 {
-    public class RedirectAssertion : IScenarioAssertion
+    internal class RedirectAssertion : IScenarioAssertion
     {
         public RedirectAssertion(string expected, bool permanent)
         {

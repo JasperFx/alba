@@ -2,7 +2,7 @@
 
 namespace Alba.Assertions
 {
-    public class BodyDoesNotContainAssertion : IScenarioAssertion
+    internal class BodyDoesNotContainAssertion : IScenarioAssertion
     {
         public string Text { get; set; }
 

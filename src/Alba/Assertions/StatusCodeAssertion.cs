@@ -3,7 +3,7 @@
 namespace Alba.Assertions
 {
     // SAMPLE: StatusCodeAssertion
-    public class StatusCodeAssertion : IScenarioAssertion
+    internal class StatusCodeAssertion : IScenarioAssertion
     {
         public int Expected { get; set; }
 

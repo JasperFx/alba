@@ -3,7 +3,7 @@
 namespace Alba.Assertions
 {
     // SAMPLE: BodyContainsAssertion
-    public class BodyContainsAssertion : IScenarioAssertion
+    internal class BodyContainsAssertion : IScenarioAssertion
     {
         public string Text { get; set; }
 

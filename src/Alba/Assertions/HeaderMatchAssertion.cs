@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Alba.Assertions
 {
-    public class HeaderMatchAssertion : IScenarioAssertion
+    internal class HeaderMatchAssertion : IScenarioAssertion
     {
         private readonly string _headerKey;
         private readonly Regex _regex;

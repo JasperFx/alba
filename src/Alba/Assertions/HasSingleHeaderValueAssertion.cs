@@ -2,9 +2,9 @@ using System.Linq;
 using Baseline;
 using Microsoft.AspNetCore.Http;
 
-namespace Alba
+namespace Alba.Assertions
 {
-    public class HasSingleHeaderValueAssertion : IScenarioAssertion
+    internal class HasSingleHeaderValueAssertion : IScenarioAssertion
     {
         private readonly string _headerKey;
 

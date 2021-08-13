@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Alba.Assertions;
+using Microsoft.AspNetCore.Http;
 using Xunit;
 
 namespace Alba.Testing.Assertions

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Alba.Assertions
 {
-    public class HeaderValueAssertion : IScenarioAssertion
+    internal class HeaderValueAssertion : IScenarioAssertion
     {
         private readonly string _headerKey;
         private readonly string _expected;
