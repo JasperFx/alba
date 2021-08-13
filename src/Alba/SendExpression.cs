@@ -18,7 +18,7 @@ namespace Alba
 
         private Action<HttpRequest> modify
         {
-            set { _context.Configure = c => value(c.Request); }
+            set { _context.ConfigureHttpContext(c => value(c.Request)); }
         }
 
         /// <summary>

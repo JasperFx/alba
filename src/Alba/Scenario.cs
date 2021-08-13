@@ -65,15 +65,6 @@ namespace Alba
         internal Dictionary<string, object> Items { get; } = new();
 
         /// <summary>
-        ///  Shorthand alternative to ConfigureHttpContext
-        /// </summary>
-        [Obsolete]
-        public Action<HttpContext> Configure
-        {
-            set => ConfigureHttpContext(value);
-        }
-
-        /// <summary>
         /// Helpers to write content to the HttpRequest
         /// </summary>
         public HttpRequestBody Body { get; }
@@ -85,7 +76,7 @@ namespace Alba
         {
             get
             {
-                Configure = context => context.HttpMethod("GET");
+                ConfigureHttpContext(context => context.HttpMethod("GET"));
                 return this;
             }
         }
@@ -98,7 +89,7 @@ namespace Alba
         {
             get
             {
-                Configure = context => context.HttpMethod("PUT");
+                ConfigureHttpContext(context => context.HttpMethod("PUT"));
                 return this;
             }
         }
@@ -110,7 +101,7 @@ namespace Alba
         {
             get
             {
-                Configure = context => context.HttpMethod("DELETE");
+                ConfigureHttpContext(context => context.HttpMethod("DELETE"));
                 return this;
             }
         }
@@ -122,7 +113,7 @@ namespace Alba
         {
             get
             {
-                Configure = context => context.HttpMethod("POST");
+                ConfigureHttpContext(context => context.HttpMethod("POST"));
                 return this;
             }
         }
@@ -134,7 +125,7 @@ namespace Alba
         {
             get
             {
-                Configure = context => context.HttpMethod("PATCH");
+                ConfigureHttpContext(context => context.HttpMethod("PATCH"));
                 return this;
             }
         }
@@ -146,7 +137,7 @@ namespace Alba
         {
             get
             {
-                Configure = context => context.HttpMethod("HEAD");
+                ConfigureHttpContext(context => context.HttpMethod("HEAD"));
                 return this;
             }
         }
@@ -157,7 +148,7 @@ namespace Alba
 
         SendExpression IUrlExpression.Url(string relativeUrl)
         {
-            Configure = context => context.RelativeUrl(relativeUrl);
+            ConfigureHttpContext(context => context.RelativeUrl(relativeUrl));
             return new SendExpression(this);
         }
 
@@ -215,8 +206,8 @@ namespace Alba
         public SendExpression Text(string text)
         {
             Body.TextIs(text);
-            Configure = context => context.Request.ContentType = MimeType.Text.Value;
-            Configure = context => context.Request.ContentLength = text.Length;
+            ConfigureHttpContext(context => context.Request.ContentType = MimeType.Text.Value);
+            ConfigureHttpContext(context => context.Request.ContentLength = text.Length);
 
             return new SendExpression(this);
         }
@@ -330,7 +321,7 @@ namespace Alba
         /// <param name="input"></param>
         public void WriteFormData(Dictionary<string, string> input)
         {
-            Configure = c => c.WriteFormData(input);
+            ConfigureHttpContext(c => c.WriteFormData(input));
         }
 
 
@@ -346,7 +337,7 @@ namespace Alba
 
         internal void Rewind()
         {
-            Configure = context => context.Request.Body.Position = 0;
+            ConfigureHttpContext(context => context.Request.Body.Position = 0);
         }
 
         /// <summary>
@@ -377,7 +368,7 @@ namespace Alba
         /// <param name="value"></param>
         public void WithRequestHeader(string headerKey, string value)
         {
-            Configure = c => c.Request.Headers[headerKey] = value;
+            ConfigureHttpContext(c => c.Request.Headers[headerKey] = value);
         }
 
         /// <summary>
@@ -386,7 +377,7 @@ namespace Alba
         /// <param name="headerKey"></param>
         public void RemoveRequestHeader(string headerKey)
         {
-            Configure = c => c.Request.Headers.Remove(headerKey);
+            ConfigureHttpContext(c => c.Request.Headers.Remove(headerKey));
         }
 
         /// <summary>
@@ -404,7 +395,7 @@ namespace Alba
         /// <param name="jwt"></param>
         public void WithBearerToken(string jwt)
         {
-            Configure = c => c.SetBearerToken(jwt);
+            ConfigureHttpContext(c => c.SetBearerToken(jwt));
         }
 
         internal class RewindableStream : MemoryStream

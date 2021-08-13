@@ -27,7 +27,7 @@ namespace Alba
             var xml = writer.ToString();
             var bytes = Encoding.UTF8.GetBytes(xml);
 
-            _parent.Configure = context =>
+            _parent.ConfigureHttpContext(context =>
             {
                 var stream = context.Request.Body;
                 stream.Write(bytes, 0, bytes.Length);
@@ -36,7 +36,7 @@ namespace Alba
                 context.Request.ContentType = MimeType.Xml.Value;
                 context.Accepts(MimeType.Xml.Value);
                 context.Request.ContentLength = xml.Length;
-            };
+            });
 
 
         }
@@ -56,23 +56,23 @@ namespace Alba
 
         public void WriteFormData(Dictionary<string, string> input)
         {
-            _parent.Configure = context =>
+            _parent.ConfigureHttpContext(context =>
             {
                 context.Request.ContentType(MimeType.HttpFormMimetype);
                 context.WriteFormData(input);
-            };
+            });
 
 
         }
 
         public void TextIs(string body)
         {
-            _parent.Configure = context =>
+            _parent.ConfigureHttpContext(context =>
             {
                 writeTextToBody(body, context);
                 context.Request.ContentType = MimeType.Text.Value;
                 context.Request.ContentLength = body.Length;
-            };
+            });
 
 
         }

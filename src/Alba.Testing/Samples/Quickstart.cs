@@ -101,11 +101,11 @@ namespace Alba.Testing.Samples
             {
                 var response = await system.Scenario(_ =>
                 {
-                    _.Configure = c =>
+                    _.ConfigureHttpContext(c =>
                     {
                         c.Request.Method = "GET";
                         c.Request.Path = "/";
-                    };
+                    });
                     
 
 
