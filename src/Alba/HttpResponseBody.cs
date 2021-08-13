@@ -15,10 +15,10 @@ namespace Alba
 {
     public class HttpResponseBody
     {
-        private readonly IAlbaHost _system;
+        private readonly AlbaHost _system;
         private readonly HttpContext _context;
 
-        internal HttpResponseBody(IAlbaHost system, HttpContext context)
+        internal HttpResponseBody(AlbaHost system, HttpContext context)
         {
             _system = system;
             _context = context;
@@ -89,11 +89,7 @@ namespace Alba
 
         public T Read<T>(string contentType)
         {
-            // TODO -- memoize things
-            var options = _system.Services.GetRequiredService<IOptionsMonitor<MvcOptions>>();
-            var formatter = options.Get("").InputFormatters.OfType<InputFormatter>()
-                .FirstOrDefault(x => x.SupportedMediaTypes.Contains(contentType));
-
+            var formatter = _system.Inputs[contentType];
             if (formatter == null)
             {
                 throw new InvalidOperationException(
@@ -108,8 +104,6 @@ namespace Alba
             var inputContext = new InputFormatterContext(standinContext, typeof(T).Name, new ModelStateDictionary(), metadata, (s, e) => new StreamReader(s));
             var result = formatter.ReadAsync(inputContext).GetAwaiter().GetResult();
 
-            
-            
             return (T)result.Model;
         }
     }

@@ -38,7 +38,7 @@ namespace Alba
 
     internal class ScenarioResult : IScenarioResult
     {
-        public ScenarioResult(HttpContext context, IAlbaHost albaHost)
+        public ScenarioResult(HttpContext context, AlbaHost albaHost)
         {
             Context = context;
             ResponseBody = new HttpResponseBody(albaHost, context);
@@ -52,14 +52,14 @@ namespace Alba
     public class Scenario : IUrlExpression
     {
         private readonly ScenarioAssertionException _assertionRecords = new ScenarioAssertionException();
-        private readonly IAlbaHost _system;
+        private readonly AlbaHost _system;
         private readonly IList<Action<HttpContext>> _setups = new List<Action<HttpContext>>();
 
         private readonly IList<IScenarioAssertion> _assertions = new List<IScenarioAssertion>();
         private int _expectedStatusCode = 200;
         private bool _ignoreStatusCode;
 
-        internal Scenario(IAlbaHost system)
+        internal Scenario(AlbaHost system)
         {
             _system = system;
             Body = new HttpRequestBody(system, this);
@@ -95,11 +95,7 @@ namespace Alba
         {
             ConfigureHttpContext(c =>
             {
-                // TODO -- memoize things
-                var options = _system.Services.GetRequiredService<IOptionsMonitor<MvcOptions>>();
-                var formatter = options.Get("").OutputFormatters.OfType<OutputFormatter>()
-                    .FirstOrDefault(x => x.SupportedMediaTypes.Contains(contentType));
-
+                var formatter = _system.Outputs[contentType];
                 if (formatter == null)
                 {
                     throw new InvalidOperationException(
