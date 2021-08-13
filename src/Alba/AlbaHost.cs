@@ -38,8 +38,8 @@ namespace Alba
 
             Extensions = extensions;
 
-            Inputs = new Cache<string, InputFormatter>(findInputFormatter);
-            Outputs = new Cache<string, OutputFormatter>(findOutputFormatter);
+            Inputs = new Cache<string, InputFormatter?>(findInputFormatter);
+            Outputs = new Cache<string, OutputFormatter?>(findOutputFormatter);
         }
 
         public AlbaHost(IHostBuilder builder, params IAlbaExtension[] extensions)
@@ -62,13 +62,13 @@ namespace Alba
 
             foreach (var extension in extensions) extension.Start(this).GetAwaiter().GetResult();
             
-            Inputs = new Cache<string, InputFormatter>(findInputFormatter);
-            Outputs = new Cache<string, OutputFormatter>(findOutputFormatter);
+            Inputs = new Cache<string, InputFormatter?>(findInputFormatter);
+            Outputs = new Cache<string, OutputFormatter?>(findOutputFormatter);
         }
 
-        internal Cache<string, InputFormatter> Inputs { get; }
+        internal Cache<string, InputFormatter?> Inputs { get; }
 
-        internal Cache<string, OutputFormatter> Outputs { get; }
+        internal Cache<string, OutputFormatter?> Outputs { get; }
 
         public IReadOnlyList<IAlbaExtension> Extensions { get; }
 
@@ -162,7 +162,6 @@ namespace Alba
         ///     Define and execute an integration test by running an Http request through
         ///     your ASP.Net Core system
         /// </summary>
-        /// <param name="system"></param>
         /// <param name="configure"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
@@ -180,7 +179,7 @@ namespace Alba
             HttpContext? context = null;
             try
             {
-                context = await Invoke(async c =>
+                context = await Invoke(c =>
                 {
                     try
                     {
@@ -265,14 +264,14 @@ namespace Alba
             return albaHost;
         }
 
-        private OutputFormatter findOutputFormatter(string contentType)
+        private OutputFormatter? findOutputFormatter(string contentType)
         {
             var options = Services.GetRequiredService<IOptionsMonitor<MvcOptions>>();
             return options.Get("").OutputFormatters.OfType<OutputFormatter>()
                 .FirstOrDefault(x => x.SupportedMediaTypes.Contains(contentType));
         }
 
-        private InputFormatter findInputFormatter(string contentType)
+        private InputFormatter? findInputFormatter(string contentType)
         {
             var options = Services.GetRequiredService<IOptionsMonitor<MvcOptions>>();
             return options.Get("").InputFormatters.OfType<InputFormatter>()

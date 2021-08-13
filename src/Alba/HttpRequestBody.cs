@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using System.Xml.Serialization;
 using Microsoft.AspNetCore.Http;
-
+#nullable enable
 namespace Alba
 {
     public class HttpRequestBody

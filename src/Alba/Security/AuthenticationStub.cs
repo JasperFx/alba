@@ -39,7 +39,7 @@ namespace Alba.Security
                 services.AddSingleton(this);
                 services.AddAuthentication("Test")
                     .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(
-                        "Test", options => { });
+                        "Test", o => {});
             });
         }
 
@@ -63,7 +63,8 @@ namespace Alba.Security
             ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock)
             : base(options, logger, encoder, clock)
         {
-            _context = accessor.HttpContext;
+            _context = accessor.HttpContext ?? throw new InvalidOperationException("HttpContext is missing");
+            
             _parent = parent;
         }
 

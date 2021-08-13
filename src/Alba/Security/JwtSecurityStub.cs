@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,9 +18,8 @@ namespace Alba.Security
 {
     public class JwtSecurityStub : SecurityStub, IAlbaExtension, IPostConfigureOptions<JwtBearerOptions>
     {
-        private SecurityKey _signingKey;
-        
-        private JwtBearerOptions _options;
+        private SecurityKey? _signingKey;
+        private JwtBearerOptions? _options;
 
 
         public void Dispose()
@@ -61,10 +61,15 @@ namespace Alba.Security
 
         internal JwtSecurityToken BuildToken(params Claim[] claims)
         {
-            // TODO -- get the algorithm from the options validation parameters,
-            // but use HmacSha256 as the default
-            var credentials = new SigningCredentials(_options.TokenValidationParameters.IssuerSigningKey,
-                SecurityAlgorithms.HmacSha256);
+            if (_options == null)
+                throw new InvalidOperationException("Unable to determine the JwtBearerOptions for this AlbaHost");
+
+            var algorithm = _options.TokenValidationParameters.ValidAlgorithms?.FirstOrDefault()
+                            ?? SecurityAlgorithms.HmacSha256;
+            
+            var credentials = new SigningCredentials(
+                _options.TokenValidationParameters.IssuerSigningKey, 
+                algorithm);
 
             return new JwtSecurityToken(_options.ClaimsIssuer, _options.Audience, allClaims(claims),
                 expires: DateTime.UtcNow.AddDays(1), signingCredentials: credentials);
@@ -112,7 +117,7 @@ namespace Alba.Security
             _options = options;
         }
 
-        public JwtBearerOptions Options
+        public JwtBearerOptions? Options
         {
             get => _options;
             internal set

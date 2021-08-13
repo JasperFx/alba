@@ -1,10 +1,10 @@
 using System;
 using System.IO;
 using Baseline;
-
+#nullable enable
 namespace Alba
 {
-    public static class DirectoryFinder
+    internal static class DirectoryFinder
     {
         /// <summary>
         /// Tries to find the correct content path for a project that is parallel to the 

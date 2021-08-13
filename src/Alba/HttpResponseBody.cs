@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-
+#nullable enable
 namespace Alba
 {
     public class HttpResponseBody
@@ -82,12 +82,12 @@ namespace Alba
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public T ReadAsJson<T>()
+        public T? ReadAsJson<T>()
         {
             return Read<T>(MimeType.Json.Value);
         }
 
-        public T Read<T>(string contentType)
+        public T? Read<T>(string contentType)
         {
             var formatter = _system.Inputs[contentType];
             if (formatter == null)
@@ -104,7 +104,9 @@ namespace Alba
             var inputContext = new InputFormatterContext(standinContext, typeof(T).Name, new ModelStateDictionary(), metadata, (s, e) => new StreamReader(s));
             var result = formatter.ReadAsync(inputContext).GetAwaiter().GetResult();
 
-            return (T)result.Model;
+            if (result.Model is T returnValue) return returnValue;
+
+            return default(T);
         }
     }
 }

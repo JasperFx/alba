@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
-
+#nullable enable
 namespace Alba
 {
     public interface IAlbaHost : IHost, IAsyncDisposable
@@ -11,7 +11,6 @@ namespace Alba
         ///     Define and execute an integration test by running an Http request through
         ///     your ASP.Net Core system
         /// </summary>
-        /// <param name="system"></param>
         /// <param name="configure"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>

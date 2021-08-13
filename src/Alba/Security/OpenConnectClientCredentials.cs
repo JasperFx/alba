@@ -22,9 +22,11 @@ namespace Alba.Security
         
         public string? Scope { get; set; }
 
-        public override Task<TokenResponse> FetchToken(HttpClient client, DiscoveryDocumentResponse disco,
+        public override Task<TokenResponse> FetchToken(HttpClient client, DiscoveryDocumentResponse? disco,
             object? tokenCustomization)
         {
+            if (disco == null) throw new ArgumentNullException(nameof(disco), "Unable to load the token discovery document");
+
             return client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
             {
                 Address = disco.TokenEndpoint,

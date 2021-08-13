@@ -6,7 +6,7 @@ using System.Text;
 using Baseline;
 using Microsoft.AspNetCore.Http;
 
-
+#nullable enable
 namespace Alba
 {
 

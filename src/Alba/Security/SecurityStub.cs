@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
@@ -7,8 +8,8 @@ namespace Alba.Security
     public abstract class SecurityStub : IHasClaims
     {
         private readonly IList<Claim> _baselineClaims = new List<Claim>();
-        
-        
+
+
         void IHasClaims.AddClaim(Claim claim)
         {
             _baselineClaims.Add(claim);
@@ -18,15 +19,9 @@ namespace Alba.Security
         {
             foreach (var claim1 in stubTypeSpecificClaims()) yield return claim1;
 
-            foreach (var claim in _baselineClaims)
-            {
-                yield return claim;
-            }
+            foreach (var claim in _baselineClaims) yield return claim;
 
-            foreach (var claim in claims)
-            {
-                yield return claim;
-            }
+            foreach (var claim in claims) yield return claim;
         }
 
         protected virtual IEnumerable<Claim> stubTypeSpecificClaims()
@@ -38,10 +33,13 @@ namespace Alba.Security
         {
             if (context.Items.TryGetValue("alba_claims", out var raw))
             {
-                return (Claim[]) raw;
+                if (raw is Claim[] cs)
+                {
+                    return cs;
+                }
             }
 
-            return new Claim[0];
+            return Array.Empty<Claim>();
         }
 
         protected IEnumerable<Claim>? allClaims(HttpContext context)

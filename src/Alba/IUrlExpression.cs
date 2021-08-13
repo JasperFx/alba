@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-
+#nullable enable
 namespace Alba
 {
     public interface IUrlExpression

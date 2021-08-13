@@ -3,10 +3,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
-
+#nullable enable
 namespace Alba
 {
-    public static class SystemUnderTestExtensions
+    public static class AlbaHostExtensions
     {
         public static Task<IAlbaHost> StartAlbaAsync(this IHostBuilder builder, params IAlbaExtension[] extensions)
         {
@@ -61,7 +61,7 @@ namespace Alba
         /// <param name="url"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static async Task<T> GetAsJson<T>(this IAlbaHost system, string url)
+        public static async Task<T?> GetAsJson<T>(this IAlbaHost system, string url)
         {
             var response = await system.Scenario(x => x.Get.Url(url).Accepts("application/json;text/json"));
             return response.ResponseBody.ReadAsJson<T>();
@@ -79,7 +79,7 @@ namespace Alba
                 _configure = configure;
             }
 
-            public async Task<TResponse> Receive<TResponse>()
+            public async Task<TResponse?> Receive<TResponse>()
             {
                 var response = await _system.Scenario(_configure);
                 return response.ResponseBody.ReadAsJson<TResponse>();

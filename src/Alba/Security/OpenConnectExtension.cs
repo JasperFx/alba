@@ -1,3 +1,4 @@
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using IdentityModel.Client;
@@ -16,8 +17,7 @@ namespace Alba.Security
         internal static readonly string OverrideKey = "alba_oidc_override";
         
         private readonly HttpClient _client;
-        private DiscoveryDocumentResponse _disco;
-        private JwtBearerOptions _options;
+        private DiscoveryDocumentResponse? _disco;
         private TokenResponse? _cached;
 
         public static void StoreCustomization(HttpContext context, object customization)
@@ -48,10 +48,7 @@ namespace Alba.Security
             // This seems to be necessary to "bake" in the JwtBearerOptions modifications
             var options = host.Services.GetRequiredService<IOptionsMonitor<JwtBearerOptions>>()
                 .Get("Bearer");
-
             
-            _options = options;
-
             var authorityUrl = options.Authority;
             _disco = await _client.GetDiscoveryDocumentAsync(authorityUrl);
             if (_disco.IsError)
@@ -63,8 +60,8 @@ namespace Alba.Security
 
         }
         
-        public string ClientId { get; set; }
-        public string ClientSecret { get; set; }
+        public string? ClientId { get; set; }
+        public string? ClientSecret { get; set; }
 
         /// <summary>
         /// Validate that all the necessary information like ClientSecret and ClientId have been
@@ -74,10 +71,13 @@ namespace Alba.Security
 
         public Task<TokenResponse> FetchToken(object? tokenCustomization)
         {
+            if (_disco == null)
+                throw new InvalidOperationException(
+                    "This operation is not possible without an existing OIDC discovery document");
             return FetchToken(_client, _disco, tokenCustomization);
         }
 
-        public abstract Task<TokenResponse> FetchToken(HttpClient client, DiscoveryDocumentResponse disco,
+        public abstract Task<TokenResponse> FetchToken(HttpClient client, DiscoveryDocumentResponse? disco,
             object? tokenCustomization);
 
         private async Task<TokenResponse> determineJwt(HttpContext context)

@@ -45,11 +45,14 @@ namespace Alba.Security
             if (Password.IsEmpty()) throw new Exception($"{nameof(Password)} cannot be null");
         }
         
-        public string UserName { get; set; }
-        public string Password { get; set; }
+        public string? UserName { get; set; }
+        public string? Password { get; set; }
 
-        public override Task<TokenResponse> FetchToken(HttpClient client, DiscoveryDocumentResponse disco, object? tokenCustomization)
+        public override Task<TokenResponse> FetchToken(HttpClient client, DiscoveryDocumentResponse? disco,
+            object? tokenCustomization)
         {
+            if (disco == null) throw new ArgumentNullException(nameof(disco), "Unable to load the token discovery document");
+            
             if (tokenCustomization is UserPassword u)
             {
                 return client.RequestPasswordTokenAsync(new PasswordTokenRequest

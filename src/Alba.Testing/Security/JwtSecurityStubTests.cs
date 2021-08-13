@@ -1,16 +1,19 @@
+using System;
 using System.Linq;
 using System.Security.Claims;
 using Alba.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Shouldly;
 using Xunit;
 
 namespace Alba.Testing.Security
 {
-    public class JwtSecurityStubTests
+    public class JwtSecurityStubTests : IDisposable
     {
         private readonly JwtSecurityStub theStub;
+        private readonly IAlbaHost _host;
 
         public JwtSecurityStubTests()
         {
@@ -18,6 +21,10 @@ namespace Alba.Testing.Security
                 .With("foo", "bar")
                 .With("team", "chiefs");
 
+
+
+            _host = Host.CreateDefaultBuilder().StartAlba(theStub);
+            
             theStub.Options = new JwtBearerOptions
             {
                 ClaimsIssuer = "myapp",
@@ -35,7 +42,8 @@ namespace Alba.Testing.Security
         [Fact]
         public void should_have_audience()
         {
-            theStub.BuildToken()
+            var token = theStub.BuildToken();
+            token
                 .Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Aud)
                 .Value.ShouldBe("chiefsfans");
         }
@@ -67,6 +75,11 @@ namespace Alba.Testing.Security
             
             token.Claims.Single(x => x.Type == "division")
                 .Value.ShouldBe("afcwest");
+        }
+
+        public void Dispose()
+        {
+            _host?.Dispose();
         }
     }
 }
