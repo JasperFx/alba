@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Alba.Testing
 {
-    public class CrudeRouter : IUrlLookup
+    public class CrudeRouter 
     {
         public readonly LightweightCache<string, RequestDelegate> Handlers = new LightweightCache<string, RequestDelegate>(
             path => throw new NotImplementedException());

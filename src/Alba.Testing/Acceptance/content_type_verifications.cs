@@ -41,7 +41,7 @@ namespace Alba.Testing
 
             var ex = await fails(_ =>
             {
-                _.Get.Action<InMemoryEndpoint>(x => x.get_memory_hello());
+                _.Get.Url("/memory/hello");
 
                 _.ContentTypeShouldBe("text/json");
             });

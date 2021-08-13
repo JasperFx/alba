@@ -21,27 +21,6 @@ namespace Alba.Testing.Samples
         // ENDSAMPLE
 
 
-        // SAMPLE: reverse-url-lookup
-        public Task reverse_url_lookup(AlbaHost system)
-        {
-            return system.Scenario(_ =>
-            {
-                // By controller action
-                _.Get.Action<MyController>(x => x.Get());
-
-                // By the action method's input model
-                _.Post.Input(new InputModel {Id = "foo"});
-
-
-                // Serializes the object passed in as Json,
-                // writes that to the HttpRequest.Body,
-                // and looks up the Url by the input model
-                // type
-                _.Put.Json(new InputModel());
-
-            });
-        }
-        // ENDSAMPLE
     }
 
     public class InputModel

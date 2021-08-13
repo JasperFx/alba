@@ -7,8 +7,6 @@ namespace Alba
 {
     public interface IAlbaHost : IHost, IAsyncDisposable
     {
-        IUrlLookup Urls { get; set; }
-
         /// <summary>
         ///     Define and execute an integration test by running an Http request through
         ///     your ASP.Net Core system

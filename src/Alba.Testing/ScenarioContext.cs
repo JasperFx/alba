@@ -21,7 +21,6 @@ namespace Alba.Testing
                 {
                     app.Run(router.Invoke);
                 })));
-            host.Urls = router;
         }
 
 

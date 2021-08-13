@@ -126,11 +126,6 @@ namespace Alba
             _host?.Dispose();
         }
 
-        /// <summary>
-        ///     Url lookup strategy for this system
-        /// </summary>
-        IUrlLookup IAlbaHost.Urls { get; set; } = new NulloUrlLookup();
-
         public Task<HttpContext> Invoke(Action<HttpContext> setup)
         {
             return Server.SendAsync(setup);
@@ -331,30 +326,4 @@ namespace Alba
         }
     }
 
-    // SAMPLE: IUrlLookup
-    public interface IUrlLookup
-    {
-        string UrlFor<T>(Expression<Action<T>> expression, string httpMethod);
-        string UrlFor<T>(string method);
-        string UrlFor<T>(T input, string httpMethod);
-    }
-    // ENDSAMPLE
-
-    public class NulloUrlLookup : IUrlLookup
-    {
-        public virtual string UrlFor<T>(Expression<Action<T>> expression, string httpMethod)
-        {
-            throw new NotSupportedException("You will need to manually specify the Url");
-        }
-
-        public virtual string UrlFor<T>(string method)
-        {
-            throw new NotSupportedException("You will need to manually specify the Url");
-        }
-
-        public virtual string UrlFor<T>(T input, string httpMethod)
-        {
-            throw new NotSupportedException("You will need to manually specify the Url");
-        }
-    }
 }

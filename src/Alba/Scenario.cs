@@ -195,13 +195,6 @@ namespace Alba
         {
             Configure = c => c.WriteFormData(input);
         }
-        
-        SendExpression IUrlExpression.Action<T>(Expression<Action<T>> expression)
-        {
-            Configure = context => context.RelativeUrl(_system.Urls.UrlFor(expression, context.Request.Method));
-            return new SendExpression(this);
-        }
-
 
 
         SendExpression IUrlExpression.Url(string relativeUrl)
@@ -210,31 +203,8 @@ namespace Alba
             return new SendExpression(this);
         }
 
-        SendExpression IUrlExpression.Input<T>(T input)
-        {
-            Configure = context =>
-            {
-                if (!(_system.Urls is NulloUrlLookup))
-                {
-                    var url = input == null
-                        ? _system.Urls.UrlFor<T>(context.Request.Method)
-                        : _system.Urls.UrlFor(input, context.Request.Method);
-
-                    context.RelativeUrl(url);
-                }
-                else
-                {
-                    context.RelativeUrl(null);
-                }
-            };
-            
-            return new SendExpression(this);
-        }
-
         SendExpression IUrlExpression.Json<T>(T input)
         {
-            this.As<IUrlExpression>().Input(input);
-            
             WriteRequestBody(input, MimeType.Json.Value);
             
             ConfigureHttpContext(x => x.Accepts(MimeType.Json.Value));
@@ -244,8 +214,6 @@ namespace Alba
 
         SendExpression IUrlExpression.Xml<T>(T input) 
         {
-            this.As<IUrlExpression>().Input(input);
-
             Body.XmlInputIs(input);
 
             return new SendExpression(this);
@@ -253,8 +221,6 @@ namespace Alba
 
         SendExpression IUrlExpression.FormData<T>(T target)
         {
-            this.As<IUrlExpression>().Input(target);
-
             var values = new Dictionary<string, string>();
 
             typeof(T).GetProperties().Where(x => x.CanWrite && x.CanRead).Each(prop =>
@@ -278,8 +244,6 @@ namespace Alba
 
         SendExpression IUrlExpression.FormData(Dictionary<string, string> input)
         {
-            this.As<IUrlExpression>().Input(input);
-
             Body.WriteFormData(input);
 
             return new SendExpression(this);

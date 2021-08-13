@@ -6,13 +6,6 @@ namespace Alba
 {
     public interface IUrlExpression
     {
-        /// <summary>
-        /// Specify the Url that calls the designated controller action
-        /// </summary>
-        /// <param name="expression"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        SendExpression Action<T>(Expression<Action<T>> expression);
 
         /// <summary>
         /// Specify the relative url for the scenario
@@ -20,15 +13,6 @@ namespace Alba
         /// <param name="relativeUrl"></param>
         /// <returns></returns>
         SendExpression Url(string relativeUrl);
-
-        /// <summary>
-        /// If your Alba system supports this feature, looks up the Url
-        /// that would handle the input model "T"
-        /// </summary>
-        /// <param name="input"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        SendExpression Input<T>(T input = null) where T : class;
 
         /// <summary>
         /// Writes the input object into Json to the Http Request, and
