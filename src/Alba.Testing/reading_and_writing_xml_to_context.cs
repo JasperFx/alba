@@ -1,6 +1,6 @@
-﻿using System.Xml;
+﻿using System.IO;
+using System.Xml;
 using System.Xml.Serialization;
-using Alba.Stubs;
 using Baseline;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -15,7 +15,8 @@ namespace Alba.Testing
         [Fact]
         public void can_parse_xml()
         {
-            var context = StubHttpContext.Empty();
+            var context = new DefaultHttpContext();
+            context.Response.Body = new MemoryStream();
 
             var serializer = new XmlSerializer(typeof(MyMessage));
             serializer.Serialize(context.Response.Body, new MyMessage {Age = 3, Name = "Declan"});
@@ -31,7 +32,8 @@ namespace Alba.Testing
         [Fact]
         public void can_get_raw_xml_document()
         {
-            var context = StubHttpContext.Empty();
+            var context = new DefaultHttpContext();
+            context.Response.Body = new MemoryStream();
 
             var serializer = new XmlSerializer(typeof(MyMessage));
             serializer.Serialize(context.Response.Body, new MyMessage { Age = 3, Name = "Declan" });
@@ -48,22 +50,22 @@ namespace Alba.Testing
         [Fact]
         public void can_write_xml_to_request()
         {
-            var context = StubHttpContext.Empty();
-            using (var system = AlbaHost.For(b => b.Configure(app => app.Run(c => c.Response.WriteAsync("Hello")))))
-            {
-                var scenario = new Scenario(system);
-                new HttpRequestBody(null, scenario).XmlInputIs(new MyMessage { Age = 3, Name = "Declan" });
+            var context = new DefaultHttpContext();
+            using var system = AlbaHost.For(b => 
+                b.Configure(app => app.Run(c => c.Response.WriteAsync("Hello"))));
+            
+            var scenario = new Scenario(system);
+            new HttpRequestBody(null, scenario).XmlInputIs(new MyMessage { Age = 3, Name = "Declan" });
 
-                scenario.SetupHttpContext(context);
+            scenario.SetupHttpContext(context);
 
-                context.Request.Body.Position = 0;
+            context.Request.Body.Position = 0;
 
-                var xml = context.Request.Body.ReadAllText();
-                var doc = new XmlDocument();
-                doc.LoadXml(xml);
+            var xml = context.Request.Body.ReadAllText();
+            var doc = new XmlDocument();
+            doc.LoadXml(xml);
 
-                doc.DocumentElement["Name"].InnerText.ShouldBe("Declan");
-            }
+            doc.DocumentElement["Name"].InnerText.ShouldBe("Declan");
         }
 
         public class MyMessage

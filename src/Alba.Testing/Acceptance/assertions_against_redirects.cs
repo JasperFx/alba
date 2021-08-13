@@ -108,7 +108,7 @@ namespace Alba.Testing.Acceptance
                 }
             });
 
-            result.Message.ShouldContain("Expected permanent redirect to be 'True' but it was not.");
+            result.Message.ShouldContain("Expected status code 301, but was 302");
         }
     }
 }

@@ -1,8 +1,6 @@
 using System;
-using Alba.Stubs;
+using System.IO;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using NSubstitute;
 
 namespace Alba.Testing.Assertions
 {
@@ -13,7 +11,9 @@ namespace Alba.Testing.Assertions
         {
             var ex = new ScenarioAssertionException();
 
-            var context = StubHttpContext.Empty();
+            var context = new DefaultHttpContext();
+            context.Response.Body = new MemoryStream();
+            context.Request.Body = new MemoryStream();
 
 
             configuration(context);

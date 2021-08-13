@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using Alba.Stubs;
 using Baseline;
+using Microsoft.AspNetCore.Http;
 using Shouldly;
 using Xunit;
 
@@ -19,7 +19,7 @@ namespace Alba.Testing
                 ["c"] = "really?"
             };
 
-            var context = StubHttpContext.Empty();
+            var context = new DefaultHttpContext();
 
             context.WriteFormData(form1);
 

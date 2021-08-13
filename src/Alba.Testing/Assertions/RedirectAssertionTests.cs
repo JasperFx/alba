@@ -1,6 +1,7 @@
-﻿using Alba.Assertions;
-using Alba.Stubs;
+﻿using System.Linq;
+using Alba.Assertions;
 using Baseline;
+using Shouldly;
 using Xunit;
 
 namespace Alba.Testing.Assertions
@@ -12,7 +13,7 @@ namespace Alba.Testing.Assertions
         {
             var assertion = new RedirectAssertion("/to", false);
             AssertionRunner
-                .Run(assertion, x => x.Response.As<StubHttpResponse>().Redirect("/to"))
+                .Run(assertion, x => x.Response.Redirect("/to"))
                 .AssertAll();
         }
 
@@ -22,7 +23,8 @@ namespace Alba.Testing.Assertions
             var assertion = new RedirectAssertion("/to", false);
             AssertionRunner
                 .Run(assertion, x => { })
-                .SingleMessageShouldBe("Expected to be redirected to '/to' but was ''.");
+                .Messages.FirstOrDefault()
+                .ShouldBe("Expected to be redirected to '/to' but was ''.");
         }
 
         [Fact]
@@ -30,7 +32,7 @@ namespace Alba.Testing.Assertions
         {
             var assertion = new RedirectAssertion("/to", false);
             AssertionRunner
-                .Run(assertion, x => x.Response.As<StubHttpResponse>().Redirect("/wrong"))
+                .Run(assertion, x => x.Response.Redirect("/wrong"))
                 .SingleMessageShouldBe("Expected to be redirected to '/to' but was '/wrong'.");
         }
 
@@ -39,7 +41,7 @@ namespace Alba.Testing.Assertions
         {
             var assertion = new RedirectAssertion("/to", true);
             AssertionRunner
-                .Run(assertion, x => x.Response.As<StubHttpResponse>().Redirect("/to", true))
+                .Run(assertion, x => x.Response.Redirect("/to", true))
                 .AssertAll();
         }
 
@@ -48,8 +50,8 @@ namespace Alba.Testing.Assertions
         {
             var assertion = new RedirectAssertion("/to", false);
             AssertionRunner
-                .Run(assertion, x => x.Response.As<StubHttpResponse>().Redirect("/to", true))
-                .SingleMessageShouldBe("Expected permanent redirect to be 'False' but it was not.");
+                .Run(assertion, x => x.Response.Redirect("/to", true))
+                .SingleMessageShouldBe("Expected status code 302, but was 301");
         }
     }
 }
