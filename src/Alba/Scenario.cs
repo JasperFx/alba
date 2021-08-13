@@ -40,7 +40,10 @@ namespace Alba
         public HttpContext Context { get; }
     }
 
-
+    /// <summary>
+    /// Models both the setup and expectations for a single HTTP request made through
+    /// an AlbaHost
+    /// </summary>
     public class Scenario : IUrlExpression
     {
         private readonly ScenarioAssertionException _assertionRecords = new();
@@ -62,16 +65,22 @@ namespace Alba
         internal Dictionary<string, object> Items { get; } = new();
 
         /// <summary>
-        ///     Shorthand alternative to ConfigureHttpContext
+        ///  Shorthand alternative to ConfigureHttpContext
         /// </summary>
+        [Obsolete]
         public Action<HttpContext> Configure
         {
-            set => _setups.Add(value);
+            set => ConfigureHttpContext(value);
         }
 
-
+        /// <summary>
+        /// Helpers to write content to the HttpRequest
+        /// </summary>
         public HttpRequestBody Body { get; }
 
+        /// <summary>
+        /// Specify an HTTP GET Url
+        /// </summary>
         public IUrlExpression Get
         {
             get
@@ -81,6 +90,10 @@ namespace Alba
             }
         }
 
+        
+        /// <summary>
+        /// Specify an HTTP PUT Url
+        /// </summary>
         public IUrlExpression Put
         {
             get
@@ -90,6 +103,9 @@ namespace Alba
             }
         }
 
+        /// <summary>
+        /// Specify an HTTP DELETE Url
+        /// </summary>
         public IUrlExpression Delete
         {
             get
@@ -99,6 +115,9 @@ namespace Alba
             }
         }
 
+        /// <summary>
+        /// Specify an HTTP POST Url
+        /// </summary>
         public IUrlExpression Post
         {
             get
@@ -108,6 +127,9 @@ namespace Alba
             }
         }
 
+        /// <summary>
+        /// Specify an HTTP PATCH Url
+        /// </summary>
         public IUrlExpression Patch
         {
             get
@@ -117,6 +139,9 @@ namespace Alba
             }
         }
 
+        /// <summary>
+        /// Specify an HTTP HEAD Url
+        /// </summary>
         public IUrlExpression Head
         {
             get
@@ -182,6 +207,11 @@ namespace Alba
             return new SendExpression(this);
         }
 
+        /// <summary>
+        /// Write the supplied text to the body of the request
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
         public SendExpression Text(string text)
         {
             Body.TextIs(text);
@@ -200,6 +230,15 @@ namespace Alba
             _setups.Add(configure);
         }
 
+        /// <summary>
+        /// Write the supplied input model to the request body using the configured
+        /// formatter in the underlying application that supports the supplied content type
+        /// </summary>
+        /// <param name="input">An input model that should be serialized to the HTTP request body</param>
+        /// <param name="contentType">Like application/json or text/xml</param>
+        /// <typeparam name="T"></typeparam>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
         public void WriteRequestBody<T>(T input, string contentType)
         {
             if (input == null) throw new ArgumentNullException(nameof(input));
@@ -284,12 +323,22 @@ namespace Alba
         }
 
 
+        /// <summary>
+        /// Write the dictionary as form data to the HTTP request body
+        /// and set the matching request content types
+        /// </summary>
+        /// <param name="input"></param>
         public void WriteFormData(Dictionary<string, string> input)
         {
             Configure = c => c.WriteFormData(input);
         }
 
 
+        /// <summary>
+        /// Specify an expectation for the response headers
+        /// </summary>
+        /// <param name="headerKey"></param>
+        /// <returns></returns>
         public HeaderExpectations Header(string headerKey)
         {
             return new(this, headerKey);
@@ -305,7 +354,7 @@ namespace Alba
         ///     to an HttpContext
         /// </summary>
         /// <param name="context"></param>
-        public void SetupHttpContext(HttpContext context)
+        internal void SetupHttpContext(HttpContext context)
         {
             foreach (var setup in _setups) setup(context);
         }

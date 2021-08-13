@@ -8,6 +8,12 @@ namespace Alba
 {
     public static class StringExtensions
     {
+        /// <summary>
+        /// Helper to expand any comma separated values out into an enumerable of
+        /// all the string values
+        /// </summary>
+        /// <param name="enumerable"></param>
+        /// <returns></returns>
         public static IEnumerable<string> GetCommaSeparatedHeaderValues(this IEnumerable<string> enumerable)
         {
             foreach (var content in enumerable)

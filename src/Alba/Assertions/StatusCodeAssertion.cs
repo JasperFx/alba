@@ -19,7 +19,7 @@ namespace Alba.Assertions
             {
                 ex.Add($"Expected status code {Expected}, but was {statusCode}");
 
-                ex.ShowActualBodyInErrorMessage(context);
+                ex.ReadBody(context);
             }
         }
     }

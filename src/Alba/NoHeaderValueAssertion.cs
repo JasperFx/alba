@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 #nullable enable
 namespace Alba
 {
-    public class NoHeaderValueAssertion : IScenarioAssertion
+    internal class NoHeaderValueAssertion : IScenarioAssertion
     {
         private readonly string _headerKey;
 

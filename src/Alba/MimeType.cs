@@ -6,6 +6,10 @@ using Baseline;
 #nullable enable
 namespace Alba
 {
+    /// <summary>
+    /// Strong-typed enumeration of common mime types that may be a useful helper within Alba
+    /// scenario definitions
+    /// </summary>
     public class MimeType
     {
         public static readonly string HttpFormMimetype = "application/x-www-form-urlencoded";

@@ -27,7 +27,7 @@ namespace Alba
             _messages.Add(message);
         }
 
-        public void AssertAll()
+        internal void AssertAll()
         {
             if (_messages.Any())
             {
@@ -35,6 +35,9 @@ namespace Alba
             }
         }
 
+        /// <summary>
+        /// All the assertion failure messages
+        /// </summary>
         public IEnumerable<string> Messages => _messages;
 
         public override string Message
@@ -57,9 +60,12 @@ namespace Alba
             }
         }
 
+        /// <summary>
+        /// A textual representation of the HTTP response body for diagnostic purposes
+        /// </summary>
         public string? Body { get; set; }
 
-        public string ReadBody(HttpContext context)
+        internal string ReadBody(HttpContext context)
         {
             var stream = context.Response.Body;
             if (Body == null)
@@ -73,11 +79,6 @@ namespace Alba
             }
 
             return Body;
-        }
-
-        public void ShowActualBodyInErrorMessage(HttpContext context)
-        {
-            ReadBody(context);
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Alba
     {
         private readonly Scenario _context;
 
-        public SendExpression(Scenario context)
+        internal SendExpression(Scenario context)
         {
             _context = context;
         }
@@ -66,7 +66,7 @@ namespace Alba
         }
 
         /// <summary>
-        /// Appends a query string paramater to the HttpRequest
+        /// Appends a query string parameter to the HttpRequest
         /// </summary>
         /// <param name="paramName"></param>
         /// <param name="paramValue"></param>
