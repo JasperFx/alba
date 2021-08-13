@@ -1,0 +1,1 @@
+dotnet test src/Alba.Testing/Alba.Testing.csproj
