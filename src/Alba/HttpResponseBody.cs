@@ -5,24 +5,26 @@ using System.Xml;
 using System.Xml.Serialization;
 using Baseline;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 #nullable enable
 namespace Alba
 {
-    public class HttpResponseBody
+    public class HttpResponseBody : IScenarioResult
     {
         private readonly AlbaHost _system;
-        private readonly HttpContext _context;
 
         internal HttpResponseBody(AlbaHost system, HttpContext context)
         {
             _system = system;
-            _context = context;
+            Context = context;
         }
+
+        [Obsolete("Use the methods directly on IScenarioResult instead")]
+        public HttpResponseBody ResponseBody => this;
+        
+        public HttpContext Context { get; }
 
         /// <summary>
         /// Read the contents of the HttpResponse.Body as text
@@ -35,11 +37,11 @@ namespace Alba
 
         public T Read<T>(Func<Stream, T> read)
         {
-            if (_context.Response.Body.CanSeek)
+            if (Context.Response.Body.CanSeek)
             {
-                _context.Response.Body.Position = 0;
+                Context.Response.Body.Position = 0;
             }
-            return read(_context.Response.Body);
+            return read(Context.Response.Body);
         }
 
         /// <summary>
@@ -71,9 +73,9 @@ namespace Alba
         /// <returns></returns>
         public T? ReadAsXml<T>() where T : class
         {
-            _context.Response.Body.Position = 0;
+            Context.Response.Body.Position = 0;
             var serializer = new XmlSerializer(typeof (T));
-            return serializer.Deserialize(_context.Response.Body) as T;
+            return serializer.Deserialize(Context.Response.Body) as T;
         }
 
         /// <summary>
@@ -100,7 +102,7 @@ namespace Alba
             var metadata = provider.GetMetadataForType(typeof(T));
 
             var standinContext = new DefaultHttpContext();
-            standinContext.Request.Body = _context.Response.Body; // Need to trick the MVC conneg services
+            standinContext.Request.Body = Context.Response.Body; // Need to trick the MVC conneg services
             var inputContext = new InputFormatterContext(standinContext, typeof(T).Name, new ModelStateDictionary(), metadata, (s, e) => new StreamReader(s));
             var result = formatter.ReadAsync(inputContext).GetAwaiter().GetResult();
 

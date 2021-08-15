@@ -55,7 +55,7 @@ namespace Alba.Testing.Samples
 
             // This deserializes the response body to the
             // designated Output type
-            var output = result.ResponseBody.ReadAsJson<Output>();
+            var output = result.ReadAsJson<Output>();
 
             // do assertions against the Output model
         }
@@ -72,7 +72,7 @@ namespace Alba.Testing.Samples
 
             // This deserializes the response body to the
             // designated Output type
-            var outputString = result.ResponseBody.ReadAsText();
+            var outputString = result.ReadAsText();
 
             // do assertions against the Output string
         }
@@ -115,12 +115,12 @@ namespace Alba.Testing.Samples
 
             // This deserializes the response body to the
             // designated Output type
-            var output = result.ResponseBody.ReadAsXml<Output>();
+            var output = result.ReadAsXml<Output>();
 
             // do assertions against the Output model
 
             // OR, if you just want the XmlDocument itself:
-            XmlDocument document = result.ResponseBody.ReadAsXml();
+            XmlDocument document = result.ReadAsXml();
         }
         #endregion
     }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,35 +11,6 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 #nullable enable
 namespace Alba
 {
-    #region sample_IScenarioResult
-    public interface IScenarioResult
-    {
-        /// <summary>
-        ///     Helpers to interrogate or read the HttpResponse.Body
-        ///     of the request
-        /// </summary>
-        HttpResponseBody ResponseBody { get; }
-
-        /// <summary>
-        ///     The raw HttpContext used during the scenario
-        /// </summary>
-        HttpContext Context { get; }
-    }
-    #endregion
-
-
-    internal class ScenarioResult : IScenarioResult
-    {
-        public ScenarioResult(HttpContext context, AlbaHost albaHost)
-        {
-            Context = context;
-            ResponseBody = new HttpResponseBody(albaHost, context);
-        }
-
-        public HttpResponseBody ResponseBody { get; }
-        public HttpContext Context { get; }
-    }
-
     /// <summary>
     /// Models both the setup and expectations for a single HTTP request made through
     /// an AlbaHost

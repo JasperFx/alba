@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Shouldly;
@@ -59,7 +59,7 @@ namespace Alba.Testing.Samples
                 _.StatusCodeShouldBe(400);
             });
 
-            var problems = result.ResponseBody.ReadAsJson<ProblemDetails>();
+            var problems = result.ReadAsJson<ProblemDetails>();
             problems.Title.ShouldBe("This stinks!");
         }
     }

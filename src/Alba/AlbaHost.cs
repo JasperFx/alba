@@ -228,9 +228,8 @@ namespace Alba
             {
                 context.Response.Body.Position = 0;
             }
-
-
-            return new ScenarioResult(context, this);
+            
+            return new HttpResponseBody(this, context);
         }
 
 

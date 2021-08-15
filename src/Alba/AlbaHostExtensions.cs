@@ -64,7 +64,7 @@ namespace Alba
         public static async Task<T?> GetAsJson<T>(this IAlbaHost system, string url)
         {
             var response = await system.Scenario(x => x.Get.Url(url).Accepts("application/json;text/json"));
-            return response.ResponseBody.ReadAsJson<T>();
+            return response.ReadAsJson<T>();
         }
 
         public class ResponseExpression
@@ -82,7 +82,7 @@ namespace Alba
             public async Task<TResponse?> Receive<TResponse>()
             {
                 var response = await _system.Scenario(_configure);
-                return response.ResponseBody.ReadAsJson<TResponse>();
+                return response.ReadAsJson<TResponse>();
             }
         }
 

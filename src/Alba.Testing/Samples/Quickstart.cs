@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Baseline;
 using Microsoft.AspNetCore;
@@ -84,7 +84,7 @@ namespace Alba.Testing.Samples
                     _.StatusCodeShouldBeOk();
                 });
 
-                response.ResponseBody.ReadAsText()
+                response.ReadAsText()
                     .ShouldBe("Hello, World!");
 
                 // or you can go straight at the HttpContext
