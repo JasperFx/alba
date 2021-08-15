@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Shouldly;
 using WebApp;
@@ -9,7 +9,7 @@ namespace Alba.Testing.Acceptance
 {
     public class data_binding_in_mvc_app
     {
-// SAMPLE: binding-against-a-model
+#region sample_binding_against_a_model
         [Fact]
         public async Task can_bind_to_form_data()
         {
@@ -38,7 +38,7 @@ namespace Alba.Testing.Acceptance
             }
         }
 
-// ENDSAMPLE
+#endregion
 
         [Fact]
         public async Task can_bind_to_form_data_as_dictionary()

@@ -12,7 +12,7 @@ namespace Alba.Testing.Samples
 
     public class Quickstart3
     {
-        // SAMPLE: Quickstart3
+        #region sample_Quickstart3
         [Fact]
         public async Task build_system_under_test_from_Program()    
         {
@@ -33,7 +33,7 @@ namespace Alba.Testing.Samples
                 });
             }
         }
-        // ENDSAMPLE 
+        #endregion
 
     }
     

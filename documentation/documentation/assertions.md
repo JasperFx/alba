@@ -8,17 +8,17 @@ please send anything that's generally useful as a pull request to Alba itself;-)
 
 The first step is to write your own implementation of this interface:
 
-<[sample:IScenarioAssertion]>
+snippet: sample_IScenarioAssertion
 
 As an example, here's the assertion from Alba that validates that the response body is supposed to 
 
-<[sample:BodyContainsAssertion]>
+snippet: sample_BodyContainsAssertion
 
 Once you have your assertion class, you can apply it to a scenario through an extension method against the 
 `Scenario` class. Here's the `Scenario.ContentShouldContain(text)` implementation from Alba itself:
 
-<[sample:ContentShouldContain]>
+snippet: sample_ContentShouldContain
 
 Finally, use your new asssertion in a Scenario like this:
 
-<[sample:using-ContentShouldBe]>
+snippet: sample_using_ContentShouldBe

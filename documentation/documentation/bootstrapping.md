@@ -3,7 +3,7 @@
 Alba uses its `SystemUnderTest` class to manage the lifecycle of an ASP.Net Core application. The easiest way to use this
 class is to directly use the `Startup` class for your application like so:
 
-<[sample:SimplisticSystemUnderTest]>
+snippet: sample_SimplisticSystemUnderTest
 
 This is the bootstrapping equivalent in ASP.Net Core of using `WebHost.CreateDefaultBuilder().UseStartup<T>()`.
 
@@ -12,20 +12,20 @@ This is the bootstrapping equivalent in ASP.Net Core of using `WebHost.CreateDef
 Once you have a `SystemUnderTest` object, you're ready to execute *Scenario's* through your system inside of tests.
 Below is a scenario for the "hello, world" application:
 
-<[sample:should_say_hello_world]>
+snippet: sample_should_say_hello_world
 
 The `Scenario()` method has this signature:
 
-<[sample:ScenarioSignature]>
+snippet: sample_ScenarioSignature
 
 The single `Action<Scenario>` argument should completely configure the ASP.Net `HttpContext` for the request and apply
 any of the declarative response assertions. The actual HTTP request happens inside of the `Scenario()` method, and the response contains the raw `HttpContext` and a helper object to work with the response body:
 
-<[sample:IScenarioResult]>
+snippet: sample_IScenarioResult
 
 If the existing *Scenario* assertions aren't enough to verify your test case, you can work directly against the raw response:
 
-<[sample:should_say_hello_world_with_raw_objects]>
+snippet: sample_should_say_hello_world_with_raw_objects
 
 Do note that Alba quietly "rewinds" the `HttpContext.Response.Body` stream so that you can more readily read and work with the contents.
 
@@ -34,13 +34,13 @@ Do note that Alba quietly "rewinds" the `HttpContext.Response.Body` stream so th
 It's a little bit uglier, but you can bypass having a `Startup` code and work directly against the ASP.Net Core `IWebHostBuilder`
 interface like this:
 
-<[sample:programmatic-bootstrapping]>
+snippet: sample_programmatic_bootstrapping
 
 ## Overriding the Content Root Path
 
 If you use Alba's `SystemUnderTest.UseStartup<T>()` helper, Alba can guess at what the content root path of the application can be by using the name of the assembly that contains your `T` class. If that guessing isn't right, you can explicitly tell Alba what the content root path should be to search for content with either of these options:
 
-<[sample:override_the_content_path]>
+snippet: sample_override_the_content_path
 
 On a related note, Alba does not set any default value for the `EnvironmentName` property. That can be overridden through `IWebHostBuilder.UseEnvironment()` as normal.
 
@@ -48,7 +48,7 @@ On a related note, Alba does not set any default value for the `EnvironmentName`
 
 If you also want to run real HTTP requests through your system in a test harness, you have more opportunities to configure the underlying [IWebHostBuilder](https://docs.microsoft.com/en-us/aspnet/core/api/microsoft.aspnetcore.hosting.iwebhostbuilder) like so:
 
-<[sample:configuration-overrides]>
+snippet: sample_configuration_overrides
 
 A couple notes:
 

@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Alba.Testing.Samples
 {
     public class FormData
     {
-        // SAMPLE: write-form-data
+        #region sample_write_form_data
         public Task write_form_data(IAlbaHost system)
         {
             var form1 = new Dictionary<string, string>
@@ -24,6 +24,6 @@ namespace Alba.Testing.Samples
                 _.WriteFormData(form1);
             });
         }
-        // ENDSAMPLE
+        #endregion
     }
 }

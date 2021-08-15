@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 
 namespace Alba.Assertions
 {
-    // SAMPLE: StatusCodeAssertion
+    #region sample_StatusCodeAssertion
     internal class StatusCodeAssertion : IScenarioAssertion
     {
         public int Expected { get; set; }
@@ -23,5 +23,5 @@ namespace Alba.Assertions
             }
         }
     }
-    // ENDSAMPLE
+    #endregion
 }

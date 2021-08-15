@@ -1,10 +1,10 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 
 namespace Alba.Testing.Samples
 {
     public class StatusCodes
     {
-        // SAMPLE: check-the-status-code
+        #region sample_check_the_status_code
         public Task check_the_status(IAlbaHost system)
         {
             return system.Scenario(_ =>
@@ -19,6 +19,6 @@ namespace Alba.Testing.Samples
                 _.IgnoreStatusCode();
             });
         }
-        // ENDSAMPLE
+        #endregion
     }
 }

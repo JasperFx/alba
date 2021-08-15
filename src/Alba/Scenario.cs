@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 #nullable enable
 namespace Alba
 {
-    // SAMPLE: IScenarioResult
+    #region sample_IScenarioResult
     public interface IScenarioResult
     {
         /// <summary>
@@ -25,7 +25,7 @@ namespace Alba
         /// </summary>
         HttpContext Context { get; }
     }
-    // ENDSAMPLE
+    #endregion
 
 
     internal class ScenarioResult : IScenarioResult

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApp.Controllers
@@ -7,12 +7,12 @@ namespace WebApp.Controllers
     [Route("[controller]/[action]")]
     public class AuthController : Controller
     {
-        // SAMPLE: windows-challenge-endpoint
+        #region sample_windows_challenge_endpoint
         public IActionResult WindowsChallenge()
         {
             return new ChallengeResult(new List<string> {"NTLM", "Negotiate"});
         }
-        // ENDSAMPLE
+        #endregion
 
         public IActionResult Redirect()
         {

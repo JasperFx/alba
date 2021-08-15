@@ -1,11 +1,11 @@
-﻿using System.Net;
+using System.Net;
 using Alba.Assertions;
 #nullable enable
 namespace Alba
 {
     public static class ScenarioExpectationsExtensions
     {
-        // SAMPLE: ContentShouldContain
+        #region sample_ContentShouldContain
         /// <summary>
         /// Assert that the Http response contains the designated text
         /// </summary>
@@ -16,7 +16,7 @@ namespace Alba
         {
             return scenario.AssertThat(new BodyContainsAssertion(text));
         }
-        // ENDSAMPLE
+        #endregion
 
         /// <summary>
         /// Assert that the Http response does not contain the designated text

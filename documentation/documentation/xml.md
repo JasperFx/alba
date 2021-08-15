@@ -10,11 +10,11 @@ In all cases, Alba just uses the old, built in `XmlSerializer` from the .Net BCL
 There's a similar helper for Xml serialization that allows you to send an object
 as xml to the web request:
 
-<[sample:sending-xml]>
+snippet: sample_sending_xml
 
 
 ## Reading Xml from the Response
 
 There's a helper off of the `HttpResponseBody` for reading Xml from the response:
 
-<[sample:read-xml]>
+snippet: sample_read_xml

@@ -1,11 +1,11 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Alba.Testing.Samples
 {
     public class Headers
     {
-        // SAMPLE: conneg-helpers
+        #region sample_conneg_helpers
         public Task conneg_helpers(IAlbaHost system)
         {
             return system.Scenario(_ =>
@@ -24,9 +24,9 @@ namespace Alba.Testing.Samples
                 _.Post.Json(new InputModel()).ToUrl("/");
             });
         }
-        // ENDSAMPLE
+        #endregion
 
-        // SAMPLE: setting-request-headers
+        #region sample_setting_request_headers
         public Task setting_request_headers(IAlbaHost system)
         {
             return system.Scenario(_ =>
@@ -35,10 +35,10 @@ namespace Alba.Testing.Samples
                 
             });
         }
-        // ENDSAMPLE
+        #endregion
 
 
-        // SAMPLE: asserting-on-header-values
+        #region sample_asserting_on_header_values
         public Task asserting_on_header_values(IAlbaHost system)
         {
             return system.Scenario(_ =>
@@ -62,6 +62,6 @@ namespace Alba.Testing.Samples
                 _.ContentTypeShouldBe("text/json");
             });
         }
-        // ENDSAMPLE
+        #endregion
     }
 }

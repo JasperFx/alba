@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 
 namespace Alba.Assertions
 {
-    // SAMPLE: BodyContainsAssertion
+    #region sample_BodyContainsAssertion
     internal class BodyContainsAssertion : IScenarioAssertion
     {
         public string Text { get; set; }
@@ -23,5 +23,5 @@ namespace Alba.Assertions
             }
         }
     }
-    // ENDSAMPLE
+    #endregion
 }

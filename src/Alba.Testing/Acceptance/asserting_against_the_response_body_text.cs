@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Shouldly;
 using Xunit;
@@ -7,7 +7,7 @@ namespace Alba.Testing.Acceptance
 {
     public class asserting_against_the_response_body_text : ScenarioContext
     {
-        // SAMPLE: using-ContentShouldBe
+        #region sample_using_ContentShouldBe
         [Fact]
         public Task using_scenario_with_ContentShouldContain_declaration_happy_path()
         {
@@ -23,7 +23,7 @@ namespace Alba.Testing.Acceptance
                 x.ContentShouldContain("just the marker");
             });
         }
-        // ENDSAMPLE
+        #endregion
 
 
         [Fact]

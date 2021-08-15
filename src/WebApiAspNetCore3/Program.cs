@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace WebApiAspNetCore3
 {
-    // SAMPLE: WebApi3StandardTemplate
+    #region sample_WebApi3StandardTemplate
     public class Program
     {
         public static void Main(string[] args)
@@ -21,5 +21,5 @@ namespace WebApiAspNetCore3
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>());
     }
-    // ENDSAMPLE
+    #endregion
 }

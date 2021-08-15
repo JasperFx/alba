@@ -157,7 +157,7 @@ namespace Alba
             return this;
         }
 
-        // SAMPLE: ScenarioSignature
+        #region sample_ScenarioSignature
         /// <summary>
         ///     Define and execute an integration test by running an Http request through
         ///     your ASP.Net Core system
@@ -167,7 +167,7 @@ namespace Alba
         /// <exception cref="InvalidOperationException"></exception>
         public async Task<IScenarioResult> Scenario(
                 Action<Scenario> configure)
-            // ENDSAMPLE
+            #endregion
         {
             var scenario = new Scenario(this);
 

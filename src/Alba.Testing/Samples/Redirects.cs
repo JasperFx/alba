@@ -1,10 +1,10 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 
 namespace Alba.Testing.Samples
 {
     public class Redirects
     {
-        // SAMPLE: asserting-redirects
+        #region sample_asserting_redirects
         public Task asserting_redirects(IAlbaHost system)
         {
             return system.Scenario(_ =>
@@ -16,6 +16,6 @@ namespace Alba.Testing.Samples
                 _.RedirectPermanentShouldBe("/redirect");
             });
         }
-        // ENDSAMPLE
+        #endregion
     }
 }

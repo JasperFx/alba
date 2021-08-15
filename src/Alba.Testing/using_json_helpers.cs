@@ -8,7 +8,7 @@ namespace Alba.Testing
 {
     public class using_json_helpers
     {
-        // SAMPLE: get-json
+        #region sample_get_json
         [Fact]
         public async Task get_happy_path()
         {
@@ -23,9 +23,9 @@ namespace Alba.Testing
                 result.Answer.ShouldBe(7);
             }
         }
-        // ENDSAMPLE
+        #endregion
 
-        // SAMPLE: post-json-get-json
+        #region sample_post_json_get_json
         [Fact]
         public async Task post_and_expect_response()
         {
@@ -43,7 +43,7 @@ namespace Alba.Testing
             result.Answer.ShouldBe(12);
             result.Method.ShouldBe("POST");
         }
-        // ENDSAMPLE
+        #endregion
         
         [Fact]
         public async Task put_and_expect_response()

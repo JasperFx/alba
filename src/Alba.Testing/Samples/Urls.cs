@@ -1,10 +1,10 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 
 namespace Alba.Testing.Samples
 {
     public class Urls
     {
-        // SAMPLE: specify-the-url-directly
+        #region sample_specify_the_url_directly
         public Task specify_url(AlbaHost system)
         {
             return system.Scenario(_ =>
@@ -18,7 +18,7 @@ namespace Alba.Testing.Samples
                 _.Head.Url("/");
             });
         }
-        // ENDSAMPLE
+        #endregion
 
 
     }

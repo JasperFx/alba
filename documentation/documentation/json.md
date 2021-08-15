@@ -4,14 +4,14 @@
 
 Since posting Json to a web server API is so common, Alba has some helpers for writing Json to the request:
 
-<[sample:sending-json]>
+snippet: sample_sending_json
 
 
 ## Reading Json
 
 To deserialize the response body with Json to interrogate the results in a strong typed way, use this syntax:
 
-<[sample:read-json]>
+snippet: sample_read_json
 
 ## Customizing Json Serialization
 
@@ -22,5 +22,5 @@ the Json serialization. In order:
 1. If there is a `JsonSerializerSettings` registration in the application's IoC container, Alba uses that
 1. Failing that, Alba exposes a `JsonSerializerSettings` property as shown below:
 
-<[sample:customizing-serialization]>
+snippet: sample_customizing_serialization
 

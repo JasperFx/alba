@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Baseline;
 using Microsoft.AspNetCore;
@@ -18,7 +18,7 @@ namespace Alba.Testing.Samples
 
     public class Quickstart
     {
-        // SAMPLE: should_say_hello_world
+        #region sample_should_say_hello_world
         [Fact]
         public async Task should_say_hello_world()
         {
@@ -34,12 +34,12 @@ namespace Alba.Testing.Samples
                 });
             }
         }
-        // ENDSAMPLE
+        #endregion
 
         [Fact]
         public async Task should_say_hello_world_raw()
         {
-            // SAMPLE: programmatic-bootstrapping
+            #region sample_programmatic_bootstrapping
             using var system = AlbaHost.For(_ =>
             {
                 _.Configure(app =>
@@ -62,7 +62,7 @@ namespace Alba.Testing.Samples
             
             using var system2 = new AlbaHost(builder);
 
-            // ENDSAMPLE
+            #endregion
 
 
             await system.Scenario(_ =>
@@ -72,7 +72,7 @@ namespace Alba.Testing.Samples
             });
         }
 
-        // SAMPLE: should_say_hello_world_with_raw_objects
+        #region sample_should_say_hello_world_with_raw_objects
         [Fact]
         public async Task should_say_hello_world_with_raw_objects()
         {
@@ -91,7 +91,7 @@ namespace Alba.Testing.Samples
                 // The ReadAllText() extension method is from Baseline
             }
         }
-        // ENDSAMPLE
+        #endregion
 
 
         [Fact]
@@ -118,7 +118,7 @@ namespace Alba.Testing.Samples
         }
 
 
-        // SAMPLE: SimplisticSystemUnderTest
+        #region sample_SimplisticSystemUnderTest
         [Fact]
         public async Task the_home_page_does_not_blow_up()
         {
@@ -131,12 +131,12 @@ namespace Alba.Testing.Samples
                 });
             }
         }
-        // ENDSAMPLE
+        #endregion
 
 
         public void setting_up_system_under_test_examples()
         {
-            // SAMPLE: override_the_content_path
+            #region sample_override_the_content_path
             
             // Alba has a helper for overriding the root path
             var system = AlbaHost
@@ -150,13 +150,13 @@ namespace Alba.Testing.Samples
 
             var system2 = new AlbaHost(builder);
 
-            // ENDSAMPLE
+            #endregion
 
         }
 
         public void configuration_overrides()
         {
-            // SAMPLE: configuration-overrides
+            #region sample_configuration_overrides
             var stubbedWebService = new StubbedWebService();
 
             var builder = Host.CreateDefaultBuilder()
@@ -183,7 +183,7 @@ namespace Alba.Testing.Samples
                 {
                     // do any kind of cleanup after each scenario completes
                 });
-            // ENDSAMPLE
+            #endregion
         }
 
         public interface IExternalWebService
@@ -198,7 +198,7 @@ namespace Alba.Testing.Samples
         }
     }
 
-    // SAMPLE: HelloWorldApp
+    #region sample_HelloWorldApp
     public class Startup
     {
         public void Configure(IApplicationBuilder builder)
@@ -210,7 +210,7 @@ namespace Alba.Testing.Samples
             });
         }
     }
-    // ENDSAMPLE
+    #endregion
     
     
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Shouldly;
@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Alba.Testing.Samples
 {
-    // SAMPLE: xUnit-Fixture
+    #region sample_xUnit_Fixture
     public class WebAppFixture : IDisposable
     {
         public readonly AlbaHost AlbaHost = AlbaHost.ForStartup<WebApp.Startup>();
@@ -16,9 +16,9 @@ namespace Alba.Testing.Samples
             AlbaHost?.Dispose();
         }
     }
-    // ENDSAMPLE
+    #endregion
 
-    // SAMPLE: using-xUnit-Fixture
+    #region sample_using_xUnit_Fixture
     public class ContractTestWithAlba : IClassFixture<WebAppFixture>
     {
         public ContractTestWithAlba(WebAppFixture app)
@@ -27,7 +27,7 @@ namespace Alba.Testing.Samples
         }
 
         private readonly AlbaHost _system;
-    // ENDSAMPLE
+    #endregion
         [Fact]
         public Task happy_path()
         {

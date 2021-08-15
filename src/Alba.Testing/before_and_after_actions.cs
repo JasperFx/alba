@@ -30,7 +30,7 @@ namespace Alba.Testing
 
         }
 
-        // SAMPLE: before-and-after
+        #region sample_before_and_after
         public void sample_usage(AlbaHost system)
         {
             // Synchronously
@@ -63,7 +63,7 @@ namespace Alba.Testing
 
 
         }
-        // ENDSAMPLE
+        #endregion
 
         [Fact]
         public async Task synchronous_before_and_after()

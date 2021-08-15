@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using System.Xml;
 using Newtonsoft.Json;
@@ -7,7 +7,7 @@ namespace Alba.Testing.Samples
 {
     public class JsonAndXml
     {
-        // SAMPLE: sending-json
+        #region sample_sending_json
         public Task send_json(IAlbaHost system)
         {
             return system.Scenario(_ =>
@@ -24,9 +24,9 @@ namespace Alba.Testing.Samples
                 _.Post.Json(new Input {Name = "Max", Age = 13});
             });
         }
-        // ENDSAMPLE
+        #endregion
 
-        // SAMPLE: sending-xml
+        #region sample_sending_xml
         public Task send_xml(IAlbaHost system)
         {
             return system.Scenario(_ =>
@@ -43,9 +43,9 @@ namespace Alba.Testing.Samples
                 _.Post.Xml(new Input {Name = "Max", Age = 13});
             });
         }
-        // ENDSAMPLE
+        #endregion
 
-        // SAMPLE: read-json
+        #region sample_read_json
         public async Task read_json(IAlbaHost system)
         {
             var result = await system.Scenario(_ =>
@@ -59,10 +59,10 @@ namespace Alba.Testing.Samples
 
             // do assertions against the Output model
         }
-        // ENDSAMPLE
+        #endregion
 
 
-        // SAMPLE: read-text
+        #region sample_read_text
         public async Task read_text(IAlbaHost system)
         {
             var result = await system.Scenario(_ =>
@@ -76,9 +76,9 @@ namespace Alba.Testing.Samples
 
             // do assertions against the Output string
         }
-        // ENDSAMPLE
+        #endregion
 
-        // SAMPLE: assert-on-text
+        #region sample_assert_on_text
         public Task assert_on_content(IAlbaHost system)
         {
             return system.Scenario(_ =>
@@ -90,10 +90,10 @@ namespace Alba.Testing.Samples
                 _.ContentShouldNotContain("some warning");
             });
         }
-        // ENDSAMPLE
+        #endregion
 
 
-        // SAMPLE: send-text
+        #region sample_send_text
         public Task send_text(IAlbaHost system)
         {
             return system.Scenario(_ =>
@@ -101,11 +101,11 @@ namespace Alba.Testing.Samples
                 _.Post.Text("some text").ToUrl("/textdata");
             });
         }
-        // ENDSAMPLE
+        #endregion
 
 
 
-        // SAMPLE: read-xml
+        #region sample_read_xml
         public async Task read_xml(IAlbaHost system)
         {
             var result = await system.Scenario(_ =>
@@ -122,7 +122,7 @@ namespace Alba.Testing.Samples
             // OR, if you just want the XmlDocument itself:
             XmlDocument document = result.ResponseBody.ReadAsXml();
         }
-        // ENDSAMPLE
+        #endregion
     }
 
 

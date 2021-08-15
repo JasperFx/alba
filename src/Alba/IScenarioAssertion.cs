@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Http;
 namespace Alba
 {
 
-    // SAMPLE: IScenarioAssertion
+    #region sample_IScenarioAssertion
     public interface IScenarioAssertion
     {
         void Assert(Scenario scenario, HttpContext context, ScenarioAssertionException ex);
     }
-    // ENDSAMPLE
+    #endregion
 }

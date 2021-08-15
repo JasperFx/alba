@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApp.Controllers
 {
-    // SAMPLE: MathController
+    #region sample_MathController
     public enum OperationType
     {
         Add,
@@ -76,6 +76,6 @@ namespace WebApp.Controllers
             }
         }
         
-        // ENDSAMPLE
+        #endregion
     }
 }
