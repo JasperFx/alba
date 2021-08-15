@@ -23,13 +23,17 @@ namespace Alba
             }
             
             
+#pragma warning disable 8602
             while (starting.Contains(Path.DirectorySeparatorChar + "bin"))
+#pragma warning restore 8602
             {
                 starting = starting.ParentDirectory();
             }
             
 
+#pragma warning disable 8604
             var candidate = starting.ParentDirectory().AppendPath(folderName);
+#pragma warning restore 8604
             
 
             return Directory.Exists(candidate) ? candidate : null;

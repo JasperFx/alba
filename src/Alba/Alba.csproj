@@ -21,7 +21,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Baseline" Version="3.2.0" />
+    <PackageReference Include="Baseline" Version="3.2.1" />
     <PackageReference Include="IdentityModel" Version="5.1.0" />
     <PackageReference Include="System.AppContext" Version="4.3.0" />
     <PackageReference Include="System.Xml.XmlDocument" Version="4.3.0" />
