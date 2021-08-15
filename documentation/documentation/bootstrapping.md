@@ -1,15 +1,15 @@
 <!--title: Bootstrapping and Configuration-->
 
-Alba uses its `SystemUnderTest` class to manage the lifecycle of an ASP.Net Core application. The easiest way to use this
+Alba uses its `AlbaHost` class to manage the lifecycle of an ASP.Net Core application. The easiest way to use this
 class is to directly use the `Startup` class for your application like so:
 
-snippet: sample_SimplisticSystemUnderTest
+snippet: sample_SimplisticAlbaHost
 
 This is the bootstrapping equivalent in ASP.Net Core of using `WebHost.CreateDefaultBuilder().UseStartup<T>()`.
 
 ## Running a Scenario
 
-Once you have a `SystemUnderTest` object, you're ready to execute *Scenario's* through your system inside of tests.
+Once you have a `AlbaHost` object, you're ready to execute *Scenario's* through your system inside of tests.
 Below is a scenario for the "hello, world" application:
 
 snippet: sample_should_say_hello_world
@@ -38,7 +38,7 @@ snippet: sample_programmatic_bootstrapping
 
 ## Overriding the Content Root Path
 
-If you use Alba's `SystemUnderTest.UseStartup<T>()` helper, Alba can guess at what the content root path of the application can be by using the name of the assembly that contains your `T` class. If that guessing isn't right, you can explicitly tell Alba what the content root path should be to search for content with either of these options:
+If you use Alba's `AlbaHost.UseStartup<T>()` helper, Alba can guess at what the content root path of the application can be by using the name of the assembly that contains your `T` class. If that guessing isn't right, you can explicitly tell Alba what the content root path should be to search for content with either of these options:
 
 snippet: sample_override_the_content_path
 
@@ -53,7 +53,7 @@ snippet: sample_configuration_overrides
 A couple notes:
 
 * Alba does not do anything to set the hosting environment, but you can do that yourself against `IWebHostBuilder`
-* If you build a `SystemUnderTest` with `SystemUnderTest.ForStartup<T>()`, it will try to guess at the content root path by the name of assembly
+* If you build a `AlbaHost` with `AlbaHost.ForStartup<T>()`, it will try to guess at the content root path by the name of assembly
   that holds the `Startup` class, but you may need to override that yourself. 
 
 My shop is also using Alba within [Storyteller](http://storyteller.github.io) specifications where we use a mix of headless
@@ -63,6 +63,6 @@ Alba Scenario's and full HTTP requests for testing.
 ## Best Practices
 
 Spinning up your ASP.Net Core system can become slow as the application grows, so you probably want to share the instance of 
-`SystemUnderTest` between unit tests to avoid the cost of constantly bootstrapping and tearing down the underlying application.
-As an example, if you're an xUnit user, you can take advantage of their [shared context](https://xunit.github.io/docs/shared-context.html) support to manage the lifetime of your `SystemUnderTest`.
+`AlbaHost` between unit tests to avoid the cost of constantly bootstrapping and tearing down the underlying application.
+As an example, if you're an xUnit user, you can take advantage of their [shared context](https://xunit.github.io/docs/shared-context.html) support to manage the lifetime of your `AlbaHost`.
 

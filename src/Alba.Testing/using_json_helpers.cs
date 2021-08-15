@@ -1,27 +1,35 @@
+using System;
 using System.Threading.Tasks;
 using Alba.Testing.Samples;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 using Shouldly;
 using WebApp.Controllers;
 using Xunit;
 
 namespace Alba.Testing
 {
+    public static class Program
+    {
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<WebApp.Startup>(); });
+    }
+    
     public class using_json_helpers
     {
         #region sample_get_json
         [Fact]
         public async Task get_happy_path()
         {
-            // SystemUnderTest is from Alba
-            // The "Startup" type would be the Startup class from your
-            // web application. 
-            using (var system = AlbaHost.ForStartup<WebApp.Startup>())
-            {
-                // Issue a request, and check the results
-                var result = await system.GetAsJson<OperationResult>("/math/add/3/4");
+            var builder = Program.CreateHostBuilder(Array.Empty<string>());
+
+            await using var system = new AlbaHost(builder);
+            
+            // Issue a request, and check the results
+            var result = await system.GetAsJson<OperationResult>("/math/add/3/4");
                 
-                result.Answer.ShouldBe(7);
-            }
+            result.Answer.ShouldBe(7);
         }
         #endregion
 

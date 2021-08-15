@@ -15,7 +15,7 @@ If you start a new ASP.NET Core project with `dotnet new webapi`, you'll get thi
 
 snippet: sample_WebApi3StandardTemplate
 
-To connect that to Alba, create a `SystemUnderTest` like this using the definition of your `IHostBuilder`:
+To connect that to Alba, create a `AlbaHost` like this using the definition of your `IHostBuilder`:
 
 snippet: sample_Quickstart3
 
@@ -50,7 +50,7 @@ First off, let's test the GET method in that controller above by passing a url a
 
 snippet: sample_ get_json
 
-So what just happened in that test? First off, the call to `SystemUnderTest.For<T>()` bootstraps your web application using the `Startup` type from your web application. Behind the scenes, Alba is using the same `Host.CreateDefaultBuilder().ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<T>())` mechanism, but the difference is that Alba uses [TestServer](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.testhost.testserver) as a replacement for Kestrel (i.e., Alba does not spin up Kestrel during testing so there's no port conflicts). See <[linkto:documentation/bootstrapping]> for more information on advanced configuration options.
+So what just happened in that test? First off, the call to `AlbaHost.For<T>()` bootstraps your web application using the `Startup` type from your web application. Behind the scenes, Alba is using the same `Host.CreateDefaultBuilder().ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<T>())` mechanism, but the difference is that Alba uses [TestServer](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.testhost.testserver) as a replacement for Kestrel (i.e., Alba does not spin up Kestrel during testing so there's no port conflicts). See <[linkto:documentation/bootstrapping]> for more information on advanced configuration options.
 
 The call to `system.GetAsJson<OperationResult>("/math/add/3/4")` is performing these steps internally:
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using Baseline;
 using Microsoft.AspNetCore;
@@ -9,12 +10,20 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
+using NSubstitute.Extensions;
 using Shouldly;
 using WebApp;
 using Xunit;
 
 namespace Alba.Testing.Samples
 {
+    
+    public static class Program
+    {
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
+    }
 
     public class Quickstart
     {
@@ -22,17 +31,21 @@ namespace Alba.Testing.Samples
         [Fact]
         public async Task should_say_hello_world()
         {
-            using (var system = AlbaHost.ForStartup<Startup>())
+            await using var host = await Program
+                .CreateHostBuilder(Array.Empty<string>())
+                
+                // This extension method is just a shorter version
+                // of new AlbaHost(builder)
+                .StartAlbaAsync();
+            
+            // This runs an HTTP request and makes an assertion
+            // about the expected content of the response
+            await host.Scenario(_ =>
             {
-                // This runs an HTTP request and makes an assertion
-                // about the expected content of the response
-                await system.Scenario(_ =>
-                {
-                    _.Get.Url("/");
-                    _.ContentShouldBe("Hello, World!");
-                    _.StatusCodeShouldBeOk();
-                });
-            }
+                _.Get.Url("/");
+                _.ContentShouldBe("Hello, World!");
+                _.StatusCodeShouldBeOk();
+            });
         }
         #endregion
 
@@ -88,7 +101,8 @@ namespace Alba.Testing.Samples
                     .ShouldBe("Hello, World!");
 
                 // or you can go straight at the HttpContext
-                // The ReadAllText() extension method is from Baseline
+                Stream responseStream = response.Context.Response.Body;
+                // do assertions directly on the responseStream
             }
         }
         #endregion

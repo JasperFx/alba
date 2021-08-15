@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Hosting;
 #nullable enable
 namespace Alba
@@ -46,5 +47,10 @@ namespace Alba
         /// <param name="afterEach"></param>
         /// <returns></returns>
         IAlbaHost AfterEachAsync(Func<HttpContext?, Task> afterEach);
+
+        /// <summary>
+        ///     The underlying TestServer for additional functionality
+        /// </summary>
+        TestServer Server { get; }
     }
 }

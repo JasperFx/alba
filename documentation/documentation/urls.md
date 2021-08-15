@@ -18,7 +18,7 @@ To actually implement the reverse url lookup, you can create your own implementa
 
 snippet: sample_IUrlLookup
 
-and set the `SystemUnderTest.Urls` property to your new lookup strategy.
+and set the `AlbaHost.Urls` property to your new lookup strategy.
 
 There are some specific Url helpers for sending Json or Xml data as well. See also:
 

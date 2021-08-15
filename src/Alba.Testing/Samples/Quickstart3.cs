@@ -14,24 +14,20 @@ namespace Alba.Testing.Samples
     {
         #region sample_Quickstart3
         [Fact]
-        public async Task build_system_under_test_from_Program()    
+        public async Task build_host_from_Program()    
         {
+            // Bootstrap your application just as your real application does
             var hostBuilder = Program.CreateHostBuilder(Array.Empty<string>());
-            // You can also call hostBuilder.ConfigureServices() here to further customize
-            // your application, and that's frequently valuable in testing scenarios
+
+            await using var system = new AlbaHost(hostBuilder);
             
-            using (var system = new AlbaHost(hostBuilder))
+            // Just as a sample, I'll run a scenario against
+            // a "hello, world" application's root url
+            await system.Scenario(s =>
             {
-                // You can use the IoC container for the SystemUnderTest
-                var configuration 
-                    = system.Services.GetRequiredService<IConfiguration>();
-                
-                await system.Scenario(s =>
-                {
-                    s.Get.Url("/");
-                    s.ContentShouldBe("Hello world.");
-                });
-            }
+                s.Get.Url("/");
+                s.ContentShouldBe("Hello world.");
+            });
         }
         #endregion
 
