@@ -18,7 +18,8 @@ Here's a sample of bootstrapping an `AlbaHost` with the `AuthenticationStub`:
 <a id='snippet-sample_bootstrapping_with_stub_extension'></a>
 ```cs
 // This is calling your real web service's configuration
-var hostBuilder = Program.CreateHostBuilder(new string[0]);
+var hostBuilder = WebAppSecuredWithJwt.Program
+    .CreateHostBuilder(new string[0]);
 
 // This is a new Alba v5 extension that can "stub" out
 // JWT token authentication
@@ -31,7 +32,7 @@ var securityStub = new AuthenticationStub()
 // Alba
 theHost = new AlbaHost(hostBuilder, securityStub);
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/web_api_authentication_with_stub.cs#L21-L37' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_bootstrapping_with_stub_extension' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/web_api_authentication_with_stub.cs#L21-L38' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_bootstrapping_with_stub_extension' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 When you need to test scenarios with different claims than the "baseline" claims defined on the `AuthenticationStub`
@@ -65,7 +66,7 @@ public async Task can_modify_claims_per_scenario()
         .Value.ShouldBe("green");
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/web_api_authentication_with_stub.cs#L90-L116' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_specify_specific_claims' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/web_api_authentication_with_stub.cs#L91-L117' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_specify_specific_claims' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 ## Stub out JWT authentication
@@ -79,7 +80,7 @@ claims that should be in the JWT token:
 <a id='snippet-sample_setup_jwt_stub'></a>
 ```cs
 // This is calling your real web service's configuration
-var hostBuilder = Program.CreateHostBuilder(new string[0]);
+var hostBuilder = WebAppSecuredWithJwt.Program.CreateHostBuilder(new string[0]);
 
 // This is a new Alba v5 extension that can "stub" out
 // JWT token authentication
@@ -103,6 +104,11 @@ as shown in the previous section.
 
 ## Integration with JWT Authentication
 
+::: tip
+All of these extensions depend on the `JwtBearerOptions` configuration from your application. The extensions will use the 
+`Authority` property of `JwtBearerOptions` for the Url of the OIDC token server.
+:::
+
 If you want to test your ASP.Net Core web services that are authenticated by an [Open Id Connect](https://openid.net/connect/) workflow **and**
 you also want to be testing through the authentication from the real OIDC identity server, Alba v5 comes with new
 extensions to automatically fetch and apply JWT tokens to scenario tests.
@@ -122,7 +128,7 @@ oidc = new OpenConnectClientCredentials
     Scope = Config.ApiScope
 };
 
-theHost = Program.CreateHostBuilder(new string[0])
+theHost = WebAppSecuredWithJwt.Program.CreateHostBuilder(new string[0])
     .StartAlba(oidc);
 ```
 <sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/OpenConnectClientCredentialsTests.cs#L23-L38' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_openconnectclientcredentials' title='Start of snippet'>anchor</a></sup>

@@ -26,7 +26,7 @@ public async Task build_host_from_Program()
     await host.Scenario(s =>
     {
         s.Get.Url("/");
-        s.ContentShouldBe("Hello world.");
+        s.ContentShouldBe("Hello, World!");
     });
 }
 ```
@@ -56,7 +56,7 @@ public async Task fluent_interface_bootstrapping()
     await host.Scenario(s =>
     {
         s.Get.Url("/");
-        s.ContentShouldBe("Hello world.");
+        s.ContentShouldBe("Hello, World!");
     });
 }
 ```

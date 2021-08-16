@@ -90,7 +90,15 @@ task :publish do
 	end
 
 	sh "dotnet restore"
-	sh "dotnet stdocs export doc-target ProjectWebsite --version #{BUILD_VERSION} --project alba"
+	sh "npm run docs-build"
+
+
+	Dir.glob('/docs/.vitepress/dist/**/*.*').each do |file|
+	  dir, filename = File.dirname(file), File.basename(file)
+	  dest = File.join(@target_dir, dir)
+	  FileUtils.mkdir_p(dest)
+	  FileUtils.copy_file(file, File.join(dest,filename))
+	end
 
 	Dir.chdir "doc-target" do
 		sh "git add --all"

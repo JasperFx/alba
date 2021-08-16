@@ -202,3 +202,5 @@ doc-target
 stresults.htm
 project.lock.json
 *.DS_Store
+
+docs/.vitepress/dist/

@@ -41,7 +41,8 @@ testing:
 <a id='snippet-sample_bootstrapping_with_stub_extension'></a>
 ```cs
 // This is calling your real web service's configuration
-var hostBuilder = Program.CreateHostBuilder(new string[0]);
+var hostBuilder = WebAppSecuredWithJwt.Program
+    .CreateHostBuilder(new string[0]);
 
 // This is a new Alba v5 extension that can "stub" out
 // JWT token authentication
@@ -54,7 +55,5 @@ var securityStub = new AuthenticationStub()
 // Alba
 theHost = new AlbaHost(hostBuilder, securityStub);
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/web_api_authentication_with_stub.cs#L21-L37' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_bootstrapping_with_stub_extension' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/web_api_authentication_with_stub.cs#L21-L38' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_bootstrapping_with_stub_extension' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
-
-The new [Security extensions](/guide/security/) are the only out of the box examples so far.
