@@ -32,7 +32,7 @@ namespace Alba.Testing.Security
                 Scope = Config.ApiScope
             };
 
-            theHost = Program.CreateHostBuilder(new string[0])
+            theHost = WebAppSecuredWithJwt.Program.CreateHostBuilder(new string[0])
                 .StartAlba(oidc);
 
             #endregion

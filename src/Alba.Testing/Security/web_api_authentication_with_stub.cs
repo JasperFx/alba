@@ -21,7 +21,8 @@ namespace Alba.Testing.Security
             #region sample_bootstrapping_with_stub_extension
 
             // This is calling your real web service's configuration
-            var hostBuilder = Program.CreateHostBuilder(new string[0]);
+            var hostBuilder = WebAppSecuredWithJwt.Program
+                .CreateHostBuilder(new string[0]);
 
             // This is a new Alba v5 extension that can "stub" out
             // JWT token authentication

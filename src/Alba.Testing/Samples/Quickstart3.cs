@@ -26,7 +26,7 @@ namespace Alba.Testing.Samples
             await host.Scenario(s =>
             {
                 s.Get.Url("/");
-                s.ContentShouldBe("Hello world.");
+                s.ContentShouldBe("Hello, World!");
             });
         }
         #endregion
@@ -45,7 +45,7 @@ namespace Alba.Testing.Samples
             await host.Scenario(s =>
             {
                 s.Get.Url("/");
-                s.ContentShouldBe("Hello world.");
+                s.ContentShouldBe("Hello, World!");
             });
         }
         #endregion
