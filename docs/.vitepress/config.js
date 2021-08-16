@@ -48,7 +48,7 @@ function getGuideSidebar() {
 
 function getScenarioSidebar(){
     return [
-        {text: 'Set up and tear down actions', link: '/scenarios/before-and-after'},
+        {text: 'Set up and tear down actions', link: '/scenarios/setup'},
         {text: 'Specifying Urls', link: '/scenarios/urls'},
         {text: 'HTTP Status Codes', link: '/scenarios/statuscode'},
         {text: 'HTTP Headers', link: '/scenarios/headers'},

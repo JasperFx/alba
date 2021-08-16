@@ -91,4 +91,4 @@ public Task asserting_on_header_values(IAlbaHost system)
 <!-- endSnippet -->
 
 You do also have the ability to just interrogate the `HttpContext.Response` in your unit test methods for
-anything not covered in the helpers above. To add your own custom assertions, see <[linkto:documentation/assertions]>.
+anything not covered in the helpers above. 

@@ -16,9 +16,9 @@ as xml to the web request:
 <!-- snippet: sample_sending_xml -->
 <a id='snippet-sample_sending_xml'></a>
 ```cs
-public Task send_xml(IAlbaHost system)
+public Task send_xml(IAlbaHost host)
 {
-    return system.Scenario(_ =>
+    return host.Scenario(_ =>
     {
         // This serializes the Input object to xml,
         // writes it to the HttpRequest.Body, and sets
@@ -33,7 +33,7 @@ public Task send_xml(IAlbaHost system)
     });
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/JsonAndXml.cs#L29-L46' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_sending_xml' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/JsonAndXml.cs#L27-L44' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_sending_xml' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -44,9 +44,9 @@ There's a helper off of the `HttpResponseBody` for reading Xml from the response
 <!-- snippet: sample_read_xml -->
 <a id='snippet-sample_read_xml'></a>
 ```cs
-public async Task read_xml(IAlbaHost system)
+public async Task read_xml(IAlbaHost host)
 {
-    var result = await system.Scenario(_ =>
+    var result = await host.Scenario(_ =>
     {
         _.Get.Url("/output");
     });
@@ -61,5 +61,5 @@ public async Task read_xml(IAlbaHost system)
     XmlDocument document = result.ReadAsXml();
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/JsonAndXml.cs#L108-L125' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_read_xml' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/JsonAndXml.cs#L115-L132' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_read_xml' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->

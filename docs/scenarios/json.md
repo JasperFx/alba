@@ -3,6 +3,11 @@ title:Sending and Checking Json
 editLink:true
 ---
 
+::: tip
+As of Alba v5, the Json serialization is done with the configured input and output formatters within the underlying application. This means that
+Alba can support systems using both System.Text.Json and Newtonsoft.Json.
+:::
+
 ## Sending Json
 
 Since posting Json to a web server API is so common, Alba has some helpers for writing Json to the request:
@@ -10,9 +15,9 @@ Since posting Json to a web server API is so common, Alba has some helpers for w
 <!-- snippet: sample_sending_json -->
 <a id='snippet-sample_sending_json'></a>
 ```cs
-public Task send_json(IAlbaHost system)
+public Task send_json(IAlbaHost host)
 {
-    return system.Scenario(_ =>
+    return host.Scenario(_ =>
     {
         // This serializes the Input object to json,
         // writes it to the HttpRequest.Body, and sets
@@ -21,13 +26,10 @@ public Task send_json(IAlbaHost system)
         _.Post
             .Json(new Input {Name = "Max", Age = 13})
             .ToUrl("/person");
-
-        // OR, if url lookup is enabled, this is an equivalent:
-        _.Post.Json(new Input {Name = "Max", Age = 13});
     });
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/JsonAndXml.cs#L10-L27' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_sending_json' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/JsonAndXml.cs#L10-L24' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_sending_json' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -38,9 +40,9 @@ To deserialize the response body with Json to interrogate the results in a stron
 <!-- snippet: sample_read_json -->
 <a id='snippet-sample_read_json'></a>
 ```cs
-public async Task read_json(IAlbaHost system)
+public async Task read_json(IAlbaHost host)
 {
-    var result = await system.Scenario(_ =>
+    var result = await host.Scenario(_ =>
     {
         _.Get.Url("/output");
     });
@@ -52,5 +54,53 @@ public async Task read_json(IAlbaHost system)
     // do assertions against the Output model
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/JsonAndXml.cs#L48-L62' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_read_json' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/JsonAndXml.cs#L46-L60' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_read_json' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
+
+You can also use a shorthand syntax to skip `Scenario()` like this:
+
+<!-- snippet: sample_read_json_shorthand -->
+<a id='snippet-sample_read_json_shorthand'></a>
+```cs
+public async Task read_json_shorthand(IAlbaHost host)
+{
+    var output = await host.GetAsJson<Output>("/output");
+
+    // do assertions against the Output model
+}
+```
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/JsonAndXml.cs#L62-L69' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_read_json_shorthand' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+This code snippet is functionally identical to the previous usage.
+
+## Shortcut for Pure Json Services
+
+If you don't care about any additional HTTP headers or need to verify any HTTP status code except for `200 Ok`, you can use this shorthand syntax
+to quickly post and receive results from a web service:
+
+<!-- snippet: sample_post_json_get_json -->
+<a id='snippet-sample_post_json_get_json'></a>
+```cs
+[Fact]
+public async Task post_and_expect_response()
+{
+    using var system = AlbaHost.ForStartup<WebApp.Startup>();
+    var request = new OperationRequest
+    {
+        Type = OperationType.Multiply,
+        One = 3,
+        Two = 4
+    };
+
+    var result = await system.PostJson(request, "/math")
+        .Receive<OperationResult>();
+        
+    result.Answer.ShouldBe(12);
+    result.Method.ShouldBe("POST");
+}
+```
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/using_json_helpers.cs#L36-L54' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_post_json_get_json' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+There are similar helpers for other HTTP verbs like `PUT` and `DELETE`.

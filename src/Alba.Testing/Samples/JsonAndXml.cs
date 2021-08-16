@@ -8,9 +8,9 @@ namespace Alba.Testing.Samples
     public class JsonAndXml
     {
         #region sample_sending_json
-        public Task send_json(IAlbaHost system)
+        public Task send_json(IAlbaHost host)
         {
-            return system.Scenario(_ =>
+            return host.Scenario(_ =>
             {
                 // This serializes the Input object to json,
                 // writes it to the HttpRequest.Body, and sets
@@ -19,17 +19,15 @@ namespace Alba.Testing.Samples
                 _.Post
                     .Json(new Input {Name = "Max", Age = 13})
                     .ToUrl("/person");
-
-                // OR, if url lookup is enabled, this is an equivalent:
-                _.Post.Json(new Input {Name = "Max", Age = 13});
             });
         }
         #endregion
 
+
         #region sample_sending_xml
-        public Task send_xml(IAlbaHost system)
+        public Task send_xml(IAlbaHost host)
         {
-            return system.Scenario(_ =>
+            return host.Scenario(_ =>
             {
                 // This serializes the Input object to xml,
                 // writes it to the HttpRequest.Body, and sets
@@ -46,9 +44,9 @@ namespace Alba.Testing.Samples
         #endregion
 
         #region sample_read_json
-        public async Task read_json(IAlbaHost system)
+        public async Task read_json(IAlbaHost host)
         {
-            var result = await system.Scenario(_ =>
+            var result = await host.Scenario(_ =>
             {
                 _.Get.Url("/output");
             });
@@ -60,12 +58,21 @@ namespace Alba.Testing.Samples
             // do assertions against the Output model
         }
         #endregion
+        
+        #region sample_read_json_shorthand
+        public async Task read_json_shorthand(IAlbaHost host)
+        {
+            var output = await host.GetAsJson<Output>("/output");
+
+            // do assertions against the Output model
+        }
+        #endregion
 
 
         #region sample_read_text
-        public async Task read_text(IAlbaHost system)
+        public async Task read_text(IAlbaHost host)
         {
-            var result = await system.Scenario(_ =>
+            var result = await host.Scenario(_ =>
             {
                 _.Get.Url("/output");
             });
@@ -79,9 +86,9 @@ namespace Alba.Testing.Samples
         #endregion
 
         #region sample_assert_on_text
-        public Task assert_on_content(IAlbaHost system)
+        public Task assert_on_content(IAlbaHost host)
         {
-            return system.Scenario(_ =>
+            return host.Scenario(_ =>
             {
                 _.ContentShouldBe("exactly this");
 
@@ -94,9 +101,9 @@ namespace Alba.Testing.Samples
 
 
         #region sample_send_text
-        public Task send_text(IAlbaHost system)
+        public Task send_text(IAlbaHost host)
         {
-            return system.Scenario(_ =>
+            return host.Scenario(_ =>
             {
                 _.Post.Text("some text").ToUrl("/textdata");
             });
@@ -106,9 +113,9 @@ namespace Alba.Testing.Samples
 
 
         #region sample_read_xml
-        public async Task read_xml(IAlbaHost system)
+        public async Task read_xml(IAlbaHost host)
         {
-            var result = await system.Scenario(_ =>
+            var result = await host.Scenario(_ =>
             {
                 _.Get.Url("/output");
             });
