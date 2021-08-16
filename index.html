@@ -1,155 +1,22 @@
-<!--Title:Alba-->
-
-
 <!DOCTYPE html>
-<html lang="en">
-
-<head>
-
+<html lang="en-US">
+  <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Alba</title>
-
-    <!-- Bootstrap Core CSS -->
-    <link href="/alba/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
-
-    <!-- Custom CSS -->
-    <link href="/alba/content/stylish-portfolio.css" rel="stylesheet" type="text/css" />
-
-
-    <!-- Custom Fonts -->
-    <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
-    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" >
-
-</head>
-
-<body>
-<a href="https://github.com/jasperfx/alba"><img style="z-index: 5000; position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/82b228a3648bf44fc1163ef44c62fcc60081495e/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_007200.png"></a>
-
-
-
-    <!-- Navigation -->
-    <a id="menu-toggle" href="#" class="btn btn-dark btn-lg toggle"><i class="fa fa-bars"></i></a>
-    <nav id="sidebar-wrapper">
-        <ul class="sidebar-nav">
-            <a id="menu-close" href="#" class="btn btn-light btn-lg pull-right toggle"><i class="fa fa-times"></i></a>
-            <li class="sidebar-brand">
-                <a href="getting_started"  onclick = $("#menu-close").click(); >Getting Started</a>
-            </li>
-            <li>
-                <a href="documentation" onclick = $("#menu-close").click(); >Documentation</a>
-            </li>
-            <li>
-                <a href="https://github.com/JasperFx/Alba" onclick = $("#menu-close").click(); >Alba on GitHub</a>
-            </li>
-             <li>
-                <a href="https://gitter.im/JasperFx/Alba?utm_source=share-link&utm_medium=link&utm_campaign=share-link" onclick = $("#menu-close").click(); >Gitter Room</a>
-            </li>
-            <li>
-                <a href="https://ci.appveyor.com/project/jasper-ci/alba/history" onclick = $("#menu-close").click(); >AppVeyor Page</a>
-            </li>
-            <li>
-                <a href="https://www.nuget.org/packages/Alba/" onclick = $("#menu-close").click(); >Nuget Downloads</a>
-            </li>
-
-        </ul>
-    </nav>
-
-    <!-- Header -->
-    <header id="top" class="header">
-        <div class="text-vertical-center">
-            <h1 style="color:black">Alba</h1>
-            <h3 style="color:black;font-weight:bold">Supercharged integration testing for ASP.Net Core HTTP endpoints</h3>
-            <br>
-            <a href="#about" class="btn btn-dark btn-lg">Find Out More</a>
-            <a href="getting_started" class="btn btn-dark btn-lg">Get started!</a>
-            <br />
-            <br />
-            <p class="lead center-block">
-                <a href="https://ci.appveyor.com/project/jasper-ci/alba/history"><img src="https://img.shields.io/appveyor/ci/jasper-ci/alba.svg"></img></a>
-                <a href="https://www.nuget.org/packages/Alba/"><img src="https://img.shields.io/nuget/v/Alba.svg"></img></a>
-
-
-<a href="https://gitter.im/jasperfx/Alba?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/jasperfx/Alba" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
-            </p>
-            <i class="subtitle">The main drag of the bustling metropolis of Alba, Missouri</i>
-        </div>
-    </header>
-
-    <!-- About -->
-    <section id="about" class="about">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12 text-center">
-                    <h2>Supercharging ASP.Net Core development</h2>
-          <p style="margin:50px">Use the Alba library in your testing projects to quickly write declarative specifications against the HTTP endpoint of an ASP.Net Core application by simulating an HTTP request in memory. Inspired by the
-            <a href="https://jeremydmiller.com/2015/11/05/testing-http-handlers-with-no-web-server-in-sight/">"Scenario" testing mechanism in FubuMVC</a>. Alba supports ASP.Net Core >2.1 and is tested against both netcoreapp2.1 and netcoreapp2.1.
-
-
-
-                </div>
-            </div>
-            <!-- /.row -->
-        </div>
-        <!-- /.container -->
-    </section>
-
-        <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-        <script type='text/javascript' src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-<script>
-$('#search').keyup(function(e){
-  if(e.keyCode == 13) {
-    var search = $('#search').val();
-
-    var url = 'https://www.google.com/#q=site:jasperfx.github.io ' + search;
-    url = encodeURI(url);
-
-    window.location.href = url;
-
-    e.stopPropagation();
-    if (e.cancelBubble!=null) e.cancelBubble = true;
-    return false;
-  }
-});
-
-</script>
-
-    <!-- Custom Theme JavaScript -->
-    <script>
-    // Closes the sidebar menu
-    $("#menu-close").click(function(e) {
-        e.preventDefault();
-        $("#sidebar-wrapper").toggleClass("active");
-    });
-
-    // Opens the sidebar menu
-    $("#menu-toggle").click(function(e) {
-        e.preventDefault();
-        $("#sidebar-wrapper").toggleClass("active");
-    });
-
-    // Scrolls to the selected menu item on the page
-    $(function() {
-        $('a[href*=#]:not([href=#])').click(function() {
-            if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') || location.hostname == this.hostname) {
-
-                var target = $(this.hash);
-                target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
-                if (target.length) {
-                    $('html,body').animate({
-                        scrollTop: target.offset().top
-                    }, 1000);
-                    return false;
-                }
-            }
-        });
-    });
-    </script>
-
-</body>
-
+    <meta name="description" content="Supercharged integration testing for ASP.Net Core web services">
+    <link rel="stylesheet" href="/alba/assets/style.41ec4b9e.css">
+    <link rel="modulepreload" href="/alba/assets/Home.12b2b811.js">
+    <link rel="modulepreload" href="/alba/assets/AlgoliaSearchBox.12ba38ab.js">
+    <link rel="modulepreload" href="/alba/assets/app.144e7b1a.js">
+    <link rel="modulepreload" href="/alba/assets/index.md.011a3dfc.lean.js">
+    <link rel="modulepreload" href="/alba/assets/app.144e7b1a.js">
+    <meta name="twitter:title" content="Alba">
+    <meta property="og:title" content="Alba">
+  </head>
+  <body>
+    <div id="app"><!--[--><div class="no-sidebar theme"><header class="nav-bar" data-v-675d8756><div class="sidebar-button" data-v-675d8756><svg class="icon" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z" class></path></svg></div><a class="nav-bar-title" href="/alba/" aria-label="Alba, back to home" data-v-675d8756 data-v-4a583abe><!----> Alba</a><div class="flex-grow" data-v-675d8756></div><div class="nav" data-v-675d8756><nav class="nav-links" data-v-675d8756 data-v-15acbf05><!--[--><div class="item" data-v-15acbf05><div class="nav-link" data-v-15acbf05 data-v-b8818f8c><a class="item" href="/alba/guide/" data-v-b8818f8c>Guide <!----></a></div></div><div class="item" data-v-15acbf05><div class="nav-link" data-v-15acbf05 data-v-b8818f8c><a class="item isExternal" href="https://gitter.im/JasperFx/alba?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge" target="_blank" rel="noopener noreferrer" data-v-b8818f8c>Gitter | Join Chat <svg class="icon outbound" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewbox="0 0 100 100" width="15" height="15" data-v-b8818f8c><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path><polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div></div><!--]--><!----><div class="item" data-v-15acbf05><div class="nav-link" data-v-15acbf05 data-v-b8818f8c><a class="item isExternal" href="https://github.com/JasperFx/alba" target="_blank" rel="noopener noreferrer" data-v-b8818f8c>GitHub <svg class="icon outbound" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewbox="0 0 100 100" width="15" height="15" data-v-b8818f8c><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path><polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div></div></nav></div><!--[--><!--[--><div class="algolia-search-box" id="docsearch"></div><!--]--><!--]--></header><aside class="sidebar" data-v-83e92a68><nav class="nav-links nav" data-v-83e92a68 data-v-15acbf05><!--[--><div class="item" data-v-15acbf05><div class="nav-link" data-v-15acbf05 data-v-b8818f8c><a class="item" href="/alba/guide/" data-v-b8818f8c>Guide <!----></a></div></div><div class="item" data-v-15acbf05><div class="nav-link" data-v-15acbf05 data-v-b8818f8c><a class="item isExternal" href="https://gitter.im/JasperFx/alba?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge" target="_blank" rel="noopener noreferrer" data-v-b8818f8c>Gitter | Join Chat <svg class="icon outbound" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewbox="0 0 100 100" width="15" height="15" data-v-b8818f8c><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path><polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div></div><!--]--><!----><div class="item" data-v-15acbf05><div class="nav-link" data-v-15acbf05 data-v-b8818f8c><a class="item isExternal" href="https://github.com/JasperFx/alba" target="_blank" rel="noopener noreferrer" data-v-b8818f8c>GitHub <svg class="icon outbound" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewbox="0 0 100 100" width="15" height="15" data-v-b8818f8c><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path><polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div></div></nav><!--[--><!--]--><ul class="sidebar-links" data-v-83e92a68><!--[--><li class="sidebar-link"><a class="sidebar-link-item" href="/alba/guide/">Getting Started</a><ul class="sidebar-links"><li class="sidebar-link"><a class="sidebar-link-item" href="/alba/guide/hosting">Working with AlbaHost</a><!----></li><li class="sidebar-link"><a class="sidebar-link-item" href="/alba/guide/xunit">Integrating with xUnit.Net</a><!----></li><li class="sidebar-link"><a class="sidebar-link-item" href="/alba/guide/nunit">Integrating with NUnit</a><!----></li><li class="sidebar-link"><a class="sidebar-link-item" href="/alba/guide/extensions">Extension Model</a><!----></li><li class="sidebar-link"><a class="sidebar-link-item" href="/alba/guide/security">Security Extensions</a><!----></li></ul></li><li class="sidebar-link"><a class="sidebar-link-item" href="/alba/scenarios/">Scenario Testing</a><ul class="sidebar-links"><li class="sidebar-link"><a class="sidebar-link-item" href="/alba/scenarios/setup">Set up and tear down actions</a><!----></li><li class="sidebar-link"><a class="sidebar-link-item" href="/alba/scenarios/urls">Specifying Urls</a><!----></li><li class="sidebar-link"><a class="sidebar-link-item" href="/alba/scenarios/statuscode">HTTP Status Codes</a><!----></li><li class="sidebar-link"><a class="sidebar-link-item" href="/alba/scenarios/headers">HTTP Headers</a><!----></li><li class="sidebar-link"><a class="sidebar-link-item" href="/alba/scenarios/json">Json Web Services</a><!----></li><li class="sidebar-link"><a class="sidebar-link-item" href="/alba/scenarios/xml">Xml Web Services</a><!----></li><li class="sidebar-link"><a class="sidebar-link-item" href="/alba/scenarios/text">Plain Text Web Services</a><!----></li><li class="sidebar-link"><a class="sidebar-link-item" href="/alba/scenarios/assertions">Custom Assertions</a><!----></li><li class="sidebar-link"><a class="sidebar-link-item" href="/alba/scenarios/redirects">Redirects</a><!----></li></ul></li><!--]--></ul><!--[--><!--]--></aside><!-- TODO: make this button accessible --><div class="sidebar-mask"></div><main class="home" aria-labelledby="main-title" data-v-32eddf2f><header class="home-hero" data-v-32eddf2f data-v-0cb9fda2><figure class="figure" data-v-0cb9fda2><img class="image" src="/alba/alba.jpg" data-v-0cb9fda2></figure><h1 id="main-title" class="title" data-v-0cb9fda2>Easy testing for ASP.Net Core web services</h1><!----><div class="nav-link action" data-v-0cb9fda2 data-v-b8818f8c><a class="item" href="/alba/guide/" data-v-b8818f8c>Get Started <!----></a></div><!----></header><!--[--><!--]--><div class="home-features" data-v-32eddf2f data-v-e39c13e0><div class="wrapper" data-v-e39c13e0><div class="container" data-v-e39c13e0><div class="features" data-v-e39c13e0><!--[--><section class="feature" data-v-e39c13e0><h2 class="title" data-v-e39c13e0>🎍 Fast IoC Container</h2><p class="details" data-v-e39c13e0>A fast .NET Inversion of Control container heavily optimized for usage in ASP.Net Core and other .NET server side applications. The successor to the venerable StructureMap library.</p></section><section class="feature" data-v-e39c13e0><h2 class="title" data-v-e39c13e0>🧵 Dynamic Code Weaving</h2><p class="details" data-v-e39c13e0>Dynamic code in C# without the headaches of Expression trees or esoteric IL emitting by generating nice, clean C# in memory using Roslyn to build .NET types on the fly.</p></section><section class="feature" data-v-e39c13e0><h2 class="title" data-v-e39c13e0>🔋 Batteries Included</h2><p class="details" data-v-e39c13e0>Built-in diagnostics tools for IoC container which is a big differentiator in comparison to other IoC libraries. Helpers to create in-memory compilation of C# via Roslyn.</p></section><!--]--></div></div></div></div><div class="home-content" data-v-32eddf2f><div style="position:relative;" data-v-32eddf2f><div></div></div></div><!--[--><!--]--><footer class="footer" data-v-32eddf2f data-v-30918238><div class="container" data-v-30918238><p class="text" data-v-30918238>MIT Licensed | Copyright © Jeremy D. Miller and contributors.</p></div></footer><!--[--><!--]--></main></div><!----><!--]--></div>
+    <script>__VP_HASH_MAP__ = JSON.parse("{\"index.md\":\"011a3dfc\",\"guide_extensions.md\":\"e0ed0ae3\",\"guide_hosting.md\":\"63701d91\",\"guide_index.md\":\"cc3846c9\",\"guide_nunit.md\":\"eb90fce8\",\"guide_security.md\":\"14c7dbc7\",\"guide_testserver.md\":\"58562fa0\",\"guide_xunit.md\":\"40fc061b\",\"scenarios_assertions.md\":\"956e1d34\",\"scenarios_formdata.md\":\"b7ef5f3b\",\"scenarios_headers.md\":\"1b3bdab0\",\"scenarios_index.md\":\"9b896979\",\"scenarios_json.md\":\"cfac8eb1\",\"scenarios_redirects.md\":\"f14dbb11\",\"scenarios_setup.md\":\"a9ff24b8\",\"scenarios_statuscode.md\":\"8e7f7d2a\",\"scenarios_text.md\":\"caefc1b8\",\"scenarios_urls.md\":\"a01dfbe5\",\"scenarios_xml.md\":\"fa25f21c\"}")</script>
+    <script type="module" async src="/alba/assets/app.144e7b1a.js"></script>
+  </body>
 </html>
