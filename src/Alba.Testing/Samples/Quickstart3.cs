@@ -19,11 +19,30 @@ namespace Alba.Testing.Samples
             // Bootstrap your application just as your real application does
             var hostBuilder = Program.CreateHostBuilder(Array.Empty<string>());
 
-            await using var system = new AlbaHost(hostBuilder);
-            
+            await using var host = new AlbaHost(hostBuilder);
+
             // Just as a sample, I'll run a scenario against
             // a "hello, world" application's root url
-            await system.Scenario(s =>
+            await host.Scenario(s =>
+            {
+                s.Get.Url("/");
+                s.ContentShouldBe("Hello world.");
+            });
+        }
+        #endregion
+        
+        
+        #region sample_shorthand_bootstrapping
+        [Fact]
+        public async Task fluent_interface_bootstrapping()    
+        {
+            await using var host = await Program
+                .CreateHostBuilder(Array.Empty<string>())
+                .StartAlbaAsync();
+
+            // Just as a sample, I'll run a scenario against
+            // a "hello, world" application's root url
+            await host.Scenario(s =>
             {
                 s.Get.Url("/");
                 s.ContentShouldBe("Hello world.");

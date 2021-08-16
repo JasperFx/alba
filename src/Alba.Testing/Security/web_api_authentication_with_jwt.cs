@@ -18,6 +18,8 @@ namespace Alba.Testing.Security
 
         public web_api_authentication_with_jwt()
         {
+            #region sample_setup_jwt_stub
+
             // This is calling your real web service's configuration
             var hostBuilder = Program.CreateHostBuilder(new string[0]);
 
@@ -30,6 +32,8 @@ namespace Alba.Testing.Security
             // AlbaHost was "SystemUnderTest" in previous versions of
             // Alba
             theHost = new AlbaHost(hostBuilder, jwtSecurityStub);
+
+            #endregion
         }
 
 

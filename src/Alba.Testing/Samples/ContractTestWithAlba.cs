@@ -9,7 +9,9 @@ namespace Alba.Testing.Samples
     #region sample_xUnit_Fixture
     public class WebAppFixture : IDisposable
     {
-        public readonly AlbaHost AlbaHost = AlbaHost.ForStartup<WebApp.Startup>();
+        public readonly IAlbaHost AlbaHost = WebApp.Program
+            .CreateHostBuilder(Array.Empty<string>())
+            .StartAlba();
 
         public void Dispose()
         {
@@ -23,15 +25,15 @@ namespace Alba.Testing.Samples
     {
         public ContractTestWithAlba(WebAppFixture app)
         {
-            _system = app.AlbaHost;
+            _host = app.AlbaHost;
         }
 
-        private readonly AlbaHost _system;
+        private readonly IAlbaHost _host;
     #endregion
         [Fact]
         public Task happy_path()
         {
-            return _system.Scenario(_ =>
+            return _host.Scenario(_ =>
             {
                 _.Get.Url("/fake/okay");
                 _.StatusCodeShouldBeOk();
@@ -42,7 +44,7 @@ namespace Alba.Testing.Samples
         [Fact]
         public Task sad_path()
         {
-            return _system.Scenario(_ =>
+            return _host.Scenario(_ =>
             {
                 _.Get.Url("/fake/bad");
                 _.StatusCodeShouldBe(500);
@@ -52,7 +54,7 @@ namespace Alba.Testing.Samples
         [Fact]
         public async Task with_validation_errors()
         {
-            var result = await _system.Scenario(_ =>
+            var result = await _host.Scenario(_ =>
             {
                 _.Get.Url("/fake/invalid");
                 _.ContentTypeShouldBe("application/problem+json; charset=utf-8");
@@ -63,4 +65,50 @@ namespace Alba.Testing.Samples
             problems.Title.ShouldBe("This stinks!");
         }
     }
+
+    #region sample_ScenarioCollection
+
+    [CollectionDefinition("scenarios")]
+    public class ScenarioCollection : ICollectionFixture<WebAppFixture>
+    {
+        
+    }
+
+    #endregion
+
+    #region sample_ScenarioContext
+
+    [Collection("scenarios")]
+    public abstract class ScenarioContext
+    {
+        protected ScenarioContext(WebAppFixture fixture)
+        {
+            Host = fixture.AlbaHost;
+        }
+
+        public IAlbaHost Host { get; }
+    }
+
+    #endregion
+
+    #region sample_integration_fixture
+
+    public class sample_integration_fixture : ScenarioContext
+    {
+        public sample_integration_fixture(WebAppFixture fixture) : base(fixture)
+        {
+        }
+        
+        [Fact]
+        public Task happy_path()
+        {
+            return Host.Scenario(_ =>
+            {
+                _.Get.Url("/fake/okay");
+                _.StatusCodeShouldBeOk();
+            });
+        }
+    }
+
+    #endregion
 }

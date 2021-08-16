@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAppSecuredWithJwt", "Web
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityServer", "IdentityServer\IdentityServer.csproj", "{0E04B4E3-8183-4516-A1E2-768C425C98FE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NUnitSamples", "NUnitSamples\NUnitSamples.csproj", "{EAE558C3-9759-4F7F-845B-D00056EE65DC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,6 +46,10 @@ Global
 		{0E04B4E3-8183-4516-A1E2-768C425C98FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E04B4E3-8183-4516-A1E2-768C425C98FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E04B4E3-8183-4516-A1E2-768C425C98FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EAE558C3-9759-4F7F-845B-D00056EE65DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAE558C3-9759-4F7F-845B-D00056EE65DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAE558C3-9759-4F7F-845B-D00056EE65DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAE558C3-9759-4F7F-845B-D00056EE65DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

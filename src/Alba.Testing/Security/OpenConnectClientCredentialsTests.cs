@@ -19,9 +19,14 @@ namespace Alba.Testing.Security
         public OpenConnectClientCredentialsTests(IdentityServerFixture fixture)
         {
             _fixture = fixture;
-            
+
+            #region sample_OpenConnectClientCredentials
+
             oidc = new OpenConnectClientCredentials
             {
+                // These three properties are mandatory, and
+                // would refer to matching configuration in your
+                // OIDC server
                 ClientId = Config.ClientId,
                 ClientSecret = Config.ClientSecret,
                 Scope = Config.ApiScope
@@ -29,6 +34,8 @@ namespace Alba.Testing.Security
 
             theHost = Program.CreateHostBuilder(new string[0])
                 .StartAlba(oidc);
+
+            #endregion
         }
 
         [Fact]

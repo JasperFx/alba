@@ -19,9 +19,12 @@ namespace Alba.Testing.Security
         public OpenConnectUserPasswordTests(IdentityServerFixture fixture)
         {
             _fixture = fixture;
-            
+
+            #region sample_applying_OpenConnectUserPassword
+
             oidc = new OpenConnectUserPassword
             {
+                // All of these properties are mandatory
                 ClientId = Config.ClientId,
                 ClientSecret = Config.ClientSecret,
                 UserName = "alice",
@@ -30,6 +33,8 @@ namespace Alba.Testing.Security
 
             theHost = WebAppSecuredWithJwt.Program.CreateHostBuilder(new string[0])
                 .StartAlba(oidc);
+
+            #endregion
         }
         
         [Fact]
@@ -136,7 +141,10 @@ namespace Alba.Testing.Security
             var user = response.Context.User;
             user.FindFirst("name").Value.ShouldBe("Alice Smith");
         }
-        
+
+
+        #region sample_override_user_password
+
         [Fact]
         public async Task post_to_a_secured_endpoint_with_jwt_with_overridden_user_and_password()
         {
@@ -165,6 +173,8 @@ namespace Alba.Testing.Security
             var user = response.Context.User;
             user.FindFirst("name").Value.ShouldBe("Bob Smith");
         }
+
+        #endregion
 
         public void Dispose()
         {

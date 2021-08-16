@@ -24,7 +24,7 @@ namespace Alba.Testing.Security
 
 
             _host = Host.CreateDefaultBuilder().StartAlba(theStub);
-            
+
             theStub.Options = new JwtBearerOptions
             {
                 ClaimsIssuer = "myapp",

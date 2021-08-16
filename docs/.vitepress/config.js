@@ -24,8 +24,38 @@ module.exports = {
         sidebar: [
             {
                 text: 'Getting Started',
-                link: '/guide/'
+                link: '/guide/',
+                children: getGuideSidebar()
+            },
+            {
+                text: 'Scenario Testing',
+                link: '/scenarios/',
+                children: getScenarioSidebar()
             }
         ]
     }
+}
+
+function getGuideSidebar() {
+    return [
+        {text: 'Working with AlbaHost', link: '/guide/hosting'},
+        {text: 'Integrating with xUnit.Net', link: '/guide//xunit'},
+        {text: 'Integrating with NUnit', link: '/guide//nunit'},
+        {text: 'Extension Model', link: '/guide//extensions'},
+        {text: 'Security Extensions', link: '/guide//security'}
+    ]
+}
+
+function getScenarioSidebar(){
+    return [
+        {text: 'Set up and tear down actions', link: '/scenarios/before-and-after'},
+        {text: 'Specifying Urls', link: '/scenarios/urls'},
+        {text: 'HTTP Status Codes', link: '/scenarios/statuscode'},
+        {text: 'HTTP Headers', link: '/scenarios/headers'},
+        {text: 'Json Web Services', link: '/scenarios/json'},
+        {text: 'Xml Web Services', link: '/scenarios/xml'},
+        {text: 'Plain Text Web Services', link: '/scenarios/text'},
+        {text: 'Custom Assertions', link: '/scenarios/assertions'},
+        {text: 'Redirects', link: '/scenarios/redirects'},
+    ]
 }

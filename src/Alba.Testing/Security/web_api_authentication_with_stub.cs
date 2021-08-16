@@ -18,6 +18,8 @@ namespace Alba.Testing.Security
 
         public web_api_authentication_with_stub()
         {
+            #region sample_bootstrapping_with_stub_extension
+
             // This is calling your real web service's configuration
             var hostBuilder = Program.CreateHostBuilder(new string[0]);
 
@@ -31,6 +33,8 @@ namespace Alba.Testing.Security
             // AlbaHost was "SystemUnderTest" in previous versions of
             // Alba
             theHost = new AlbaHost(hostBuilder, securityStub);
+
+            #endregion
         }
 
 
@@ -83,6 +87,8 @@ namespace Alba.Testing.Security
             principal.Identity.Name.ShouldBe("jeremy");
         }
 
+        #region sample_specify_specific_claims
+
         [Fact]
         public async Task can_modify_claims_per_scenario()
         {
@@ -106,5 +112,7 @@ namespace Alba.Testing.Security
             principal.Claims.Single(x => x.Type == "color")
                 .Value.ShouldBe("green");
         }
+
+        #endregion
     }
 }
