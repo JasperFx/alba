@@ -1,0 +1,1 @@
+import{o as e,c as t,b as r}from"./app.144e7b1a.js";const n='{"title":"","description":"","frontmatter":"title:Using TestServer editLink:true","relativePath":"guide/testserver.md","lastUpdated":1629228268006}',a={},i=[r("p",null,"Content here....",-1)];a.render=function(r,n,a,s,d,l){return e(),t("div",null,i)};export{n as __pageData,a as default};
