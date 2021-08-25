@@ -7,7 +7,7 @@
     <ItemGroup>
         <PackageReference Include="Lamar.Diagnostics" Version="3.0.2" />
         <PackageReference Include="Lamar.Microsoft.DependencyInjection" Version="5.0.4" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.7" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.9" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
     </ItemGroup>
 
