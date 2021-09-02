@@ -1,7 +1,4 @@
----
-title:Extension Model
-editLink:true
----
+# Extension Model
 
 Alba V5 added a new extension model based on this interface:
 

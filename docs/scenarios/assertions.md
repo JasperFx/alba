@@ -1,7 +1,4 @@
----
-title:Writing Custom Assertions
-editLink:true
----
+# Writing Custom Assertions
 
 ::: tip
 All of the assertions are applied during the Scenario execution, and any

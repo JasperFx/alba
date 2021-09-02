@@ -1,9 +1,6 @@
----
-title:Before and after actions
-editLink:true
----
+# Before and after actions
 
-::: tip warning
+::: warning
 The Before/After actions are **not** additive. The last one specified is the only one executed.
 :::
 

@@ -1,7 +1,4 @@
----
-title:Bootstrapping and Configuration
-editLink:true
----
+# Bootstrapping and Configuration
 
 ## Initializing AlbaHost
 

@@ -1,7 +1,4 @@
----
-title:Working with Plain Text Requests
-editLink:true
----
+# Working with Plain Text Requests
 
 If you find yourself needing to test HTTP endpoints that either send text or return text, Alba
 has you covered with some built in helpers.

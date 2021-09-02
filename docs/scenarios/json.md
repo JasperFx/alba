@@ -1,7 +1,4 @@
----
-title:Sending and Checking Json
-editLink:true
----
+# Sending and Checking Json
 
 ::: tip
 As of Alba v5, the Json serialization is done with the configured input and output formatters within the underlying application. This means that

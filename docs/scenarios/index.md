@@ -1,9 +1,4 @@
----
-title:Scenario Testing
-editLink:true
----
-
-
+# Scenario Testing
 
 ## Writing your first scenario
 

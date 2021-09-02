@@ -1,7 +1,4 @@
----
-title:Http Status Codes
-editLink:true
----
+# Http Status Codes
 
 You can declaratively check the status code with this syntax:
 

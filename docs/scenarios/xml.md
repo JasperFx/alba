@@ -1,7 +1,4 @@
----
-title:Sending and Checking Xml
-editLink:true
----
+# Sending and Checking Xml
 
 I wasn't sure that Xml over HTTP was all that common of a use case anymore, but the very first project we
 used Alba on turned out to be an Xml API, so here we are.

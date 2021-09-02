@@ -1,6 +1,3 @@
----
-title:Using TestServer
-editLink:true
----
+# Using TestServer
 
 Content here....

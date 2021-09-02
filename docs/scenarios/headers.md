@@ -1,7 +1,4 @@
----
-title:Working with Headers
-editLink:true
----
+# Working with Headers
 
 We really didn't worry much about HTTP niceties when I started web programming in the late 90's, but you
 can no longer get away with that in today's world. To more correctly use HTTP, Alba comes with some helpers

@@ -1,7 +1,4 @@
----
-title:Working with Urls
-editLink:true
----
+# Working with Urls
 
 The simplest way to specify the url for the request is to use one of these calls shown below,
 depending upon the HTTP method:

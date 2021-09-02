@@ -1,7 +1,4 @@
----
-title:Working with Redirects
-editLink:true
----
+# Working with Redirects
 
 ## Asserting on Expected Redirect Responses
 

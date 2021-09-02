@@ -1,9 +1,6 @@
----
-title:Security Extensions
-editLink:true
----
+# Security Extensions
 
-::: tip warning
+::: warning
 Alba 3.0+ removed the previous, built in support for windows authentication.
 :::
 

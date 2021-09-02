@@ -1,7 +1,4 @@
----
-title:Getting Started
-editLink:true
----
+# Getting Started
 
 ::: tip
 As of 5.0+, Alba only supports .Net 5.0 or greater. You can still use older versions of Alba to test previous versions of ASP.Net Core.
