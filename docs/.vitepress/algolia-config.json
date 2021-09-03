@@ -1,17 +1,13 @@
 {
   "index_name": "alba_index",
   "start_urls": [
-    "https://jasperfx.github.io/alba/guide/",
-    "https://jasperfx.github.io/alba/scenarios/"
-  ],
-  "stop_urls": [
-    "(?:(?<!\\.html)(?<!/))$"
+    "https://jasperfx.github.io/alba/guide",
+    "https://jasperfx.github.io/alba/scenarios"
   ],
   "selectors": {
     "lvl0": {
       "selector": ".sidebar > .sidebar-links > .sidebar-link .sidebar-link-item.active",
-      "global": true,
-      "default_value": "guide"
+      "global": true
     },
     "lvl1": ".content h1",
     "lvl2": ".content h2",
