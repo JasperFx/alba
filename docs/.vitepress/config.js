@@ -17,7 +17,7 @@ module.exports = {
         ],
 
         algolia: {
-            apiId: '2V5OM390DF',
+            appId: '2V5OM390DF',
             apiKey: '674cd4f3e6b6ebe232a980c7cc5a0270',
             indexName: 'alba_index'
         },
