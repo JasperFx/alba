@@ -1,9 +1,8 @@
 {
   "index_name": "alba_index",
   "start_urls": [
-    {
-      "url": "https://jasperfx.github.io/alba/guide/"
-    }
+    "https://jasperfx.github.io/alba/guide/",
+    "https://jasperfx.github.io/alba/scenarios/"
   ],
   "stop_urls": [
     "(?:(?<!\\.html)(?<!/))$"
