@@ -1,0 +1,50 @@
+name: Publish docs
+
+on: [workflow_dispatch]
+
+jobs:
+  publish_docs_job:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install .NET Core 5.0.x
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.x
+
+      - name: Install Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 15.x
+
+      - name: Build & Deploy docs
+        env:
+          TARGET_BRANCH: gh-pages
+          TARGET_DIR: doc-target
+        run: |
+          sudo apt install libxml2-utils
+          dotnet tool install -g MarkdownSnippets.Tool
+          npm install
+          npm run docs-build
+          git clone -b ${TARGET_BRANCH} https://${GITHUB_ACTOR}:${{secrets.GITHUB_TOKEN}}@github.com/${GITHUB_REPOSITORY}.git ${TARGET_DIR} 
+          cd ${TARGET_DIR}
+          git config user.email action@github.com
+          git config user.name "GitHub Action"
+          shopt -s extglob
+          shopt -s dotglob
+          rm -rf !(.git) 2> /dev/null || true
+          cp -R ../docs/.vitepress/dist/* .
+          touch .nojekyll
+          git add --all
+          DOCS_VERSION="$(xmllint --xpath "/Project/PropertyGroup/Version/text()" ../src/Alba/Alba.csproj)"
+          git commit -a -m "Documentation Update for ${DOCS_VERSION}" --allow-empty
+          git push origin ${TARGET_BRANCH}
+
+      - name: Generate Algolia DocSearch index
+        uses: darrenjennings/algolia-docsearch-action@master
+        with:
+          algolia_application_id: ${{ secrets.ALGOLIA_APPLICATION_ID }}
+          algolia_api_key: ${{ secrets.ALGOLIA_API_KEY }}
+          file: 'docs/.vitepress/algolia-config.json'
