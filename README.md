@@ -4,7 +4,7 @@
 ![Nuget](https://img.shields.io/nuget/v/alba)
 ![Nuget](https://img.shields.io/nuget/dt/alba)
 
-Tooling for better integration testing against ASP.Net Core applications. Check out [the documentation](http://jasperfx.github.io/alba) for examples.
+Tooling for better integration testing against ASP.Net Core applications. Check out [the documentation](https://jasperfx.github.io/alba) for examples.
 
 To work with the code, just open the solution at `src/Alba.sln` and go. No other setup necessary.
 
