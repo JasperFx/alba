@@ -96,7 +96,7 @@ namespace Alba
         {
             foreach (var extension in Extensions) extension.Dispose();
             Server.Dispose();
-            _host?.StopAsync().GetAwaiter().GetResult();
+            _host?.StopAsync();
             _host?.Dispose();
         }
 
