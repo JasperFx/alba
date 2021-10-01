@@ -117,8 +117,15 @@ namespace Alba
                 buffer.Position = 0;
                 standinContext.Request.Body = buffer; // Need to trick the MVC conneg services
 
+                if (buffer.Length == 0) throw new EmptyResponseException();
+
                 var inputContext = new InputFormatterContext(standinContext, typeof(T).Name, new ModelStateDictionary(), metadata, (s, e) => new StreamReader(s));
                 var result = formatter.ReadAsync(inputContext).GetAwaiter().GetResult();
+
+                if (result.HasError)
+                {
+                    throw new AlbaJsonFormatterException(this);
+                }
 
                 if (result.Model is T returnValue) return returnValue;
 

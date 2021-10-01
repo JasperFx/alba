@@ -21,6 +21,12 @@ namespace WebApp.Controllers
             
         }
 
+        [HttpGet("/empty")]
+        public string Empty()
+        {
+            return string.Empty;
+        }
+
         // GET api/values
         [HttpGet]
         public string Get()

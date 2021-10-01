@@ -125,6 +125,55 @@ namespace Alba.Testing.Acceptance
             person.LastName.ShouldBe("Miller");
         }
 
+        [Fact]
+        public async Task useful_exception_message_on_bad_json()
+        {
+            var result = await run(_ =>
+            {
+                _.Get.Url("/api/values");
+            });
+
+            var ex = Exception<AlbaJsonFormatterException>.ShouldBeThrownBy(() =>
+            {
+                var answer = result.ReadAsJson<Person>();
+            });
+            
+            ex.Message.ShouldContain("The JSON formatter was unable to process the raw JSON");
+            ex.Message.ShouldContain("value1, value2");
+        }
+        
+        [Fact]
+        public async Task useful_exception_message_on_empty()
+        {
+            var result = await run(_ =>
+            {
+                _.Get.Url("/api/values");
+            });
+
+            var ex = Exception<AlbaJsonFormatterException>.ShouldBeThrownBy(() =>
+            {
+                var answer = result.ReadAsJson<Person>();
+            });
+            
+            ex.Message.ShouldContain("The JSON formatter was unable to process the raw JSON");
+            ex.Message.ShouldContain("value1, value2");
+        }
+
+        [Fact]
+        public async Task useful_exception_when_response_body_is_empty()
+        {
+            var result = await run(_ =>
+            {
+                _.Get.Url("/empty");
+            });
+
+            var ex = Exception<EmptyResponseException>.ShouldBeThrownBy(() =>
+            {
+                var answer = result.ReadAsJson<Person>();
+            });
+
+        }
+
 
         [Fact]
         public async Task can_post_json_response()
