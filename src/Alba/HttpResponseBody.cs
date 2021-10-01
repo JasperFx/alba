@@ -37,10 +37,18 @@ namespace Alba
 
         public T Read<T>(Func<Stream, T> read)
         {
-            if (Context.Response.Body.CanSeek)
+            if (Context.Response.Body.CanSeek || Context.Response.Body is MemoryStream)
             {
                 Context.Response.Body.Position = 0;
             }
+            else
+            {
+                var stream = new MemoryStream();
+                Context.Response.Body.CopyTo(stream);
+                stream.Position = 0;
+                Context.Response.Body = stream;
+            }
+            
             return read(Context.Response.Body);
         }
 
@@ -91,24 +99,34 @@ namespace Alba
 
         public T? Read<T>(string contentType)
         {
-            var formatter = _system.Inputs[contentType];
-            if (formatter == null)
+            return Read(stream =>
             {
-                throw new InvalidOperationException(
-                    $"Alba was not able to find a registered formatter for content type '{contentType}'. Either specify the body contents explicitly, or try registering 'services.AddMvcCore()'");
-            }
+                var formatter = _system.Inputs[contentType];
+                if (formatter == null)
+                {
+                    throw new InvalidOperationException(
+                        $"Alba was not able to find a registered formatter for content type '{contentType}'. Either specify the body contents explicitly, or try registering 'services.AddMvcCore()'");
+                }
 
-            var provider = _system.Services.GetRequiredService<IModelMetadataProvider>();
-            var metadata = provider.GetMetadataForType(typeof(T));
+                var provider = _system.Services.GetRequiredService<IModelMetadataProvider>();
+                var metadata = provider.GetMetadataForType(typeof(T));
 
-            var standinContext = new DefaultHttpContext();
-            standinContext.Request.Body = Context.Response.Body; // Need to trick the MVC conneg services
-            var inputContext = new InputFormatterContext(standinContext, typeof(T).Name, new ModelStateDictionary(), metadata, (s, e) => new StreamReader(s));
-            var result = formatter.ReadAsync(inputContext).GetAwaiter().GetResult();
+                var standinContext = new DefaultHttpContext();
+                var buffer = new MemoryStream();
+                stream.CopyTo(buffer);
+                buffer.Position = 0;
+                standinContext.Request.Body = buffer; // Need to trick the MVC conneg services
 
-            if (result.Model is T returnValue) return returnValue;
+                var inputContext = new InputFormatterContext(standinContext, typeof(T).Name, new ModelStateDictionary(), metadata, (s, e) => new StreamReader(s));
+                var result = formatter.ReadAsync(inputContext).GetAwaiter().GetResult();
 
-            return default(T);
+                if (result.Model is T returnValue) return returnValue;
+
+                return default(T);
+            });
+            
+            
+
         }
     }
 }

@@ -84,6 +84,47 @@ namespace Alba.Testing.Acceptance
             person.FirstName.ShouldBe("Jeremy");
             person.LastName.ShouldBe("Miller");
         }
+        
+        [Fact]
+        public async Task Bug_92_repeated_reads_of_the_response()
+        {
+            var expectedJson = "{\"firstName\":\"Jeremy\",\"lastName\":\"Miller\"}";
+            var result = await run(_ =>
+            {
+                _.Get.Url("/api/json");
+                _.Body.TextIs(expectedJson);
+            });
+            
+            result.ReadAsText().ShouldBe(expectedJson);
+
+
+            var person = result.ReadAsJson<Person>();
+
+
+            person.FirstName.ShouldBe("Jeremy");
+            person.LastName.ShouldBe("Miller");
+        }
+        
+                
+        [Fact]
+        public async Task Bug_92_repeated_reads_of_the_response_2()
+        {
+            var expectedJson = "{\"firstName\":\"Jeremy\",\"lastName\":\"Miller\"}";
+            var result = await run(_ =>
+            {
+                _.Get.Url("/api/json");
+                _.Body.TextIs(expectedJson);
+            });
+
+            var person = result.ReadAsJson<Person>();
+            
+            result.ReadAsText().ShouldBe(expectedJson);
+
+
+            person.FirstName.ShouldBe("Jeremy");
+            person.LastName.ShouldBe("Miller");
+        }
+
 
         [Fact]
         public async Task can_post_json_response()
