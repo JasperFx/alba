@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Net;
 using System.Security.Claims;
@@ -22,7 +22,7 @@ namespace Alba.Testing.Security
 
             // This is calling your real web service's configuration
             var hostBuilder = WebAppSecuredWithJwt.Program
-                .CreateHostBuilder(new string[0]);
+                .CreateHostBuilder(Array.Empty<string>());
 
             // This is a new Alba v5 extension that can "stub" out
             // JWT token authentication
@@ -103,6 +103,7 @@ namespace Alba.Testing.Security
                 // This is a custom claim that would only be used for the 
                 // JWT token in this individual test
                 x.WithClaim(new Claim("color", "green"));
+                x.RemoveClaim("foo");
                 x.Post.Json(input).ToUrl("/math");
                 x.StatusCodeShouldBeOk();
             });
@@ -112,6 +113,8 @@ namespace Alba.Testing.Security
             
             principal.Claims.Single(x => x.Type == "color")
                 .Value.ShouldBe("green");
+
+            principal.Claims.Any(x => x.Type.Equals("foo")).ShouldBeFalse();
         }
 
         #endregion

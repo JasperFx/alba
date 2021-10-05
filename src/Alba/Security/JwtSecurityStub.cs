@@ -48,7 +48,7 @@ namespace Alba.Security
 
         internal void ConfigureJwt(HttpContext context)
         {
-            Claim[] claims = extractScenarioSpecificClaims(context);
+            var claims = allClaims(context).ToArray();
             var jwt = BuildJwtString(claims);
 
             context.SetBearerToken(jwt);
@@ -64,6 +64,9 @@ namespace Alba.Security
 
         internal JwtSecurityToken BuildToken(params Claim[] claims)
         {
+            if (!claims.Any())
+                claims = defaultClaims().ToArray();
+
             if (_options == null)
                 throw new InvalidOperationException("Unable to determine the JwtBearerOptions for this AlbaHost");
 
@@ -74,7 +77,7 @@ namespace Alba.Security
                 _options.TokenValidationParameters.IssuerSigningKey, 
                 algorithm);
 
-            return new JwtSecurityToken(_options.ClaimsIssuer, _options.Audience, allClaims(claims),
+            return new JwtSecurityToken(_options.ClaimsIssuer, _options.Audience, claims,
                 expires: DateTime.UtcNow.AddDays(1), signingCredentials: credentials);
         }
         

@@ -189,6 +189,11 @@ namespace Alba
                             c.Items.Add("alba_claims", scenario.Claims.ToArray());
                         }
 
+                        if (scenario.RemovedClaims.Any())
+                        {
+                            c.Items.Add("alba_removed_claims", scenario.RemovedClaims.ToArray());
+                        }
+
                         foreach (var pair in scenario.Items) c.Items.Add(pair.Key, pair.Value);
 
                         // I know what you're thinking, this is stupid, you shouldn't 

@@ -114,6 +114,7 @@ namespace Alba
         }
 
         internal List<Claim> Claims { get; } = new();
+        internal List<string> RemovedClaims { get; } = new(); 
         internal Exception? Exception { get; set; }
 
 
@@ -352,12 +353,22 @@ namespace Alba
         }
 
         /// <summary>
-        ///     Add an additional claim to the HttpContext, but this requires using the JwtSecurityStub
+        ///     Add an additional claim to the HttpContext. This requires use of the JwtSecurityStub
         /// </summary>
         /// <param name="claim"></param>
         public void WithClaim(Claim claim)
         {
             Claims.Add(claim);
+        }
+
+        /// <summary>
+        ///     Removes a default claim from the HttpContext. This requires use of the JwtSecurityStub.
+        ///     Claims are removed before scenario-specific claims are added via <see cref="WithClaim"/>
+        /// </summary>
+        /// <param name="name"></param>
+        public void RemoveClaim(string name)
+        {
+            RemovedClaims.Add(name);
         }
 
         /// <summary>

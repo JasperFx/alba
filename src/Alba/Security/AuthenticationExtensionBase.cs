@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 
@@ -18,13 +19,11 @@ namespace Alba.Security
             _baselineClaims.Add(claim);
         }
 
-        protected IEnumerable<Claim> allClaims(Claim[] claims)
+        protected IEnumerable<Claim> defaultClaims()
         {
             foreach (var claim1 in stubTypeSpecificClaims()) yield return claim1;
 
             foreach (var claim in _baselineClaims) yield return claim;
-
-            foreach (var claim in claims) yield return claim;
         }
 
         protected virtual IEnumerable<Claim> stubTypeSpecificClaims()
@@ -32,24 +31,40 @@ namespace Alba.Security
             yield break;
         }
 
-        protected Claim[] extractScenarioSpecificClaims(HttpContext context)
+        protected (Claim[] additiveClaims, string[] removedClaims) extractScenarioSpecificClaims(HttpContext context)
         {
+            var additiveClaims = Array.Empty<Claim>();
+
             if (context.Items.TryGetValue("alba_claims", out var raw))
             {
-                if (raw is Claim[] cs)
+                if (raw is Claim[] ca)
                 {
-                    return cs;
+                    additiveClaims = ca;
                 }
             }
 
-            return Array.Empty<Claim>();
+            var removalClaims = Array.Empty<string>();
+
+            if (context.Items.TryGetValue("alba_removed_claims", out var rawRc))
+            {
+                if (rawRc is string[] cr)
+                {
+                    removalClaims = cr;
+                }
+            }
+
+            return (additiveClaims, removalClaims);
         }
-
-        protected IEnumerable<Claim>? allClaims(HttpContext context)
+      
+        protected IEnumerable<Claim> allClaims(HttpContext context)
         {
-            var claims = extractScenarioSpecificClaims(context);
+            var (additiveClaims, removedClaims) = extractScenarioSpecificClaims(context);
 
-            return allClaims(claims);
+            var claims = defaultClaims().ToList();
+            claims.RemoveAll(c => removedClaims.Contains(c.Type));
+            claims.AddRange(additiveClaims);
+
+            return claims;
         }
     }
 }
