@@ -48,8 +48,8 @@ namespace Alba.Security
 
         internal void ConfigureJwt(HttpContext context)
         {
-            var claims = allClaims(context).ToArray();
-            var jwt = BuildJwtString(claims);
+            var (additiveClaims, removedClaims) = extractScenarioSpecificClaims(context);
+            var jwt = BuildJwtString(additiveClaims, removedClaims);
 
             context.SetBearerToken(jwt);
         }
@@ -62,11 +62,8 @@ namespace Alba.Security
             });
         }
 
-        internal JwtSecurityToken BuildToken(params Claim[] claims)
+        internal JwtSecurityToken BuildToken(Claim[]? additionalClaims = null, string[]? removedClaims = null)
         {
-            if (!claims.Any())
-                claims = defaultClaims().ToArray();
-
             if (_options == null)
                 throw new InvalidOperationException("Unable to determine the JwtBearerOptions for this AlbaHost");
 
@@ -77,13 +74,13 @@ namespace Alba.Security
                 _options.TokenValidationParameters.IssuerSigningKey, 
                 algorithm);
 
-            return new JwtSecurityToken(_options.ClaimsIssuer, _options.Audience, claims,
+            return new JwtSecurityToken(_options.ClaimsIssuer, _options.Audience, processedClaims(additionalClaims, removedClaims),
                 expires: DateTime.UtcNow.AddDays(1), signingCredentials: credentials);
         }
         
-        internal string BuildJwtString(params Claim[] claims)
+        internal string BuildJwtString(Claim[] additionalClaims, string[]? removedClaims = null)
         {
-            var token = BuildToken(claims);
+            var token = BuildToken(additionalClaims, removedClaims);
             return new JwtSecurityTokenHandler().WriteToken(token); 
         }
 
