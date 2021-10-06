@@ -71,7 +71,7 @@ namespace Alba.Testing.Security
         [Fact]
         public void additive_claims_on_the_token()
         {
-            var token = theStub.BuildToken(new Claim("division", "afcwest"));
+            var token = theStub.BuildToken(new []{new Claim("division", "afcwest")});
             
             token.Claims.Single(x => x.Type == "division")
                 .Value.ShouldBe("afcwest");

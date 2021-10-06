@@ -26,6 +26,16 @@ namespace Alba.Security
             foreach (var claim in _baselineClaims) yield return claim;
         }
 
+        protected IEnumerable<Claim> processedClaims(Claim[]? additiveClaims, string[]? removedClaims)
+        {
+            var claims = defaultClaims().ToList();
+            if(removedClaims is not null)
+                claims.RemoveAll(c => removedClaims.Contains(c.Type));
+            if(additiveClaims is not null)
+                claims.AddRange(additiveClaims);
+            return claims;
+        }
+
         protected virtual IEnumerable<Claim> stubTypeSpecificClaims()
         {
             yield break;
@@ -60,11 +70,7 @@ namespace Alba.Security
         {
             var (additiveClaims, removedClaims) = extractScenarioSpecificClaims(context);
 
-            var claims = defaultClaims().ToList();
-            claims.RemoveAll(c => removedClaims.Contains(c.Type));
-            claims.AddRange(additiveClaims);
-
-            return claims;
+            return processedClaims(additiveClaims, removedClaims);
         }
     }
 }

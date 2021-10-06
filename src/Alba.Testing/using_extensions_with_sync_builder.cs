@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using NSubstitute;
@@ -31,6 +32,8 @@ namespace Alba.Testing
             extension1.WasConfigured.ShouldBeTrue();
             extension2.WasConfigured.ShouldBeTrue();
             extension3.WasConfigured.ShouldBeTrue();
+
+            theHost.Dispose();
         }
 
         [Fact]
@@ -39,6 +42,8 @@ namespace Alba.Testing
             extension1.WasStarted.ShouldBeTrue();
             extension2.WasStarted.ShouldBeTrue();
             extension3.WasStarted.ShouldBeTrue();
+
+            theHost.Dispose();
         }
 
         [Fact]
@@ -62,7 +67,7 @@ namespace Alba.Testing
         }
     }
     
-    public class using_extensions_with_async_builder
+    public class using_extensions_with_async_builder 
     {
         private readonly FakeExtension extension1;
         private readonly FakeExtension extension2;
@@ -87,6 +92,8 @@ namespace Alba.Testing
             extension1.WasConfigured.ShouldBeTrue();
             extension2.WasConfigured.ShouldBeTrue();
             extension3.WasConfigured.ShouldBeTrue();
+
+            theHost.Dispose();
         }
 
         [Fact]
@@ -95,6 +102,8 @@ namespace Alba.Testing
             extension1.WasStarted.ShouldBeTrue();
             extension2.WasStarted.ShouldBeTrue();
             extension3.WasStarted.ShouldBeTrue();
+
+            theHost.Dispose();
         }
 
         [Fact]
