@@ -3,8 +3,8 @@
   <PropertyGroup>
     <Description>Supercharged integration testing for ASP.NET Core HTTP endpoints</Description>
     <AssemblyTitle>Alba</AssemblyTitle>
-    <Version>5.0.2</Version>
-    <TargetFramework>net5.0</TargetFramework>
+    <Version>5.1.0</Version>
+    <TargetFrameworks>net5.0;net6.0</TargetFrameworks>
     <DebugType>portable</DebugType>
     <AssemblyName>Alba</AssemblyName>
     <PackageId>Alba</PackageId>
@@ -21,7 +21,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Baseline" Version="3.2.1" />
+    <PackageReference Include="Baseline" Version="3.2.2" />
     <PackageReference Include="IdentityModel" Version="5.1.0" />
     <PackageReference Include="System.AppContext" Version="4.3.0" />
     <PackageReference Include="System.Xml.XmlDocument" Version="4.3.0" />
@@ -31,6 +31,11 @@
   <ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="6.0.0" />
   </ItemGroup>
 
 </Project>

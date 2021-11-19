@@ -52,5 +52,7 @@ namespace Alba
         ///     The underlying TestServer for additional functionality
         /// </summary>
         TestServer Server { get; }
+
+        
     }
 }

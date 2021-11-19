@@ -26,7 +26,7 @@ namespace build
                 Run("dotnet", "restore src/Alba.sln");
             });
            
-            Target("test", DependsOn("compile"),() =>
+            Target("test", DependsOn("restore"),() =>
             {
                 RunTests("Alba.Testing");
                 RunTests("NUnitSamples");
@@ -176,7 +176,7 @@ namespace build
 
         private static void RunTests(string projectName, string directoryName = "src")
         {
-            Run("dotnet", $"test --no-build --no-restore {directoryName}/{projectName}/{projectName}.csproj");
+            Run("dotnet", $"test --no-restore {directoryName}/{projectName}/{projectName}.csproj");
         }
         
         private static string GetEnvironmentVariable(string variableName)

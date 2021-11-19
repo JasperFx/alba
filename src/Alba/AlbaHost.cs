@@ -5,6 +5,7 @@ using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Baseline;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Http;
@@ -254,7 +255,7 @@ namespace Alba
             builder = builder
                 .ConfigureServices(_ =>
                 {
-                    _.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+                    _.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
                     _.AddSingleton<IServer>(x => new TestServer(x));
                 });
 
@@ -268,6 +269,41 @@ namespace Alba
 
             return albaHost;
         }
+
+#if NET6_0_OR_GREATER
+        /// <summary>
+        /// Create an AlbaHost using the new WebApplicationBuilder
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="configureRoutes"></param>
+        /// <param name="extensions"></param>
+        /// <returns></returns>
+        public static async Task<IAlbaHost> For(WebApplicationBuilder builder, Action<WebApplication> configureRoutes,
+            params IAlbaExtension[] extensions)
+        {
+            builder.Services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
+            builder.Services.AddSingleton<IServer>(x => new TestServer(x));
+
+            foreach (var extension in extensions)
+            {
+                extension.Configure(builder.Host);
+            }
+
+            var app = builder.Build();
+            configureRoutes(app);
+
+            await app.StartAsync();
+
+            var host = new AlbaHost(app, extensions);
+
+            foreach (var extension in extensions)
+            {
+                await extension.Start(host);
+            }
+
+            return host;
+        }
+#endif
 
         private OutputFormatter? findOutputFormatter(string contentType)
         {
