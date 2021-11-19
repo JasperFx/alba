@@ -16,7 +16,7 @@ Here's a sample of bootstrapping an `AlbaHost` with the `AuthenticationStub`:
 ```cs
 // This is calling your real web service's configuration
 var hostBuilder = WebAppSecuredWithJwt.Program
-    .CreateHostBuilder(new string[0]);
+    .CreateHostBuilder(Array.Empty<string>());
 
 // This is a new Alba v5 extension that can "stub" out
 // JWT token authentication
@@ -52,6 +52,7 @@ public async Task can_modify_claims_per_scenario()
         // This is a custom claim that would only be used for the 
         // JWT token in this individual test
         x.WithClaim(new Claim("color", "green"));
+        x.RemoveClaim("foo");
         x.Post.Json(input).ToUrl("/math");
         x.StatusCodeShouldBeOk();
     });
@@ -61,9 +62,11 @@ public async Task can_modify_claims_per_scenario()
     
     principal.Claims.Single(x => x.Type == "color")
         .Value.ShouldBe("green");
+
+    principal.Claims.Any(x => x.Type.Equals("foo")).ShouldBeFalse();
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/web_api_authentication_with_stub.cs#L91-L117' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_specify_specific_claims' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/web_api_authentication_with_stub.cs#L91-L120' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_specify_specific_claims' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 ## Stub out JWT authentication

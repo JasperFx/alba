@@ -39,7 +39,7 @@ testing:
 ```cs
 // This is calling your real web service's configuration
 var hostBuilder = WebAppSecuredWithJwt.Program
-    .CreateHostBuilder(new string[0]);
+    .CreateHostBuilder(Array.Empty<string>());
 
 // This is a new Alba v5 extension that can "stub" out
 // JWT token authentication

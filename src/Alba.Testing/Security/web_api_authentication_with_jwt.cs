@@ -116,7 +116,10 @@ namespace Alba.Testing.Security
                 // This is a custom claim that would only be used for the 
                 // JWT token in this individual test
                 x.WithClaim(new Claim("color", "green"));
+                
+                // You can also remove default claims too, thanks Hawxy!
                 x.RemoveClaim("foo");
+                
                 x.Post.Json(input).ToUrl("/math");
                 x.StatusCodeShouldBeOk();
             });
