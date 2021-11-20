@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Alba;
 using Baseline;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -21,9 +22,11 @@ namespace Alba
     /// <summary>
     ///     Root host of Alba to govern and configure the underlying ASP.Net Core application
     /// </summary>
+
     public class AlbaHost : IAlbaHost
     {
-        private readonly IHost _host;
+        private readonly IHost? _host;
+        private readonly IAlbaWebApplicationFactory? _factory;
 
         private readonly List<Func<HttpContext?, Task>> _afterEach = new();
 
@@ -91,7 +94,7 @@ namespace Alba
         /// <summary>
         ///     The root IoC container of the running application
         /// </summary>
-        public IServiceProvider Services => _host.Services;
+        public IServiceProvider Services => _host?.Services ?? _factory!.Services;
 
         public void Dispose()
         {
@@ -99,6 +102,7 @@ namespace Alba
             Server.Dispose();
             _host?.StopAsync();
             _host?.Dispose();
+            _factory?.Dispose();
         }
 
 
@@ -159,7 +163,7 @@ namespace Alba
             return this;
         }
 
-        #region sample_ScenarioSignature
+#region sample_ScenarioSignature
         /// <summary>
         ///     Define and execute an integration test by running an Http request through
         ///     your ASP.Net Core system
@@ -169,7 +173,7 @@ namespace Alba
         /// <exception cref="InvalidOperationException"></exception>
         public async Task<IScenarioResult> Scenario(
                 Action<Scenario> configure)
-            #endregion
+#endregion
         {
             var scenario = new Scenario(this);
 
@@ -243,10 +247,18 @@ namespace Alba
         public async ValueTask DisposeAsync()
         {
             foreach (var extension in Extensions) await extension.DisposeAsync();
-
-            await _host.StopAsync();
-            _host.Dispose();
+            if (_host is not null)
+            {
+                await _host.StopAsync();
+                _host.Dispose();
+            }
+            
             Server.Dispose();
+
+            if (_factory is not null)
+            {
+                await _factory.DisposeAsync();
+            }
         }
 
 
@@ -303,6 +315,46 @@ namespace Alba
 
             return host;
         }
+
+       
+                
+        /// <summary>
+        /// Creates an AlbaHost using an underlying WebApplicationFactory.
+        /// </summary>
+        /// <typeparam name="TEntryPoint">A type in the entry point assembly of the application. Typically the Startup or Program classes can be used.</typeparam>
+        /// <param name="configuration"></param>
+        /// <param name="extensions"></param>
+        /// <returns></returns>
+        public static async Task<IAlbaHost> For<TEntryPoint>(Action<IWebHostBuilder> configuration, params IAlbaExtension[] extensions) where TEntryPoint : class
+        {
+            var factory = new AlbaWebApplicationFactory<TEntryPoint>(extensions);
+            
+            factory.WithWebHostBuilder(configuration);
+
+            var host = new AlbaHost(factory, extensions);
+
+            foreach (var extension in extensions)
+            {
+                await extension.Start(host);
+            }
+
+            return host;
+        }
+
+        private AlbaHost(IAlbaWebApplicationFactory factory, params IAlbaExtension[] extensions)
+        {
+            _factory = factory;
+            // This version of the test server will internally startup when initialized here
+            Server = factory.Server;
+
+            Server.AllowSynchronousIO = true;
+
+            Extensions = extensions;
+
+            Inputs = new Cache<string, InputFormatter?>(findInputFormatter);
+            Outputs = new Cache<string, OutputFormatter?>(findOutputFormatter);
+        }
+
 #endif
 
         private OutputFormatter? findOutputFormatter(string contentType)
@@ -371,3 +423,4 @@ namespace Alba
         }
     }
 }
+
