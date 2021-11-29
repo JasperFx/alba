@@ -1,12 +1,12 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using Xunit;
 
-#if NET6_0_OR_GREATER
-
-namespace Alba.Testing.Samples
+namespace Alba.Testing.Acceptance
 {
-    public class MinimalApiUsagev2
+#if NET6_0_OR_GREATER
+    public class web_application_factory_usage
     {
 
         [Fact]
@@ -32,6 +32,8 @@ namespace Alba.Testing.Samples
 
             ex.Message.ShouldContain("Expected status code 200, but was 500");
         }
+        public interface IService{}
+        public class ServiceA : IService{}
 
         [Fact]
         public async Task bootstrapping_with_WebApplicationFactory()
@@ -42,9 +44,11 @@ namespace Alba.Testing.Samples
             {
                 x.ConfigureServices((context, services) =>
                 {
-                    //...
+                    services.AddSingleton<IService, ServiceA>();
                 });
             });
+
+            host.Services.GetRequiredService<IService>().ShouldBeOfType<ServiceA>();
 
             var text = await host.GetAsText("/");
             text.ShouldBe("Hello World!");
@@ -54,14 +58,15 @@ namespace Alba.Testing.Samples
             {
                 x.ConfigureServices((context, services) =>
                 {
-                    //...
+                    services.AddSingleton<IService, ServiceA>();
                 });
             });
+            
+            host2.Services.GetRequiredService<IService>().ShouldBeOfType<ServiceA>();
 
             var text2 = await host2.GetAsText("/api/values");
             text2.ShouldBe("value1, value2");
         }
     }
-}
-
 #endif
+}

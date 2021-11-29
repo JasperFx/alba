@@ -1,4 +1,5 @@
 ﻿#if NET6_0_OR_GREATER
+using System;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,9 +10,11 @@ namespace Alba
     /// <inheritdoc cref="WebApplicationFactory{TEntryPoint}"/>
     public class AlbaWebApplicationFactory<TEntryPoint> : WebApplicationFactory<TEntryPoint>, IAlbaWebApplicationFactory where TEntryPoint : class
     {
+        private readonly Action<IWebHostBuilder> _configuration;
         private readonly IAlbaExtension[] _extensions;
-        public AlbaWebApplicationFactory(IAlbaExtension[] extensions)
+        public AlbaWebApplicationFactory(Action<IWebHostBuilder> configuration, IAlbaExtension[] extensions)
         {
+            _configuration = configuration;
             _extensions = extensions;
         }
 
@@ -21,6 +24,8 @@ namespace Alba
             {
                 services.AddHttpContextAccessor();
             });
+
+            _configuration(builder);
 
             base.ConfigureWebHost(builder);
         }

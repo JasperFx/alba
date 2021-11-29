@@ -327,9 +327,7 @@ namespace Alba
         /// <returns></returns>
         public static async Task<IAlbaHost> For<TEntryPoint>(Action<IWebHostBuilder> configuration, params IAlbaExtension[] extensions) where TEntryPoint : class
         {
-            var factory = new AlbaWebApplicationFactory<TEntryPoint>(extensions);
-            
-            factory.WithWebHostBuilder(configuration);
+            var factory = new AlbaWebApplicationFactory<TEntryPoint>(configuration, extensions);
 
             var host = new AlbaHost(factory, extensions);
 

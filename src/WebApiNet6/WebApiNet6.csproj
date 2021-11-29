@@ -10,4 +10,8 @@
     <InternalsVisibleTo Include="Alba.Testing" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Oakton" Version="4.0.0" />
+  </ItemGroup>
+
 </Project>
