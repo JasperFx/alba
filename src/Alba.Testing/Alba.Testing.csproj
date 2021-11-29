@@ -16,6 +16,7 @@
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
     <ProjectReference Include="..\WebApiNet6\WebApiNet6.csproj" />
+    <ProjectReference Include="..\MinimalApiWithOakton\MinimalApiWithOakton.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,5 +1,8 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+#if NET6_0_OR_GREATER
+using Oakton;
+#endif
 using Shouldly;
 using Xunit;
 
@@ -66,6 +69,25 @@ namespace Alba.Testing.Acceptance
 
             var text2 = await host2.GetAsText("/api/values");
             text2.ShouldBe("value1, value2");
+        }
+
+        [Fact]
+        public async Task using_with_oakton_as_runner()
+        {
+            // This is required. Sad trombone.
+            OaktonEnvironment.AutoStartHost = true;
+            await using var host = await AlbaHost.For<MinimalApiWithOakton.Program>(x =>
+            {
+                x.ConfigureServices((context, services) =>
+                {
+                    services.AddSingleton<IService, ServiceA>();
+                });
+            });
+
+            host.Services.GetRequiredService<IService>().ShouldBeOfType<ServiceA>();
+
+            var text = await host.GetAsText("/");
+            text.ShouldBe("Hello World!");
         }
     }
 #endif
