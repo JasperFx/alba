@@ -67,15 +67,23 @@ namespace Alba
 
         internal string ReadBody(HttpContext context)
         {
-            var stream = context.Response.Body;
-            if (Body == null)
+            // Hardening for GH-95
+            try
             {
-                if (stream.CanSeek)
+                var stream = context.Response.Body;
+                if (Body == null)
                 {
-                    stream.Position = 0;
-                }
+                    if (stream.CanSeek)
+                    {
+                        stream.Position = 0;
+                    }
                 
-                Body = Encoding.UTF8.GetString(stream.ReadAllBytes());
+                    Body = Encoding.UTF8.GetString(stream.ReadAllBytes());
+                }
+            }
+            catch (Exception)
+            {
+                Body = string.Empty;
             }
 
             return Body;

@@ -10,6 +10,30 @@ namespace Alba.Testing.Samples
     {
 
         [Fact]
+        public async Task handle_blow_ups()
+        {
+            // WebApplicationFactory can resolve old and new style of Program.cs
+            // .NET 6 style - the global:: namespace prefix would not be required in a normal test project
+            await using var host = await AlbaHost.For<global::Program>(x =>
+            {
+                x.ConfigureServices((context, services) =>
+                {
+                    //...
+                });
+            });
+
+            var ex = await Should.ThrowAsync<ScenarioAssertionException>(async () =>
+            {
+                await host.Scenario(x =>
+                {
+                    x.Get.Url("/blowup");
+                });
+            });
+
+            ex.Message.ShouldContain("Expected status code 200, but was 500");
+        }
+
+        [Fact]
         public async Task bootstrapping_with_WebApplicationFactory()
         {
             // WebApplicationFactory can resolve old and new style of Program.cs

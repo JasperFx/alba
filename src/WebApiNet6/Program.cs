@@ -1,3 +1,5 @@
+using System;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -10,6 +12,7 @@ app.UseHttpsRedirection();
 
 
 app.MapGet("/", () => "Hello World!");
+app.MapGet("/blowup", context => throw new Exception("Boo!"));
 
 app.Run();
 
