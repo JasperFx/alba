@@ -39,7 +39,7 @@ module.exports = {
 
 function getGuideSidebar() {
     return [
-        {text: 'Working with AlbaHost', link: '/guide/hosting'},
+        {text: 'Alba Setup', link: '/guide/hosting'},
         {text: 'Integrating with xUnit.Net', link: '/guide/xunit'},
         {text: 'Integrating with NUnit', link: '/guide/nunit'},
         {text: 'Extension Model', link: '/guide/extensions'},

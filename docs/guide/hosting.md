@@ -1,9 +1,24 @@
-# Bootstrapping and Configuration
+# Alba Setup
 
-## Initializing AlbaHost
+To get started with Alba, just add a Nuget reference to the Alba library to your testing project that should also be referencing the ASP.Net Core
+project that you're going to be testing. When using Alba, you actually bootstrap your web application in memory using either the "older"
+[HostBuilder model](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.hosting.hostbuilder?view=dotnet-plat-ext-6.0) or the newer [WebApplicationFactory](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.testing.webapplicationfactory-1?view=aspnetcore-6.0) model , then pass the 
+root `IHost` of the running application to Alba's `AlbaHost`, which will be the entry point to using Alba in all of your integration tests.
 
-To get started with Alba, just add a Nuget reference to the Alba library to your testing project. In the following sections I'll show you how to bootstrap
-your ASP.Net Core system with Alba and start authoring specifications with the `IAlbaHost` abstraction.
+`AlbaHost` is shown in the class diagram below:
+
+![AlbaHost Class Diagram](./../public/ClassDiagram.drawio.png)
+
+`AlbaHost` implements the ASP.Net Core [IHost](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.hosting.ihost?view=dotnet-plat-ext-6.0) interface
+for convenience and familiarity. Internally it is tracking the actual `IHost` for your application running in memory as well
+as an instance of the ASP.Net Core [TestServer](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-6.0) that will actually be used to execute HTTP requests against the application in memory.
+
+In the following sections I'll show you how to bootstrap
+your ASP.Net Core system with Alba and start authoring specifications with the `AlbaHost` type.
+
+
+## Initializing AlbaHost with IHostBuilder
+
 
 To bootstrap and connect any ASP.Net Core application to Alba, create a `AlbaHost` using the definition of your `IHostBuilder` as shown below:
 
@@ -67,6 +82,74 @@ While you can always access the underlying `TestServer` through the `IAlbaHost.S
 To make the samples in this page easier to follow, I'm bootstrapping the `IAlbaHost` within each test. In real usage, bootstrapping your
 application is expensive and you will probably want to reuse the `IAlbaHost` between tests. See the integrations with NUnit and xUnit.Net for examples.
 :::
+
+## Initializing AlbaHost with WebApplicationFactory
+
+::: tip
+This functionality was added in Alba 6.0 and is only supported in .Net 6+.
+:::
+
+For ASP.Net Core 6, Microsoft introduced a new mechanism for configuring and bootstrapping web applications using [WebApplicationBuilder](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.builder.webapplicationbuilder?view=aspnetcore-6.0).
+
+As an example, consider this very small ASP.Net Core application utilizing the new [Minimal API](https://docs.microsoft.com/en-us/aspnet/core/tutorials/min-web-api?view=aspnetcore-6.0&tabs=visual-studio) approach:
+
+<!-- snippet: sample_minimal_web_api -->
+<a id='snippet-sample_minimal_web_api'></a>
+```cs
+using System;
+using Microsoft.AspNetCore.Builder;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+
+app.UseHttpsRedirection();
+
+app.MapGet("/", () => "Hello World!");
+app.MapGet("/blowup", context => throw new Exception("Boo!"));
+
+app.Run();
+```
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/WebApiNet6/Program.cs#L1-L22' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_minimal_web_api' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+Using this project configuration mechanism, Alba is still usable, but this time we need to utilize ASP.Net Core's [WebApplicationFactory](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.testing.webapplicationfactory-1?view=aspnetcore-6.0)
+tooling. Alba tries to make the usage of this a little easier with this syntax:
+
+<!-- snippet: sample_bootstrapping_with_web_application_factory -->
+<a id='snippet-sample_bootstrapping_with_web_application_factory'></a>
+```cs
+await using var host = await AlbaHost.For<global::Program>(x =>
+{
+x.ConfigureServices((context, services) =>
+{
+   services.AddSingleton<IService, ServiceA>();
+});
+});
+```
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Acceptance/web_application_factory_usage.cs#L46-L54' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_bootstrapping_with_web_application_factory' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+The `AlbaHost.For<T>(Action<WebApplicationFactory<T>> configuration)` method uses `WebApplicationFactory` and all its magic static
+member trickery to intercept and run the implied `Program.Main()` method from the sample application above while also allowing you to customize 
+the application configuration at testing time. The "T" in this case is only a marker type so that `WebApplicationFactory` can choose the correct 
+entry assembly for the web application that is being tested by Alba.
+
+See [this blog post from Andrew Lock on the WebApplicationFactory mechanics](https://andrewlock.net/exploring-dotnet-6-part-6-supporting-integration-tests-with-webapplicationfactory-in-dotnet-6/)
+for more information.
+
+::: tip
+`AlbaHost` is an expensive object to create, so you'll generally want to reuse it across tests.
+:::
+
+
+
+
+Alba can be used with the new [WebApplication]() 
 
 ## Running a Scenario
 

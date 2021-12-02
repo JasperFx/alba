@@ -43,13 +43,15 @@ namespace Alba.Testing.Acceptance
         {
             // WebApplicationFactory can resolve old and new style of Program.cs
             // .NET 6 style - the global:: namespace prefix would not be required in a normal test project
-            await using var host = await AlbaHost.For<global::Program>(x =>
+#region sample_bootstrapping_with_web_application_factory
+                 await using var host = await AlbaHost.For<global::Program>(x =>
             {
                 x.ConfigureServices((context, services) =>
                 {
                     services.AddSingleton<IService, ServiceA>();
                 });
             });
+  #endregion
 
             host.Services.GetRequiredService<IService>().ShouldBeOfType<ServiceA>();
 

@@ -1,6 +1,7 @@
+#region sample_minimal_web_api
+
 using System;
 using Microsoft.AspNetCore.Builder;
-using Oakton;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,4 +18,6 @@ app.MapGet("/", () => "Hello World!");
 app.MapGet("/blowup", context => throw new Exception("Boo!"));
 
 app.Run();
-//return app.RunOaktonCommandsSynchronously(args);
+
+#endregion
+
