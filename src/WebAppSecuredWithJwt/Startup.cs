@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -53,7 +54,8 @@ namespace WebAppSecuredWithJwt
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateAudience = false,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("some really big key that should work"))
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("some really big key that should work")),
+                        NameClaimType = ClaimTypes.NameIdentifier
                     };
                 });
         }
