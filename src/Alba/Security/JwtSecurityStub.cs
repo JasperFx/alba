@@ -111,7 +111,11 @@ namespace Alba.Security
                 IssuerSigningKey = _signingKey,
                 ValidIssuer = original.ValidIssuer,
                 ValidAudience = original.ValidAudience,
-                ValidateIssuer = false
+                ValidateIssuer = false,
+                NameClaimType = original.NameClaimType,
+                NameClaimTypeRetriever = original.NameClaimTypeRetriever,
+                RoleClaimType = original.RoleClaimType,
+                RoleClaimTypeRetriever = original.RoleClaimTypeRetriever
             };
             
             options.Authority = null;
