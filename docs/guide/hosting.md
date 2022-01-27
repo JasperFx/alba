@@ -20,7 +20,7 @@ your ASP.Net Core system with Alba and start authoring specifications with the `
 ## Initializing AlbaHost with IHostBuilder
 
 
-To bootstrap and connect any ASP.Net Core application to Alba, create a `AlbaHost` using the definition of your `IHostBuilder` as shown below:
+To bootstrap a ASP.Net Core application that uses `IHostBuilder` within `Program.cs`, create a `AlbaHost` using the definition of your `IHostBuilder` as shown below:
 
 <!-- snippet: sample_Quickstart3 -->
 <a id='snippet-sample_quickstart3'></a>
@@ -125,14 +125,22 @@ tooling. Alba tries to make the usage of this a little easier with this syntax:
 ```cs
 await using var host = await AlbaHost.For<global::Program>(x =>
 {
-x.ConfigureServices((context, services) =>
-{
-   services.AddSingleton<IService, ServiceA>();
-});
+    x.ConfigureServices((context, services) =>
+    {
+        services.AddSingleton<IService, ServiceA>();
+    });
 });
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Acceptance/web_application_factory_usage.cs#L46-L54' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_bootstrapping_with_web_application_factory' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Acceptance/web_application_factory_usage.cs#L46-L55' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_bootstrapping_with_web_application_factory' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
+
+You'll need to add the following to your `.csproj` for `Program` to be discoverable by the test project:
+
+```xml
+  <ItemGroup>
+    <InternalsVisibleTo Include="ProjectName.Tests" />
+  </ItemGroup>
+```
 
 The `AlbaHost.For<T>(Action<WebApplicationFactory<T>> configuration)` method uses `WebApplicationFactory` and all its magic static
 member trickery to intercept and run the implied `Program.Main()` method from the sample application above while also allowing you to customize 
@@ -143,13 +151,9 @@ See [this blog post from Andrew Lock on the WebApplicationFactory mechanics](htt
 for more information.
 
 ::: tip
-`AlbaHost` is an expensive object to create, so you'll generally want to reuse it across tests.
+`AlbaHost` is an expensive object to create, so you'll generally want to reuse it across tests. See the relevant guide for [xUnit](xunit.md) or [NUnit](nunit.md)
 :::
 
-
-
-
-Alba can be used with the new [WebApplication]() 
 
 ## Running a Scenario
 
