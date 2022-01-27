@@ -20,7 +20,7 @@ your ASP.Net Core system with Alba and start authoring specifications with the `
 ## Initializing AlbaHost with IHostBuilder
 
 
-To bootstrap a ASP.Net Core application that uses `IHostBuilder` within `Program.cs`, create a `AlbaHost` using the definition of your `IHostBuilder` as shown below:
+To bootstrap a **ASP.NET Core 5** application, create a `AlbaHost` using the definition of your `IHostBuilder` as shown below:
 
 <!-- snippet: sample_Quickstart3 -->
 <a id='snippet-sample_quickstart3'></a>
@@ -89,7 +89,7 @@ application is expensive and you will probably want to reuse the `IAlbaHost` bet
 This functionality was added in Alba 6.0 and is only supported in .Net 6+.
 :::
 
-For ASP.Net Core 6, Microsoft introduced a new mechanism for configuring and bootstrapping web applications using [WebApplicationBuilder](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.builder.webapplicationbuilder?view=aspnetcore-6.0).
+For **ASP.NET Core 6**, Microsoft introduced a new mechanism for configuring and bootstrapping web applications using [WebApplicationBuilder](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.builder.webapplicationbuilder?view=aspnetcore-6.0).
 
 As an example, consider this very small ASP.Net Core application utilizing the new [Minimal API](https://docs.microsoft.com/en-us/aspnet/core/tutorials/min-web-api?view=aspnetcore-6.0&tabs=visual-studio) approach:
 
