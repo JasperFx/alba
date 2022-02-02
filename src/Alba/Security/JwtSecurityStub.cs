@@ -115,7 +115,8 @@ namespace Alba.Security
                 NameClaimType = original.NameClaimType,
                 NameClaimTypeRetriever = original.NameClaimTypeRetriever,
                 RoleClaimType = original.RoleClaimType,
-                RoleClaimTypeRetriever = original.RoleClaimTypeRetriever
+                RoleClaimTypeRetriever = original.RoleClaimTypeRetriever,
+                ValidAlgorithms = original.ValidAlgorithms
             };
             
             options.Authority = null;
