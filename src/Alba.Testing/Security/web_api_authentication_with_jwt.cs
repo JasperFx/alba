@@ -47,7 +47,7 @@ namespace Alba.Testing.Security
         {
             var input = new Numbers
             {
-                Values = new[] {2, 3, 4}
+                Values = new[] { 2, 3, 4 }
             };
 
             await theHost.Scenario(x =>
@@ -66,14 +66,14 @@ namespace Alba.Testing.Security
             // Building the input body
             var input = new Numbers
             {
-                Values = new[] {2, 3, 4}
+                Values = new[] { 2, 3, 4 }
             };
 
             var response = await theHost.Scenario(x =>
             {
                 // Alba deals with Json serialization for us
                 x.Post.Json(input).ToUrl("/math");
-                
+
                 // Enforce that the HTTP Status Code is 200 Ok
                 x.StatusCodeShouldBeOk();
             });
@@ -88,7 +88,7 @@ namespace Alba.Testing.Security
         {
             var input = new Numbers
             {
-                Values = new[] {2, 3, 4}
+                Values = new[] { 2, 3, 4 }
             };
 
             var response = await theHost.Scenario(x =>
@@ -108,7 +108,7 @@ namespace Alba.Testing.Security
         {
             var input = new Numbers
             {
-                Values = new[] {2, 3, 4}
+                Values = new[] { 2, 3, 4 }
             };
 
             var response = await theHost.Scenario(x =>
@@ -116,21 +116,44 @@ namespace Alba.Testing.Security
                 // This is a custom claim that would only be used for the 
                 // JWT token in this individual test
                 x.WithClaim(new Claim("color", "green"));
-                
+
                 // You can also remove default claims too, thanks Hawxy!
                 x.RemoveClaim("foo");
-                
+
                 x.Post.Json(input).ToUrl("/math");
                 x.StatusCodeShouldBeOk();
             });
 
             var principal = response.Context.User;
             principal.ShouldNotBeNull();
-            
+
             principal.Claims.Single(x => x.Type == "color")
                 .Value.ShouldBe("green");
 
-            principal.Claims.Any(x=> x.Type.Equals("foo")).ShouldBeFalse();
+            principal.Claims.Any(x => x.Type.Equals("foo")).ShouldBeFalse();
+
+
+        }
+
+        [Fact]
+        public async Task can_use_custom_name_claim_type()
+        {
+            var input = new Numbers
+            {
+                Values = new[] { 2, 3, 4 }
+            };
+
+            var response = await theHost.Scenario(x =>
+            {
+                x.WithClaim(new Claim(ClaimTypes.NameIdentifier, "username"));
+
+                x.Post.Json(input).ToUrl("/math");
+                x.StatusCodeShouldBeOk();
+            });
+
+            var principal = response.Context.User;
+            principal.ShouldNotBeNull();
+            Assert.Equal("username", principal.Identity.Name);
         }
     }
 }
