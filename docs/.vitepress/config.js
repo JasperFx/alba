@@ -34,6 +34,9 @@ module.exports = {
                 children: getScenarioSidebar()
             }
         ]
+    },
+    markdown: {
+        linkify: false
     }
 }
 

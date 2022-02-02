@@ -33,9 +33,9 @@ you'll get *unusual* behavior. Also note that you really need to dispose the `Al
 
 ## Class Fixtures
 
-If your application startup time becomes a performance problem, and especially in larger test suites, you probably want to share the `AlbaHost` object between tests. xUnit helpfully provides the [class fixture feature](https://xunit.github.io/docs/shared-context) for just this use case. 
+If your application startup time becomes a performance problem, and especially in larger test suites, you probably want to share the `AlbaHost` object between tests. xUnit helpfully provides the [class fixture feature](https://xunit.net/docs/shared-context) for just this use case. 
 
-In this case, build out your `AlbaHost` in a class like this:
+If you're using **.NET 5**, then build out your `AlbaHost` in a class like this:
 
 <!-- snippet: sample_xUnit_Fixture -->
 <a id='snippet-sample_xunit_fixture'></a>
@@ -52,7 +52,33 @@ public class WebAppFixture : IDisposable
     }
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/ContractTestWithAlba.cs#L9-L21' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_xunit_fixture' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/ContractTestWithAlba.cs#L10-L22' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_xunit_fixture' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+Otherwise, for **.NET 6** projects that are based around a standard `IHostBuilder` or `WebApplicationFactory` template, implement `IAsyncLifecycle`:
+
+<!-- snippet: sample_xUnit_Fixture_net6 -->
+<a id='snippet-sample_xunit_fixture_net6'></a>
+```cs
+public class WebAppFixture : IAsyncLifetime
+{
+    public IAlbaHost AlbaHost = null!;
+
+    public async Task InitializeAsync()
+    {
+        AlbaHost = await Alba.AlbaHost.For<WebApp.Program>(builder =>
+        {
+           // Configure all the things
+        });
+    }
+
+    public async Task DisposeAsync()
+    {
+        await AlbaHost.DisposeAsync();
+    }
+}
+```
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/ContractTestWithAlba.cs#L26-L46' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_xunit_fixture_net6' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 Then in your actual xUnit fixture classes, implement the `IClassFixture<T>` class like this:
@@ -69,7 +95,7 @@ public class ContractTestWithAlba : IClassFixture<WebAppFixture>
 
     private readonly IAlbaHost _host;
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/ContractTestWithAlba.cs#L23-L32' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_using_xunit_fixture' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/ContractTestWithAlba.cs#L49-L58' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_using_xunit_fixture' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 ## Collection Fixtures
@@ -88,7 +114,7 @@ public class ScenarioCollection : ICollectionFixture<WebAppFixture>
     
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/ContractTestWithAlba.cs#L69-L77' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_scenariocollection' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/ContractTestWithAlba.cs#L95-L103' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_scenariocollection' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 As a convenience, I like to have a base class for all test fixture classes that will be using scenarios like this:
@@ -107,7 +133,7 @@ public abstract class ScenarioContext
     public IAlbaHost Host { get; }
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/ContractTestWithAlba.cs#L79-L92' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_scenariocontext' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/ContractTestWithAlba.cs#L105-L118' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_scenariocontext' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 And then inherit from that `ScenarioContext` base class in actual test fixture classes:
@@ -132,5 +158,5 @@ public class sample_integration_fixture : ScenarioContext
     }
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/ContractTestWithAlba.cs#L94-L113' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_integration_fixture' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/ContractTestWithAlba.cs#L120-L139' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_integration_fixture' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->

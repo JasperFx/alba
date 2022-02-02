@@ -6,7 +6,8 @@ using Xunit;
 
 namespace Alba.Testing.Samples
 {
-    #region sample_xUnit_Fixture
+#if NET5_0
+#region sample_xUnit_Fixture
     public class WebAppFixture : IDisposable
     {
         public readonly IAlbaHost AlbaHost = WebApp.Program
@@ -18,9 +19,34 @@ namespace Alba.Testing.Samples
             AlbaHost?.Dispose();
         }
     }
-    #endregion
+#endregion
+#endif
 
-    #region sample_using_xUnit_Fixture
+#if NET6_0_OR_GREATER
+#region sample_xUnit_Fixture_net6
+
+    public class WebAppFixture : IAsyncLifetime
+    {
+        public IAlbaHost AlbaHost = null!;
+
+        public async Task InitializeAsync()
+        {
+            AlbaHost = await Alba.AlbaHost.For<WebApp.Program>(builder =>
+            {
+               // Configure all the things
+            });
+        }
+
+        public async Task DisposeAsync()
+        {
+            await AlbaHost.DisposeAsync();
+        }
+    }
+
+#endregion
+#endif
+
+#region sample_using_xUnit_Fixture
     public class ContractTestWithAlba : IClassFixture<WebAppFixture>
     {
         public ContractTestWithAlba(WebAppFixture app)
@@ -29,7 +55,7 @@ namespace Alba.Testing.Samples
         }
 
         private readonly IAlbaHost _host;
-    #endregion
+#endregion
         [Fact]
         public Task happy_path()
         {
@@ -66,7 +92,7 @@ namespace Alba.Testing.Samples
         }
     }
 
-    #region sample_ScenarioCollection
+#region sample_ScenarioCollection
 
     [CollectionDefinition("scenarios")]
     public class ScenarioCollection : ICollectionFixture<WebAppFixture>
@@ -74,9 +100,9 @@ namespace Alba.Testing.Samples
         
     }
 
-    #endregion
+#endregion
 
-    #region sample_ScenarioContext
+#region sample_ScenarioContext
 
     [Collection("scenarios")]
     public abstract class ScenarioContext
@@ -89,9 +115,9 @@ namespace Alba.Testing.Samples
         public IAlbaHost Host { get; }
     }
 
-    #endregion
+#endregion
 
-    #region sample_integration_fixture
+#region sample_integration_fixture
 
     public class sample_integration_fixture : ScenarioContext
     {
@@ -110,5 +136,5 @@ namespace Alba.Testing.Samples
         }
     }
 
-    #endregion
+#endregion
 }
