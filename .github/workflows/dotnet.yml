@@ -1,4 +1,4 @@
-name: .NET
+name: .NET Build & Test
 
 on:
   push:
@@ -16,18 +16,21 @@ env:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     timeout-minutes: 20
-
-
+    
     steps:
     - uses: actions/checkout@v2
-
     
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 6.0.x
+        
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+        
     - name: Test
-      run: dotnet test src/Alba.Testing/Alba.Testing.csproj
+      run: dotnet test src/Alba.Testing/Alba.Testing.csproj -v n
