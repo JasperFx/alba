@@ -164,16 +164,14 @@ namespace Alba.Testing
             var authenticatedUser = new ClaimsPrincipal(new ClaimsIdentity(null, "Basic"));
 
             //This works
-            using (var system = new AlbaHost(AuthenticatedHostBuilder())
+            await using var system = new AlbaHost(AuthenticatedHostBuilder())
                 .BeforeEachAsync(c => Task.Run(() =>
                 {
                     _output.WriteLine("In BeforeEach");
                     c.User = authenticatedUser;
-                })))
-            {
-                var result = await system.Scenario(x => x.Get.Url("/"));
-                result.Context.Response.StatusCode.ShouldBe(200);
-            }
+                }));
+            var result = await system.Scenario(x => x.Get.Url("/"));
+            result.Context.Response.StatusCode.ShouldBe(200);
         }
 
         [Fact]

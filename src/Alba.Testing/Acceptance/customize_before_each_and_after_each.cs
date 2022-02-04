@@ -11,24 +11,23 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task before_each_and_after_each_is_called()
         {
-            using (var host = AlbaHost
+            await using var host = AlbaHost
                 .ForStartup<Startup>()
-            .BeforeEach(c =>
-            {
-                BeforeContext = c;
-            })
-                .AfterEach(c => AfterContext = c))
-            {
-                BeforeContext = AfterContext = null;
-
-                await host.Scenario(_ =>
+                .BeforeEach(c =>
                 {
-                    _.Get.Url("/api/values");
-                });
+                    BeforeContext = c;
+                })
+                .AfterEach(c => AfterContext = c);
 
-                AfterContext.ShouldNotBeNull();
-                BeforeContext.ShouldNotBeNull();
-            }
+            BeforeContext = AfterContext = null;
+
+            await host.Scenario(_ =>
+            {
+                _.Get.Url("/api/values");
+            });
+
+            AfterContext.ShouldNotBeNull();
+            BeforeContext.ShouldNotBeNull();
         }
         
         public HttpContext BeforeContext { get; set; }
