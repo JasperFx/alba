@@ -1,10 +1,13 @@
 using System;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using Alba.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.IdentityModel.Tokens;
 using Shouldly;
 using Xunit;
 
@@ -75,6 +78,37 @@ namespace Alba.Testing.Security
             
             token.Claims.Single(x => x.Type == "division")
                 .Value.ShouldBe("afcwest");
+        }
+        
+        
+        [Fact]
+        public void should_handle_non_hmac_signing_key()
+        {
+            using var ecdsa = ECDsa.Create();
+            var host = Host.CreateDefaultBuilder()
+                .ConfigureServices(services =>
+                {
+                    services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                        .AddJwtBearer(opt =>
+                        {
+                            ecdsa.ImportFromPem(@"-----BEGIN EC PRIVATE KEY-----
+MHcCAQEEIKTr/pgYcyfYBKfYvAlFhMRvEtCFx53kuLvd7T/IPi0AoAoGCCqGSM49
+AwEHoUQDQgAEyUjhuVjVf/xyrlizuGdXCu0CKERSLP+DkO+DjpzcC3oa4+HJaOoR
+z/iMv39jDM5WBfFLh32DmBzDKPaAq7yMXA==
+-----END EC PRIVATE KEY-----");
+                            var signingKey = new ECDsaSecurityKey(ecdsa);
+                            opt.TokenValidationParameters = new TokenValidationParameters
+                            {
+                                IssuerSigningKey = signingKey,
+                                ValidAlgorithms = new[] {"ES256"}
+                            };
+                        });
+                })
+                .StartAlba(theStub);
+
+            Action act = () => theStub.BuildJwtString(Array.Empty<Claim>());
+            
+            act.ShouldNotThrow();
         }
 
         public void Dispose()
