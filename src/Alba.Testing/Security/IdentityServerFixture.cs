@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Xunit;
 
@@ -10,19 +11,20 @@ namespace Alba.Testing.Security
         
     }
     
-    public class IdentityServerFixture : IDisposable
+    public class IdentityServerFixture : IAsyncLifetime
     {
-        private readonly IHost _host;
+        private IHost _host;
 
-        public IdentityServerFixture()
+        public async Task InitializeAsync()
         {
-            _host = IdentityServer.Program.CreateHostBuilder(new string[0])
-                .Start();
+            _host = await IdentityServer.Program.CreateHostBuilder(Array.Empty<string>())
+                .StartAsync();
         }
 
-        public void Dispose()
+        public async Task DisposeAsync()
         {
-            _host?.Dispose();
+            await _host.StopAsync();
+            _host.Dispose();
         }
     }
 }
