@@ -124,6 +124,7 @@ namespace Alba.Testing.Security
         public void Dispose()
         {
             theHost?.Dispose();
+            _fixture.Dispose();
         }
     }
 }
