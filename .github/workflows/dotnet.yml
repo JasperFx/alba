@@ -30,4 +30,4 @@ jobs:
         dotnet-version: 5.0.x
         
     - name: Test
-      run: .\build.ps1 test
+      run: ./build.sh test
