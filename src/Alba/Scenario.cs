@@ -8,7 +8,7 @@ using Alba.Assertions;
 using Baseline;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Formatters;
-#nullable enable
+ 
 namespace Alba
 {
     /// <summary>

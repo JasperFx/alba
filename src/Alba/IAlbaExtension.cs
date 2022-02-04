@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
-#nullable enable
+ 
 namespace Alba
 {
     #region sample_IAlbaExtension

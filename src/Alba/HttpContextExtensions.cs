@@ -4,7 +4,7 @@ using Baseline;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features.Authentication;
 using Microsoft.AspNetCore.WebUtilities;
-#nullable enable
+ 
 namespace Alba
 {
     public static class HttpContextExtensions

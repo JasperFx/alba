@@ -1,6 +1,6 @@
 using System.Net;
 using Alba.Assertions;
-#nullable enable
+ 
 namespace Alba
 {
     public static class ScenarioExpectationsExtensions

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
 
-#nullable enable
+ 
 namespace Alba
 {
     public static class AlbaHostExtensions

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Net.Http.Headers;
-#nullable enable
+ 
 namespace Alba
 {
     public static class HeaderExtensions
