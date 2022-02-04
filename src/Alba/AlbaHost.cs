@@ -51,7 +51,6 @@ namespace Alba
             builder = builder
                 .ConfigureServices(_ =>
                 {
-                    _.AddSingleton<IHostLifetime, NoopHostLifetime>();
                     _.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
                     _.AddSingleton<IServer>(x => new TestServer(x));
                 });
@@ -268,7 +267,6 @@ namespace Alba
             builder = builder
                 .ConfigureServices(_ =>
                 {
-                    _.AddSingleton<IHostLifetime, NoopHostLifetime>();
                     _.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
                     _.AddSingleton<IServer>(x => new TestServer(x));
                 });

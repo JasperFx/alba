@@ -20,26 +20,12 @@ namespace Alba.Testing.Security
         public IdentityServerFixture()
         {
             _host = IdentityServer.Program.CreateHostBuilder(Array.Empty<string>())
-                .ConfigureServices(x => x.AddSingleton<IHostLifetime, NoopHostLifetime>())
                 .Start();
         }
 
         public void Dispose()
         {
             _host?.Dispose();
-        }
-    }
-
-    internal class NoopHostLifetime : IHostLifetime
-    {
-        public Task StopAsync(CancellationToken cancellationToken)
-        {
-            return Task.CompletedTask;
-        }
-
-        public Task WaitForStartAsync(CancellationToken cancellationToken)
-        {
-            return Task.CompletedTask;
         }
     }
 }
