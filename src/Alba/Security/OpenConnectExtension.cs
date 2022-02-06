@@ -42,7 +42,7 @@ namespace Alba.Security
             
             // This seems to be necessary to "bake" in the JwtBearerOptions modifications
             var options = host.Services.GetRequiredService<IOptionsMonitor<JwtBearerOptions>>()
-                .Get("Bearer");
+                .Get(JwtBearerDefaults.AuthenticationScheme);
             
             var authorityUrl = options.Authority;
             _disco = await _client.GetDiscoveryDocumentAsync(authorityUrl);
