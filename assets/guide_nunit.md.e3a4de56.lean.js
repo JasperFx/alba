@@ -1,0 +1,1 @@
+import{_ as n,c as s,o as a,a as t}from"./app.bb080ae4.js";const _='{"title":"Integrating with NUnit","description":"","frontmatter":{},"relativePath":"guide/nunit.md","lastUpdated":1644151252701}',p={},o=t("",9),e=[o];function c(i,l,u,k,r,d){return a(),s("div",null,e)}var m=n(p,[["render",c]]);export{_ as __pageData,m as default};
