@@ -8,7 +8,7 @@
     <AssemblyName>Alba</AssemblyName>
     <PackageId>Alba</PackageId>
     <PackageProjectUrl>http://jasperfx.github.io/alba/</PackageProjectUrl>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/JasperFx/alba/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>git://github.com/JasperFx/alba</RepositoryUrl>
     <OutputType>library</OutputType>

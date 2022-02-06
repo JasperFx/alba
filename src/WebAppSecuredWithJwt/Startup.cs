@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -35,9 +36,9 @@ namespace WebAppSecuredWithJwt
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "WebAppSecuredWithJwt", Version = "v1"});
             });
             
-            services.AddAuthentication("Bearer")
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 
-                .AddJwtBearer("Bearer", options =>
+                .AddJwtBearer(options =>
                 {
                     // A real application would pull all this information from configuration
                     // of course, but I'm hardcoding it in testing
