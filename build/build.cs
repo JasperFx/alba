@@ -1,10 +1,6 @@
 using System;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.Versioning;
 using System.Text.RegularExpressions;
-using static System.Globalization.CultureInfo;
 using static Bullseye.Targets;
 using static SimpleExec.Command;
 
@@ -12,7 +8,7 @@ namespace build
 {
     internal class Build
     {
-        private const string BUILD_VERSION = "5.0.0";
+        private const string BUILD_VERSION = "6.1.0";
         private const string GITHUB_REPO = "https://github.com/jasperfx/alba.git";
 
 
@@ -194,14 +190,6 @@ namespace build
             Console.WriteLine(val);
 
             return val;
-        }
-
-        private static string GetFramework()
-        {
-            var frameworkName = Assembly.GetEntryAssembly().GetCustomAttribute<TargetFrameworkAttribute>().FrameworkName;
-            var version = float.Parse(frameworkName.Split('=')[1].Replace("v",""), InvariantCulture.NumberFormat);
-
-            return version < 5.0 ? $"netcoreapp{version.ToString("N1", InvariantCulture.NumberFormat)}" : $"net{version.ToString("N1", InvariantCulture.NumberFormat)}";
         }
 
         private static Action IgnoreIfFailed(Action action)

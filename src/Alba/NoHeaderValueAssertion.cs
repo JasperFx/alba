@@ -1,7 +1,7 @@
 using System.Linq;
 using Baseline;
 using Microsoft.AspNetCore.Http;
-#nullable enable
+ 
 namespace Alba
 {
     internal class NoHeaderValueAssertion : IScenarioAssertion

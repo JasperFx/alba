@@ -1,3 +1,3 @@
 $ErrorActionPreference = "Stop";
 
-dotnet run -p build/build.csproj -c Release -- $args
+dotnet run --project build/build.csproj -c Release -- $args

@@ -3,9 +3,8 @@
   <PropertyGroup>
     <Description>Supercharged integration testing for ASP.NET Core HTTP endpoints</Description>
     <AssemblyTitle>Alba</AssemblyTitle>
-    <Version>6.0.0</Version>
+    <Version>6.1.0</Version>
     <TargetFrameworks>net5.0;net6.0</TargetFrameworks>
-    <DebugType>portable</DebugType>
     <AssemblyName>Alba</AssemblyName>
     <PackageId>Alba</PackageId>
     <PackageProjectUrl>http://jasperfx.github.io/alba/</PackageProjectUrl>
@@ -21,21 +20,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Baseline" Version="3.2.2" />
-    <PackageReference Include="IdentityModel" Version="5.1.0" />
-    <PackageReference Include="System.AppContext" Version="4.3.0" />
-    <PackageReference Include="System.Xml.XmlDocument" Version="4.3.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.9" />
+    <PackageReference Include="IdentityModel" Version="5.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.13" />
+    <PackageReference Include="DotNet.ReproducibleBuilds" Version="1.1.1" PrivateAssets="All"/>
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="5.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="5.0.13" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.0"/>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.1"/>
   </ItemGroup>
 
 </Project>

@@ -13,29 +13,26 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task can_bind_to_form_data()
         {
+            await using var system = AlbaHost.ForStartup<Startup>();
 
-            using (var system = AlbaHost.ForStartup<Startup>())
+            var input = new InputModel {
+                One = "one",
+                Two = "two",
+                Three = "three"
+            };
+
+            await system.Scenario(_ =>
             {
-
-                var input = new InputModel {
-                    One = "one",
-                    Two = "two",
-                    Three = "three"
-                };
-
-                await system.Scenario(_ =>
-                {
-                    _.Post.FormData(input)
-                        .ToUrl("/gateway/insert");
-                });
+                _.Post.FormData(input)
+                    .ToUrl("/gateway/insert");
+            });
 
 
-                GatewayController.LastInput.ShouldNotBeNull();
+            GatewayController.LastInput.ShouldNotBeNull();
 
-                GatewayController.LastInput.One.ShouldBe("one");
-                GatewayController.LastInput.Two.ShouldBe("two");
-                GatewayController.LastInput.Three.ShouldBe("three");
-            }
+            GatewayController.LastInput.One.ShouldBe("one");
+            GatewayController.LastInput.Two.ShouldBe("two");
+            GatewayController.LastInput.Three.ShouldBe("three");
         }
 
 #endregion
@@ -43,23 +40,22 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task can_bind_to_form_data_as_dictionary()
         {
-            using (var system = AlbaHost.ForStartup<Startup>())
+            await using var system = AlbaHost.ForStartup<Startup>();
+
+            var dict = new Dictionary<string, string> {{"One", "one"}, {"Two", "two"}, {"Three", "three"}};
+
+
+            await system.Scenario(_ =>
             {
-                var dict = new Dictionary<string, string> {{"One", "one"}, {"Two", "two"}, {"Three", "three"}};
+                _.Post.FormData(dict)
+                    .ToUrl("/gateway/insert");
+            });
 
+            GatewayController.LastInput.ShouldNotBeNull();
 
-                await system.Scenario(_ =>
-                {
-                    _.Post.FormData(dict)
-                        .ToUrl("/gateway/insert");
-                });
-
-                GatewayController.LastInput.ShouldNotBeNull();
-
-                GatewayController.LastInput.One.ShouldBe("one");
-                GatewayController.LastInput.Two.ShouldBe("two");
-                GatewayController.LastInput.Three.ShouldBe("three");
-            }
+            GatewayController.LastInput.One.ShouldBe("one");
+            GatewayController.LastInput.Two.ShouldBe("two");
+            GatewayController.LastInput.Three.ShouldBe("three");
         }
     }
 }

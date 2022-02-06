@@ -1,4 +1,7 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Xunit;
 
@@ -16,7 +19,7 @@ namespace Alba.Testing.Security
 
         public IdentityServerFixture()
         {
-            _host = IdentityServer.Program.CreateHostBuilder(new string[0])
+            _host = IdentityServer.Program.CreateHostBuilder(Array.Empty<string>())
                 .Start();
         }
 

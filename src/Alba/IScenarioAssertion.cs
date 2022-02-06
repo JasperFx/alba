@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Http;
-#nullable enable
+ 
 namespace Alba
 {
 

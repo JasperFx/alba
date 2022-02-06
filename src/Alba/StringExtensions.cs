@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Net;
 using Baseline;
-#nullable enable
+ 
 namespace Alba
 {
     public static class StringExtensions
