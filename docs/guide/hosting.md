@@ -118,7 +118,17 @@ app.Run();
 <!-- endSnippet -->
 
 Using this project configuration mechanism, Alba is still usable, but this time we need to utilize ASP.Net Core's [WebApplicationFactory](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.testing.webapplicationfactory-1?view=aspnetcore-6.0)
-tooling. Alba tries to make the usage of this a little easier with this syntax:
+tooling. **First though, and this is important, you will need to allow your test project access to the internal types of your application under test**. You
+can do that by either using the [InternalsVisibleToAttribute](https://docs.microsoft.com/en-us/dotnet/api/system.runtime.compilerservices.internalsvisibletoattribute?view=net-6.0) in your main
+application project, or use this within the project file of your application where "ProjectName.Tests" would be your testing project name:
+
+```xml
+  <ItemGroup>
+    <InternalsVisibleTo Include="ProjectName.Tests" />
+  </ItemGroup>
+```
+
+Back to Alba. Alba tries to make the usage of this new configuration option in ASP.Net Core a little easier with this syntax:
 
 <!-- snippet: sample_bootstrapping_with_web_application_factory -->
 <a id='snippet-sample_bootstrapping_with_web_application_factory'></a>
