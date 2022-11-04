@@ -1,14 +1,12 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-#if NET6_0_OR_GREATER
 using Oakton;
-#endif
 using Shouldly;
 using Xunit;
 
 namespace Alba.Testing.Acceptance
 {
-#if NET6_0_OR_GREATER
+
     public class web_application_factory_usage
     {
 
@@ -93,5 +91,4 @@ namespace Alba.Testing.Acceptance
             text.ShouldBe("Hello World!");
         }
     }
-#endif
 }

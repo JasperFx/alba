@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Shouldly;
@@ -6,7 +5,6 @@ using Xunit;
 
 namespace MinimalApiUsageSample
 {
-#if NET6_0_OR_GREATER
     public static class Program
     {
         // Going to have to introduce just a little bit more ceremony
@@ -34,7 +32,6 @@ namespace MinimalApiUsageSample
         public static WebApplicationBuilder CreateWebApplicationBuilder(string[] args) =>
             WebApplication.CreateBuilder(args);
     }
-#endif
 }
 
 
@@ -45,7 +42,6 @@ namespace Alba.Testing.Samples
 {
     public class MinimalApiUsage
     {
-#if NET6_0_OR_GREATER
         [Fact]
         public async Task playing_with_minimal_apis()
         {
@@ -64,7 +60,6 @@ namespace Alba.Testing.Samples
             text.ShouldBe("Hello World!");
 
         }
-#endif
     }
 
 

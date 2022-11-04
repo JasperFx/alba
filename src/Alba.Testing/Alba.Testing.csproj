@@ -11,10 +11,7 @@
     <ProjectReference Include="..\IdentityServer\IdentityServer.csproj" />
     <ProjectReference Include="..\WebAppSecuredWithJwt\WebAppSecuredWithJwt.csproj" />
     <ProjectReference Include="..\WebApp\WebApp.csproj" />
-    <ProjectReference Include="..\WebApiAspNetCore3\WebApiAspNetCore3.csproj" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+    <ProjectReference Include="..\WebApiAspNetCore3\WebApiStartupHostingModel.csproj" />
     <ProjectReference Include="..\WebApiNet6\WebApiNet6.csproj" />
     <ProjectReference Include="..\MinimalApiWithOakton\MinimalApiWithOakton.csproj" />
   </ItemGroup>

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace WebApiAspNetCore3
+namespace WebApiStartupHostingModel
 {
     public class HomeController : Controller
     {

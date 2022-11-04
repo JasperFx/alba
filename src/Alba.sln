@@ -8,7 +8,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alba.Testing", "Alba.Testin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApp", "WebApp\WebApp.csproj", "{52733A25-1E8D-4250-A9B5-D135EE6C1557}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiAspNetCore3", "WebApiAspNetCore3\WebApiAspNetCore3.csproj", "{28AAF423-75B5-4499-95BC-85CFDB994EDA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiStartupHostingModel", "WebApiAspNetCore3\WebApiStartupHostingModel.csproj", "{28AAF423-75B5-4499-95BC-85CFDB994EDA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAppSecuredWithJwt", "WebAppSecuredWithJwt\WebAppSecuredWithJwt.csproj", "{91CA83AA-73DB-44B0-8A5D-5BB38532B897}"
 EndProject
@@ -16,9 +16,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer", "IdentityS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NUnitSamples", "NUnitSamples\NUnitSamples.csproj", "{EAE558C3-9759-4F7F-845B-D00056EE65DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiNet6", "WebApiNet6\WebApiNet6.csproj", "{C2D01782-E9BC-4E61-A4B7-76FA48292386}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiNet6", "WebApiNet6\WebApiNet6.csproj", "{C2D01782-E9BC-4E61-A4B7-76FA48292386}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinimalApiWithOakton", "MinimalApiWithOakton\MinimalApiWithOakton.csproj", "{2BD68525-60F2-4253-BFA7-12476F374EE9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MinimalApiWithOakton", "MinimalApiWithOakton\MinimalApiWithOakton.csproj", "{2BD68525-60F2-4253-BFA7-12476F374EE9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

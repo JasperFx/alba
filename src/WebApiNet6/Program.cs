@@ -1,8 +1,5 @@
 #region sample_minimal_web_api
 
-using System;
-using Microsoft.AspNetCore.Builder;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
