@@ -11,7 +11,7 @@
     <ProjectReference Include="..\IdentityServer\IdentityServer.csproj" />
     <ProjectReference Include="..\WebAppSecuredWithJwt\WebAppSecuredWithJwt.csproj" />
     <ProjectReference Include="..\WebApp\WebApp.csproj" />
-    <ProjectReference Include="..\WebApiAspNetCore3\WebApiAspNetCore3.csproj" />
+    <ProjectReference Include="..\WebApiAspNetCore3\WebApiStartupHostingModel.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
