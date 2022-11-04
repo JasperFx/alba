@@ -69,12 +69,15 @@ namespace Alba.Security
 
             var algorithm = _options.TokenValidationParameters.ValidAlgorithms?.FirstOrDefault()
                             ?? SecurityAlgorithms.HmacSha256;
+
+            var audience = _options.TokenValidationParameters.ValidAudiences?.FirstOrDefault() 
+                           ?? _options.TokenValidationParameters.ValidAudience;
             
             var credentials = new SigningCredentials(
                 _options.TokenValidationParameters.IssuerSigningKey, 
                 algorithm);
 
-            return new JwtSecurityToken(_options.ClaimsIssuer, _options.Audience, processedClaims(additionalClaims, removedClaims),
+            return new JwtSecurityToken(_options.ClaimsIssuer, audience, processedClaims(additionalClaims, removedClaims),
                 expires: DateTime.UtcNow.AddDays(1), signingCredentials: credentials);
         }
         
@@ -102,23 +105,11 @@ namespace Alba.Security
                     
                 });
             
-            var original = options.TokenValidationParameters;
-            _signingKey = original.IssuerSigningKey 
-                          ?? new SymmetricSecurityKey(Encoding.UTF8.GetBytes("some really big key that should work"));
+            var validationParameters = options.TokenValidationParameters.Clone();
+            validationParameters.IssuerSigningKey ??= new SymmetricSecurityKey(Encoding.UTF8.GetBytes("some really big key that should work"));
+            validationParameters.ValidateIssuer = false;
+            options.TokenValidationParameters = validationParameters;
 
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                IssuerSigningKey = _signingKey,
-                ValidIssuer = original.ValidIssuer,
-                ValidAudience = original.ValidAudience,
-                ValidateIssuer = false,
-                NameClaimType = original.NameClaimType,
-                NameClaimTypeRetriever = original.NameClaimTypeRetriever,
-                RoleClaimType = original.RoleClaimType,
-                RoleClaimTypeRetriever = original.RoleClaimTypeRetriever,
-                ValidAlgorithms = original.ValidAlgorithms
-            };
-            
             options.Authority = null;
             options.MetadataAddress = null;
 
