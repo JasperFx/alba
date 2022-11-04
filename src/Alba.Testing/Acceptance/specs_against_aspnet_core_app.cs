@@ -84,7 +84,40 @@ namespace Alba.Testing.Acceptance
             person.FirstName.ShouldBe("Jeremy");
             person.LastName.ShouldBe("Miller");
         }
-        
+
+        [Fact]
+        public async Task can_read_json_response_async()
+        {
+            var result = await run(_ =>
+            {
+                _.Get.Url("/api/json");
+            });
+
+            var person = await result.ReadAsJsonAsync<Person>();
+
+            person.FirstName.ShouldBe("Jeremy");
+            person.LastName.ShouldBe("Miller");
+        }
+
+        [Fact]
+        public async Task repeated_reads_of_the_response_async()
+        {
+            var expectedJson = "{\"firstName\":\"Jeremy\",\"lastName\":\"Miller\"}";
+            var result = await run(_ =>
+            {
+                _.Get.Url("/api/json");
+                _.Body.TextIs(expectedJson);
+            });
+
+            var text = await result.ReadAsTextAsync();
+            text.ShouldBe(expectedJson);
+
+            var person = await result.ReadAsJsonAsync<Person>();
+
+            person.FirstName.ShouldBe("Jeremy");
+            person.LastName.ShouldBe("Miller");
+        }
+
         [Fact]
         public async Task Bug_92_repeated_reads_of_the_response()
         {
@@ -104,8 +137,8 @@ namespace Alba.Testing.Acceptance
             person.FirstName.ShouldBe("Jeremy");
             person.LastName.ShouldBe("Miller");
         }
-        
-                
+
+
         [Fact]
         public async Task Bug_92_repeated_reads_of_the_response_2()
         {

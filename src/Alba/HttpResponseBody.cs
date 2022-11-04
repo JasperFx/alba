@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
 using Baseline;
@@ -26,13 +27,16 @@ namespace Alba
         
         public HttpContext Context { get; }
 
-        /// <summary>
-        /// Read the contents of the HttpResponse.Body as text
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc />
         public string ReadAsText()
         {
             return Read(s => s.ReadAllText());
+        }
+
+        /// <inheritdoc />
+        public Task<string> ReadAsTextAsync()
+        {
+            return ReadAsync(s => s.ReadAllTextAsync());
         }
 
         public T Read<T>(Func<Stream, T> read)
@@ -52,10 +56,24 @@ namespace Alba
             return read(Context.Response.Body);
         }
 
-        /// <summary>
-        /// Read the contents of the HttpResponse.Body into an XmlDocument object
-        /// </summary>
-        /// <returns></returns>
+        public async Task<T> ReadAsync<T>(Func<Stream, Task<T>> read)
+        {
+            if (Context.Response.Body.CanSeek || Context.Response.Body is MemoryStream)
+            {
+                Context.Response.Body.Position = 0;
+            }
+            else
+            {
+                var stream = new MemoryStream();
+                await Context.Response.Body.CopyToAsync(stream);
+                stream.Position = 0;
+                Context.Response.Body = stream;
+            }
+
+            return await read(Context.Response.Body);
+        }
+
+        /// <inheritdoc />
         public XmlDocument? ReadAsXml()
         {
             Func<Stream, XmlDocument?> read = s =>
@@ -73,12 +91,25 @@ namespace Alba
             return Read(read);
         }
 
-        /// <summary>
-        /// Deserialize the contents of the HttpResponse.Body into an object
-        /// of type T using the built in XmlSerializer
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
+        /// <inheritdoc />
+        public Task<XmlDocument?> ReadAsXmlAsync()
+        {
+            Func<Stream, Task<XmlDocument?>> read = async s =>
+            {
+                var body = await s.ReadAllTextAsync();
+
+                if (body.Contains("Error")) return null;
+
+                var document = new XmlDocument();
+                document.LoadXml(body);
+
+                return document;
+            };
+
+            return Read(read);
+        }
+
+        /// <inheritdoc />
         public T? ReadAsXml<T>() where T : class
         {
             Context.Response.Body.Position = 0;
@@ -86,15 +117,15 @@ namespace Alba
             return serializer.Deserialize(Context.Response.Body) as T;
         }
 
-        /// <summary>
-        /// Deserialize the contents of the HttpResponse.Body into an object
-        /// of type T using the configured Json serializer
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
+        /// <inheritdoc />
         public T? ReadAsJson<T>()
         {
             return Read<T>(MimeType.Json.Value);
+        }
+        /// <inheritdoc />
+        public Task<T?> ReadAsJsonAsync<T>()
+        {
+            return ReadAsync<T>(MimeType.Json.Value);
         }
 
         public T? Read<T>(string contentType)
@@ -131,8 +162,46 @@ namespace Alba
 
                 return default(T);
             });
-            
-            
+
+        }
+
+        /// <inheritdoc />
+        public Task<T?> ReadAsync<T>(string contentType)
+        {
+            return ReadAsync(async stream =>
+            {
+                var formatter = _system.Inputs[contentType];
+                if (formatter == null)
+                {
+                    throw new InvalidOperationException(
+                        $"Alba was not able to find a registered formatter for content type '{contentType}'. Either specify the body contents explicitly, or try registering 'services.AddMvcCore()'");
+                }
+
+                var provider = _system.Services.GetRequiredService<IModelMetadataProvider>();
+                var metadata = provider.GetMetadataForType(typeof(T));
+
+                var standinContext = new DefaultHttpContext();
+                var buffer = new MemoryStream();
+                await stream.CopyToAsync(buffer);
+                buffer.Position = 0;
+                standinContext.Request.Body = buffer; // Need to trick the MVC conneg services
+
+                if (buffer.Length == 0) throw new EmptyResponseException();
+
+                var inputContext = new InputFormatterContext(standinContext, typeof(T).Name, new ModelStateDictionary(), metadata, (s, e) => new StreamReader(s));
+                var result = await formatter.ReadAsync(inputContext);
+
+                if (result.HasError)
+                {
+                    throw new AlbaJsonFormatterException(this);
+                }
+
+                if (result.Model is T returnValue) return returnValue;
+
+                return default(T);
+            });
+
+
 
         }
     }
