@@ -71,7 +71,8 @@ namespace Alba.Security
                             ?? SecurityAlgorithms.HmacSha256;
 
             var audience = _options.TokenValidationParameters.ValidAudiences?.FirstOrDefault() 
-                           ?? _options.TokenValidationParameters.ValidAudience;
+                           ?? _options.TokenValidationParameters.ValidAudience 
+                           ?? _options.Audience;
             
             var credentials = new SigningCredentials(
                 _options.TokenValidationParameters.IssuerSigningKey, 
