@@ -16,13 +16,13 @@ namespace Alba.Security
     {
         internal static readonly string OverrideKey = "alba_oidc_override";
         
-        private readonly HttpClient _client;
+        private HttpClient _client;
         private DiscoveryDocumentResponse? _disco;
         private TokenResponse? _cached;
 
         public OpenConnectExtension()
         {
-            _client = new HttpClient();
+           // _client = new HttpClient();
         }
 
         void IDisposable.Dispose()
@@ -43,7 +43,9 @@ namespace Alba.Security
             // This seems to be necessary to "bake" in the JwtBearerOptions modifications
             var options = host.Services.GetRequiredService<IOptionsMonitor<JwtBearerOptions>>()
                 .Get(JwtBearerDefaults.AuthenticationScheme);
-            
+
+            _client = options.BackchannelHttpHandler != null ? new HttpClient(options.BackchannelHttpHandler) : new HttpClient();
+
             var authorityUrl = options.Authority;
             _disco = await _client.GetDiscoveryDocumentAsync(authorityUrl);
             if (_disco.IsError)

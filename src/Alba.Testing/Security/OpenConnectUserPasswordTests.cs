@@ -2,6 +2,8 @@ using System;
 using System.Threading.Tasks;
 using Alba.Security;
 using IdentityServer;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using WebApi;
 using Xunit;
@@ -31,7 +33,13 @@ namespace Alba.Testing.Security
                 Password = "alice"
             };
 
-            theHost = WebAppSecuredWithJwt.Program.CreateHostBuilder(new string[0])
+            theHost = WebAppSecuredWithJwt.Program.CreateHostBuilder(Array.Empty<string>()).ConfigureServices((ctx, collection) => collection.Configure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme,
+                    x =>
+                    {
+                        x.Authority = _fixture.IdentityServer.BaseAddress.ToString();
+                        x.BackchannelHttpHandler = _fixture.IdentityServer.CreateHandler();
+                        x.RequireHttpsMetadata = false;
+                    }))
                 .StartAlba(oidc);
 
             #endregion

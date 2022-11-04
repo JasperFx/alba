@@ -1,6 +1,8 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Xunit;
@@ -15,16 +17,16 @@ namespace Alba.Testing.Security
     
     public class IdentityServerFixture : IAsyncLifetime 
     {
-        private IHost _host;
-        public async Task InitializeAsync()
+        public TestServer IdentityServer { get; set; }
+        public Task InitializeAsync()
         {
-            _host = await IdentityServer.Program.CreateHostBuilder(Array.Empty<string>())
-                .StartAsync();
+            IdentityServer = new WebApplicationFactory<IdentityServer.Program>().Server;
+            return Task.CompletedTask;
         }
 
         public Task DisposeAsync()
         {
-            _ = _host.StopAsync();
+            IdentityServer.Dispose();
             return Task.CompletedTask;
         }
 
