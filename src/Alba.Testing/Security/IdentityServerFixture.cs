@@ -13,19 +13,20 @@ namespace Alba.Testing.Security
         
     }
     
-    public class IdentityServerFixture : IDisposable
+    public class IdentityServerFixture : IAsyncLifetime 
     {
-        private readonly IHost _host;
-
-        public IdentityServerFixture()
+        private IHost _host;
+        public async Task InitializeAsync()
         {
-            _host = IdentityServer.Program.CreateHostBuilder(Array.Empty<string>())
-                .Start();
+            _host = await IdentityServer.Program.CreateHostBuilder(Array.Empty<string>())
+                .StartAsync();
         }
 
-        public void Dispose()
+        public Task DisposeAsync()
         {
-            _host?.Dispose();
+            _ = _host.StopAsync();
+            return Task.CompletedTask;
         }
+
     }
 }
