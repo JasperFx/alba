@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Shouldly;
 using Xunit;
@@ -22,29 +21,28 @@ namespace Alba.Testing.Samples
 #endregion
 #endif
 
-#if NET6_0_OR_GREATER
+
 #region sample_xUnit_Fixture_net6
 
-    public class WebAppFixture : IAsyncLifetime
+public class WebAppFixture : IAsyncLifetime
+{
+    public IAlbaHost AlbaHost = null!;
+
+    public async Task InitializeAsync()
     {
-        public IAlbaHost AlbaHost = null!;
-
-        public async Task InitializeAsync()
+        AlbaHost = await Alba.AlbaHost.For<WebApp.Program>(builder =>
         {
-            AlbaHost = await Alba.AlbaHost.For<WebApp.Program>(builder =>
-            {
-               // Configure all the things
-            });
-        }
-
-        public async Task DisposeAsync()
-        {
-            await AlbaHost.DisposeAsync();
-        }
+            // Configure all the things
+        });
     }
 
+    public async Task DisposeAsync()
+    {
+        await AlbaHost.DisposeAsync();
+    }
+}
 #endregion
-#endif
+
 
 #region sample_using_xUnit_Fixture
     public class ContractTestWithAlba : IClassFixture<WebAppFixture>
