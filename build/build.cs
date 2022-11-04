@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using static Bullseye.Targets;
 using static SimpleExec.Command;
 
@@ -12,7 +13,7 @@ namespace build
         private const string GITHUB_REPO = "https://github.com/jasperfx/alba.git";
 
 
-        private static void Main(string[] args)
+        private static Task Main(string[] args)
         {
             
             Target("default", DependsOn("test"));
@@ -85,7 +86,8 @@ namespace build
                 PublishDocs(repo, true);
             });
 
-            RunTargetsAndExit(args);
+            return RunTargetsAndExitAsync(args);
+            
         }
 
         private static void PublishDocs(string repo, bool isGHActionContext=false)
@@ -168,7 +170,7 @@ namespace build
         }
 
         private static void RunNpm(string args) =>
-            Run("npm", args, windowsName: "cmd.exe", windowsArgs: $"/c npm {args}");
+            Run("npm", args);
 
         private static void RunTests(string projectName, string directoryName = "src")
         {
