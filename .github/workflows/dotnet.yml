@@ -13,7 +13,7 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     timeout-minutes: 20
     
     steps:
@@ -29,5 +29,9 @@ jobs:
       with:
         dotnet-version: 5.0.x
         
+    - name: Install dev-cert
+      run: dotnet dev-certs https --trust
+        
+        
     - name: Test
-      run: ./build.sh test
+      run: ./build.ps1 test
