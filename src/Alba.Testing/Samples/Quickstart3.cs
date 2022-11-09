@@ -3,8 +3,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 
 using Microsoft.Extensions.Configuration;
-using WebApiAspNetCore3;    
-
 using Xunit;
 
 namespace Alba.Testing.Samples

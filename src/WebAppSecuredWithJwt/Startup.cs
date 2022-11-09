@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -48,7 +49,6 @@ namespace WebAppSecuredWithJwt
                     // don't worry about this, our JwtSecurityStub is gonna switch it off in
                     // tests
                     options.Authority = "https://localhost:5010";
-                    
                     
                         
             

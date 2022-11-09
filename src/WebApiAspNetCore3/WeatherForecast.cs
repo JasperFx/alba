@@ -1,6 +1,6 @@
 using System;
 
-namespace WebApiAspNetCore3
+namespace WebApiStartupHostingModel
 {
     public class WeatherForecast
     {
