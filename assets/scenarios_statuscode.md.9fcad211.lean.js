@@ -1,0 +1,1 @@
+import{_ as s,c as a,o as n,a as t}from"./app.bb080ae4.js";const _='{"title":"Http Status Codes","description":"","frontmatter":{},"relativePath":"scenarios/statuscode.md","lastUpdated":1668446440151}',e={},o=t("",6),p=[o];function c(u,i,l,r,d,h){return n(),a("div",null,p)}var f=s(e,[["render",c]]);export{_ as __pageData,f as default};
