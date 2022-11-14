@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Xml;
 using System.Xml.Serialization;
 using Baseline;
@@ -11,19 +12,16 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Alba
 {
-    public class HttpResponseBody : IScenarioResult
+    public class ScenarioResult : IScenarioResult
     {
         private readonly AlbaHost _system;
 
-        internal HttpResponseBody(AlbaHost system, HttpContext context)
+        internal ScenarioResult(AlbaHost system, HttpContext context)
         {
             _system = system;
             Context = context;
         }
 
-        [Obsolete("Use the methods directly on IScenarioResult instead")]
-        public HttpResponseBody ResponseBody => this;
-        
         public HttpContext Context { get; }
 
         /// <summary>
@@ -49,7 +47,10 @@ namespace Alba
                 Context.Response.Body = stream;
             }
             
-            return read(Context.Response.Body);
+            var returnValue = read(Context.Response.Body);
+            Context.Response.Body.Position = 0;
+
+            return returnValue;
         }
 
         /// <summary>
@@ -94,46 +95,8 @@ namespace Alba
         /// <returns></returns>
         public T? ReadAsJson<T>()
         {
-            return Read<T>(MimeType.Json.Value);
+            return _system.DefaultJson.Read<T>(this);
         }
 
-        public T? Read<T>(string contentType)
-        {
-            return Read(stream =>
-            {
-                var formatter = _system.Inputs[contentType];
-                if (formatter == null)
-                {
-                    throw new InvalidOperationException(
-                        $"Alba was not able to find a registered formatter for content type '{contentType}'. Either specify the body contents explicitly, or try registering 'services.AddMvcCore()'");
-                }
-
-                var provider = _system.Services.GetRequiredService<IModelMetadataProvider>();
-                var metadata = provider.GetMetadataForType(typeof(T));
-
-                var standinContext = new DefaultHttpContext();
-                var buffer = new MemoryStream();
-                stream.CopyTo(buffer);
-                buffer.Position = 0;
-                standinContext.Request.Body = buffer; // Need to trick the MVC conneg services
-
-                if (buffer.Length == 0) throw new EmptyResponseException();
-
-                var inputContext = new InputFormatterContext(standinContext, typeof(T).Name, new ModelStateDictionary(), metadata, (s, e) => new StreamReader(s));
-                var result = formatter.ReadAsync(inputContext).GetAwaiter().GetResult();
-
-                if (result.HasError)
-                {
-                    throw new AlbaJsonFormatterException(this);
-                }
-
-                if (result.Model is T returnValue) return returnValue;
-
-                return default(T);
-            });
-            
-            
-
-        }
     }
 }

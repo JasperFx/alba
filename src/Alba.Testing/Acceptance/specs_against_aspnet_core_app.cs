@@ -97,9 +97,7 @@ namespace Alba.Testing.Acceptance
             
             result.ReadAsText().ShouldBe(expectedJson);
 
-
             var person = result.ReadAsJson<Person>();
-
 
             person.FirstName.ShouldBe("Jeremy");
             person.LastName.ShouldBe("Miller");
@@ -119,7 +117,6 @@ namespace Alba.Testing.Acceptance
             var person = result.ReadAsJson<Person>();
             
             result.ReadAsText().ShouldBe(expectedJson);
-
 
             person.FirstName.ShouldBe("Jeremy");
             person.LastName.ShouldBe("Miller");

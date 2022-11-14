@@ -9,13 +9,6 @@ namespace Alba
     public interface IScenarioResult
     {
         /// <summary>
-        ///     Helpers to interrogate or read the HttpResponse.Body
-        ///     of the request
-        /// </summary>
-        [Obsolete("Use the methods directly on IScenarioResult instead")]
-        HttpResponseBody ResponseBody { get; }
-
-        /// <summary>
         ///     The raw HttpContext used during the scenario
         /// </summary>
         HttpContext Context { get; }
@@ -47,8 +40,6 @@ namespace Alba
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         T? ReadAsJson<T>();
-
-        T? Read<T>(string contentType);
     }
     #endregion
 

@@ -53,7 +53,7 @@ namespace Alba
         {
             return new(system, s =>
             {
-                s.WriteRequestBody(request, MimeType.Json.Value);
+                s.WriteJson(request);
                 s.Post.Json(request).ToUrl(url);
             });
         }

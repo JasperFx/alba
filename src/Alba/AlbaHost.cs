@@ -5,6 +5,7 @@ using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Alba;
+using Alba.Serialization;
 using Baseline;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -41,9 +42,19 @@ namespace Alba
             Server.AllowSynchronousIO = true;
 
             Extensions = extensions;
+            
+            var jsonInput = findInputFormatter("application/json");
+            var jsonOutput = findOutputFormatter("application/json");
 
-            Inputs = new Cache<string, InputFormatter?>(findInputFormatter);
-            Outputs = new Cache<string, OutputFormatter?>(findOutputFormatter);
+            if (jsonInput != null && jsonOutput != null)
+            {
+                MvcStrategy = new FormatterSerializer(this, jsonInput, jsonOutput);
+            }
+
+            MinimalApiStrategy = new SystemTextJsonSerializer(this);
+
+            DefaultJson = MvcStrategy ?? MinimalApiStrategy;
+
         }
 
         public AlbaHost(IHostBuilder builder, params IAlbaExtension[] extensions)
@@ -65,14 +76,23 @@ namespace Alba
             Extensions = extensions;
 
             foreach (var extension in extensions) extension.Start(this).GetAwaiter().GetResult();
-            
-            Inputs = new Cache<string, InputFormatter?>(findInputFormatter);
-            Outputs = new Cache<string, OutputFormatter?>(findOutputFormatter);
+
+            var jsonInput = findInputFormatter("application/json");
+            var jsonOutput = findOutputFormatter("application/json");
+
+            if (jsonInput != null && jsonOutput != null)
+            {
+                MvcStrategy = new FormatterSerializer(this, jsonInput, jsonOutput);
+            }
+
+            MinimalApiStrategy = new SystemTextJsonSerializer(this);
+
+            DefaultJson = MvcStrategy ?? MinimalApiStrategy;
         }
-
-        internal Cache<string, InputFormatter?> Inputs { get; }
-
-        internal Cache<string, OutputFormatter?> Outputs { get; }
+        
+        internal IJsonStrategy? MvcStrategy { get; }
+        internal IJsonStrategy MinimalApiStrategy { get; }
+        internal IJsonStrategy DefaultJson { get; }
 
         public IReadOnlyList<IAlbaExtension> Extensions { get; }
 
@@ -88,7 +108,7 @@ namespace Alba
 
         public Task StopAsync(CancellationToken cancellationToken = new())
         {
-            return _host.StopAsync(cancellationToken);
+            return _host == null ? Task.CompletedTask : _host.StopAsync(cancellationToken);
         }
 
         /// <summary>
@@ -240,7 +260,7 @@ namespace Alba
                 context.Response.Body.Position = 0;
             }
             
-            return new HttpResponseBody(this, context);
+            return new ScenarioResult(this, context);
         }
 
 
@@ -339,6 +359,18 @@ namespace Alba
             return host;
         }
 
+        /// <summary>
+        /// Creates an AlbaHost using an underlying WebApplicationFactory with the application defaults.
+        /// </summary>
+        /// <typeparam name="TEntryPoint">A type in the entry point assembly of the application. Typically the Startup or Program classes can be used.</typeparam>
+        /// <param name="configuration"></param>
+        /// <param name="extensions"></param>
+        /// <returns></returns>
+        public static Task<IAlbaHost> For<TEntryPoint>(params IAlbaExtension[] extensions) where TEntryPoint : class
+        {
+            return For<TEntryPoint>(_ => {}, extensions);
+        }
+
         private AlbaHost(IAlbaWebApplicationFactory factory, params IAlbaExtension[] extensions)
         {
             _factory = factory;
@@ -348,9 +380,18 @@ namespace Alba
             Server.AllowSynchronousIO = true;
 
             Extensions = extensions;
+            
+            var jsonInput = findInputFormatter("application/json");
+            var jsonOutput = findOutputFormatter("application/json");
 
-            Inputs = new Cache<string, InputFormatter?>(findInputFormatter);
-            Outputs = new Cache<string, OutputFormatter?>(findOutputFormatter);
+            if (jsonInput != null && jsonOutput != null)
+            {
+                MvcStrategy = new FormatterSerializer(this, jsonInput, jsonOutput);
+            }
+
+            MinimalApiStrategy = new SystemTextJsonSerializer(this);
+
+            DefaultJson = MvcStrategy ?? MinimalApiStrategy;
         }
 
 #endif
@@ -369,9 +410,22 @@ namespace Alba
                 .FirstOrDefault(x => x.SupportedMediaTypes.Contains(contentType));
         }
 
-        public Task<HttpContext> Invoke(Action<HttpContext> setup)
+        public async Task<HttpContext> Invoke(Action<HttpContext> setup)
         {
-            return Server.SendAsync(setup);
+            try
+            {
+                return await Server.SendAsync(setup);
+            }
+            catch (Exception e)
+            {
+                if (e.Message.Contains("The server has not been started or no web application was configured."))
+                {
+                    await Server.Host.StartAsync();
+                    return await Server.SendAsync(setup);
+                }
+
+                throw;
+            }
         }
 
         /// <summary>

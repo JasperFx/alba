@@ -4,11 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Security.Claims;
+using System.Text.Json;
 using Alba.Assertions;
 using Baseline;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc.Formatters;
- 
+using Microsoft.Extensions.DependencyInjection;
+
 namespace Alba
 {
     /// <summary>
@@ -30,7 +33,11 @@ namespace Alba
             _system = system ?? throw new ArgumentNullException(nameof(system));
             Body = new HttpRequestBody(system, this);
 
-            ConfigureHttpContext(c => { c.Request.Body = new MemoryStream(); });
+            ConfigureHttpContext(c =>
+            {
+                c.Features.Set<IHttpRequestBodyDetectionFeature>(new EnableRequestBody());
+                c.Request.Body = new MemoryStream();
+            });
         }
 
         internal Dictionary<string, object> Items { get; } = new();
@@ -126,7 +133,7 @@ namespace Alba
 
         SendExpression IUrlExpression.Json<T>(T input)
         {
-            WriteRequestBody(input, MimeType.Json.Value);
+            WriteJson(input);
 
             ConfigureHttpContext(x => x.Accepts(MimeType.Json.Value));
 
@@ -198,34 +205,18 @@ namespace Alba
         /// formatter in the underlying application that supports the supplied content type
         /// </summary>
         /// <param name="input">An input model that should be serialized to the HTTP request body</param>
-        /// <param name="contentType">Like application/json or text/xml</param>
         /// <typeparam name="T"></typeparam>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
-        public void WriteRequestBody<T>(T input, string contentType)
+        public void WriteJson<T>(T input)
         {
             if (input == null) throw new ArgumentNullException(nameof(input));
             
             ConfigureHttpContext(c =>
             {
-                var formatter = _system.Outputs[contentType];
-                if (formatter == null)
-                {
-                    throw new InvalidOperationException(
-                        $"Alba was not able to find a registered formatter for content type '{contentType}'. Either specify the body contents explicitly, or try registering 'services.AddMvcCore()'");
-                }
+                var stream = _system.DefaultJson.Write(input);
 
-                var stubContext = new DefaultHttpContext();
-                var stream = new RewindableStream();
-                stubContext.Response.Body = stream; // Has to be rewindable
-                var writer = new StreamWriter(stream);
-
-                var outputContext =
-                    new OutputFormatterWriteContext(stubContext, (s, e) => writer, typeof(T), input);
-
-                formatter.WriteAsync(outputContext).GetAwaiter().GetResult();
-
-                c.Request.ContentType = contentType;
+                c.Request.ContentType = "application/json";
                 c.Request.Body = stream;
                 c.Request.Body.Position = 0;
                 c.Request.ContentLength = c.Request.Body.Length;
@@ -387,5 +378,10 @@ namespace Alba
                 // Nothing!
             }
         }
+    }
+
+    internal class EnableRequestBody : IHttpRequestBodyDetectionFeature
+    {
+        public bool CanHaveBody { get; } = true;
     }
 }

@@ -23,7 +23,7 @@ namespace Alba.Testing
 
             context.Response.Body.Position = 0;
 
-            var body = new HttpResponseBody(null, context);
+            var body = new ScenarioResult(null, context);
 
             var message = body.ReadAsXml<MyMessage>();
             message.Name.ShouldBe("Declan");
@@ -40,7 +40,7 @@ namespace Alba.Testing
 
             context.Response.Body.Position = 0;
 
-            var body = new HttpResponseBody(null, context);
+            var body = new ScenarioResult(null, context);
 
             var root = body.ReadAsXml();
 
