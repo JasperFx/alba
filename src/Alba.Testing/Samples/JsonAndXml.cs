@@ -21,6 +21,19 @@ namespace Alba.Testing.Samples
                     .ToUrl("/person");
             });
         }
+        
+        public Task send_json_minimal_api(IAlbaHost host)
+        {
+            return host.Scenario(_ =>
+            {
+                // In a system that has mixed Minimal API and MVC usage,
+                // you may need to help Alba know if the route being tested
+                // should use Minimal API or MVC Core compliant JSON testing
+                _.Post
+                    .Json(new Input {Name = "Max", Age = 13}, JsonStyle.MinimalApi)
+                    .ToUrl("/person");
+            });
+        }
         #endregion
 
 

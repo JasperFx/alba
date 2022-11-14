@@ -7,6 +7,13 @@ Alba can support systems using both System.Text.Json and Newtonsoft.Json.
 
 ## Sending Json
 
+::: tip
+Minimal API and MVC Core endpoints do JSON serialization a little bit differently. When testing
+a system that has mixed Minimal API and MVC Core endpoints **and the JSON serialization has been customized
+within the application**, you may need to help Alba out
+a little bit to know what type of route you're testing.
+:::
+
 Since posting Json to a web server API is so common, Alba has some helpers for writing Json to the request:
 
 <!-- snippet: sample_sending_json -->
