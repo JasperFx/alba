@@ -1,1 +1,0 @@
-import{_ as n,c as s,o as a,a as t}from"./app.bb080ae4.js";const b='{"title":"Extension Model","description":"","frontmatter":{},"relativePath":"guide/extensions.md","lastUpdated":1644151252700}',e={},o=t("",9),p=[o];function c(l,i,u,r,k,m){return a(),s("div",null,p)}var h=n(e,[["render",c]]);export{b as __pageData,h as default};
