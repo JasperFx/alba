@@ -32,8 +32,21 @@ public Task send_json(IAlbaHost host)
             .ToUrl("/person");
     });
 }
+
+public Task send_json_minimal_api(IAlbaHost host)
+{
+    return host.Scenario(_ =>
+    {
+        // In a system that has mixed Minimal API and MVC usage,
+        // you may need to help Alba know if the route being tested
+        // should use Minimal API or MVC Core compliant JSON testing
+        _.Post
+            .Json(new Input {Name = "Max", Age = 13}, JsonStyle.MinimalApi)
+            .ToUrl("/person");
+    });
+}
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/JsonAndXml.cs#L10-L24' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_sending_json' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/JsonAndXml.cs#L10-L37' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_sending_json' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -53,12 +66,12 @@ public async Task read_json(IAlbaHost host)
 
     // This deserializes the response body to the
     // designated Output type
-    var output = result.ReadAsJson<Output>();
+    var output = result.ReadAsJsonAsync<Output>();
 
     // do assertions against the Output model
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/JsonAndXml.cs#L46-L60' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_read_json' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/JsonAndXml.cs#L59-L73' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_read_json' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 You can also use a shorthand syntax to skip `Scenario()` like this:
@@ -73,7 +86,7 @@ public async Task read_json_shorthand(IAlbaHost host)
     // do assertions against the Output model
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/JsonAndXml.cs#L62-L69' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_read_json_shorthand' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/JsonAndXml.cs#L75-L82' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_read_json_shorthand' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 This code snippet is functionally identical to the previous usage.

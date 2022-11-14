@@ -19,12 +19,12 @@ public async Task read_text(IAlbaHost host)
 
     // This deserializes the response body to the
     // designated Output type
-    var outputString = result.ReadAsText();
+    var outputString = await result.ReadAsTextAsync();
 
     // do assertions against the Output string
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/JsonAndXml.cs#L72-L86' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_read_text' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/JsonAndXml.cs#L85-L99' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_read_text' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 ## Assertions against the Response Text
@@ -46,7 +46,7 @@ public Task assert_on_content(IAlbaHost host)
     });
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/JsonAndXml.cs#L88-L100' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_assert_on_text' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/JsonAndXml.cs#L101-L113' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_assert_on_text' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 ## Sending Text
@@ -64,7 +64,7 @@ public Task send_text(IAlbaHost host)
     });
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/JsonAndXml.cs#L103-L111' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_send_text' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/JsonAndXml.cs#L116-L124' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_send_text' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 Do note that this also sets the `content-length` header to the string length and

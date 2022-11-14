@@ -42,7 +42,7 @@ public async Task build_host_from_Program()
     });
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Quickstart3.cs#L15-L32' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_quickstart3' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Quickstart3.cs#L13-L30' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_quickstart3' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 ::: tip
@@ -72,7 +72,7 @@ public async Task fluent_interface_bootstrapping()
     });
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Quickstart3.cs#L35-L51' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_shorthand_bootstrapping' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Quickstart3.cs#L33-L49' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_shorthand_bootstrapping' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 The `AlbaHost` is an extension of the standard .Net Core [IHost](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.hosting.ihost?view=dotnet-plat-ext-5.0) interface with a few additions for testing support.
@@ -96,9 +96,6 @@ As an example, consider this very small ASP.Net Core application utilizing the n
 <!-- snippet: sample_minimal_web_api -->
 <a id='snippet-sample_minimal_web_api'></a>
 ```cs
-using System;
-using Microsoft.AspNetCore.Builder;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -114,7 +111,7 @@ app.MapGet("/blowup", context => throw new Exception("Boo!"));
 
 app.Run();
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/WebApiNet6/Program.cs#L1-L22' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_minimal_web_api' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/WebApiNet6/Program.cs#L1-L19' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_minimal_web_api' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 Using this project configuration mechanism, Alba is still usable, but this time we need to utilize ASP.Net Core's [WebApplicationFactory](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.testing.webapplicationfactory-1?view=aspnetcore-6.0)
@@ -141,7 +138,7 @@ await using var host = await AlbaHost.For<global::Program>(x =>
     });
 });
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Acceptance/web_application_factory_usage.cs#L46-L55' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_bootstrapping_with_web_application_factory' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Acceptance/web_application_factory_usage.cs#L44-L53' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_bootstrapping_with_web_application_factory' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 You'll need to add the following to your `.csproj` for `Program` to be discoverable by the test project:
@@ -207,13 +204,6 @@ The response contains the raw `HttpContext` and several helper methods to help y
 public interface IScenarioResult
 {
     /// <summary>
-    ///     Helpers to interrogate or read the HttpResponse.Body
-    ///     of the request
-    /// </summary>
-    [Obsolete("Use the methods directly on IScenarioResult instead")]
-    HttpResponseBody ResponseBody { get; }
-
-    /// <summary>
     ///     The raw HttpContext used during the scenario
     /// </summary>
     HttpContext Context { get; }
@@ -225,10 +215,22 @@ public interface IScenarioResult
     string ReadAsText();
 
     /// <summary>
+    /// Read the contents of the HttpResponse.Body as text
+    /// </summary>
+    /// <returns></returns>
+    Task<string> ReadAsTextAsync();
+
+    /// <summary>
     /// Read the contents of the HttpResponse.Body into an XmlDocument object
     /// </summary>
     /// <returns></returns>
     XmlDocument? ReadAsXml();
+
+    /// <summary>
+    /// Read the contents of the HttpResponse.Body into an XmlDocument object
+    /// </summary>
+    /// <returns></returns>
+    Task<XmlDocument?> ReadAsXmlAsync();
 
     /// <summary>
     /// Deserialize the contents of the HttpResponse.Body into an object
@@ -246,10 +248,17 @@ public interface IScenarioResult
     /// <returns></returns>
     T? ReadAsJson<T>();
 
-    T? Read<T>(string contentType);
+    /// <summary>
+    /// Deserialize the contents of the HttpResponse.Body into an object
+    /// of type T using the configured Json serializer
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    Task<T?> ReadAsJsonAsync<T>();
+    
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba/IScenarioResult.cs#L8-L53' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_iscenarioresult' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba/IScenarioResult.cs#L9-L66' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_iscenarioresult' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 ::: tip

@@ -128,10 +128,16 @@ oidc = new OpenConnectClientCredentials
     Scope = Config.ApiScope
 };
 
-theHost = WebAppSecuredWithJwt.Program.CreateHostBuilder(new string[0])
+theHost = WebAppSecuredWithJwt.Program.CreateHostBuilder(Array.Empty<string>()).ConfigureServices((ctx, collection) => collection.Configure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme,
+        x =>
+        {
+            x.Authority = _fixture.IdentityServer.BaseAddress.ToString();
+            x.BackchannelHttpHandler = _fixture.IdentityServer.CreateHandler();
+            x.RequireHttpsMetadata = false;
+        }))
     .StartAlba(oidc);
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/OpenConnectClientCredentialsTests.cs#L23-L38' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_openconnectclientcredentials' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/OpenConnectClientCredentialsTests.cs#L25-L46' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_openconnectclientcredentials' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 To use the OIDC [Resource Owner Password Grant](https://docs.identityserver.io/en/release/quickstarts/2_resource_owner_passwords.html) workflow, 
@@ -149,10 +155,16 @@ oidc = new OpenConnectUserPassword
     Password = "alice"
 };
 
-theHost = WebAppSecuredWithJwt.Program.CreateHostBuilder(new string[0])
+theHost = WebAppSecuredWithJwt.Program.CreateHostBuilder(Array.Empty<string>()).ConfigureServices((ctx, collection) => collection.Configure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme,
+        x =>
+        {
+            x.Authority = _fixture.IdentityServer.BaseAddress.ToString();
+            x.BackchannelHttpHandler = _fixture.IdentityServer.CreateHandler();
+            x.RequireHttpsMetadata = false;
+        }))
     .StartAlba(oidc);
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/OpenConnectUserPasswordTests.cs#L23-L37' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_applying_openconnectuserpassword' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/OpenConnectUserPasswordTests.cs#L25-L45' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_applying_openconnectuserpassword' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 With the `OpenConnectUserPassword` extension, you can also use a different user name and password for a single scenario with the `Scenario.UserAndPasswordIs(user, password)`
@@ -190,7 +202,7 @@ public async Task post_to_a_secured_endpoint_with_jwt_with_overridden_user_and_p
     user.FindFirst("name").Value.ShouldBe("Bob Smith");
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/OpenConnectUserPasswordTests.cs#L146-L177' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_override_user_password' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/OpenConnectUserPasswordTests.cs#L154-L185' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_override_user_password' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 ## Windows Authentication

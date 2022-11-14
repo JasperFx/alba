@@ -35,31 +35,28 @@ There's a second overload that attempts to use an object and its properties to p
 [Fact]
 public async Task can_bind_to_form_data()
 {
+    await using var system = AlbaHost.ForStartup<Startup>();
 
-    using (var system = AlbaHost.ForStartup<Startup>())
+    var input = new InputModel {
+        One = "one",
+        Two = "two",
+        Three = "three"
+    };
+
+    await system.Scenario(_ =>
     {
+        _.Post.FormData(input)
+            .ToUrl("/gateway/insert");
+    });
 
-        var input = new InputModel {
-            One = "one",
-            Two = "two",
-            Three = "three"
-        };
+    GatewayController.LastInput.ShouldNotBeNull();
 
-        await system.Scenario(_ =>
-        {
-            _.Post.FormData(input)
-                .ToUrl("/gateway/insert");
-        });
-
-        GatewayController.LastInput.ShouldNotBeNull();
-
-        GatewayController.LastInput.One.ShouldBe("one");
-        GatewayController.LastInput.Two.ShouldBe("two");
-        GatewayController.LastInput.Three.ShouldBe("three");
-    }
+    GatewayController.LastInput.One.ShouldBe("one");
+    GatewayController.LastInput.Two.ShouldBe("two");
+    GatewayController.LastInput.Three.ShouldBe("three");
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Acceptance/data_binding_in_mvc_app.cs#L12-L41' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_binding_against_a_model' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Acceptance/data_binding_in_mvc_app.cs#L12-L38' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_binding_against_a_model' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 Do note that this only adds first level properties, so if you need to deeper accessors like add "Prop1.Prop2.Prop3,"
