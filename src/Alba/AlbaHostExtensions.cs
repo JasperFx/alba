@@ -49,12 +49,12 @@ namespace Alba
         /// <param name="url"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static ResponseExpression PostJson<T>(this IAlbaHost system, T request, string url) where T : class
+        public static ResponseExpression PostJson<T>(this IAlbaHost system, T request, string url, JsonStyle? jsonStyle = null) where T : class
         {
             return new(system, s =>
             {
-                s.WriteJson(request);
-                s.Post.Json(request).ToUrl(url);
+                s.WriteJson(request, jsonStyle);
+                s.Post.Json(request, jsonStyle).ToUrl(url);
             });
         }
 
@@ -67,9 +67,9 @@ namespace Alba
         /// <param name="url"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static ResponseExpression PutJson<T>(this IAlbaHost system, T request, string url) where T : class
+        public static ResponseExpression PutJson<T>(this IAlbaHost system, T request, string url, JsonStyle? jsonStyle = null) where T : class
         {
-            return new(system, s => { s.Put.Json(request).ToUrl(url); });
+            return new(system, s => { s.Put.Json(request, jsonStyle).ToUrl(url); });
         }
 
         /// <summary>

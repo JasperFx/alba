@@ -43,4 +43,15 @@ public class end_to_end_with_json_serialization : IAsyncLifetime
 
         result.Id.ShouldBe(guid);
     }
+    
+    [Fact]
+    public async Task automatic_json_serialization_2()
+    {
+        var guid = Guid.NewGuid();
+
+        var result = await _host.PostJson(new PostedMessage(guid), "/go", JsonStyle.MinimalApi)
+            .Receive<OutputMessage>();
+
+        result.Id.ShouldBe(guid);
+    }
 }

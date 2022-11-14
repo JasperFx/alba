@@ -29,6 +29,12 @@ namespace Alba.Testing.Acceptance
         }
 
         [Fact]
+        public void services_are_non_null()
+        {
+            _system.Services.ShouldNotBeNull();
+        }
+
+        [Fact]
         public Task bootstrap_and_execute_a_request_through_an_aspnet_core_app()
         {
             return run(_ =>
@@ -216,8 +222,6 @@ namespace Alba.Testing.Acceptance
                     .ToUrl("/api/json");
 
             });
-
-
 
             var person = result.ReadAsJson<Person>();
 

@@ -114,7 +114,7 @@ namespace Alba
         /// <summary>
         ///     The root IoC container of the running application
         /// </summary>
-        public IServiceProvider Services => _host?.Services ?? _factory!.Services;
+        public IServiceProvider Services => _host?.Services ?? _factory!.Services ?? Server.Services;
 
         public void Dispose()
         {

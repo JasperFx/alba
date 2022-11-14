@@ -4,6 +4,19 @@ using System.Linq.Expressions;
  
 namespace Alba
 {
+    public enum JsonStyle
+    {
+        /// <summary>
+        /// Use the MVC Core formatter for JSON serialization
+        /// </summary>
+        Mvc,
+        
+        /// <summary>
+        /// Use the Minimal API mechanism for JSON serialization
+        /// </summary>
+        MinimalApi
+    }
+    
     public interface IUrlExpression
     {
 
@@ -20,9 +33,11 @@ namespace Alba
         /// input type and Http method
         /// </summary>
         /// <param name="input"></param>
+        /// <param name="jsonStyle"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        SendExpression Json<T>(T input) where T : class;
+        SendExpression Json<T>(T input, JsonStyle? jsonStyle = null) where T : class;
+
 
         /// <summary>
         /// Writes the input object into Xml to the Http Request, and

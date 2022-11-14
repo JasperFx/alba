@@ -131,9 +131,9 @@ namespace Alba
             return new SendExpression(this);
         }
 
-        SendExpression IUrlExpression.Json<T>(T input)
+        SendExpression IUrlExpression.Json<T>(T input, JsonStyle? jsonStyle = null)
         {
-            WriteJson(input);
+            WriteJson(input, jsonStyle);
 
             ConfigureHttpContext(x => x.Accepts(MimeType.Json.Value));
 
@@ -205,16 +205,22 @@ namespace Alba
         /// formatter in the underlying application that supports the supplied content type
         /// </summary>
         /// <param name="input">An input model that should be serialized to the HTTP request body</param>
+        /// <param name="jsonStyle"></param>
         /// <typeparam name="T"></typeparam>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
-        public void WriteJson<T>(T input)
+        public void WriteJson<T>(T input, JsonStyle? jsonStyle)
         {
             if (input == null) throw new ArgumentNullException(nameof(input));
             
+            var jsonStrategy = _system.DefaultJson;
+            if (jsonStyle == JsonStyle.Mvc) jsonStrategy = _system.MvcStrategy;
+            if (jsonStyle == JsonStyle.MinimalApi) jsonStrategy = _system.MinimalApiStrategy;
+            
             ConfigureHttpContext(c =>
             {
-                var stream = _system.DefaultJson.Write(input);
+                
+                var stream = jsonStrategy.Write(input);
 
                 c.Request.ContentType = "application/json";
                 c.Request.Body = stream;
