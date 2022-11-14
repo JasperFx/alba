@@ -53,7 +53,7 @@ namespace Alba.Testing.Samples
 
             // This deserializes the response body to the
             // designated Output type
-            var output = result.ReadAsJson<Output>();
+            var output = result.ReadAsJsonAsync<Output>();
 
             // do assertions against the Output model
         }
@@ -79,7 +79,7 @@ namespace Alba.Testing.Samples
 
             // This deserializes the response body to the
             // designated Output type
-            var outputString = result.ReadAsText();
+            var outputString = await result.ReadAsTextAsync();
 
             // do assertions against the Output string
         }

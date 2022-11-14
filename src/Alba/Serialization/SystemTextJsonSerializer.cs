@@ -1,5 +1,6 @@
 using System.IO;
 using System.Text.Json;
+using System.Threading.Tasks;
 using Baseline;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -26,6 +27,12 @@ namespace Alba.Serialization
         public T Read<T>(ScenarioResult response)
         {
             var json = response.Context.Response.Body.ReadAllText();
+            return JsonSerializer.Deserialize<T>(json, _options);
+        }
+
+        public async Task<T> ReadAsync<T>(ScenarioResult scenarioResult)
+        {
+            var json = await scenarioResult.Context.Response.Body.ReadAllTextAsync();
             return JsonSerializer.Deserialize<T>(json, _options);
         }
     }

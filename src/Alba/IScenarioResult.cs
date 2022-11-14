@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using System.Xml;
 using Microsoft.AspNetCore.Http;
 
@@ -20,10 +21,22 @@ namespace Alba
         string ReadAsText();
 
         /// <summary>
+        /// Read the contents of the HttpResponse.Body as text
+        /// </summary>
+        /// <returns></returns>
+        Task<string> ReadAsTextAsync();
+
+        /// <summary>
         /// Read the contents of the HttpResponse.Body into an XmlDocument object
         /// </summary>
         /// <returns></returns>
         XmlDocument? ReadAsXml();
+
+        /// <summary>
+        /// Read the contents of the HttpResponse.Body into an XmlDocument object
+        /// </summary>
+        /// <returns></returns>
+        Task<XmlDocument?> ReadAsXmlAsync();
 
         /// <summary>
         /// Deserialize the contents of the HttpResponse.Body into an object
@@ -40,6 +53,15 @@ namespace Alba
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         T? ReadAsJson<T>();
+
+        /// <summary>
+        /// Deserialize the contents of the HttpResponse.Body into an object
+        /// of type T using the configured Json serializer
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        Task<T?> ReadAsJsonAsync<T>();
+        
     }
     #endregion
 

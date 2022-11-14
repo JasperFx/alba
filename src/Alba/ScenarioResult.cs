@@ -1,14 +1,10 @@
 using System;
 using System.IO;
-using System.Linq;
-using System.Text.Json;
+using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
 using Baseline;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Formatters;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Alba
 {
@@ -24,13 +20,78 @@ namespace Alba
 
         public HttpContext Context { get; }
 
-        /// <summary>
-        /// Read the contents of the HttpResponse.Body as text
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc />
         public string ReadAsText()
         {
             return Read(s => s.ReadAllText());
+        }
+
+        /// <inheritdoc />
+        public Task<string> ReadAsTextAsync()
+        {
+            return ReadAsync(s => s.ReadAllTextAsync());
+        }
+
+        /// <inheritdoc />
+        public XmlDocument? ReadAsXml()
+        {
+            Func<Stream, XmlDocument?> read = s =>
+            {
+                var body = s.ReadAllText();
+
+                if (body.Contains("Error"))
+                {
+                    return null;
+                }
+
+                var document = new XmlDocument();
+                document.LoadXml(body);
+
+                return document;
+            };
+
+            return Read(read);
+        }
+
+        /// <inheritdoc />
+        public Task<XmlDocument?> ReadAsXmlAsync()
+        {
+            Func<Stream, Task<XmlDocument?>> read = async s =>
+            {
+                var body = await s.ReadAllTextAsync();
+
+                if (body.Contains("Error"))
+                {
+                    return null;
+                }
+
+                var document = new XmlDocument();
+                document.LoadXml(body);
+
+                return document;
+            };
+
+            return Read(read);
+        }
+
+        /// <inheritdoc />
+        public T? ReadAsXml<T>() where T : class
+        {
+            Context.Response.Body.Position = 0;
+            var serializer = new XmlSerializer(typeof(T));
+            return serializer.Deserialize(Context.Response.Body) as T;
+        }
+
+        /// <inheritdoc />
+        public T? ReadAsJson<T>()
+        {
+            return _system.DefaultJson.Read<T>(this);
+        }
+
+        /// <inheritdoc />
+        public Task<T?> ReadAsJsonAsync<T>()
+        {
+            return _system.DefaultJson.ReadAsync<T>(this);
         }
 
         public T Read<T>(Func<Stream, T> read)
@@ -46,57 +107,35 @@ namespace Alba
                 stream.Position = 0;
                 Context.Response.Body = stream;
             }
-            
+
             var returnValue = read(Context.Response.Body);
             Context.Response.Body.Position = 0;
 
             return returnValue;
         }
 
-        /// <summary>
-        /// Read the contents of the HttpResponse.Body into an XmlDocument object
-        /// </summary>
-        /// <returns></returns>
-        public XmlDocument? ReadAsXml()
+        public async Task<T> ReadAsync<T>(Func<Stream, Task<T>> read)
         {
-            Func<Stream, XmlDocument?> read = s =>
+            if (Context.Response.Body.CanSeek || Context.Response.Body is MemoryStream)
             {
-                var body = s.ReadAllText();
+                Context.Response.Body.Position = 0;
+            }
+            else
+            {
+                var stream = new MemoryStream();
+                await Context.Response.Body.CopyToAsync(stream);
+                stream.Position = 0;
+                Context.Response.Body = stream;
+            }
 
-                if (body.Contains("Error")) return null;
-
-                var document = new XmlDocument();
-                document.LoadXml(body);
-
-                return document;
-            };
-
-            return Read(read);
+            try
+            {
+                return await read(Context.Response.Body);
+            }
+            finally
+            {
+                Context.Response.Body.Position = 0;
+            }
         }
-
-        /// <summary>
-        /// Deserialize the contents of the HttpResponse.Body into an object
-        /// of type T using the built in XmlSerializer
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public T? ReadAsXml<T>() where T : class
-        {
-            Context.Response.Body.Position = 0;
-            var serializer = new XmlSerializer(typeof (T));
-            return serializer.Deserialize(Context.Response.Body) as T;
-        }
-
-        /// <summary>
-        /// Deserialize the contents of the HttpResponse.Body into an object
-        /// of type T using the configured Json serializer
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public T? ReadAsJson<T>()
-        {
-            return _system.DefaultJson.Read<T>(this);
-        }
-
     }
 }
