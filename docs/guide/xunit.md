@@ -35,7 +35,7 @@ you'll get *unusual* behavior. Also note that you really need to dispose the `Al
 
 If your application startup time becomes a performance problem, and especially in larger test suites, you probably want to share the `AlbaHost` object between tests. xUnit helpfully provides the [class fixture feature](https://xunit.net/docs/shared-context) for just this use case. 
 
-If you're using **.NET 5**, then build out your `AlbaHost` in a class like this:
+If you're using **Startup.cs**, then build out your `AlbaHost` in a class like this:
 
 <!-- snippet: sample_xUnit_Fixture -->
 <a id='snippet-sample_xunit_fixture'></a>

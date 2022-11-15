@@ -28,13 +28,21 @@ namespace Alba.Serialization
         public T Read<T>(ScenarioResult response)
         {
             var json = response.Context.Response.Body.ReadAllText();
-            return JsonSerializer.Deserialize<T>(json, _options);
+            var res = JsonSerializer.Deserialize<T>(json, _options);
+
+            if (res is not null) return res;
+
+            throw new AlbaJsonFormatterException(json);
         }
 
-        public async Task<T> ReadAsync<T>(ScenarioResult scenarioResult)
+        public async Task<T> ReadAsync<T>(ScenarioResult response)
         {
-            var json = await scenarioResult.Context.Response.Body.ReadAllTextAsync();
-            return JsonSerializer.Deserialize<T>(json, _options);
+            var json = await response.Context.Response.Body.ReadAllTextAsync();
+            var res = JsonSerializer.Deserialize<T>(json, _options);
+
+            if (res is not null) return res;
+
+            throw new AlbaJsonFormatterException(json);
         }
     }
 }

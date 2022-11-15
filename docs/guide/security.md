@@ -6,7 +6,7 @@ Alba 3.0+ removed the previous, built in support for windows authentication.
 
 ## Stub out all authentication
 
-To just stub out all possible authentication inside your ASP.Net Core system in testing, you can use the new
+To just stub out all possible authentication inside your ASP.NET Core system in testing, you can use the new
 `AuthenticationStub` to automatically authenticate every request and build out a `ClaimsPrincipal` to your specification.
 
 Here's a sample of bootstrapping an `AlbaHost` with the `AuthenticationStub`:
@@ -109,7 +109,7 @@ All of these extensions depend on the `JwtBearerOptions` configuration from your
 `Authority` property of `JwtBearerOptions` for the Url of the OIDC token server.
 :::
 
-If you want to test your ASP.Net Core web services that are authenticated by an [Open Id Connect](https://openid.net/connect/) workflow **and**
+If you want to test your ASP.NET Core web services that are authenticated by an [Open Id Connect](https://openid.net/connect/) workflow **and**
 you also want to be testing through the authentication from the real OIDC identity server, Alba v5 comes with new
 extensions to automatically fetch and apply JWT tokens to scenario tests.
 

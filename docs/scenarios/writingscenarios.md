@@ -1,6 +1,4 @@
-# Scenario Testing
-
-## Writing your first scenario
+# Writing your first scenario 
 
 ::: tip
 Alba is not directly coupled to MVC Core in any way and executes requests through your application without any knowledge of the middleware,
@@ -152,13 +150,13 @@ It's a little more complicated, but the same goal is realized here. Allow the te
 Don't stop here though, Alba also gives you the ability to declaratively assert on elements of the `HttpResponse` like expected header values, status codes, and assertions against the response body. In addition, Alba provides a lot of helper facilities to work with the raw `HttpResponse` data.
 
 ::: tip
-As of Alba V5, the scenario support is no longer hard coded to use Newtonsoft.Json for Json serialization and will instead use the configured
+The scenario support is not hard coded to use Newtonsoft.Json for Json serialization and will instead use the configured
 Json formatters within your application. Long story short, Alba now supports applications using System.Text.Json as well as Newtonsoft.Json.
 :::
 
 ## Testing Hello, World
 
-Now let's say that you built the obligatory hello world application for ASP.Net Core shown below:
+Now let's say that you built the obligatory hello world application for ASP.NET Core shown below:
 
 <!-- snippet: sample_HelloWorldApp -->
 <a id='snippet-sample_helloworldapp'></a>
@@ -211,7 +209,7 @@ The sample up above bootstraps the application defined by our `Startup` and exec
 A *scenario* in Alba defines how the HTTP request should be constructed (the request body, headers, url) and optionally gives you
 the ability to express assertions against the expected HTTP response.
 
-Alba comes with plenty of helpers in its [fluent interface](https://www.martinfowler.com/bliki/FluentInterface.html) to work with the `HttpRequest` and `HttpResponse`, or you can work directly with the underlying ASP.Net Core objects:
+Alba comes with plenty of helpers in its [fluent interface](https://www.martinfowler.com/bliki/FluentInterface.html) to work with the `HttpRequest` and `HttpResponse`, or you can work directly with the underlying ASP.NET Core objects:
 
 <!-- snippet: sample_should_say_hello_world_with_raw_objects -->
 <a id='snippet-sample_should_say_hello_world_with_raw_objects'></a>

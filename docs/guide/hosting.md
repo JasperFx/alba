@@ -1,6 +1,22 @@
+# Getting Started
+
+::: tip
+As of 7.0+, Alba only supports .NET 6.0 or greater. You can still use older versions of Alba to test previous versions of ASP.NET Core.
+:::
+
+## What is Alba?
+
+Alba is a class library that you use in combination with unit testing tools like [xUnit.Net](https://xunit.github.io) or [NUnit](https://docs.nunit.org/) to author integration tests
+against ASP.NET Core HTTP endpoints. Alba *scenarios* actually exercise the full ASP.NET Core application by running HTTP requests through your ASP.NET system **in memory** using the 
+built in [ASP.NET Core TestServer](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-7.0).
+
+You can certainly write integration tests by hand using the lower level `TestServer` and `HttpClient`, but you'll write much less code with Alba to author integration tests against
+ASP.NET Core. Moreover, Alba *scenarios* were meant to be declarative to maximize the readability of the integration tests, making those tests much more valuable as living
+technical documentation.
+
 # Alba Setup
 
-To get started with Alba, just add a Nuget reference to the Alba library to your testing project that should also be referencing the ASP.Net Core
+To get started with Alba, just add a Nuget reference to the Alba library to your testing project that should also be referencing the ASP.NET Core
 project that you're going to be testing. When using Alba, you actually bootstrap your web application in memory using either the "older"
 [HostBuilder model](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.hosting.hostbuilder?view=dotnet-plat-ext-6.0) or the newer [WebApplicationFactory](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.testing.webapplicationfactory-1?view=aspnetcore-6.0) model , then pass the 
 root `IHost` of the running application to Alba's `AlbaHost`, which will be the entry point to using Alba in all of your integration tests.
@@ -9,18 +25,18 @@ root `IHost` of the running application to Alba's `AlbaHost`, which will be the 
 
 ![AlbaHost Class Diagram](./../public/ClassDiagram.drawio.png)
 
-`AlbaHost` implements the ASP.Net Core [IHost](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.hosting.ihost?view=dotnet-plat-ext-6.0) interface
+`AlbaHost` implements the ASP.NET Core [IHost](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.hosting.ihost?view=dotnet-plat-ext-6.0) interface
 for convenience and familiarity. Internally it is tracking the actual `IHost` for your application running in memory as well
-as an instance of the ASP.Net Core [TestServer](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-6.0) that will actually be used to execute HTTP requests against the application in memory.
+as an instance of the ASP.NET Core [TestServer](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-6.0) that will actually be used to execute HTTP requests against the application in memory.
 
 In the following sections I'll show you how to bootstrap
-your ASP.Net Core system with Alba and start authoring specifications with the `AlbaHost` type.
+your ASP.NET Core system with Alba and start authoring specifications with the `AlbaHost` type.
 
 
 ## Initializing AlbaHost with IHostBuilder
 
 
-To bootstrap a **ASP.NET Core 5** application, create a `AlbaHost` using the definition of your `IHostBuilder` as shown below:
+To bootstrap a **ASP.NET Core Startup.cs-style** application, create a `AlbaHost` using the definition of your `IHostBuilder` as shown below:
 
 <!-- snippet: sample_Quickstart3 -->
 <a id='snippet-sample_quickstart3'></a>
@@ -85,13 +101,10 @@ application is expensive and you will probably want to reuse the `IAlbaHost` bet
 
 ## Initializing AlbaHost with WebApplicationFactory
 
-::: tip
-This functionality was added in Alba 6.0 and is only supported in .Net 6+.
-:::
 
 For **ASP.NET Core 6**, Microsoft introduced a new mechanism for configuring and bootstrapping web applications using [WebApplicationBuilder](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.builder.webapplicationbuilder?view=aspnetcore-6.0).
 
-As an example, consider this very small ASP.Net Core application utilizing the new [Minimal API](https://docs.microsoft.com/en-us/aspnet/core/tutorials/min-web-api?view=aspnetcore-6.0&tabs=visual-studio) approach:
+As an example, consider this very small ASP.NET Core application utilizing the new [Minimal API](https://docs.microsoft.com/en-us/aspnet/core/tutorials/min-web-api?view=aspnetcore-6.0&tabs=visual-studio) approach:
 
 <!-- snippet: sample_minimal_web_api -->
 <a id='snippet-sample_minimal_web_api'></a>
@@ -114,7 +127,7 @@ app.Run();
 <sup><a href='https://github.com/JasperFx/alba/blob/master/src/WebApiNet6/Program.cs#L1-L19' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_minimal_web_api' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
-Using this project configuration mechanism, Alba is still usable, but this time we need to utilize ASP.Net Core's [WebApplicationFactory](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.testing.webapplicationfactory-1?view=aspnetcore-6.0)
+Using this project configuration mechanism, Alba is still usable, but this time we need to utilize ASP.NET Core's [WebApplicationFactory](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.testing.webapplicationfactory-1?view=aspnetcore-6.0)
 tooling. **First though, and this is important, you will need to allow your test project access to the internal types of your application under test**. You
 can do that by either using the [InternalsVisibleToAttribute](https://docs.microsoft.com/en-us/dotnet/api/system.runtime.compilerservices.internalsvisibletoattribute?view=net-6.0) in your main
 application project, or use this within the project file of your application where "ProjectName.Tests" would be your testing project name:
@@ -125,7 +138,7 @@ application project, or use this within the project file of your application whe
   </ItemGroup>
 ```
 
-Back to Alba. Alba tries to make the usage of this new configuration option in ASP.Net Core a little easier with this syntax:
+Back to Alba. Alba tries to make the usage of this new configuration option in ASP.NET Core a little easier with this syntax:
 
 <!-- snippet: sample_bootstrapping_with_web_application_factory -->
 <a id='snippet-sample_bootstrapping_with_web_application_factory'></a>
@@ -194,7 +207,7 @@ public async Task should_say_hello_world()
 <!-- endSnippet -->
 
 
-The single `Action<Scenario>` argument should completely configure the ASP.Net `HttpContext` for the request and apply
+The single `Action<Scenario>` argument should completely configure the ASP.NET `HttpContext` for the request and apply
 any of the declarative response assertions. The actual HTTP request happens inside of the `Scenario()` method. 
 The response contains the raw `HttpContext` and several helper methods to help you parse or read information from the response body:
 

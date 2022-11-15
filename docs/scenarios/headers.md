@@ -15,7 +15,7 @@ public Task setting_request_headers(IAlbaHost system)
 {
     return system.Scenario(_ =>
     {
-        _.SetRequestHeader("foo", "bar");
+        _.WithRequestHeader("foo", "bar");
         
     });
 }
