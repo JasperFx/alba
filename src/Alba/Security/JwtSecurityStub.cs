@@ -97,7 +97,7 @@ namespace Alba.Security
             }
         }
 
-        void IPostConfigureOptions<JwtBearerOptions>.PostConfigure(string name, JwtBearerOptions options)
+        void IPostConfigureOptions<JwtBearerOptions>.PostConfigure(string? name, JwtBearerOptions options)
         {
             // This will deactivate the callout to the OIDC server
             options.ConfigurationManager =
@@ -112,7 +112,7 @@ namespace Alba.Security
             options.TokenValidationParameters = validationParameters;
 
             options.Authority = null;
-            options.MetadataAddress = null;
+            options.MetadataAddress = null!;
 
             _options = options;
         }

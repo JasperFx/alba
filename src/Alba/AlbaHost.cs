@@ -363,7 +363,6 @@ namespace Alba
         /// Creates an AlbaHost using an underlying WebApplicationFactory with the application defaults.
         /// </summary>
         /// <typeparam name="TEntryPoint">A type in the entry point assembly of the application. Typically the Startup or Program classes can be used.</typeparam>
-        /// <param name="configuration"></param>
         /// <param name="extensions"></param>
         /// <returns></returns>
         public static Task<IAlbaHost> For<TEntryPoint>(params IAlbaExtension[] extensions) where TEntryPoint : class

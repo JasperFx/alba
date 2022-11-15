@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Baseline;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Alba.Serialization
 {
@@ -12,9 +13,9 @@ namespace Alba.Serialization
 
         public SystemTextJsonSerializer(IAlbaHost host)
         {
-            var options = host.Services.GetService<Microsoft.AspNetCore.Http.Json.JsonOptions>();
+            var options = host.Services.GetService<IOptions<Microsoft.AspNetCore.Http.Json.JsonOptions>> ();
 
-            _options = options?.SerializerOptions ?? new JsonSerializerOptions();
+            _options = options?.Value.SerializerOptions ?? new JsonSerializerOptions(JsonSerializerDefaults.Web);
         }
 
         public Stream Write<T>(T body)

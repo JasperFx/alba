@@ -47,6 +47,7 @@ namespace Alba
         /// <param name="system"></param>
         /// <param name="request"></param>
         /// <param name="url"></param>
+        /// <param name="jsonStyle"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public static ResponseExpression PostJson<T>(this IAlbaHost system, T request, string url, JsonStyle? jsonStyle = null) where T : class
@@ -65,6 +66,7 @@ namespace Alba
         /// <param name="system"></param>
         /// <param name="request"></param>
         /// <param name="url"></param>
+        /// <param name="jsonStyle"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public static ResponseExpression PutJson<T>(this IAlbaHost system, T request, string url, JsonStyle? jsonStyle = null) where T : class
