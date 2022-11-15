@@ -12,17 +12,7 @@ namespace Alba
         /// <returns></returns>
         public static long? ContentLength(this IHeaderDictionary headers)
         {
-            long length;
-            var rawValue = headers[HeaderNames.ContentLength];
-
-            if (rawValue.Count == 1 &&
-                !string.IsNullOrWhiteSpace(rawValue[0]) &&
-                TryParseInt64(rawValue[0], out length))
-            {
-                return length;
-            }
-
-            return null;
+            return headers.ContentLength;
         }
 
         /// <summary>

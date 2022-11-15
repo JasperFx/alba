@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Description>Supercharged integration testing for ASP.NET Core HTTP endpoints</Description>
     <AssemblyTitle>Alba</AssemblyTitle>
-    <Version>7.0.0</Version>
+    <Version>7.0.1</Version>
     <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
     <AssemblyName>Alba</AssemblyName>
     <PackageId>Alba</PackageId>
@@ -13,7 +13,7 @@
     <RepositoryUrl>git://github.com/JasperFx/alba</RepositoryUrl>
     <OutputType>library</OutputType>
     <PackageIconUrl>https://avatars2.githubusercontent.com/u/10048186?v=3&amp;s=200</PackageIconUrl>
-    <langversion>9</langversion>
+    <langversion>10</langversion>
     <nullable>enable</nullable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>CS1591;</NoWarn>
@@ -23,7 +23,6 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Baseline" Version="4.1.0" />
     <PackageReference Include="IdentityModel" Version="6.0.0" />
-    
     <PackageReference Include="DotNet.ReproducibleBuilds" Version="1.1.1" PrivateAssets="All" />
   </ItemGroup>
 
