@@ -7,9 +7,9 @@ Alba comes with some out of the box assertions to declaratively check expected r
 <!-- snippet: sample_asserting_redirects -->
 <a id='snippet-sample_asserting_redirects'></a>
 ```cs
-public Task asserting_redirects(IAlbaHost system)
+public async Task asserting_redirects(IAlbaHost system)
 {
-    return system.Scenario(_ =>
+    await system.Scenario(_ =>
     {
         // should redirect to the url
         _.RedirectShouldBe("/redirect");

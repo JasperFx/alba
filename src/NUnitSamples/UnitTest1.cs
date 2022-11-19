@@ -13,28 +13,20 @@ namespace NUnitSamples
     [SetUpFixture]
     public class Application
     {
-        // Make this lazy so you don't build it out
-        // when you don't need it.
-        private static readonly Lazy<IAlbaHost> _host;
-
-        static Application()
+        [OneTimeSetUp]
+        public async Task Init()
         {
-            _host = new Lazy<IAlbaHost>(() => Program
-                .CreateHostBuilder(Array.Empty<string>())
-                .StartAlba());
+            Host = await AlbaHost.For<WebApp.Program>();
         }
-
-        public static IAlbaHost AlbaHost => _host.Value;
+        
+        public static IAlbaHost Host { get; private set; }
 
         // Make sure that NUnit will shut down the AlbaHost when
         // all the projects are finished
         [OneTimeTearDown]
         public void Teardown()
         {
-            if (_host.IsValueCreated)
-            {
-                _host.Value.Dispose();
-            }
+            Host.Dispose();
         }
     }
 
@@ -46,7 +38,7 @@ namespace NUnitSamples
         [Test]
         public Task happy_path()
         {
-            return Application.AlbaHost.Scenario(_ =>
+            return Application.Host.Scenario(_ =>
             {
                 _.Get.Url("/fake/okay");
                 _.StatusCodeShouldBeOk();
