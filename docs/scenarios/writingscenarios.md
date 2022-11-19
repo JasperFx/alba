@@ -1,7 +1,7 @@
-# Writing your first scenario 
+# Writing Scenarios
 
 ::: tip
-Alba is not directly coupled to MVC Core in any way and executes requests through your application without any knowledge of the middleware,
+Alba executes requests through your application without any knowledge of the middleware,
 controllers, or the other mechanisms that may be handling the request in your application.
 :::
 
@@ -173,7 +173,7 @@ public class Startup
     }
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Quickstart.cs#L215-L227' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_helloworldapp' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Quickstart.cs#L201-L213' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_helloworldapp' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 We can now use Alba to declare an integration test for our Hello, World application within an [xUnit](http://xunit.github.io/)
@@ -185,24 +185,20 @@ testing project:
 [Fact]
 public async Task should_say_hello_world()
 {
-    await using var host = await Program
-        .CreateHostBuilder(Array.Empty<string>())
-        
-        // This extension method is just a shorter version
-        // of new AlbaHost(builder)
-        .StartAlbaAsync();
+    // Alba will automatically manage the lifetime of the underlying host
+    await using var host = await AlbaHost.For<global::Program>();
     
     // This runs an HTTP request and makes an assertion
     // about the expected content of the response
     await host.Scenario(_ =>
     {
         _.Get.Url("/");
-        _.ContentShouldBe("Hello, World!");
+        _.ContentShouldBe("Hello World!");
         _.StatusCodeShouldBeOk();
     });
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Quickstart.cs#L30-L50' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_should_say_hello_world' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Quickstart.cs#L23-L39' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_should_say_hello_world' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 The sample up above bootstraps the application defined by our `Startup` and executes a *Scenario* against the running system.
@@ -217,24 +213,19 @@ Alba comes with plenty of helpers in its [fluent interface](https://www.martinfo
 [Fact]
 public async Task should_say_hello_world_with_raw_objects()
 {
-    using (var system = AlbaHost.ForStartup<Startup>())
+    await using var host = await AlbaHost.For<global::Program>();
+    var response = await host.Scenario(_ =>
     {
-        var response = await system.Scenario(_ =>
-        {
-            _.Get.Url("/");
-            _.StatusCodeShouldBeOk();
-        });
+        _.Get.Url("/");
+        _.StatusCodeShouldBeOk();
+    });
 
-        response.ReadAsText()
-            .ShouldBe("Hello, World!");
+    // you can go straight at the HttpContext & do assertions directly on the responseStream
+    Stream responseStream = response.Context.Response.Body;
 
-        // or you can go straight at the HttpContext
-        Stream responseStream = response.Context.Response.Body;
-        // do assertions directly on the responseStream
-    }
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Quickstart.cs#L88-L108' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_should_say_hello_world_with_raw_objects' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Quickstart.cs#L61-L76' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_should_say_hello_world_with_raw_objects' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

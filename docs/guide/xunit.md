@@ -8,24 +8,20 @@ If you are writing only a few Alba specifications in your testing project and yo
 [Fact]
 public async Task should_say_hello_world()
 {
-    await using var host = await Program
-        .CreateHostBuilder(Array.Empty<string>())
-        
-        // This extension method is just a shorter version
-        // of new AlbaHost(builder)
-        .StartAlbaAsync();
+    // Alba will automatically manage the lifetime of the underlying host
+    await using var host = await AlbaHost.For<global::Program>();
     
     // This runs an HTTP request and makes an assertion
     // about the expected content of the response
     await host.Scenario(_ =>
     {
         _.Get.Url("/");
-        _.ContentShouldBe("Hello, World!");
+        _.ContentShouldBe("Hello World!");
         _.StatusCodeShouldBeOk();
     });
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Quickstart.cs#L30-L50' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_should_say_hello_world' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Quickstart.cs#L23-L39' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_should_say_hello_world' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 Do note that your `[Fact]` method needs to be declared as `async Task` to ensure that xUnit finishes the specification before disposing the system or

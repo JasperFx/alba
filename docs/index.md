@@ -7,7 +7,7 @@ hero:
   actions:
     - theme: brand
       text: Get Started
-      link: /guide/hosting
+      link: /guide/gettingstarted
     - theme: alt
       text: View on GitHub
       link: https://github.com/JasperFx/Alba

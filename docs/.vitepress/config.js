@@ -52,18 +52,18 @@ export default defineConfig({
 
 function getGuideSidebar() {
     return [
-        { text: 'Alba Setup', link: '/guide/hosting' },
+        { text: 'Alba Setup', link: '/guide/gettingstarted' },
         { text: 'Integrating with xUnit.Net', link: '/guide/xunit' },
         { text: 'Integrating with NUnit', link: '/guide/nunit' },
         { text: 'Extension Model', link: '/guide/extensions' },
         { text: 'Security Extensions', link: '/guide/security' },
-        { text: 'History', link: '/guide/history' },
+        { text: 'History & Architecture', link: '/guide/history' },
     ]
 }
 
 function getScenarioSidebar() {
     return [
-        { text: 'Writing your first scenario', link: '/scenarios/writingscenarios' },
+        { text: 'Writing Scenarios', link: '/scenarios/writingscenarios' },
         { text: 'Set up and tear down actions', link: '/scenarios/setup' },
         { text: 'Specifying Urls', link: '/scenarios/urls' },
         { text: 'HTTP Status Codes', link: '/scenarios/statuscode' },
