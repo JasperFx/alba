@@ -34,9 +34,9 @@ You have these built in operations for asserting on the response body text:
 <!-- snippet: sample_assert_on_text -->
 <a id='snippet-sample_assert_on_text'></a>
 ```cs
-public Task assert_on_content(IAlbaHost host)
+public async Task assert_on_content(IAlbaHost host)
 {
-    return host.Scenario(_ =>
+    await host.Scenario(_ =>
     {
         _.ContentShouldBe("exactly this");
 
@@ -56,9 +56,9 @@ Lastly, you can send text to an HTTP endpoint with this syntax:
 <!-- snippet: sample_send_text -->
 <a id='snippet-sample_send_text'></a>
 ```cs
-public Task send_text(IAlbaHost host)
+public async Task send_text(IAlbaHost host)
 {
-    return host.Scenario(_ =>
+    await host.Scenario(_ =>
     {
         _.Post.Text("some text").ToUrl("/textdata");
     });

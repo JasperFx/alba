@@ -27,7 +27,7 @@ public async Task build_host_from_Program()
     });
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Quickstart3.cs#L13-L30' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_quickstart3' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Quickstart3.cs#L20-L37' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_quickstart3' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 ::: tip
@@ -57,13 +57,8 @@ public async Task fluent_interface_bootstrapping()
     });
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Quickstart3.cs#L33-L49' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_shorthand_bootstrapping' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Quickstart3.cs#L40-L56' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_shorthand_bootstrapping' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 The `AlbaHost` is an extension of the standard .Net Core [IHost](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.hosting.ihost?view=dotnet-plat-ext-5.0) interface with a few additions for testing support.
 While you can always access the underlying `TestServer` through the `IAlbaHost.Server` property, you're mostly going to be using the `Scenario()` method to write Alba "Scenario" tests.
-
-::: tip
-To make the samples in this page easier to follow, I'm bootstrapping the `IAlbaHost` within each test. In real usage, bootstrapping your
-application is expensive and you will probably want to reuse the `IAlbaHost` between tests. See the integrations with NUnit and xUnit.Net for examples.
-:::

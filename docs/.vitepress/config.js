@@ -57,20 +57,21 @@ function getGuideSidebar() {
         { text: 'Integrating with NUnit', link: '/guide/nunit' },
         { text: 'Extension Model', link: '/guide/extensions' },
         { text: 'Security Extensions', link: '/guide/security' },
+        { text: 'Alternative Bootstrapping', link:'/guide/bootstrapping'},
         { text: 'History & Architecture', link: '/guide/history' },
     ]
 }
 
 function getScenarioSidebar() {
     return [
-        { text: 'Writing Scenarios', link: '/scenarios/writingscenarios' },
-        { text: 'Set up and tear down actions', link: '/scenarios/setup' },
+        { text: 'Writing Scenarios', link: '/scenarios/writingscenarios' },      
         { text: 'Specifying Urls', link: '/scenarios/urls' },
         { text: 'HTTP Status Codes', link: '/scenarios/statuscode' },
         { text: 'HTTP Headers', link: '/scenarios/headers' },
-        { text: 'Json Web Services', link: '/scenarios/json' },
+        { text: 'JSON Web Services', link: '/scenarios/json' },
         { text: 'Xml Web Services', link: '/scenarios/xml' },
         { text: 'Plain Text Web Services', link: '/scenarios/text' },
+        { text: 'Before and After Actions', link: '/scenarios/setup' },
         { text: 'Custom Assertions', link: '/scenarios/assertions' },
         { text: 'Redirects', link: '/scenarios/redirects' },
     ]

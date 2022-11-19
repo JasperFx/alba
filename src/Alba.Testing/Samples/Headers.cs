@@ -6,9 +6,9 @@ namespace Alba.Testing.Samples
     public class Headers
     {
         #region sample_conneg_helpers
-        public Task conneg_helpers(IAlbaHost system)
+        public async Task conneg_helpers(IAlbaHost system)
         {
-            return system.Scenario(_ =>
+            await system.Scenario(_ =>
             {
                 // Set the accepts header on the request
                 _.Get.Url("/").Accepts("text/plain");
@@ -27,9 +27,9 @@ namespace Alba.Testing.Samples
         #endregion
 
         #region sample_setting_request_headers
-        public Task setting_request_headers(IAlbaHost system)
+        public async Task setting_request_headers(IAlbaHost system)
         {
-            return system.Scenario(_ =>
+            await system.Scenario(_ =>
             {
                 _.WithRequestHeader("foo", "bar");
                 
@@ -39,9 +39,9 @@ namespace Alba.Testing.Samples
 
 
         #region sample_asserting_on_header_values
-        public Task asserting_on_header_values(IAlbaHost system)
+        public async Task asserting_on_header_values(IAlbaHost system)
         {
-            return system.Scenario(_ =>
+            await system.Scenario(_ =>
             {
                 // Assert that there is one and only one value equal to "150"
                 _.Header("content-length").SingleValueShouldEqual("150");

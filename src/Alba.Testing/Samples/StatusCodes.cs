@@ -5,9 +5,9 @@ namespace Alba.Testing.Samples
     public class StatusCodes
     {
         #region sample_check_the_status_code
-        public Task check_the_status(IAlbaHost system)
+        public async Task check_the_status(IAlbaHost system)
         {
-            return system.Scenario(_ =>
+            await system.Scenario(_ =>
             {
                 // Shorthand for saying that the StatusCode should be 200
                 _.StatusCodeShouldBeOk();

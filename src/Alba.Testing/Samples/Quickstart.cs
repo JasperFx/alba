@@ -94,67 +94,8 @@ namespace Alba.Testing.Samples
             });
 
             var text = await res.Context.Response.Body.ReadAllTextAsync();
-            text.ShouldBe("Hello, World!");
+            text.ShouldBe("Hello World!");
             
-        }
-
-        [Fact]
-        public async Task should_say_hello_world_raw()
-        {
-            #region sample_programmatic_bootstrapping
-            using var system = AlbaHost.For(_ =>
-            {
-                _.Configure(app =>
-                {
-                    app.Run(c => c.Response.WriteAsync("Hello, World!"));
-                });
-            });
-
-            // or pass an IHostBuilder into the constructor function
-            // of SystemUnderTest
-
-            var builder = Host
-                .CreateDefaultBuilder()
-                .ConfigureWebHostDefaults(c => c.UseStartup<Startup>())
-                .ConfigureServices(services =>
-                {
-                    // override any service registrations you need,
-                    // like maybe using stubs for problematic dependencies
-                });
-
-            using var system2 = new AlbaHost(builder);
-
-            #endregion
-
-
-            await system.Scenario(_ =>
-            {
-                _.Get.Url("/");
-                _.ContentShouldContain("Hello, World!");
-            });
-        }
-
-
-
-
-        public void setting_up_system_under_test_examples()
-        {
-            #region sample_override_the_content_path
-            
-            // Alba has a helper for overriding the root path
-            var system = AlbaHost
-                .ForStartup<Startup>(rootPath:"c:\\path_to_your_actual_application");
-
-            // or do it with idiomatic ASP.Net Core
-
-            var builder = Host.CreateDefaultBuilder()
-                .ConfigureWebHostDefaults(c=> c.UseStartup<Startup>())
-                .UseContentRoot("c:\\path_to_your_actual_application");
-
-            var system2 = new AlbaHost(builder);
-
-            #endregion
-
         }
 
         public async Task configuration_overrides()
@@ -197,23 +138,5 @@ namespace Alba.Testing.Samples
             
         }
     }
-
-    #region sample_HelloWorldApp
-    public class Startup
-    {
-        public void Configure(IApplicationBuilder builder)
-        {
-            builder.Run(context =>
-            {
-                context.Response.Headers["content-type"] = "text/plain";
-                return context.Response.WriteAsync("Hello, World!");
-            });
-        }
-    }
-    #endregion
     
-    
-
-
-
 }

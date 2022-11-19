@@ -95,9 +95,7 @@ let's test the GET method in that controller above by passing a url and verifyin
 [Fact]
 public async Task get_happy_path()
 {
-    var builder = Program.CreateHostBuilder(Array.Empty<string>());
-
-    await using var system = new AlbaHost(builder);
+    await using var system = await AlbaHost.For<WebApp.Program>();
     
     // Issue a request, and check the results
     var result = await system.GetAsJson<OperationResult>("/math/add/3/4");
@@ -105,7 +103,7 @@ public async Task get_happy_path()
     result.Answer.ShouldBe(7);
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/using_json_helpers.cs#L21-L34' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_get_json' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/using_json_helpers.cs#L14-L25' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_get_json' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 So what just happened in that test? First off, the call to `new AlbaHost(IHostBuilder)` bootstraps your web application.
@@ -127,7 +125,7 @@ Alright then, let's try posting JSON in and examining the JSON out:
 [Fact]
 public async Task post_and_expect_response()
 {
-    using var system = AlbaHost.ForStartup<WebApp.Startup>();
+    await using var system = await AlbaHost.For<WebApp.Program>();
     var request = new OperationRequest
     {
         Type = OperationType.Multiply,
@@ -142,7 +140,7 @@ public async Task post_and_expect_response()
     result.Method.ShouldBe("POST");
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/using_json_helpers.cs#L36-L54' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_post_json_get_json' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/using_json_helpers.cs#L27-L45' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_post_json_get_json' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 It's a little more complicated, but the same goal is realized here. Allow the test author to work in terms of the application model objects while still exercising the entire HTTP middleware stack.
@@ -153,80 +151,3 @@ Don't stop here though, Alba also gives you the ability to declaratively assert 
 The scenario support is not hard coded to use Newtonsoft.Json for Json serialization and will instead use the configured
 Json formatters within your application. Long story short, Alba now supports applications using System.Text.Json as well as Newtonsoft.Json.
 :::
-
-## Testing Hello, World
-
-Now let's say that you built the obligatory hello world application for ASP.NET Core shown below:
-
-<!-- snippet: sample_HelloWorldApp -->
-<a id='snippet-sample_helloworldapp'></a>
-```cs
-public class Startup
-{
-    public void Configure(IApplicationBuilder builder)
-    {
-        builder.Run(context =>
-        {
-            context.Response.Headers["content-type"] = "text/plain";
-            return context.Response.WriteAsync("Hello, World!");
-        });
-    }
-}
-```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Quickstart.cs#L201-L213' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_helloworldapp' title='Start of snippet'>anchor</a></sup>
-<!-- endSnippet -->
-
-We can now use Alba to declare an integration test for our Hello, World application within an [xUnit](http://xunit.github.io/)
-testing project:
-
-<!-- snippet: sample_should_say_hello_world -->
-<a id='snippet-sample_should_say_hello_world'></a>
-```cs
-[Fact]
-public async Task should_say_hello_world()
-{
-    // Alba will automatically manage the lifetime of the underlying host
-    await using var host = await AlbaHost.For<global::Program>();
-    
-    // This runs an HTTP request and makes an assertion
-    // about the expected content of the response
-    await host.Scenario(_ =>
-    {
-        _.Get.Url("/");
-        _.ContentShouldBe("Hello World!");
-        _.StatusCodeShouldBeOk();
-    });
-}
-```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Quickstart.cs#L23-L39' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_should_say_hello_world' title='Start of snippet'>anchor</a></sup>
-<!-- endSnippet -->
-
-The sample up above bootstraps the application defined by our `Startup` and executes a *Scenario* against the running system.
-A *scenario* in Alba defines how the HTTP request should be constructed (the request body, headers, url) and optionally gives you
-the ability to express assertions against the expected HTTP response.
-
-Alba comes with plenty of helpers in its [fluent interface](https://www.martinfowler.com/bliki/FluentInterface.html) to work with the `HttpRequest` and `HttpResponse`, or you can work directly with the underlying ASP.NET Core objects:
-
-<!-- snippet: sample_should_say_hello_world_with_raw_objects -->
-<a id='snippet-sample_should_say_hello_world_with_raw_objects'></a>
-```cs
-[Fact]
-public async Task should_say_hello_world_with_raw_objects()
-{
-    await using var host = await AlbaHost.For<global::Program>();
-    var response = await host.Scenario(_ =>
-    {
-        _.Get.Url("/");
-        _.StatusCodeShouldBeOk();
-    });
-
-    // you can go straight at the HttpContext & do assertions directly on the responseStream
-    Stream responseStream = response.Context.Response.Body;
-
-}
-```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Quickstart.cs#L61-L76' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_should_say_hello_world_with_raw_objects' title='Start of snippet'>anchor</a></sup>
-<!-- endSnippet -->
-
-
-

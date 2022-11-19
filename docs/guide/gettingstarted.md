@@ -199,7 +199,7 @@ host.BeforeEach(httpContext =>
         // do any kind of cleanup after each scenario completes
     });
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Quickstart.cs#L162-L186' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_configuration_overrides' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Quickstart.cs#L103-L127' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_configuration_overrides' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 A couple notes:

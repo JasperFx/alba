@@ -8,9 +8,9 @@ namespace Alba.Testing.Samples
     public class JsonAndXml
     {
         #region sample_sending_json
-        public Task send_json(IAlbaHost host)
+        public async Task send_json(IAlbaHost host)
         {
-            return host.Scenario(_ =>
+            await host.Scenario(_ =>
             {
                 // This serializes the Input object to json,
                 // writes it to the HttpRequest.Body, and sets
@@ -22,9 +22,9 @@ namespace Alba.Testing.Samples
             });
         }
         
-        public Task send_json_minimal_api(IAlbaHost host)
+        public async Task send_json_minimal_api(IAlbaHost host)
         {
-            return host.Scenario(_ =>
+            await host.Scenario(_ =>
             {
                 // In a system that has mixed Minimal API and MVC usage,
                 // you may need to help Alba know if the route being tested
@@ -38,9 +38,9 @@ namespace Alba.Testing.Samples
 
 
         #region sample_sending_xml
-        public Task send_xml(IAlbaHost host)
+        public async Task send_xml(IAlbaHost host)
         {
-            return host.Scenario(_ =>
+            await host.Scenario(_ =>
             {
                 // This serializes the Input object to xml,
                 // writes it to the HttpRequest.Body, and sets
@@ -99,9 +99,9 @@ namespace Alba.Testing.Samples
         #endregion
 
         #region sample_assert_on_text
-        public Task assert_on_content(IAlbaHost host)
+        public async Task assert_on_content(IAlbaHost host)
         {
-            return host.Scenario(_ =>
+            await host.Scenario(_ =>
             {
                 _.ContentShouldBe("exactly this");
 
@@ -114,9 +114,9 @@ namespace Alba.Testing.Samples
 
 
         #region sample_send_text
-        public Task send_text(IAlbaHost host)
+        public async Task send_text(IAlbaHost host)
         {
-            return host.Scenario(_ =>
+            await host.Scenario(_ =>
             {
                 _.Post.Text("some text").ToUrl("/textdata");
             });
@@ -140,7 +140,7 @@ namespace Alba.Testing.Samples
             // do assertions against the Output model
 
             // OR, if you just want the XmlDocument itself:
-            XmlDocument document = result.ReadAsXml();
+            XmlDocument document = await result.ReadAsXmlAsync();
         }
         #endregion
     }

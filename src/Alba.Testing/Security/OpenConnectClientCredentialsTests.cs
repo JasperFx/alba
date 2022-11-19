@@ -12,16 +12,19 @@ using Program = WebAppSecuredWithJwt.Program;
 namespace Alba.Testing.Security
 {
     [Collection("OIDC")]
-    public class OpenConnectClientCredentialsTests : IDisposable
+    public class OpenConnectClientCredentialsTests : IAsyncLifetime
     {
-        private readonly IdentityServerFixture _fixture;
-        private readonly OpenConnectClientCredentials oidc;
-        private readonly IAlbaHost theHost;
+        private IdentityServerFixture _fixture;
+        private OpenConnectClientCredentials oidc = null!;
+        private IAlbaHost theHost = null!;
 
         public OpenConnectClientCredentialsTests(IdentityServerFixture fixture)
         {
             _fixture = fixture;
+        }
 
+        public async Task InitializeAsync()
+        {
             #region sample_OpenConnectClientCredentials
 
             oidc = new OpenConnectClientCredentials
@@ -34,16 +37,23 @@ namespace Alba.Testing.Security
                 Scope = Config.ApiScope
             };
 
-            theHost = WebAppSecuredWithJwt.Program.CreateHostBuilder(Array.Empty<string>()).ConfigureServices((ctx, collection) => collection.Configure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme,
-                    x =>
-                    {
-                        x.Authority = _fixture.IdentityServer.BaseAddress.ToString();
-                        x.BackchannelHttpHandler = _fixture.IdentityServer.CreateHandler();
-                        x.RequireHttpsMetadata = false;
-                    }))
-                .StartAlba(oidc);
-
+            theHost = await AlbaHost.For<WebAppSecuredWithJwt.Program>(x =>
+            {
+                x.ConfigureServices((ctx, collection) =>
+                    collection.Configure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme,
+                        options =>
+                        {
+                            options.Authority = _fixture.IdentityServer.BaseAddress.ToString();
+                            options.BackchannelHttpHandler = _fixture.IdentityServer.CreateHandler();
+                            options.RequireHttpsMetadata = false;
+                        }));
+            }, oidc);
             #endregion
+        }
+
+        public async Task DisposeAsync()
+        {
+            await theHost.DisposeAsync();
         }
 
         [Fact]
@@ -71,7 +81,7 @@ namespace Alba.Testing.Security
 
             Should.Throw<Exception>(() => extensions.AssertValid());
         }
-        
+
         [Fact]
         public void not_valid_with_no_client_secret()
         {
@@ -84,7 +94,7 @@ namespace Alba.Testing.Security
 
             Should.Throw<Exception>(() => extensions.AssertValid());
         }
-        
+
         [Fact]
         public void not_valid_with_no_scope()
         {
@@ -105,21 +115,21 @@ namespace Alba.Testing.Security
 
             token.ShouldNotBeNull();
         }
-        
+
         [Fact]
         public async Task post_to_a_secured_endpoint_with_jwt_from_extension()
         {
             // Building the input body
             var input = new Numbers
             {
-                Values = new[] {2, 3, 4}
+                Values = new[] { 2, 3, 4 }
             };
 
             var response = await theHost.Scenario(x =>
             {
                 // Alba deals with Json serialization for us
                 x.Post.Json(input).ToUrl("/math");
-                
+
                 // Enforce that the HTTP Status Code is 200 Ok
                 x.StatusCodeShouldBeOk();
             });
@@ -127,11 +137,6 @@ namespace Alba.Testing.Security
             var output = response.ReadAsJson<Result>();
             output.Sum.ShouldBe(9);
             output.Product.ShouldBe(24);
-        }
-
-        public void Dispose()
-        {
-            theHost?.Dispose();
         }
     }
 }

@@ -13,9 +13,9 @@ as xml to the web request:
 <!-- snippet: sample_sending_xml -->
 <a id='snippet-sample_sending_xml'></a>
 ```cs
-public Task send_xml(IAlbaHost host)
+public async Task send_xml(IAlbaHost host)
 {
-    return host.Scenario(_ =>
+    await host.Scenario(_ =>
     {
         // This serializes the Input object to xml,
         // writes it to the HttpRequest.Body, and sets
@@ -55,7 +55,7 @@ public async Task read_xml(IAlbaHost host)
     // do assertions against the Output model
 
     // OR, if you just want the XmlDocument itself:
-    XmlDocument document = result.ReadAsXml();
+    XmlDocument document = await result.ReadAsXmlAsync();
 }
 ```
 <sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/JsonAndXml.cs#L128-L145' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_read_xml' title='Start of snippet'>anchor</a></sup>

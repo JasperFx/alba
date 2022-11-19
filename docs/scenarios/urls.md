@@ -6,9 +6,9 @@ depending upon the HTTP method:
 <!-- snippet: sample_specify_the_url_directly -->
 <a id='snippet-sample_specify_the_url_directly'></a>
 ```cs
-public Task specify_url(AlbaHost system)
+public async Task specify_url(AlbaHost system)
 {
-    return system.Scenario(_ =>
+    await system.Scenario(_ =>
     {
         // Directly specify the Url against a given
         // HTTP method

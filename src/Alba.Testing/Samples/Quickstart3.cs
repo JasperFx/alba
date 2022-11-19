@@ -1,12 +1,20 @@
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
 using Microsoft.Extensions.Configuration;
 using Xunit;
+using Microsoft.Extensions.Hosting;
 
 namespace Alba.Testing.Samples
 {
+    public static class Program
+    {
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<WebApp.Startup>(); });
+    }
 
     public class Quickstart3
     {
@@ -24,7 +32,7 @@ namespace Alba.Testing.Samples
             await host.Scenario(s =>
             {
                 s.Get.Url("/");
-                s.ContentShouldBe("Hello, World!");
+                s.ContentShouldBe("Hello World!");
             });
         }
         #endregion
@@ -43,7 +51,7 @@ namespace Alba.Testing.Samples
             await host.Scenario(s =>
             {
                 s.Get.Url("/");
-                s.ContentShouldBe("Hello, World!");
+                s.ContentShouldBe("Hello World!");
             });
         }
         #endregion

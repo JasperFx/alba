@@ -9,22 +9,13 @@ using Xunit;
 
 namespace Alba.Testing
 {
-    public static class Program
-    {
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<WebApp.Startup>(); });
-    }
-    
     public class using_json_helpers
     {
         #region sample_get_json
         [Fact]
         public async Task get_happy_path()
         {
-            var builder = Program.CreateHostBuilder(Array.Empty<string>());
-
-            await using var system = new AlbaHost(builder);
+            await using var system = await AlbaHost.For<WebApp.Program>();
             
             // Issue a request, and check the results
             var result = await system.GetAsJson<OperationResult>("/math/add/3/4");
@@ -37,7 +28,7 @@ namespace Alba.Testing
         [Fact]
         public async Task post_and_expect_response()
         {
-            using var system = AlbaHost.ForStartup<WebApp.Startup>();
+            await using var system = await AlbaHost.For<WebApp.Program>();
             var request = new OperationRequest
             {
                 Type = OperationType.Multiply,
@@ -56,7 +47,7 @@ namespace Alba.Testing
         [Fact]
         public async Task put_and_expect_response()
         {
-            using var system = AlbaHost.ForStartup<WebApp.Startup>();
+            await using var system = await AlbaHost.For<WebApp.Program>();
             var request = new OperationRequest
             {
                 Type = OperationType.Subtract,

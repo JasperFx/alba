@@ -5,9 +5,9 @@ namespace Alba.Testing.Samples
     public class Urls
     {
         #region sample_specify_the_url_directly
-        public Task specify_url(AlbaHost system)
+        public async Task specify_url(AlbaHost system)
         {
-            return system.Scenario(_ =>
+            await system.Scenario(_ =>
             {
                 // Directly specify the Url against a given
                 // HTTP method

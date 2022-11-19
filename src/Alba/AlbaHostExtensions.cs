@@ -8,7 +8,7 @@ namespace Alba
 {
     public static class AlbaHostExtensions
     {
-#if NET6_0_OR_GREATER
+
         /// <summary>
         /// Start an AlbaHost for a configured WebApplicationBuilder and WebApplication
         /// </summary>
@@ -22,7 +22,7 @@ namespace Alba
         {
             return AlbaHost.For(builder, configureRoutes, extensions);
         }
-#endif
+
         
         /// <summary>
         /// Start an AlbaHost for the supplied IHostBuilder
