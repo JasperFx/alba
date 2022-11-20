@@ -1,6 +1,6 @@
 # Integrating with NUnit
 
-When using Alba within [NUnit testing projects](), you probably want to reuse the `IAlbaHost` across tests and test fixtures because
+When using Alba within NUnit testing projects, you probably want to reuse the `IAlbaHost` across tests and test fixtures because
 `AlbaHost` is relatively expensive to create (it's bootstrapping your whole application more than Alba itself is slow). To do that with NUnit, you could
 track a single `AlbaHost` on a static class like this one:
 
