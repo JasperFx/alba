@@ -203,3 +203,4 @@ host.BeforeEach(httpContext =>
 <!-- endSnippet -->
 
 Alba does not do anything to set the hosting environment, but you can do that yourself via the `IWebHostBuilder`
+
