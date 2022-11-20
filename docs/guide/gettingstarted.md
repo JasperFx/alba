@@ -1,9 +1,5 @@
 # Getting Started
 
-::: tip
-As of 7.0+, Alba only supports .NET 6.0 or greater. You can still use older versions of Alba to test previous versions of ASP.NET Core.
-:::
-
 ## What is Alba?
 
 Alba is a class library that you use in combination with unit testing tools like [xUnit.Net](https://xunit.github.io) or [NUnit](https://docs.nunit.org/) to author integration tests
@@ -12,7 +8,11 @@ built in [ASP.NET Core TestServer](https://docs.microsoft.com/en-us/aspnet/core/
 
 You can certainly write integration tests by hand using the lower level `TestServer` and `HttpClient`, but you'll write much less code with Alba. Moreover, Alba *scenarios* were meant to be declarative to maximize the readability of the integration tests, making those tests much more valuable as living technical documentation.
 
-# Alba Setup
+::: tip
+As of 7.0+, Alba only supports .NET 6.0 or greater. You can still use older versions of Alba to test previous versions of ASP.NET Core.
+:::
+
+## Alba Setup
 
 To get started with Alba, add a Nuget reference to the Alba library to your testing project that also references the ASP.NET Core
 project that you're going to be testing. 
