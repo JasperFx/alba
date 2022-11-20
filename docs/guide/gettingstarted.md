@@ -170,7 +170,7 @@ Do note that Alba quietly "rewinds" the `HttpContext.Response.Body` stream so th
 
 ## Customizing the System for Testing
 
-You can configure your application with mocked services or unique configuration like so:
+You can configure your application with mocked services or test-specific configuration like so:
 
 <!-- snippet: sample_configuration_overrides -->
 <a id='snippet-sample_configuration_overrides'></a>
@@ -202,10 +202,4 @@ host.BeforeEach(httpContext =>
 <sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Quickstart.cs#L103-L127' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_configuration_overrides' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
-A couple notes:
-
-* Alba does not do anything to set the hosting environment, but you can do that yourself against `IWebHostBuilder`
-* If you build a `AlbaHost` with `AlbaHost.ForStartup<T>()`, it will try to guess at the content root path by the name of assembly
-  that holds the `Startup` class, but you may need to override that yourself. 
-
-
+Alba does not do anything to set the hosting environment, but you can do that yourself via the `IWebHostBuilder`
