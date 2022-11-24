@@ -11,17 +11,20 @@ using Xunit;
 namespace Alba.Testing.Security
 {
     [Collection("OIDC")]
-    public class OpenConnectUserPasswordTests : IDisposable
+    public class OpenConnectUserPasswordTests : IAsyncLifetime
     {
         private readonly IdentityServerFixture _fixture;
-        private readonly OpenConnectUserPassword oidc;
-        private readonly IAlbaHost theHost;
+        private OpenConnectUserPassword oidc = null!;
+        private IAlbaHost theHost = null!;
 
-        
+
         public OpenConnectUserPasswordTests(IdentityServerFixture fixture)
         {
             _fixture = fixture;
+        }
 
+        public async Task InitializeAsync()
+        {
             #region sample_applying_OpenConnectUserPassword
 
             oidc = new OpenConnectUserPassword
@@ -33,18 +36,26 @@ namespace Alba.Testing.Security
                 Password = "alice"
             };
 
-            theHost = WebAppSecuredWithJwt.Program.CreateHostBuilder(Array.Empty<string>()).ConfigureServices((ctx, collection) => collection.Configure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme,
-                    x =>
-                    {
-                        x.Authority = _fixture.IdentityServer.BaseAddress.ToString();
-                        x.BackchannelHttpHandler = _fixture.IdentityServer.CreateHandler();
-                        x.RequireHttpsMetadata = false;
-                    }))
-                .StartAlba(oidc);
+            theHost = await AlbaHost.For<WebAppSecuredWithJwt.Program>(x =>
+            {
+                x.ConfigureServices((ctx, collection) =>
+                    collection.Configure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme,
+                        options =>
+                        {
+                            options.Authority = _fixture.IdentityServer.BaseAddress.ToString();
+                            options.BackchannelHttpHandler = _fixture.IdentityServer.CreateHandler();
+                            options.RequireHttpsMetadata = false;
+                        }));
+            }, oidc);
 
             #endregion
         }
-        
+
+        public async Task DisposeAsync()
+        {
+            await theHost.DisposeAsync();
+        }
+
         [Fact]
         public void assert_valid_happy_path()
         {
@@ -183,10 +194,5 @@ namespace Alba.Testing.Security
         }
 
         #endregion
-
-        public void Dispose()
-        {
-            theHost?.Dispose();
-        }
     }
 }

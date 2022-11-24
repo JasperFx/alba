@@ -1,9 +1,7 @@
 # Sending and Checking Json
 
-::: tip
-As of Alba v5, the Json serialization is done with the configured input and output formatters within the underlying application. This means that
+JSON serialization is done with the configured input and output formatters within the underlying application. This means that
 Alba can support systems using both System.Text.Json and Newtonsoft.Json.
-:::
 
 ## Sending Json
 
@@ -19,9 +17,9 @@ Since posting Json to a web server API is so common, Alba has some helpers for w
 <!-- snippet: sample_sending_json -->
 <a id='snippet-sample_sending_json'></a>
 ```cs
-public Task send_json(IAlbaHost host)
+public async Task send_json(IAlbaHost host)
 {
-    return host.Scenario(_ =>
+    await host.Scenario(_ =>
     {
         // This serializes the Input object to json,
         // writes it to the HttpRequest.Body, and sets
@@ -33,9 +31,9 @@ public Task send_json(IAlbaHost host)
     });
 }
 
-public Task send_json_minimal_api(IAlbaHost host)
+public async Task send_json_minimal_api(IAlbaHost host)
 {
-    return host.Scenario(_ =>
+    await host.Scenario(_ =>
     {
         // In a system that has mixed Minimal API and MVC usage,
         // you may need to help Alba know if the route being tested
@@ -102,7 +100,7 @@ to quickly post and receive results from a web service:
 [Fact]
 public async Task post_and_expect_response()
 {
-    using var system = AlbaHost.ForStartup<WebApp.Startup>();
+    await using var system = await AlbaHost.For<WebApp.Program>();
     var request = new OperationRequest
     {
         Type = OperationType.Multiply,
@@ -117,7 +115,7 @@ public async Task post_and_expect_response()
     result.Method.ShouldBe("POST");
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/using_json_helpers.cs#L36-L54' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_post_json_get_json' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/using_json_helpers.cs#L27-L45' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_post_json_get_json' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 There are similar helpers for other HTTP verbs like `PUT` and `DELETE`.

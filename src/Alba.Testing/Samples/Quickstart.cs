@@ -18,92 +18,60 @@ using Xunit;
 namespace Alba.Testing.Samples
 {
     
-    public static class Program
-    {
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
-    }
-
     public class Quickstart
     {
         #region sample_should_say_hello_world
         [Fact]
         public async Task should_say_hello_world()
         {
-            await using var host = await Program
-                .CreateHostBuilder(Array.Empty<string>())
-                
-                // This extension method is just a shorter version
-                // of new AlbaHost(builder)
-                .StartAlbaAsync();
+            // Alba will automatically manage the lifetime of the underlying host
+            await using var host = await AlbaHost.For<global::Program>();
             
             // This runs an HTTP request and makes an assertion
             // about the expected content of the response
             await host.Scenario(_ =>
             {
                 _.Get.Url("/");
-                _.ContentShouldBe("Hello, World!");
+                _.ContentShouldBe("Hello World!");
                 _.StatusCodeShouldBeOk();
             });
         }
         #endregion
 
+        #region sample_should_return_entity_assert_response
         [Fact]
-        public async Task should_say_hello_world_raw()
+        public async Task should_return_entity_assert_response()
         {
-            #region sample_programmatic_bootstrapping
-            using var system = AlbaHost.For(_ =>
+            await using var host = await AlbaHost.For<global::Program>();
+
+            var guid = Guid.NewGuid();
+            var res = await host.Scenario(_ =>
             {
-                _.Configure(app =>
-                {
-                    app.Run(c => c.Response.WriteAsync("Hello, World!"));
-                });
+                _.Post.Json(new MyEntity(guid)).ToUrl("/json");
+                _.StatusCodeShouldBeOk();
             });
-            
-            // or pass an IHostBuilder into the constructor function
-            // of SystemUnderTest
 
-            var builder = Host
-                .CreateDefaultBuilder()
-                .ConfigureWebHostDefaults(c=> c.UseStartup<Startup>())
-                .ConfigureServices(services =>
-                {
-                    // override any service registrations you need,
-                    // like maybe using stubs for problematic dependencies
-                });
-            
-            using var system2 = new AlbaHost(builder);
-
-            #endregion
-
-
-            await system.Scenario(_ =>
-            {
-                _.Get.Url("/");
-                _.ContentShouldContain("Hello, World!");
-            });
+            var json = await res.ReadAsJsonAsync<MyEntity>();
+            Assert.Equal(guid, json.Id);
         }
+#endregion
+
+
 
         #region sample_should_say_hello_world_with_raw_objects
         [Fact]
         public async Task should_say_hello_world_with_raw_objects()
         {
-            using (var system = AlbaHost.ForStartup<Startup>())
+            await using var host = await AlbaHost.For<global::Program>();
+            var response = await host.Scenario(_ =>
             {
-                var response = await system.Scenario(_ =>
-                {
-                    _.Get.Url("/");
-                    _.StatusCodeShouldBeOk();
-                });
+                _.Get.Url("/");
+                _.StatusCodeShouldBeOk();
+            });
 
-                response.ReadAsText()
-                    .ShouldBe("Hello, World!");
+            // you can go straight at the HttpContext & do assertions directly on the responseStream
+            Stream responseStream = response.Context.Response.Body;
 
-                // or you can go straight at the HttpContext
-                Stream responseStream = response.Context.Response.Body;
-                // do assertions directly on the responseStream
-            }
         }
         #endregion
 
@@ -111,85 +79,44 @@ namespace Alba.Testing.Samples
         [Fact]
         public async Task working_with_the_raw_response()
         {
-            using (var system = AlbaHost.ForStartup<Startup>())
+            await using var host = await AlbaHost.For<global::Program>();
+
+            var res = await host.Scenario(_ =>
             {
-                var response = await system.Scenario(_ =>
+                _.ConfigureHttpContext(c =>
                 {
-                    _.ConfigureHttpContext(c =>
-                    {
-                        c.Request.Method = "GET";
-                        c.Request.Path = "/";
-                    });
-                    
-
-
-                    _.StatusCodeShouldBeOk();
+                    c.Request.Method = "GET";
+                    c.Request.Path = "/";
                 });
 
-                response.Context.Response.Body.ReadAllText()
-                    .ShouldBe("Hello, World!");
-            }
-        }
 
+                _.StatusCodeShouldBeOk();
+            });
 
-        #region sample_SimplisticSystemUnderTest
-        [Fact]
-        public async Task the_home_page_does_not_blow_up()
-        {
-            using (var system = AlbaHost.ForStartup<Startup>())
-            {
-                var response = await system.Scenario(_ =>
-                {
-                    _.Get.Url("/");
-                    _.StatusCodeShouldBeOk();
-                });
-            }
-        }
-        #endregion
-
-
-        public void setting_up_system_under_test_examples()
-        {
-            #region sample_override_the_content_path
+            var text = await res.Context.Response.Body.ReadAllTextAsync();
+            text.ShouldBe("Hello World!");
             
-            // Alba has a helper for overriding the root path
-            var system = AlbaHost
-                .ForStartup<Startup>(rootPath:"c:\\path_to_your_actual_application");
-
-            // or do it with idiomatic ASP.Net Core
-
-            var builder = Host.CreateDefaultBuilder()
-                .ConfigureWebHostDefaults(c=> c.UseStartup<Startup>())
-                .UseContentRoot("c:\\path_to_your_actual_application");
-
-            var system2 = new AlbaHost(builder);
-
-            #endregion
-
         }
 
-        public void configuration_overrides()
+        public async Task configuration_overrides()
         {
             #region sample_configuration_overrides
             var stubbedWebService = new StubbedWebService();
 
-            var builder = Host.CreateDefaultBuilder()
-                .ConfigureWebHostDefaults(c => c.UseStartup<Startup>())
-
+            await using var host = await AlbaHost.For<global::Program>(x =>
+            {
                 // override the environment if you need to
-                .UseEnvironment("Testing")
-
+                x.UseEnvironment("Testing");
                 // override service registrations or internal options if you need to
-                .ConfigureServices(s =>
+                x.ConfigureServices(s =>
                 {
                     s.AddSingleton<IExternalWebService>(stubbedWebService);
                     s.PostConfigure<MvcNewtonsoftJsonOptions>(o =>
                         o.SerializerSettings.TypeNameHandling = TypeNameHandling.All);
                 });
+            });
 
-            // Create the SystemUnderTest
-            var system = new AlbaHost(builder)
-                .BeforeEach(httpContext =>
+            host.BeforeEach(httpContext =>
                 {
                     // do some data setup or clean up before every single test
                 })
@@ -211,23 +138,5 @@ namespace Alba.Testing.Samples
             
         }
     }
-
-    #region sample_HelloWorldApp
-    public class Startup
-    {
-        public void Configure(IApplicationBuilder builder)
-        {
-            builder.Run(context =>
-            {
-                context.Response.Headers["content-type"] = "text/plain";
-                return context.Response.WriteAsync("Hello, World!");
-            });
-        }
-    }
-    #endregion
     
-    
-
-
-
 }

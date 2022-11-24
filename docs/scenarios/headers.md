@@ -11,11 +11,11 @@ To set request headers, you can directly write against the `HttpContext.Request.
 <!-- snippet: sample_setting_request_headers -->
 <a id='snippet-sample_setting_request_headers'></a>
 ```cs
-public Task setting_request_headers(IAlbaHost system)
+public async Task setting_request_headers(IAlbaHost system)
 {
-    return system.Scenario(_ =>
+    await system.Scenario(_ =>
     {
-        _.SetRequestHeader("foo", "bar");
+        _.WithRequestHeader("foo", "bar");
         
     });
 }
@@ -28,9 +28,9 @@ There are also some specific helpers for very common [content negotiation-relate
 <!-- snippet: sample_conneg_helpers -->
 <a id='snippet-sample_conneg_helpers'></a>
 ```cs
-public Task conneg_helpers(IAlbaHost system)
+public async Task conneg_helpers(IAlbaHost system)
 {
-    return system.Scenario(_ =>
+    await system.Scenario(_ =>
     {
         // Set the accepts header on the request
         _.Get.Url("/").Accepts("text/plain");
@@ -60,9 +60,9 @@ Alba comes with some out of the box assertions to declaratively check expected h
 <!-- snippet: sample_asserting_on_header_values -->
 <a id='snippet-sample_asserting_on_header_values'></a>
 ```cs
-public Task asserting_on_header_values(IAlbaHost system)
+public async Task asserting_on_header_values(IAlbaHost system)
 {
-    return system.Scenario(_ =>
+    await system.Scenario(_ =>
     {
         // Assert that there is one and only one value equal to "150"
         _.Header("content-length").SingleValueShouldEqual("150");

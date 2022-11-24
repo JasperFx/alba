@@ -1,12 +1,8 @@
 # Security Extensions
 
-::: warning
-Alba 3.0+ removed the previous, built in support for windows authentication.
-:::
-
 ## Stub out all authentication
 
-To just stub out all possible authentication inside your ASP.Net Core system in testing, you can use the new
+To just stub out all possible authentication inside your ASP.NET Core system in testing, you can use the new
 `AuthenticationStub` to automatically authenticate every request and build out a `ClaimsPrincipal` to your specification.
 
 Here's a sample of bootstrapping an `AlbaHost` with the `AuthenticationStub`:
@@ -14,22 +10,16 @@ Here's a sample of bootstrapping an `AlbaHost` with the `AuthenticationStub`:
 <!-- snippet: sample_bootstrapping_with_stub_extension -->
 <a id='snippet-sample_bootstrapping_with_stub_extension'></a>
 ```cs
-// This is calling your real web service's configuration
-var hostBuilder = WebAppSecuredWithJwt.Program
-    .CreateHostBuilder(Array.Empty<string>());
-
-// This is a new Alba v5 extension that can "stub" out
-// JWT token authentication
+// This is a Alba extension that can "stub" out authentication
 var securityStub = new AuthenticationStub()
     .With("foo", "bar")
     .With(JwtRegisteredClaimNames.Email, "guy@company.com")
     .WithName("jeremy");
 
-// AlbaHost was "SystemUnderTest" in previous versions of
-// Alba
-theHost = new AlbaHost(hostBuilder, securityStub);
+// We're calling your real web service's configuration
+theHost = await AlbaHost.For<WebAppSecuredWithJwt.Program>(securityStub);
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/web_api_authentication_with_stub.cs#L21-L38' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_bootstrapping_with_stub_extension' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/web_api_authentication_with_stub.cs#L21-L32' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_bootstrapping_with_stub_extension' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 When you need to test scenarios with different claims than the "baseline" claims defined on the `AuthenticationStub`
@@ -66,7 +56,7 @@ public async Task can_modify_claims_per_scenario()
     principal.Claims.Any(x => x.Type.Equals("foo")).ShouldBeFalse();
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/web_api_authentication_with_stub.cs#L91-L120' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_specify_specific_claims' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/web_api_authentication_with_stub.cs#L84-L113' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_specify_specific_claims' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 ## Stub out JWT authentication
@@ -79,20 +69,16 @@ claims that should be in the JWT token:
 <!-- snippet: sample_setup_jwt_stub -->
 <a id='snippet-sample_setup_jwt_stub'></a>
 ```cs
-// This is calling your real web service's configuration
-var hostBuilder = WebAppSecuredWithJwt.Program.CreateHostBuilder(new string[0]);
-
-// This is a new Alba v5 extension that can "stub" out
+// This is a new Alba extension that can "stub" out
 // JWT token authentication
 var jwtSecurityStub = new JwtSecurityStub()
     .With("foo", "bar")
     .With(JwtRegisteredClaimNames.Email, "guy@company.com");
 
-// AlbaHost was "SystemUnderTest" in previous versions of
-// Alba
-theHost = new AlbaHost(hostBuilder, jwtSecurityStub);
+// We're calling your real web service's configuration
+theHost = await AlbaHost.For<WebAppSecuredWithJwt.Program>(jwtSecurityStub);
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/web_api_authentication_with_jwt.cs#L21-L36' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_setup_jwt_stub' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/web_api_authentication_with_jwt.cs#L21-L31' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_setup_jwt_stub' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 The `JwtSecurityStub` reaches into your application's configuration to find the security signing key for JWT tokens, and
@@ -109,7 +95,7 @@ All of these extensions depend on the `JwtBearerOptions` configuration from your
 `Authority` property of `JwtBearerOptions` for the Url of the OIDC token server.
 :::
 
-If you want to test your ASP.Net Core web services that are authenticated by an [Open Id Connect](https://openid.net/connect/) workflow **and**
+If you want to test your ASP.NET Core web services that are authenticated by an [Open Id Connect](https://openid.net/connect/) workflow **and**
 you also want to be testing through the authentication from the real OIDC identity server, Alba v5 comes with new
 extensions to automatically fetch and apply JWT tokens to scenario tests.
 
@@ -128,16 +114,19 @@ oidc = new OpenConnectClientCredentials
     Scope = Config.ApiScope
 };
 
-theHost = WebAppSecuredWithJwt.Program.CreateHostBuilder(Array.Empty<string>()).ConfigureServices((ctx, collection) => collection.Configure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme,
-        x =>
-        {
-            x.Authority = _fixture.IdentityServer.BaseAddress.ToString();
-            x.BackchannelHttpHandler = _fixture.IdentityServer.CreateHandler();
-            x.RequireHttpsMetadata = false;
-        }))
-    .StartAlba(oidc);
+theHost = await AlbaHost.For<WebAppSecuredWithJwt.Program>(x =>
+{
+    x.ConfigureServices((ctx, collection) =>
+        collection.Configure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme,
+            options =>
+            {
+                options.Authority = _fixture.IdentityServer.BaseAddress.ToString();
+                options.BackchannelHttpHandler = _fixture.IdentityServer.CreateHandler();
+                options.RequireHttpsMetadata = false;
+            }));
+}, oidc);
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/OpenConnectClientCredentialsTests.cs#L25-L46' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_openconnectclientcredentials' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/OpenConnectClientCredentialsTests.cs#L28-L51' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_openconnectclientcredentials' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 To use the OIDC [Resource Owner Password Grant](https://docs.identityserver.io/en/release/quickstarts/2_resource_owner_passwords.html) workflow, 
@@ -155,16 +144,19 @@ oidc = new OpenConnectUserPassword
     Password = "alice"
 };
 
-theHost = WebAppSecuredWithJwt.Program.CreateHostBuilder(Array.Empty<string>()).ConfigureServices((ctx, collection) => collection.Configure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme,
-        x =>
-        {
-            x.Authority = _fixture.IdentityServer.BaseAddress.ToString();
-            x.BackchannelHttpHandler = _fixture.IdentityServer.CreateHandler();
-            x.RequireHttpsMetadata = false;
-        }))
-    .StartAlba(oidc);
+theHost = await AlbaHost.For<WebAppSecuredWithJwt.Program>(x =>
+{
+    x.ConfigureServices((ctx, collection) =>
+        collection.Configure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme,
+            options =>
+            {
+                options.Authority = _fixture.IdentityServer.BaseAddress.ToString();
+                options.BackchannelHttpHandler = _fixture.IdentityServer.CreateHandler();
+                options.RequireHttpsMetadata = false;
+            }));
+}, oidc);
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/OpenConnectUserPasswordTests.cs#L25-L45' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_applying_openconnectuserpassword' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/OpenConnectUserPasswordTests.cs#L28-L51' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_applying_openconnectuserpassword' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 With the `OpenConnectUserPassword` extension, you can also use a different user name and password for a single scenario with the `Scenario.UserAndPasswordIs(user, password)`
@@ -202,7 +194,7 @@ public async Task post_to_a_secured_endpoint_with_jwt_with_overridden_user_and_p
     user.FindFirst("name").Value.ShouldBe("Bob Smith");
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/OpenConnectUserPasswordTests.cs#L154-L185' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_override_user_password' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/OpenConnectUserPasswordTests.cs#L165-L196' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_override_user_password' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 ## Windows Authentication

@@ -302,7 +302,7 @@ namespace Alba
             return albaHost;
         }
 
-#if NET6_0_OR_GREATER
+
         /// <summary>
         /// Create an AlbaHost using the new WebApplicationBuilder
         /// </summary>
@@ -393,7 +393,6 @@ namespace Alba
             DefaultJson = MvcStrategy ?? MinimalApiStrategy;
         }
 
-#endif
 
         private OutputFormatter? findOutputFormatter(string contentType)
         {

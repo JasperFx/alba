@@ -12,35 +12,30 @@ using Xunit;
 
 namespace Alba.Testing.Security
 {
-    public class web_api_authentication_with_jwt : IDisposable
+    public class web_api_authentication_with_jwt : IAsyncLifetime
     {
-        private readonly IAlbaHost theHost;
-
-        public web_api_authentication_with_jwt()
+        private IAlbaHost theHost = null!;
+        
+        public async Task InitializeAsync()
         {
             #region sample_setup_jwt_stub
-
-            // This is calling your real web service's configuration
-            var hostBuilder = WebAppSecuredWithJwt.Program.CreateHostBuilder(new string[0]);
-
-            // This is a new Alba v5 extension that can "stub" out
+            // This is a new Alba extension that can "stub" out
             // JWT token authentication
             var jwtSecurityStub = new JwtSecurityStub()
                 .With("foo", "bar")
                 .With(JwtRegisteredClaimNames.Email, "guy@company.com");
 
-            // AlbaHost was "SystemUnderTest" in previous versions of
-            // Alba
-            theHost = new AlbaHost(hostBuilder, jwtSecurityStub);
+            // We're calling your real web service's configuration
+            theHost = await AlbaHost.For<WebAppSecuredWithJwt.Program>(jwtSecurityStub);
 
             #endregion
         }
 
-
-        public void Dispose()
+        public async Task DisposeAsync()
         {
-            theHost?.Dispose();
+            await theHost.DisposeAsync();
         }
+
 
         [Fact]
         public async Task should_be_401_with_no_jwt()
@@ -155,5 +150,7 @@ namespace Alba.Testing.Security
             principal.ShouldNotBeNull();
             Assert.Equal("username", principal.Identity.Name);
         }
+
+
     }
 }

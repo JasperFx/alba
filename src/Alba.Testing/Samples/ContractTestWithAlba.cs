@@ -5,23 +5,6 @@ using Xunit;
 
 namespace Alba.Testing.Samples
 {
-#if NET5_0
-#region sample_xUnit_Fixture
-    public class WebAppFixture : IDisposable
-    {
-        public readonly IAlbaHost AlbaHost = WebApp.Program
-            .CreateHostBuilder(Array.Empty<string>())
-            .StartAlba();
-
-        public void Dispose()
-        {
-            AlbaHost?.Dispose();
-        }
-    }
-#endregion
-#endif
-
-
 #region sample_xUnit_Fixture_net6
 
 public class WebAppFixture : IAsyncLifetime

@@ -13,8 +13,12 @@ app.UseHttpsRedirection();
 
 app.MapGet("/", () => "Hello World!");
 app.MapGet("/blowup", context => throw new Exception("Boo!"));
+app.MapPost("/json", (MyEntity entity) => entity);
+
 
 app.Run();
+
+public record MyEntity(Guid Id);
 
 #endregion
 

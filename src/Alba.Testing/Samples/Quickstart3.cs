@@ -1,12 +1,34 @@
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
 using Microsoft.Extensions.Configuration;
 using Xunit;
+using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 
 namespace Alba.Testing.Samples
 {
+    public static class Program
+    {
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
+    }
+
+    public class Startup
+    {
+        public void Configure(IApplicationBuilder builder)
+        {
+            builder.Run(context =>
+            {
+                context.Response.Headers["content-type"] = "text/plain";
+                return context.Response.WriteAsync("Hello, World!");
+            });
+        }
+    }
 
     public class Quickstart3
     {

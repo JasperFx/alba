@@ -1,6 +1,6 @@
 # Integrating with NUnit
 
-When using Alba within [NUnit testing projects](), you probably want to reuse the `IAlbaHost` across tests and test fixtures because
+When using Alba within NUnit testing projects, you probably want to reuse the `IAlbaHost` across tests and test fixtures because
 `AlbaHost` is relatively expensive to create (it's bootstrapping your whole application more than Alba itself is slow). To do that with NUnit, you could
 track a single `AlbaHost` on a static class like this one:
 
@@ -10,32 +10,24 @@ track a single `AlbaHost` on a static class like this one:
 [SetUpFixture]
 public class Application
 {
-    // Make this lazy so you don't build it out
-    // when you don't need it.
-    private static readonly Lazy<IAlbaHost> _host;
-
-    static Application()
+    [OneTimeSetUp]
+    public async Task Init()
     {
-        _host = new Lazy<IAlbaHost>(() => Program
-            .CreateHostBuilder(Array.Empty<string>())
-            .StartAlba());
+        Host = await AlbaHost.For<WebApp.Program>();
     }
-
-    public static IAlbaHost AlbaHost => _host.Value;
+    
+    public static IAlbaHost Host { get; private set; }
 
     // Make sure that NUnit will shut down the AlbaHost when
     // all the projects are finished
     [OneTimeTearDown]
     public void Teardown()
     {
-        if (_host.IsValueCreated)
-        {
-            _host.Value.Dispose();
-        }
+        Host.Dispose();
     }
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/NUnitSamples/UnitTest1.cs#L11-L41' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_nunit_application' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/NUnitSamples/UnitTest1.cs#L11-L33' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_nunit_application' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 Then reference the `AlbaHost` in tests like this sample:
@@ -48,7 +40,7 @@ public class sample_integration_fixture
     [Test]
     public Task happy_path()
     {
-        return Application.AlbaHost.Scenario(_ =>
+        return Application.Host.Scenario(_ =>
         {
             _.Get.Url("/fake/okay");
             _.StatusCodeShouldBeOk();
@@ -56,5 +48,5 @@ public class sample_integration_fixture
     }
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/NUnitSamples/UnitTest1.cs#L43-L56' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_nunit_scenario_test' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/NUnitSamples/UnitTest1.cs#L35-L48' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_nunit_scenario_test' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
