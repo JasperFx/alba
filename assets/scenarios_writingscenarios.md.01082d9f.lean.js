@@ -1,0 +1,1 @@
+import{_ as s,c as n,o as a,a as p}from"./app.ae0a27fd.js";const i=JSON.parse('{"title":"Writing Scenarios","description":"","frontmatter":{},"headers":[],"relativePath":"scenarios/writingscenarios.md"}'),l={name:"scenarios/writingscenarios.md"},o=p("",20),e=[o];function t(r,c,D,y,F,C){return a(),n("div",null,e)}const u=s(l,[["render",t]]);export{i as __pageData,u as default};
