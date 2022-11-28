@@ -359,6 +359,11 @@ namespace Alba.Testing.Acceptance
             formData.Add(content, "files", textFileName);
             formData.Add(content2, "files", imageFileName);
 
+            // another random form value
+            var additional = "My additional string of fun times";
+            var additionalContent = new StringContent(additional);
+            formData.Add(additionalContent, "additionalContent");
+
             var result = await run(_ =>
             {
                 _.Post.MultipartFormData(formData).ToUrl("/api/files/upload");
@@ -367,8 +372,8 @@ namespace Alba.Testing.Acceptance
 
             var json = await result.ReadAsJsonAsync<List<FilesController.UploadResponse>>();
 
-            Assert.Contains(new FilesController.UploadResponse(textFileName, textFile.Length, "Hello there!"), json);
-            Assert.Contains(new FilesController.UploadResponse(imageFileName, imageFile.Length, "image"), json);
+            Assert.Contains(new FilesController.UploadResponse(textFileName, textFile.Length, "Hello there!", additional), json);
+            Assert.Contains(new FilesController.UploadResponse(imageFileName, imageFile.Length, "image", additional), json);
         }
 
         [Fact]

@@ -15,22 +15,22 @@ namespace WebApp.Controllers
     public class FilesController : ControllerBase
     {
         [HttpPost("upload")]
-        public async Task<ActionResult<List<UploadResponse>>> UploadTextFile(List<IFormFile> files)
+        public async Task<ActionResult<List<UploadResponse>>> UploadTextFile([FromForm] UploadRequest request)
         {
-            if (files.Count > 0)
+            if (request.Files.Count > 0)
             {
                 var res = new List<UploadResponse>();
-                foreach (var formFile in files)
+                foreach (var formFile in request.Files)
                 {
                     if (formFile.ContentType == MediaTypeNames.Text.Plain)
                     {
                         var content = await ReadAsStringAsync(formFile);
-                        res.Add(new UploadResponse(formFile.FileName, formFile.Length, content.TrimEnd()));
+                        res.Add(new UploadResponse(formFile.FileName, formFile.Length, content.TrimEnd(), request.AdditionalContent));
                     }
 
                     if (formFile.ContentType == MediaTypeNames.Image.Jpeg)
                     {
-                        res.Add(new UploadResponse(formFile.FileName, formFile.Length, "image"));
+                        res.Add(new UploadResponse(formFile.FileName, formFile.Length, "image", request.AdditionalContent));
                     }
                 }
                     
@@ -41,7 +41,9 @@ namespace WebApp.Controllers
             return BadRequest();
         }
 
-        public record UploadResponse(string Name, long Length, string Content);
+        public record UploadRequest(string AdditionalContent, List<IFormFile> Files);
+
+        public record UploadResponse(string Name, long Length, string Content, string AdditionalContent);
 
         public static async Task<string> ReadAsStringAsync(IFormFile file)
         {
