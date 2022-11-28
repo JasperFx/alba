@@ -1,1 +1,0 @@
-import{_ as s,c as a,o as n,a as l}from"./app.ae0a27fd.js";const A=JSON.parse('{"title":"Extension Model","description":"","frontmatter":{},"headers":[],"relativePath":"guide/extensions.md"}'),p={name:"guide/extensions.md"},o=l("",9),t=[o];function e(c,r,F,D,y,i){return n(),a("div",null,t)}const u=s(p,[["render",e]]);export{A as __pageData,u as default};

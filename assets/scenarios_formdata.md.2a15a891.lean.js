@@ -1,1 +1,0 @@
-import{_ as s,c as a,o as n,a as p}from"./app.ae0a27fd.js";const i=JSON.parse('{"title":"Sending Http Form Data","description":"","frontmatter":{},"headers":[],"relativePath":"scenarios/formdata.md"}'),o={name:"scenarios/formdata.md"},l=p("",10),t=[l];function e(r,c,D,F,y,C){return n(),a("div",null,t)}const u=s(o,[["render",e]]);export{i as __pageData,u as default};

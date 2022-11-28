@@ -1,1 +1,0 @@
-import{_ as s,c as n,o as a,a as p}from"./app.ae0a27fd.js";const A=JSON.parse('{"title":"Writing Custom Assertions","description":"","frontmatter":{},"headers":[],"relativePath":"scenarios/assertions.md"}'),o={name:"scenarios/assertions.md"},l=p("",19),e=[l];function t(c,r,F,D,y,i){return a(),n("div",null,e)}const u=s(o,[["render",t]]);export{A as __pageData,u as default};
