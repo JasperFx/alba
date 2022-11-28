@@ -437,6 +437,7 @@ namespace Alba
         /// <param name="rootPath">Specify the content root directory to be used by the host.</param>
         /// <typeparam name="T"></typeparam>
         /// <returns>The system under test</returns>
+        [Obsolete("We recommend using the WebApplicationFactory approach or bootstrapping from IHostBuilder. This will be removed in the future")]
         public static AlbaHost ForStartup<T>(Func<IHostBuilder, IHostBuilder>? configure = null,
             string? rootPath = null) where T : class
         {
