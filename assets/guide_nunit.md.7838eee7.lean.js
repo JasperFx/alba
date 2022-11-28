@@ -1,0 +1,1 @@
+import{_ as s,c as n,o as a,a as p}from"./app.cddc3ad1.js";const C=JSON.parse('{"title":"Integrating with NUnit","description":"","frontmatter":{},"headers":[],"relativePath":"guide/nunit.md"}'),l={name:"guide/nunit.md"},o=p("",9),e=[o];function t(c,r,i,D,F,y){return a(),n("div",null,e)}const u=s(l,[["render",t]]);export{C as __pageData,u as default};
