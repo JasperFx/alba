@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Text.Json;
 using Alba.Assertions;
@@ -166,6 +167,13 @@ namespace Alba
             });
 
             Body.WriteFormData(values);
+
+            return new SendExpression(this);
+        }
+
+        SendExpression IUrlExpression.MultipartFormData(MultipartFormDataContent content)
+        {
+            Body.WriteMultipartFormData(content);
 
             return new SendExpression(this);
         }
