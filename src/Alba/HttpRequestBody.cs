@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Http;
 using System.Text;
 using System.Xml.Serialization;
 using Microsoft.AspNetCore.Http;
@@ -58,11 +59,16 @@ namespace Alba
         {
             _parent.ConfigureHttpContext(context =>
             {
-                context.Request.ContentType(MimeType.HttpFormMimetype);
                 context.WriteFormData(input);
             });
+        }
 
-
+        public void WriteMultipartFormData(MultipartFormDataContent content)
+        {
+            _parent.ConfigureHttpContext(context =>
+            {
+                context.WriteMultipartFormData(content);
+            });
         }
 
         public void TextIs(string body)

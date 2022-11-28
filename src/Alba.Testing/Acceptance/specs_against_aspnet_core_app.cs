@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using NSubstitute.Core;
 using Shouldly;
@@ -333,6 +337,38 @@ namespace Alba.Testing.Acceptance
 
                 _.ContentShouldContain("some stuff");
             });
+        }
+
+        [Fact]
+        public async Task send_file_to_aspnetcore_with_MultipartForm()
+        {
+            // text file
+            await using var textFile = File.OpenRead("TestTextFile.txt");
+            var textFileName = Path.GetFileName(textFile.Name);
+            using var content = new StreamContent(textFile);
+            content.Headers.ContentType = new MediaTypeHeaderValue(MediaTypeNames.Text.Plain);
+
+            // image
+            await using var imageFile = File.OpenRead("TestImage.jpg");
+            var imageFileName = Path.GetFileName(imageFile.Name);
+            using var content2 = new StreamContent(imageFile);
+            content2.Headers.ContentType = new MediaTypeHeaderValue(MediaTypeNames.Image.Jpeg);
+
+            using var formData = new MultipartFormDataContent();
+
+            formData.Add(content, "files", textFileName);
+            formData.Add(content2, "files", imageFileName);
+
+            var result = await run(_ =>
+            {
+                _.Post.MultipartFormData(formData).ToUrl("/api/files/upload");
+                _.StatusCodeShouldBeOk();
+            });
+
+            var json = await result.ReadAsJsonAsync<List<FilesController.UploadResponse>>();
+
+            Assert.Contains(new FilesController.UploadResponse(textFileName, textFile.Length, "Hello there!"), json);
+            Assert.Contains(new FilesController.UploadResponse(imageFileName, imageFile.Length, "image"), json);
         }
 
         [Fact]

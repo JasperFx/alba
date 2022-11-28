@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
- 
+using System.Net.Http;
+
 namespace Alba
 {
     public enum JsonStyle
@@ -56,6 +57,13 @@ namespace Alba
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         SendExpression FormData<T>(T input) where T : class;
+
+        /// <summary>
+        /// Writes multipart form data to the Http request
+        /// </summary>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        SendExpression MultipartFormData(MultipartFormDataContent content);
 
         /// <summary>
         /// Writes text to the request body as 'text/plain'
