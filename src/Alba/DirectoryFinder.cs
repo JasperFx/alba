@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
-using Baseline;
+using System.Linq;
  
 namespace Alba
 {
+    // Delete this all in next semver
     internal static class DirectoryFinder
     {
         /// <summary>
@@ -12,6 +14,7 @@ namespace Alba
         /// </summary>
         /// <param name="folderName"></param>
         /// <returns></returns>
+        [Obsolete]
         public static string? FindParallelFolder(string? folderName)
         {
             var starting = AppContext.BaseDirectory.ToFullPath();
@@ -38,5 +41,16 @@ namespace Alba
 
             return Directory.Exists(candidate) ? candidate : null;
         }
-    }
+
+        public static string ToFullPath(this string path) => Path.GetFullPath(path);
+
+        public static string? ParentDirectory(this string path) => Path.GetDirectoryName(path.TrimEnd(Path.DirectorySeparatorChar));
+
+        public static string AppendPath(this string path, params string[] parts)
+        {
+            var stringList = new List<string> { path };
+            stringList.AddRange(parts);
+            return Combine(stringList.ToArray());
+        }
+        public static string Combine(params string[] paths) => (paths).Aggregate(Path.Combine); }
 }

@@ -1,4 +1,4 @@
-﻿#if NET6_0_OR_GREATER
+﻿
 using System;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -42,5 +42,3 @@ namespace Alba
 
     }
 }
-
-#endif

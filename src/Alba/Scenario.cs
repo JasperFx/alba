@@ -5,13 +5,9 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Security.Claims;
-using System.Text.Json;
 using Alba.Assertions;
-using Baseline;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.Mvc.Formatters;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Alba
 {
@@ -152,19 +148,23 @@ namespace Alba
         {
             var values = new Dictionary<string, string>();
 
-            typeof(T).GetProperties().Where(x => x.CanWrite && x.CanRead).Each(prop =>
+            var properties = typeof(T).GetProperties().Where(x => x.CanWrite && x.CanRead);
+
+            foreach (var prop in properties)
             {
                 var rawValue = prop.GetValue(target, null);
 
                 values.Add(prop.Name, rawValue?.ToString() ?? string.Empty);
-            });
+            }
 
-            typeof(T).GetFields().Each(field =>
+            var fields = typeof(T).GetFields();
+
+            foreach (var field in fields)
             {
                 var rawValue = field.GetValue(target);
 
                 values.Add(field.Name, rawValue?.ToString() ?? string.Empty);
-            });
+            }
 
             Body.WriteFormData(values);
 

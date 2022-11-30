@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 
 namespace Alba
 {
+    [Obsolete]
     internal class CommaTokenParser
     {
         private readonly List<string> _tokens = new();

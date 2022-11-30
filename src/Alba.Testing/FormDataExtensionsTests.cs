@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.IO;
+using System.Net;
 using Baseline;
 using Microsoft.AspNetCore.Http;
 using Shouldly;
@@ -20,11 +22,13 @@ namespace Alba.Testing
             };
 
             var context = new DefaultHttpContext();
+            using var stream = new MemoryStream();
+            context.Request.Body = stream;
 
             context.WriteFormData(form1);
 
             context.Request.Body.ReadAllText()
-                .ShouldBe("a=what?&b=now?&c=really?");
+                .ShouldBe("a=what%3F&b=now%3F&c=really%3F");
 
         }
 

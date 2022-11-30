@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Text.RegularExpressions;
-using Baseline;
 using Microsoft.AspNetCore.Http;
 
 namespace Alba.Assertions
@@ -35,7 +34,7 @@ namespace Alba.Assertions
                     break;
 
                 default:
-                    var valueText = values.Select(x => "'" + x + "'").Join(", ");
+                    var valueText = values.Select(x => "'" + x + "'").Aggregate((s1, s2) => $"{s1}, {s2}");
                     ex.Add($"Expected a single header value of '{_headerKey}' matching '{_regex}', but the actual values were {valueText}");
                     break;
             }

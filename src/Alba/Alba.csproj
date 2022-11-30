@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Description>Supercharged integration testing for ASP.NET Core HTTP endpoints</Description>
     <AssemblyTitle>Alba</AssemblyTitle>
-    <Version>7.1.0</Version>
+    <Version>7.2.0</Version>
     <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
     <AssemblyName>Alba</AssemblyName>
     <PackageId>Alba</PackageId>
@@ -21,7 +21,6 @@
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Baseline" Version="4.1.0" />
     <PackageReference Include="IdentityModel" Version="6.0.0" />
     <PackageReference Include="DotNet.ReproducibleBuilds" Version="1.1.1" PrivateAssets="All" />
   </ItemGroup>

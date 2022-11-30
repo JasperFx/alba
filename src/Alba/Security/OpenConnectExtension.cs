@@ -15,15 +15,11 @@ namespace Alba.Security
     public abstract class OpenConnectExtension : IAlbaExtension
     {
         internal static readonly string OverrideKey = "alba_oidc_override";
-        
-        private HttpClient _client;
+
+        private HttpClient _client = null!;
         private DiscoveryDocumentResponse? _disco;
         private TokenResponse? _cached;
-
-        public OpenConnectExtension()
-        {
-           // _client = new HttpClient();
-        }
+        
 
         void IDisposable.Dispose()
         {
