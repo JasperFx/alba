@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Baseline;
- 
+using Alba.Internal;
+
 namespace Alba
 {
     /// <summary>
@@ -43,7 +43,7 @@ namespace Alba
         public static readonly MimeType EmbeddedOpenType = New("application/vnd.ms-fontobject", ".eot");
         public static readonly MimeType Svg = New("image/svg+xml", ".svg");
 
-        private readonly IList<string> _extensions = new List<string>();
+        private readonly HashSet<string> _extensions = new();
         private readonly string _mimeType;
 
         private MimeType(string mimeType)
@@ -56,7 +56,10 @@ namespace Alba
         public static MimeType New(string mimeTypeValue, params string[] extensions)
         {
             var mimeType = new MimeType(mimeTypeValue);
-            extensions.Each(mimeType.AddExtension);
+            foreach (var extension in extensions)
+            {
+                mimeType.AddExtension(extension);
+            }
             _mimeTypes[mimeTypeValue] = mimeType;
 
             return mimeType;
@@ -64,7 +67,7 @@ namespace Alba
 
         public void AddExtension(string extension)
         {
-            _extensions.Fill(extension);
+            _extensions.Add(extension);
         }
 
         public override string ToString()
@@ -105,7 +108,11 @@ namespace Alba
 
         static MimeType()
         {
-            _fileExtensions.Each(pair => _mimeTypes[pair.Value].AddExtension(pair.Key));
+            foreach (var pair in _fileExtensions)
+            {
+                _mimeTypes[pair.Value].AddExtension(pair.Key);
+            }
+
 
             _mappingFromExtension = new LightweightCache<string, MimeType?>(extension => {
                                                                                  return _mimeTypes.GetAll().FirstOrDefault(x => x.HasExtension(extension));
@@ -113,7 +120,7 @@ namespace Alba
         }
 
         private static readonly Dictionary<string, string> _fileExtensions =
-            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            new(StringComparer.OrdinalIgnoreCase)
             {
                 {".323", "text/h323"},
                 {".3g2", "video/3gpp2"},

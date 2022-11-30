@@ -1,8 +1,6 @@
-﻿using System.Security.Claims;
 using System.Text;
-using Baseline;
+using Alba.Internal;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features.Authentication;
 using Microsoft.AspNetCore.WebUtilities;
  
 namespace Alba

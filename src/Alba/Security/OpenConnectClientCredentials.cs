@@ -1,9 +1,8 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Baseline;
+using Alba.Internal;
 using IdentityModel.Client;
-using Microsoft.AspNetCore.Http;
 
 namespace Alba.Security
 {

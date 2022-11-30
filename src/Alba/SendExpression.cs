@@ -1,9 +1,7 @@
 using System;
 using System.Linq;
-using Baseline;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
-
  
 namespace Alba
 {
@@ -92,18 +90,20 @@ namespace Alba
         /// <returns></returns>
         public SendExpression QueryString<T>(T target)
         {
-            typeof(T).GetProperties().Where(x => x.CanRead).Each(prop =>
+            var properties = typeof(T).GetProperties().Where(x => x.CanRead);
+
+            foreach (var prop in properties)
             {
                 var rawValue = prop.GetValue(target, null);
                 QueryString(prop.Name, rawValue?.ToString() ?? string.Empty);
-            });
+            }
+            var fields = typeof(T).GetFields();
 
-            typeof(T).GetFields().Each(field =>
+            foreach (var field in fields)
             {
                 var rawValue = field.GetValue(target);
                 QueryString(field.Name, rawValue?.ToString() ?? string.Empty);
-            });
-
+            }
 
             return this;
         }

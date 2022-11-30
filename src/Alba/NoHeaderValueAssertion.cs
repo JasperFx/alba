@@ -1,5 +1,4 @@
 using System.Linq;
-using Baseline;
 using Microsoft.AspNetCore.Http;
  
 namespace Alba
@@ -19,7 +18,7 @@ namespace Alba
             if (headers.ContainsKey(_headerKey))
             {
                 var values = headers[_headerKey];
-                var valueText = values.Select(x => "'" + x + "'").Join(", ");
+                var valueText = values.Select(x => "'" + x + "'").Aggregate((s1, s2) => $"{s1}, {s2}");
                 ex.Add($"Expected no value for header '{_headerKey}', but found values {valueText}");
             }
         }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Baseline;
+using Alba.Internal;
 using Microsoft.AspNetCore.Http;
 
  
@@ -45,7 +45,11 @@ namespace Alba
             get
             {
                 var writer = new StringWriter();
-                _messages.Each(x => writer.WriteLine((string) x));
+
+                foreach (var message in _messages)
+                {
+                    writer.WriteLine(message);
+                }
 
                 if (Body.IsNotEmpty())
                 {

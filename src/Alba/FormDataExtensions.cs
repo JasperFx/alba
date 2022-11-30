@@ -1,11 +1,7 @@
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
-using Baseline;
 using Microsoft.AspNetCore.Http;
 
 namespace Alba
@@ -20,31 +16,17 @@ namespace Alba
         /// </summary>
         /// <param name="context"></param>
         /// <param name="values"></param>
-        public static void WriteFormData(this HttpContext context,
-            Dictionary<string, string> values)
+        public static void WriteFormData(this HttpContext context, Dictionary<string, string> values)
         {
-            var post = formData(values).Join("&");
+            using var form = new FormUrlEncodedContent(values);
 
-            context.Request.ContentLength = post.Length;
-            context.Request.ContentType = MimeType.HttpFormMimetype;
+            form.CopyTo(context.Request.Body, null, CancellationToken.None);
 
-            var postBytes = Encoding.UTF8.GetBytes(post);
+            context.Request.Headers.ContentType = form.Headers.ContentType!.ToString();
+            context.Request.Headers.ContentLength = form.Headers.ContentLength;
 
-            var stream = new MemoryStream();
-            stream.Write(postBytes, 0, postBytes.Length);
-            stream.Position = 0;
-
-            context.Request.Body = stream;
         }
 
-        private static IEnumerable<string> formData(Dictionary<string, string> form)
-        {
-            foreach (var key in form.Keys)
-            {
-                yield return "{0}={1}".ToFormat(key, WebUtility.HtmlEncode(form[key]));
-            }
-
-        }
         
         /// <summary>
         /// Writes the <see cref="MultipartFormDataContent"/> to the provided HttpContext, along with the

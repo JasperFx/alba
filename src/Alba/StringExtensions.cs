@@ -2,8 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Net;
-using Baseline;
- 
+
 namespace Alba
 {
     public static class StringExtensions
@@ -14,6 +13,7 @@ namespace Alba
         /// </summary>
         /// <param name="enumerable"></param>
         /// <returns></returns>
+        [Obsolete("Use HeaderDictionary.GetCommaSeparatedHeaderValues instead")]
         public static IEnumerable<string> GetCommaSeparatedHeaderValues(this IEnumerable<string> enumerable)
         {
             foreach (var content in enumerable)
@@ -22,7 +22,12 @@ namespace Alba
                 if (searchString.Length == 0) break;
 
                 var parser = new CommaTokenParser();
-                content.ToCharArray().Each(parser.Read);
+                var array = content.ToCharArray();
+
+                foreach (var c in array)
+                {
+                    parser.Read(c);
+                }
 
                 // Gotta force the parser to know it's done
                 parser.Read(',');
@@ -36,23 +41,24 @@ namespace Alba
 
         }
 
+        [Obsolete("Use WebUtility.UrlEncode directly")]
         public static string UrlEncoded(this string value)
         {
             return WebUtility.UrlEncode(value);
         }
 
+        [Obsolete("Copy this extension into your own codebase if you wish to continue using it.")]
         public static string Quoted(this string value)
         {
             return $"\"{value}\"";
         }
 
+        [Obsolete("Copy this extension into your own codebase if you wish to continue using it.")]
         public static DateTime? TryParseHttpDate(this string dateString)
         {
-            DateTime date;
-
-            return DateTime.TryParseExact(dateString, "r", CultureInfo.InvariantCulture, DateTimeStyles.None, out date)
+            return DateTime.TryParseExact(dateString, "r", CultureInfo.InvariantCulture, DateTimeStyles.None, out var date)
                 ? date
-                : null as DateTime?;
+                : null;
         }
 
     }

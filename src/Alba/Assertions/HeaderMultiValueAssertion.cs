@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Baseline;
 using Microsoft.AspNetCore.Http;
 
 namespace Alba.Assertions
@@ -19,7 +18,7 @@ namespace Alba.Assertions
         public void Assert(Scenario scenario, HttpContext context, ScenarioAssertionException ex)
         {
             var values = context.Response.Headers[_headerKey];
-            var expectedText = _expected.Select(x => "'" + x + "'").Join(", ");
+            var expectedText = _expected.Select(x => "'" + x + "'").Aggregate((s1, s2) => $"{s1}, {s2}");
 
             switch (values.Count)
             {
@@ -30,7 +29,7 @@ namespace Alba.Assertions
                 default:
                     if (!_expected.All(x => values.Contains(x)))
                     {
-                        var valueText = values.Select(x => "'" + x + "'").Join(", ");
+                        var valueText = values.Select(x => "'" + x + "'").Aggregate((s1, s2) => $"{s1}, {s2}");
                         ex.Add($"Expected header values of '{_headerKey}'={expectedText}, but the actual values were {valueText}.");
                     }
                     break;

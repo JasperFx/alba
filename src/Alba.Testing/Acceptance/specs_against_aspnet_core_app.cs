@@ -333,9 +333,9 @@ namespace Alba.Testing.Acceptance
             return run(_ =>
             {
                 _.Post.Url("/sendbody");
-                _.Body.TextIs("some stuff");
+                _.Body.TextIs("some stuff?");
 
-                _.ContentShouldContain("some stuff");
+                _.ContentShouldContain("some stuff?");
             });
         }
 

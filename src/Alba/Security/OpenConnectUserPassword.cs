@@ -1,7 +1,7 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Baseline;
+using Alba.Internal;
 using IdentityModel.Client;
 
 namespace Alba.Security
