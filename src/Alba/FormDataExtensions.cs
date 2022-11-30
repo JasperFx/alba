@@ -25,8 +25,6 @@ namespace Alba
             context.Request.Headers.ContentType = form.Headers.ContentType!.ToString();
             context.Request.Headers.ContentLength = form.Headers.ContentLength;
 
-            context.Request.Body.Position = 0;
-
         }
 
         

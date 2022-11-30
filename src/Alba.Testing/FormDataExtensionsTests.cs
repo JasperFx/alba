@@ -27,6 +27,8 @@ namespace Alba.Testing
 
             context.WriteFormData(form1);
 
+            context.Request.Body.Position = 0;
+
             context.Request.Body.ReadAllText()
                 .ShouldBe("a=what%3F&b=now%3F&c=really%3F");
 
