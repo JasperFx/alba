@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Shouldly;
 using Xunit;
@@ -244,5 +245,84 @@ namespace Alba.Testing.Acceptance
             ex.Message.ShouldContain(
                 "Expected header values of 'Foo'='Bar', but no values were found on the response.");
         }
+
+        [Fact]
+        public async Task multiple_header_values_bad_argument()
+        {
+            router.Handlers["/one"] = c => Task.CompletedTask;
+
+            var ex = await Exception<ArgumentException>.ShouldBeThrownBy(() =>
+            {
+                return host.Scenario(x =>
+                {
+                    x.Post.Url("/one");
+                    x.Header("Foo").ShouldHaveValues(Array.Empty<string>());
+                });
+            });
+
+            ex.Message.ShouldContain(
+                "Expected values must contain at least one value");
+        }
+
+        [Fact]
+        public Task header_values_exist_happy_path()
+        {
+            router.Handlers["/one"] = c =>
+            {
+                c.Response.Headers.Append("Foo", "Anything");
+                c.Response.Headers.Append("Foo", "Bar");
+                return Task.CompletedTask;
+            };
+
+            return host.Scenario(x =>
+            {
+                x.Post.Url("/one");
+                x.Header("Foo").ShouldHaveValues();
+            });
+        }
+
+        [Fact]
+        public async Task header_values_exist_empty_value()
+        {
+            router.Handlers["/one"] = c =>
+            {
+                c.Response.Headers.Append("Foo", "");
+                return Task.CompletedTask;
+            };
+
+            var ex = await Exception<ScenarioAssertionException>.ShouldBeThrownBy(() =>
+            {
+                return host.Scenario(x =>
+                {
+                    x.Post.Url("/one");
+                    x.Header("Foo").ShouldHaveValues();
+                });
+            });
+
+            ex.Message.ShouldContain(
+                "Expected header 'Foo' to be present but no values were found on the response."); ;
+        }
+
+
+        [Fact]
+        public async Task header_values_exist_no_values()
+        {
+            router.Handlers["/one"] = c => Task.CompletedTask;
+
+            var ex = await Exception<ScenarioAssertionException>.ShouldBeThrownBy(() =>
+            {
+                return host.Scenario(x =>
+                {
+                    x.Post.Url("/one");
+                    x.Header("Foo").ShouldHaveValues();
+                });
+            });
+
+            ex.Message.ShouldContain(
+                "Expected header 'Foo' to be present but no values were found on the response.");
+        }
+
+
+
     }
 }

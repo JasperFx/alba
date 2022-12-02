@@ -1,3 +1,4 @@
+using System;
 using System.Text.RegularExpressions;
 using Alba.Assertions;
  
@@ -66,12 +67,22 @@ namespace Alba
         }
 
         /// <summary>
-        /// Asserts that there are the given values in the Http response
+        /// Asserts that there are the given values in the header.
         /// </summary>
         /// <param name="expectedValues"></param>
         public void ShouldHaveValues(params string[] expectedValues)
         {
+            if (expectedValues.Length == 0)
+                throw new ArgumentException("Expected values must contain at least one value", nameof(expectedValues));
             _parent.AssertThat(new HeaderMultiValueAssertion(_headerKey, expectedValues));
+        }
+
+        /// <summary>
+        /// Asserts that there is at least a single header of this name in the Http response.
+        /// </summary>
+        public void ShouldHaveValues()
+        {
+            _parent.AssertThat(new HeaderExistsAssertion(_headerKey));
         }
     }
 }

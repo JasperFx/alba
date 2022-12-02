@@ -20,7 +20,7 @@ public async Task setting_request_headers(IAlbaHost system)
     });
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Headers.cs#L29-L38' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_setting_request_headers' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Headers.cs#L30-L39' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_setting_request_headers' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 There are also some specific helpers for very common [content negotiation-related](https://en.wikipedia.org/wiki/Content_negotiation) headers:
@@ -47,7 +47,7 @@ public async Task conneg_helpers(IAlbaHost system)
     });
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Headers.cs#L8-L27' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_conneg_helpers' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Headers.cs#L9-L28' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_conneg_helpers' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 **Do add extension methods off of the Alba `Scenario` class for common operations in your tests to remove
@@ -65,26 +65,29 @@ public async Task asserting_on_header_values(IAlbaHost system)
     await system.Scenario(_ =>
     {
         // Assert that there is one and only one value equal to "150"
-        _.Header("content-length").SingleValueShouldEqual("150");
+        _.Header(HeaderNames.ContentLength).SingleValueShouldEqual("150");
 
         // Assert that there is no value for this response header
-        _.Header("connection").ShouldNotBeWritten();
+        _.Header(HeaderNames.Connection).ShouldNotBeWritten();
 
         // Only write one value for this header
-        _.Header("set-cookie").ShouldHaveOneNonNullValue();
+        _.Header(HeaderNames.SetCookie).ShouldHaveOneNonNullValue();
+
+        // Assert that the header has any values
+        _.Header(HeaderNames.ETag).ShouldHaveValues();
 
         // Assert that the header has the given values
-        _.Header("www-authenticate").ShouldHaveValues("NTLM", "Negotiate");
+        _.Header(HeaderNames.WWWAuthenticate).ShouldHaveValues("NTLM", "Negotiate");
 
         // Assert that the header matches a regular expression
-        _.Header("location").SingleValueShouldMatch(new Regex(@"^/items/\d*$"));
+        _.Header(HeaderNames.Location).SingleValueShouldMatch(new Regex(@"^/items/\d*$"));
 
         // Check the content-type header
         _.ContentTypeShouldBe("text/json");
     });
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Headers.cs#L41-L65' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_asserting_on_header_values' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Headers.cs#L42-L69' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_asserting_on_header_values' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 You do also have the ability to just interrogate the `HttpContext.Response` in your unit test methods for
