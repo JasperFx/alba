@@ -78,7 +78,7 @@ namespace Alba
         }
 
         /// <summary>
-        /// Asserts that there is at least a single header of this name in the Http response.
+        /// Asserts that there is one or more values for this header in the Http response
         /// </summary>
         public void ShouldHaveValues()
         {
