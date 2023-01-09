@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
+using Alba.Internal;
 using Shouldly;
 using Xunit;
 
@@ -40,6 +41,28 @@ namespace Alba.Testing
            return host.Scenario(x =>
             {
                 x.Get.Url("/memory/hello");
+                x.StatusCodeShouldBeOk();
+                
+                x.ContentShouldBe("hello from the in memory host");
+            });
+        }
+
+        [Fact]
+        public Task using_scenario_with_byte_array_and_content_type()
+        {
+            var bytes = Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg==");
+            const string contentType = "image/png";
+            router.Handlers["/memory/bytes"] = c =>
+            {
+                c.Request.Body.ReadAllBytes().ShouldBe(bytes);
+                c.Request.ContentType.ShouldBe(contentType);
+                c.Response.Write("hello from the in memory host");
+                return Task.CompletedTask;
+            };
+            
+            return host.Scenario(x =>
+            {
+                x.Post.ByteArray(bytes).ToUrl("/memory/bytes").ContentType(contentType);
                 x.StatusCodeShouldBeOk();
                 
                 x.ContentShouldBe("hello from the in memory host");
