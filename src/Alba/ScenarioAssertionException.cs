@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -65,11 +66,17 @@ namespace Alba
         }
 
         /// <summary>
-        /// A textual representation of the HTTP response body for diagnostic purposes
+        /// A textual representation of the HTTP response body for diagnostic purposes. This property will be null unless <see cref="ReadBody"/> is called.
         /// </summary>
         public string? Body { get; set; }
 
-        internal string ReadBody(HttpContext context)
+        /// <summary>
+        /// Reads the response body and returns it as a string
+        /// </summary>
+        /// <param name="context">The context of the response</param>
+        /// <returns>A string with the content of the body</returns>
+        [MemberNotNull(nameof(Body))]
+        public string ReadBody(HttpContext context)
         {
             // Hardening for GH-95
             try
