@@ -39,23 +39,20 @@ namespace Alba.Testing.Security
         public void token_has_identifier()
         {
             theStub.BuildToken()
-                .Claims.ShouldContain(x => x.Type == JwtRegisteredClaimNames.Jti);
+                .Subject.Claims.ShouldContain(x => x.Type == JwtRegisteredClaimNames.Jti);
         }
 
         [Fact]
         public void should_have_audience()
         {
             var token = theStub.BuildToken();
-            token
-                .Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Aud)
-                .Value.ShouldBe("chiefsfans");
+            token.Audience.ShouldBe("chiefsfans");
         }
 
         [Fact]
         public void should_have_issuer_if_it_exists()
         {
-            theStub.BuildToken()
-                .Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Iss)
+            theStub.BuildToken().Subject.Claims.First(x => x.Type == JwtRegisteredClaimNames.Iss)
                 .Value.ShouldBe("myapp");
         }
 
@@ -63,11 +60,13 @@ namespace Alba.Testing.Security
         public void has_all_the_baseline_claims()
         {
             var token = theStub.BuildToken();
-            
-            token.Claims.Single(x => x.Type == "foo")
+
+            token
+                .Subject.Claims.Single(x => x.Type == "foo")
                 .Value.ShouldBe("bar");
-            
-            token.Claims.Single(x => x.Type == "team")
+
+            token
+                .Subject.Claims.Single(x => x.Type == "team")
                 .Value.ShouldBe("chiefs");
         }
 
@@ -75,8 +74,9 @@ namespace Alba.Testing.Security
         public void additive_claims_on_the_token()
         {
             var token = theStub.BuildToken(new []{new Claim("division", "afcwest")});
-            
-            token.Claims.Single(x => x.Type == "division")
+
+            token
+                .Subject.Claims.Single(x => x.Type == "division")
                 .Value.ShouldBe("afcwest");
         }
         
