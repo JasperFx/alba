@@ -79,6 +79,12 @@ namespace Alba
         /// <returns></returns>
         SendExpression FormData(Dictionary<string, string> input);
 
+        /// <summary>
+        /// Writes the byte array to the body in the Http request
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        SendExpression ByteArray(byte[] input);
 
     }
 }

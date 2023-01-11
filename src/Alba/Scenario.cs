@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Security.Claims;
+using System.Threading;
 using Alba.Assertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
@@ -181,6 +182,23 @@ namespace Alba
         SendExpression IUrlExpression.FormData(Dictionary<string, string> input)
         {
             Body.WriteFormData(input);
+
+            return new SendExpression(this);
+        }
+
+        /// <summary>
+        /// Write the supplied byte array to the body of the request
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public SendExpression ByteArray(byte[] input)
+        {
+            ConfigureHttpContext(x =>
+            {
+                var content = new ByteArrayContent(input);
+                content.CopyTo(x.Request.Body, null, CancellationToken.None);
+                x.Request.Headers.ContentLength = content.Headers.ContentLength;
+            });
 
             return new SendExpression(this);
         }
