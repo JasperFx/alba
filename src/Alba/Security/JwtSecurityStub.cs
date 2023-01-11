@@ -22,7 +22,6 @@ namespace Alba.Security
     /// </summary>
     public class JwtSecurityStub : AuthenticationExtensionBase, IAlbaExtension, IPostConfigureOptions<JwtBearerOptions>
     {
-        private SecurityKey? _signingKey;
         private JwtBearerOptions? _options;
 
         void IDisposable.Dispose()
