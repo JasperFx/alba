@@ -1,0 +1,1 @@
+import{_ as s,c as a,o as n,a as t}from"./app.b1897305.js";const h=JSON.parse('{"title":"Http Status Codes","description":"","frontmatter":{},"headers":[],"relativePath":"scenarios/statuscode.md"}'),e={name:"scenarios/statuscode.md"},o=t("",6),p=[o];function l(c,r,i,y,F,d){return n(),a("div",null,p)}const u=s(e,[["render",l]]);export{h as __pageData,u as default};
