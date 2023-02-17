@@ -1,6 +1,6 @@
 # Alba
 
-[![Discord](https://img.shields.io/discord/1074998995086225460?color=blue&label=Chat%20on%20Discord)](https://discord.com/channels/1074998995086225460/1074999122869882952)
+[![Discord](https://img.shields.io/discord/1074998995086225460?color=blue&label=Chat%20on%20Discord)](https://discord.gg/WMxrvegf8H)
 [![Nuget](https://img.shields.io/nuget/v/alba)](https://www.nuget.org/packages/Alba/)
 ![Nuget](https://img.shields.io/nuget/dt/alba)
 

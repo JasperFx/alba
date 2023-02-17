@@ -24,7 +24,7 @@ export default defineConfig({
 
         nav: [
             { text: 'Guide', link: '/guide/gettingstarted' },
-            { text: 'Discord | Join Chat', link: 'https://discord.com/channels/1074998995086225460/1074999122869882952' }
+            { text: 'Discord | Join Chat', link: 'https://discord.gg/WMxrvegf8H' }
         ],
 
         algolia: {
