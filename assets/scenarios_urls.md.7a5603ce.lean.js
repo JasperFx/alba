@@ -1,0 +1,1 @@
+import{_ as s,c as a,o as n,a as l}from"./app.a146e424.js";const C=JSON.parse('{"title":"Working with Urls","description":"","frontmatter":{},"headers":[],"relativePath":"scenarios/urls.md"}'),p={name:"scenarios/urls.md"},o=l("",5),e=[o];function t(c,r,D,F,y,i){return n(),a("div",null,e)}const _=s(p,[["render",t]]);export{C as __pageData,_ as default};

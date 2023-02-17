@@ -1,0 +1,1 @@
+import{_ as s,c as n,o as a,a as l}from"./app.a146e424.js";const C=JSON.parse('{"title":"Before and After actions","description":"","frontmatter":{},"headers":[],"relativePath":"scenarios/setup.md"}'),e={name:"scenarios/setup.md"},o=l("",7),p=[o];function t(c,r,y,D,i,F){return a(),n("div",null,p)}const d=s(e,[["render",t]]);export{C as __pageData,d as default};
