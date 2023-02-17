@@ -36,10 +36,14 @@ export default defineConfig({
         sidebar: [
             {
                 text: 'Getting Started',
+                collapsible: true,
+                collapsed: false,
                 items: getGuideSidebar()
             },
             {
                 text: 'Scenario Testing',
+                collapsible: true,
+                collapsed: true,
                 items: getScenarioSidebar()
             }
         ]
