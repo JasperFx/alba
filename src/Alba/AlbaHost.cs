@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Alba.Internal;
 using Alba.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -192,19 +194,20 @@ namespace Alba
         public async Task<IScenarioResult> Scenario(
                 Action<Scenario> configure)
 #endregion
+
         {
             var scenario = new Scenario(this);
-
-
+                
             configure(scenario);
 
             scenario.Rewind();
-
+            
             HttpContext? context = null;
             try
             {
                 context = await Invoke(c =>
                 {
+                    
                     try
                     {
                         if (scenario.Claims.Any())
@@ -240,7 +243,6 @@ namespace Alba
                         scenario.Exception = e;
                     }
                 });
-
                 if (scenario.Exception != null)
                 {
                     ExceptionDispatchInfo.Throw(scenario.Exception);
@@ -408,9 +410,16 @@ namespace Alba
 
         public async Task<HttpContext> Invoke(Action<HttpContext> setup)
         {
+            Activity? activity = null;
             try
             {
-                return await Server.SendAsync(setup);
+                var context = await Server.SendAsync(c =>
+                {
+                    setup(c);
+                    activity = AlbaTracing.StartRequestActivity(c.Request);
+                });
+                activity?.SetResponseTags(context.Response);
+                return context;
             }
             catch (Exception e)
             {
@@ -421,6 +430,10 @@ namespace Alba
                 }
 
                 throw;
+            }
+            finally
+            {
+                activity?.Dispose();
             }
         }
 
