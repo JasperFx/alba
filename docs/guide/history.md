@@ -16,7 +16,7 @@ When using Alba, you actually bootstrap your web application in memory using eit
 
 `AlbaHost` is shown in the class diagram below:
 
-![AlbaHost Class Diagram](./../public/ClassDiagram.drawio.png)
+![AlbaHost Class Diagram](./../ClassDiagram.drawio.png)
 
 `AlbaHost` implements the ASP.NET Core [IHost](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.hosting.ihost?view=dotnet-plat-ext-6.0) interface
 for convenience and familiarity. Internally it is tracking the actual `IHost` for your application running in memory as well

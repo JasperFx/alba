@@ -3,7 +3,7 @@ import { BUNDLED_LANGUAGES } from 'shiki'
 
 // Include `cs` as alias for csharp
 BUNDLED_LANGUAGES
-  .find(lang => lang.id === 'csharp').aliases.push('cs');
+  .find(lang => lang.id === 'csharp')!.aliases!.push('cs');
 
 
 export default defineConfig({
@@ -12,7 +12,6 @@ export default defineConfig({
     base: '/alba/',
     head: [],
     themeConfig: {
-        logo: null,
         socialLinks: [
             { icon: 'github', link: 'https://github.com/JasperFx/alba' }
         ],
@@ -36,14 +35,12 @@ export default defineConfig({
         sidebar: [
             {
                 text: 'Getting Started',
-                collapsible: true,
                 collapsed: false,
                 items: getGuideSidebar()
             },
             {
                 text: 'Scenario Testing',
-                collapsible: true,
-                collapsed: true,
+                collapsed: false,
                 items: getScenarioSidebar()
             }
         ]
@@ -61,6 +58,7 @@ function getGuideSidebar() {
         { text: 'Integrating with NUnit', link: '/guide/nunit' },
         { text: 'Extension Model', link: '/guide/extensions' },
         { text: 'Security Extensions', link: '/guide/security' },
+        { text: 'Tracing & Open Telemetry', link: '/guide/opentelemetry' },
         { text: 'Alternative Bootstrapping', link:'/guide/bootstrapping'},
         { text: 'History & Architecture', link: '/guide/history' },
     ]
