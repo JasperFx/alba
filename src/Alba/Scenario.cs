@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -123,7 +124,7 @@ namespace Alba
         internal Exception? Exception { get; set; }
 
 
-        SendExpression IUrlExpression.Url(string relativeUrl)
+        SendExpression IUrlExpression.Url([StringSyntax(StringSyntaxAttribute.Uri)]string relativeUrl)
         {
             ConfigureHttpContext(context => context.RelativeUrl(relativeUrl));
             return new SendExpression(this);

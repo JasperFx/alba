@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Net.Http;
 
@@ -26,7 +27,7 @@ namespace Alba
         /// </summary>
         /// <param name="relativeUrl"></param>
         /// <returns></returns>
-        SendExpression Url(string relativeUrl);
+        SendExpression Url([StringSyntax(StringSyntaxAttribute.Uri)]string relativeUrl);
 
         /// <summary>
         /// Writes the input object into Json to the Http Request, and
