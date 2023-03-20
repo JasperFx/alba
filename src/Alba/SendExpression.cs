@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
@@ -57,7 +58,7 @@ namespace Alba
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
-        public SendExpression ToUrl(string url)
+        public SendExpression ToUrl([StringSyntax(StringSyntaxAttribute.Uri)]string url)
         {
             modify = request => request.Path = url;
             return this;

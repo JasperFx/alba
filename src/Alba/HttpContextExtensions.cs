@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Alba.Internal;
 using Microsoft.AspNetCore.Http;
@@ -17,7 +18,7 @@ namespace Alba
             response.Headers["content-type"] = mimeType;
         }
 
-        public static void RelativeUrl(this HttpContext context, string? relativeUrl)
+        public static void RelativeUrl(this HttpContext context, [StringSyntax(StringSyntaxAttribute.Uri)]string? relativeUrl)
         {
             if (relativeUrl != null && relativeUrl.Contains("?"))
             {

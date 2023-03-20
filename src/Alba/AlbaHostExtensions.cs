@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
@@ -50,7 +51,7 @@ namespace Alba
         /// <param name="jsonStyle"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static ResponseExpression PostJson<T>(this IAlbaHost system, T request, string url, JsonStyle? jsonStyle = null) where T : class
+        public static ResponseExpression PostJson<T>(this IAlbaHost system, T request, [StringSyntax(StringSyntaxAttribute.Uri)]string url, JsonStyle? jsonStyle = null) where T : class
         {
             return new(system, s =>
             {
@@ -69,7 +70,7 @@ namespace Alba
         /// <param name="jsonStyle"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static ResponseExpression PutJson<T>(this IAlbaHost system, T request, string url, JsonStyle? jsonStyle = null) where T : class
+        public static ResponseExpression PutJson<T>(this IAlbaHost system, T request, [StringSyntax(StringSyntaxAttribute.Uri)]string url, JsonStyle? jsonStyle = null) where T : class
         {
             return new(system, s => { s.Put.Json(request, jsonStyle).ToUrl(url); });
         }
@@ -82,7 +83,7 @@ namespace Alba
         /// <param name="url"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static async Task<T?> GetAsJson<T>(this IAlbaHost system, string url)
+        public static async Task<T?> GetAsJson<T>(this IAlbaHost system, [StringSyntax(StringSyntaxAttribute.Uri)]string url)
         {
             var response = await system.Scenario(x => x.Get.Url(url).Accepts("application/json;text/json"));
             return await response.ReadAsJsonAsync<T>();
@@ -94,7 +95,7 @@ namespace Alba
         /// <param name="host"></param>
         /// <param name="url"></param>
         /// <returns></returns>
-        public static async Task<string> GetAsText(this IAlbaHost host, string url)
+        public static async Task<string> GetAsText(this IAlbaHost host, [StringSyntax(StringSyntaxAttribute.Uri)]string url)
         {
             var response = await host.Scenario(x =>
             {
