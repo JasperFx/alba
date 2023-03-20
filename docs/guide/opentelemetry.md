@@ -8,7 +8,7 @@ If you believe there's value in tracing additional areas of Alba, please let us 
 
 ### Datadog CI Visibility
 
-![Datadog Tracing](./../tracing.png)
+![Datadog Tracing](/tracing.png)
 
 Datadog's CI Visibility feature is compatible with Alba, however you must be using DD .NET Tracer 2.24+ and have `DD_TRACE_OTEL_ENABLED` set to `true`. See the [documentation](https://docs.datadoghq.com/continuous_integration/tests/dotnet/) for setup information.
 
