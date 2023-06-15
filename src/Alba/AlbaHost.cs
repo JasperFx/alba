@@ -62,8 +62,8 @@ namespace Alba
             builder = builder
                 .ConfigureServices(_ =>
                 {
-                    _.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-                    _.AddSingleton<IServer>(x => new TestServer(x));
+                    _.AddHttpContextAccessor();
+                    _.AddSingleton<IServer, TestServer>();
                 });
 
             foreach (var extension in extensions) builder = extension.Configure(builder);
@@ -287,8 +287,8 @@ namespace Alba
             builder = builder
                 .ConfigureServices(_ =>
                 {
-                    _.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
-                    _.AddSingleton<IServer>(x => new TestServer(x));
+                    _.AddHttpContextAccessor();
+                    _.AddSingleton<IServer, TestServer>();
                 });
 
             foreach (var extension in extensions) builder = extension.Configure(builder);
@@ -313,8 +313,8 @@ namespace Alba
         public static async Task<IAlbaHost> For(WebApplicationBuilder builder, Action<WebApplication> configureRoutes,
             params IAlbaExtension[] extensions)
         {
-            builder.Services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
-            builder.Services.AddSingleton<IServer>(x => new TestServer(x));
+            builder.Services.AddHttpContextAccessor();
+            builder.WebHost.UseTestServer();
 
             foreach (var extension in extensions)
             {
