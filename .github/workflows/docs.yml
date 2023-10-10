@@ -1,18 +1,19 @@
-name: Publish docs
+name: Build & Deploy Docs
 
 on: [workflow_dispatch]
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
-  publish_docs_job:
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install .NET Core 6.0.x
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: 6.0.x
       - name: Install .NET Core 7.0.x
         uses: actions/setup-dotnet@v3
         with:
@@ -21,30 +22,36 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16.x
+          node-version: 18
+          
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
 
-      - name: Build & Deploy docs
-        env:
-          TARGET_BRANCH: gh-pages
-          TARGET_DIR: doc-target
+      - name: Install dependencies
+        run: npm ci 
+
+      - name: Build docs
         run: |
-          sudo apt install libxml2-utils
           dotnet tool install -g MarkdownSnippets.Tool
-          npm install
           npm run docs-build
-          git clone -b ${TARGET_BRANCH} https://${GITHUB_ACTOR}:${{secrets.GITHUB_TOKEN}}@github.com/${GITHUB_REPOSITORY}.git ${TARGET_DIR} 
-          cd ${TARGET_DIR}
-          git config user.email action@github.com
-          git config user.name "GitHub Action"
-          shopt -s extglob
-          shopt -s dotglob
-          rm -rf !(.git) 2> /dev/null || true
-          cp -R ../docs/.vitepress/dist/* .
-          touch .nojekyll
-          git add --all
-          DOCS_VERSION="$(xmllint --xpath "/Project/PropertyGroup/Version/text()" ../src/Alba/Alba.csproj)"
-          git commit -a -m "Documentation Update for ${DOCS_VERSION}" --allow-empty
-          git push origin ${TARGET_BRANCH}
+          touch docs/.vitepress/dist/.nojekyll
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: docs/.vitepress/dist
+          
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    needs: build
+    runs-on: ubuntu-latest
+    name: Deploy
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
 
       - name: Generate Algolia DocSearch index
         uses: darrenjennings/algolia-docsearch-action@master
