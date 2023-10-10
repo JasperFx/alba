@@ -22,7 +22,7 @@ export default defineConfig({
         },
 
         nav: [
-            { text: 'Guide', link: '/guide/gettingstarted' },
+            { text: 'Docs', link: '/guide/gettingstarted' },
             { text: 'Discord | Join Chat', link: 'https://discord.gg/WMxrvegf8H' }
         ],
 
@@ -46,7 +46,7 @@ export default defineConfig({
         ]
     },
     markdown: {
-        linkify: false
+        linkify: false,
     }
 })
 
