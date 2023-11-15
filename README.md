@@ -11,5 +11,13 @@ To work with the code, just open the solution at `src/Alba.sln` and go. No other
 To run the documentation locally, use `build docs` on Windows or `./build.sh docs` on Linux or OSX. The documentation website will require
 a recent installation of NPM. The documentation is built with [VitePress](https://vitepress.vuejs.org/).
 
+## Support Plans
+
+<div align="center">
+    <img src="https://www.jasperfx.net/wp-content/uploads/2023/07/logo-alt-min.png" alt="JasperFx logo" width="70%">
+</div>
+
+While Alba is open source, [JasperFx Software offers paid support and consulting contracts](https://bit.ly/3szhwT2) for Alba. 
+
 
 
