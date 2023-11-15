@@ -15,7 +15,7 @@ namespace Alba
 
         public static void ContentType(this HttpResponse response, string mimeType)
         {
-            response.Headers["content-type"] = mimeType;
+            response.Headers.ContentType = mimeType;
         }
 
         public static void RelativeUrl(this HttpContext context, [StringSyntax(StringSyntaxAttribute.Uri)]string? relativeUrl)
@@ -43,12 +43,12 @@ namespace Alba
         /// <param name="jwt"></param>
         public static void SetBearerToken(this HttpContext context, string jwt)
         {
-            context.Request.Headers["Authorization"] = $"Bearer {jwt}";
+            context.Request.Headers.Authorization = $"Bearer {jwt}";
         }
 
         public static void Accepts(this HttpContext context, string mimeType)
         {
-            context.Request.Headers["accept"] = mimeType;
+            context.Request.Headers.Accept = mimeType;
         }
 
         public static void HttpMethod(this HttpContext context, string method)

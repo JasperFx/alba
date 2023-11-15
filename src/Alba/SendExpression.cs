@@ -27,7 +27,7 @@ namespace Alba
         /// <returns></returns>
         public SendExpression ContentType(string contentType)
         {
-            modify = request => request.Headers["content-type"] = contentType;
+            modify = request => request.Headers.ContentType = contentType;
             return this;
         }
 
@@ -38,7 +38,7 @@ namespace Alba
         /// <returns></returns>
         public SendExpression Accepts(string accepts)
         {
-            modify = request => request.Headers["accept"] = accepts;
+            modify = request => request.Headers.Accept = accepts;
             return this;
         }
 
@@ -49,7 +49,7 @@ namespace Alba
         /// <returns></returns>
         public SendExpression Etag(string etag)
         {
-            modify = request => request.Headers["If-None-Match"] = etag;
+            modify = request => request.Headers.IfNoneMatch = etag;
             return this;
         }
 

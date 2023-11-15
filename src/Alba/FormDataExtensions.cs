@@ -39,7 +39,7 @@ namespace Alba
            content.CopyTo(context.Request.Body, null, CancellationToken.None);
            foreach (var kv in content.Headers)
            {
-               context.Request.Headers.Add(kv.Key, kv.Value.ToArray());
+               context.Request.Headers.Append(kv.Key, kv.Value.ToArray());
            }
         }
     }
