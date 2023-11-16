@@ -21,8 +21,8 @@ namespace Alba
     {
         private readonly ScenarioAssertionException _assertionRecords = new();
 
-        private readonly IList<IScenarioAssertion> _assertions = new List<IScenarioAssertion>();
-        private readonly IList<Action<HttpContext>> _setups = new List<Action<HttpContext>>();
+        private readonly List<IScenarioAssertion> _assertions = new();
+        private readonly List<Action<HttpContext>> _setups = new();
         private readonly AlbaHost _system;
         private int _expectedStatusCode = 200;
         private bool _ignoreStatusCode;
@@ -130,7 +130,7 @@ namespace Alba
             return new SendExpression(this);
         }
 
-        SendExpression IUrlExpression.Json<T>(T input, JsonStyle? jsonStyle = null)
+        SendExpression IUrlExpression.Json<T>(T input, JsonStyle? jsonStyle)
         {
             WriteJson(input, jsonStyle);
 
@@ -247,7 +247,7 @@ namespace Alba
             ConfigureHttpContext(c =>
             {
                 
-                var stream = jsonStrategy.Write(input);
+                var stream = jsonStrategy!.Write(input);
 
                 c.Request.ContentType = "application/json";
                 c.Request.Body = stream;

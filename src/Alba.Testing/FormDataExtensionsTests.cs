@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using Baseline;
+using JasperFx.Core;
 using Microsoft.AspNetCore.Http;
 using Shouldly;
 using Xunit;

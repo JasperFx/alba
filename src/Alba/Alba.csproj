@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Description>Supercharged integration testing for ASP.NET Core HTTP endpoints</Description>
     <AssemblyTitle>Alba</AssemblyTitle>
-    <Version>8.0.0-rc.1</Version>
+    <Version>8.0.0</Version>
     <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
     <AssemblyName>Alba</AssemblyName>
     <PackageId>Alba</PackageId>

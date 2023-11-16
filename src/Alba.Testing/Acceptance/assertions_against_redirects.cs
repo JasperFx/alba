@@ -10,7 +10,7 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task redirect()
         {
-            await using var system = AlbaHost.ForStartup<Startup>();
+            await using var system = await AlbaHost.For<Startup>();
             await system.Scenario(_ =>
             {
                 _.Get.Url("/auth/redirect");
@@ -24,15 +24,13 @@ namespace Alba.Testing.Acceptance
         {
             var result = await Exception<ScenarioAssertionException>.ShouldBeThrownBy(async () =>
             {
-                using (var system = AlbaHost.ForStartup<Startup>())
+                await using var system = await AlbaHost.For<Startup>();
+                await system.Scenario(_ =>
                 {
-                    await system.Scenario(_ =>
-                    {
-                        _.Get.Url("/api/values");
+                    _.Get.Url("/api/values");
 
-                        _.RedirectShouldBe("/else");
-                    });
-                }
+                    _.RedirectShouldBe("/else");
+                });
             });
 
             result.Message.ShouldContain("Expected to be redirected to '/else' but was ''.");
@@ -43,7 +41,7 @@ namespace Alba.Testing.Acceptance
         {
             var result = await Exception<ScenarioAssertionException>.ShouldBeThrownBy(async () =>
             {
-                await using var system = AlbaHost.ForStartup<Startup>();
+                await using var system = await AlbaHost.For<Startup>();
                 await system.Scenario(_ =>
                 {
                     _.Get.Url("/auth/redirect");
@@ -58,15 +56,13 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task redirect_permanent()
         {
-            using (var system = AlbaHost.ForStartup<Startup>())
+            await using var system = await AlbaHost.For<Startup>();
+            await system.Scenario(_ =>
             {
-                await system.Scenario(_ =>
-                {
-                    _.Get.Url("/auth/redirectpermanent");
+                _.Get.Url("/auth/redirectpermanent");
 
-                    _.RedirectPermanentShouldBe("/api/values");
-                });
-            }
+                _.RedirectPermanentShouldBe("/api/values");
+            });
         }
 
         [Fact]
@@ -74,7 +70,7 @@ namespace Alba.Testing.Acceptance
         {
             var result = await Exception<ScenarioAssertionException>.ShouldBeThrownBy(async () =>
             {
-                await using var system = AlbaHost.ForStartup<Startup>();
+                await using var system = await AlbaHost.For<Startup>();
                 await system.Scenario(_ =>
                 {
                     _.Get.Url("/auth/redirectpermanent");
@@ -91,7 +87,7 @@ namespace Alba.Testing.Acceptance
         {
             var result = await Exception<ScenarioAssertionException>.ShouldBeThrownBy(async () =>
             {
-                await using var system = AlbaHost.ForStartup<Startup>();
+                await using var system = await AlbaHost.For<Startup>();
                 await system.Scenario(_ =>
                 {
                     _.Get.Url("/auth/redirect");

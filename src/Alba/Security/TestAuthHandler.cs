@@ -13,6 +13,8 @@ namespace Alba.Security
         private readonly HttpContext _context;
         private readonly AuthenticationStub _parent;
 
+
+#if NET6_0 || NET7_0
         public TestAuthHandler(IHttpContextAccessor accessor, AuthenticationStub parent, IOptionsMonitor<AuthenticationSchemeOptions> options, 
             ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock)
             : base(options, logger, encoder, clock)
@@ -21,6 +23,14 @@ namespace Alba.Security
             
             _parent = parent;
         }
+#else
+        public TestAuthHandler(IHttpContextAccessor accessor, AuthenticationStub parent, IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder) : base(options, logger, encoder)
+        {
+            _context = accessor.HttpContext ?? throw new InvalidOperationException("HttpContext is missing");
+
+            _parent = parent;
+        }
+#endif
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {

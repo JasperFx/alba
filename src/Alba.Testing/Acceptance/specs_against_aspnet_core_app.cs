@@ -13,18 +13,13 @@ using Xunit;
 
 namespace Alba.Testing.Acceptance
 {
-    public class specs_against_aspnet_core_app : IDisposable
+    public class specs_against_aspnet_core_app : IAsyncLifetime
     {
-        private readonly AlbaHost _system;
+        private IAlbaHost _system;
 
         private Task<IScenarioResult> run(Action<Scenario> configuration)
         {
             return _system.Scenario(configuration);
-        }
-
-        public specs_against_aspnet_core_app()
-        {
-            _system = AlbaHost.ForStartup<Startup>();
         }
 
         public void Dispose()
@@ -385,6 +380,16 @@ namespace Alba.Testing.Acceptance
 
                 _.ContentShouldContain("somevalue");
             });
+        }
+
+        public async Task InitializeAsync()
+        {
+            _system = await AlbaHost.For<Startup>();
+        }
+
+        public async Task DisposeAsync()
+        {
+            await _system.DisposeAsync();
         }
     }
 }
