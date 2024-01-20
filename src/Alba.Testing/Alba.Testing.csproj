@@ -8,7 +8,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Alba\Alba.csproj" />
-    <ProjectReference Include="..\IdentityServer\IdentityServer.csproj" />
+    <ProjectReference Include="..\IdentityServer.New\IdentityServer.New.csproj" />
     <ProjectReference Include="..\WebAppSecuredWithJwt\WebAppSecuredWithJwt.csproj" />
     <ProjectReference Include="..\WebApp\WebApp.csproj" />
     <ProjectReference Include="..\WebApiAspNetCore3\WebApiStartupHostingModel.csproj" />

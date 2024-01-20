@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Alba.Security;
-using IdentityServer;
+using IdentityServer.New;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
