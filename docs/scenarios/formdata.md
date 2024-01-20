@@ -36,7 +36,7 @@ There's a second overload that attempts to use an object and its properties to p
 [Fact]
 public async Task can_bind_to_form_data()
 {
-    await using var system = AlbaHost.ForStartup<Startup>();
+    await using var system = await AlbaHost.For<Startup>();
 
     var input = new InputModel {
         One = "one",
