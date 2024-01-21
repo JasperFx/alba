@@ -15,10 +15,7 @@ namespace Alba
         /// <param name="configure"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
-        Task<IScenarioResult> Scenario(
-                Action<Scenario> configure)
-            // ENDSAMPLE
-            ;
+        Task<IScenarioResult> Scenario(Action<Scenario> configure);
 
         /// <summary>
         /// Execute some kind of action before each scenario. This is NOT additive

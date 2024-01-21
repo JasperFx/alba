@@ -437,35 +437,6 @@ namespace Alba
             }
         }
 
-        /// <summary>
-        ///     Create a SystemUnderTest using the designated "Startup" type
-        ///     to configure the ASP.NET Core system
-        /// </summary>
-        /// <param name="configure">
-        ///     Optional configuration of the IHostBuilder to be applied *after* the call to
-        ///     <c>IWebHostBuilder.UseStartup()</c>
-        /// </param>
-        /// <param name="rootPath">Specify the content root directory to be used by the host.</param>
-        /// <typeparam name="T"></typeparam>
-        /// <returns>The system under test</returns>
-        [Obsolete("We recommend using the WebApplicationFactory approach or bootstrapping from IHostBuilder. This will be removed in the future")]
-        public static AlbaHost ForStartup<T>(Func<IHostBuilder, IHostBuilder>? configure = null,
-            string? rootPath = null) where T : class
-        {
-            var builder = Host.CreateDefaultBuilder();
-            builder.ConfigureWebHostDefaults(config => config.UseStartup<T>());
-
-            if (configure != null)
-            {
-                builder = configure(builder);
-            }
-
-            builder.UseContentRoot(rootPath ?? DirectoryFinder.FindParallelFolder(typeof(T).Assembly.GetName().Name) ??
-                AppContext.BaseDirectory);
-
-            return new AlbaHost(builder);
-        }
-
 
         /// <summary>
         ///     Creates a SystemUnderTest from a default HostBuilder using the provided <c>IWebHostBuilder</c>

@@ -14,36 +14,35 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task override_service_registration_in_bootstrapping()
         {
-            ValuesController.LastWidget = new IWidget[0];
+            ValuesController.LastWidget = Array.Empty<IWidget>();
 
-            using (var system = AlbaHost.ForStartup<Startup>(builder =>
+            using var system = await AlbaHost.For<Startup>(builder =>
                 {
-                    return builder.ConfigureServices((c, _) =>
+                    builder.ConfigureServices((c, _) =>
                     {
                         _.AddTransient<IWidget, RedWidget>();
                     });
-                }))
-            {
-                ValuesController.LastWidget = null;
-
-                // The default registration is a GreenWidget
-
-                await system.Scenario(_ =>
-                {
-                    
-                    _.Put.Url("/api/values/foo").ContentType("application/json");
                 });
 
-                ValuesController.LastWidget.Length.ShouldBe(2);
-            }
+            ValuesController.LastWidget = null;
+
+            // The default registration is a GreenWidget
+
+            await system.Scenario(_ =>
+            {
+
+                _.Put.Url("/api/values/foo").ContentType("application/json");
+            });
+
+            ValuesController.LastWidget.Length.ShouldBe(2);
         }
 
         [Fact]
-        public void can_request_services()
+        public async Task can_request_services()
         {
-            using var system = AlbaHost.ForStartup<Startup>(builder =>
+            using var system = await AlbaHost.For<Startup>(builder =>
             {
-                return builder.ConfigureServices((c, _) => { _.AddHttpContextAccessor(); });
+                builder.ConfigureServices((c, _) => { _.AddHttpContextAccessor(); });
             });
 
             var accessor1 = system.Services.GetService<IHttpContextAccessor>();

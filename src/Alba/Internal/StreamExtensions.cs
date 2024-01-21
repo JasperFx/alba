@@ -19,10 +19,10 @@ internal static class StreamExtensions
         return content.ToArray();
     }
 
-    public static Task<string> ReadAllTextAsync(this Stream stream)
+    public static async Task<string> ReadAllTextAsync(this Stream stream)
     {
         using var sr = new StreamReader(stream, leaveOpen: true);
-        return sr.ReadToEndAsync();
+        return await sr.ReadToEndAsync();
     }
 
     public static async Task<byte[]> ReadAllBytesAsync(this Stream stream)

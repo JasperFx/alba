@@ -21,8 +21,8 @@ namespace Alba
     {
         private readonly ScenarioAssertionException _assertionRecords = new();
 
-        private readonly IList<IScenarioAssertion> _assertions = new List<IScenarioAssertion>();
-        private readonly IList<Action<HttpContext>> _setups = new List<Action<HttpContext>>();
+        private readonly List<IScenarioAssertion> _assertions = new();
+        private readonly List<Action<HttpContext>> _setups = new();
         private readonly AlbaHost _system;
         private int _expectedStatusCode = 200;
         private bool _ignoreStatusCode;
@@ -130,7 +130,7 @@ namespace Alba
             return new SendExpression(this);
         }
 
-        SendExpression IUrlExpression.Json<T>(T input, JsonStyle? jsonStyle = null)
+        SendExpression IUrlExpression.Json<T>(T input, JsonStyle? jsonStyle)
         {
             WriteJson(input, jsonStyle);
 
@@ -247,7 +247,7 @@ namespace Alba
             ConfigureHttpContext(c =>
             {
                 
-                var stream = jsonStrategy.Write(input);
+                var stream = jsonStrategy!.Write(input);
 
                 c.Request.ContentType = "application/json";
                 c.Request.Body = stream;
@@ -344,17 +344,6 @@ namespace Alba
         internal void SetupHttpContext(HttpContext context)
         {
             foreach (var setup in _setups) setup(context);
-        }
-
-        /// <summary>
-        ///     Set a value for a request header
-        /// </summary>
-        /// <param name="headerKey"></param>
-        /// <param name="value"></param>
-        [Obsolete("Prefer the WithRequestHeader() method, and this will be removed in Alba v6")]
-        public void SetRequestHeader(string headerKey, string value)
-        {
-            WithRequestHeader(headerKey, value);
         }
 
         /// <summary>

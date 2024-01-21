@@ -27,7 +27,7 @@ public class Application
     }
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/NUnitSamples/UnitTest1.cs#L11-L33' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_nunit_application' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/NUnitSamples/UnitTest1.cs#L8-L30' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_nunit_application' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 Then reference the `AlbaHost` in tests like this sample:
@@ -48,5 +48,5 @@ public class sample_integration_fixture
     }
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/NUnitSamples/UnitTest1.cs#L35-L48' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_nunit_scenario_test' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/NUnitSamples/UnitTest1.cs#L32-L45' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_nunit_scenario_test' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->

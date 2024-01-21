@@ -11,7 +11,7 @@ namespace Alba.Security
     /// </summary>
     public abstract class AuthenticationExtensionBase : IHasClaims
     {
-        private readonly IList<Claim> _baselineClaims = new List<Claim>();
+        private readonly List<Claim> _baselineClaims = new();
 
 
         void IHasClaims.AddClaim(Claim claim)

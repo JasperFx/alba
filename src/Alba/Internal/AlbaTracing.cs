@@ -9,7 +9,7 @@ namespace Alba.Internal;
 
 internal static class AlbaTracing
 {
-    public static readonly ActivitySource Source = new("Alba");
+    private static readonly ActivitySource Source = new("Alba");
     
     public const string HttpUrl = "http.url";
     public const string HttpMethod = "http.method";

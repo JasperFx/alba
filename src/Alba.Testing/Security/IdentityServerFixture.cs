@@ -20,7 +20,7 @@ namespace Alba.Testing.Security
         public TestServer IdentityServer { get; set; }
         public Task InitializeAsync()
         {
-            IdentityServer = new WebApplicationFactory<IdentityServer.Program>().Server;
+            IdentityServer = new WebApplicationFactory<IdentityServer.New.Program>().Server;
             return Task.CompletedTask;
         }
 
