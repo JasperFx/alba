@@ -7,7 +7,15 @@ using Xunit;
 
 namespace Alba.Testing;
 
-public class ActivityTests
+// activity listener cannot be tested in parallel with other tests
+[CollectionDefinition(nameof(ActivityCollection), DisableParallelization = true)]
+public class ActivityCollection
+{
+    
+}
+
+[Collection(nameof(ActivityCollection))]
+public class ActivityTests 
 {
     [Fact]
     public async Task ActivityTagged_AsExpected()
