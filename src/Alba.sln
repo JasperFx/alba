@@ -1,4 +1,4 @@
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.31903.286
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -20,12 +20,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MinimalApiWithOakton", "Min
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityServer.New", "IdentityServer.New\IdentityServer.New.csproj", "{B7AB5313-B55C-4AFF-940B-F17DC913AFB6}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "..\build\_build.csproj", "{2D104BF1-7D1F-4DFF-9023-AEDF73C34B67}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2D104BF1-7D1F-4DFF-9023-AEDF73C34B67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D104BF1-7D1F-4DFF-9023-AEDF73C34B67}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7509E7DF-DB3D-49A9-B3DA-862998D9F435}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7509E7DF-DB3D-49A9-B3DA-862998D9F435}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{81D9EFA5-F846-40F3-B36C-8E82111EDDF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
