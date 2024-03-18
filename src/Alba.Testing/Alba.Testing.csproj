@@ -2,9 +2,6 @@
   <PropertyGroup>
     <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
     <DebugType>portable</DebugType>
-    <AssemblyName>Alba.Testing</AssemblyName>
-    <PackageId>Alba.Testing</PackageId>
-      
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Alba\Alba.csproj" />
