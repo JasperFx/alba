@@ -38,7 +38,7 @@ namespace Alba.Security
 
         protected virtual IEnumerable<Claim> stubTypeSpecificClaims()
         {
-            yield break;
+            return Enumerable.Empty<Claim>();
         }
 
         protected (Claim[] additiveClaims, string[] removedClaims) extractScenarioSpecificClaims(HttpContext context)
