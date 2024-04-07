@@ -36,7 +36,7 @@ namespace Alba.Security
                 services.AddSingleton(this);
                 services.AddAuthentication("Test")
                     .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(
-                        "Test", o => {});
+                        "Test", _ => {});
             });
         }
 

@@ -30,7 +30,7 @@ namespace Alba.Serialization
 
             var writer = new StreamWriter(stream);
             var outputContext =
-                new OutputFormatterWriteContext(stubContext, (s, e) => writer, typeof(T), body);
+                new OutputFormatterWriteContext(stubContext, (_, _) => writer, typeof(T), body);
             _output.WriteAsync(outputContext).GetAwaiter().GetResult();
 
             return stream;
@@ -56,7 +56,7 @@ namespace Alba.Serialization
 
                 if (buffer.Length == 0) throw new EmptyResponseException();
 
-                var inputContext = new InputFormatterContext(standinContext, typeof(T).Name, new ModelStateDictionary(), metadata, (s, e) => new StreamReader(s));
+                var inputContext = new InputFormatterContext(standinContext, typeof(T).Name, new ModelStateDictionary(), metadata, (s, _) => new StreamReader(s));
                 var result = _input.ReadAsync(inputContext).GetAwaiter().GetResult();
 
                 if (result.HasError)
@@ -98,7 +98,7 @@ namespace Alba.Serialization
 
                 if (buffer.Length == 0) throw new EmptyResponseException();
 
-                var inputContext = new InputFormatterContext(standinContext, typeof(T).Name, new ModelStateDictionary(), metadata, (s, e) => new StreamReader(s));
+                var inputContext = new InputFormatterContext(standinContext, typeof(T).Name, new ModelStateDictionary(), metadata, (s, _) => new StreamReader(s));
                 var result = await _input.ReadAsync(inputContext);
 
                 if (result.HasError)
