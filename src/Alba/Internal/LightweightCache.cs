@@ -121,15 +121,7 @@ public class LightweightCache<TKey, TValue> : IEnumerable<TValue> where TKey : n
 
     public bool TryRetrieve(TKey key, [MaybeNullWhen(false)] out TValue value)
     {
-        value = default;
-
-        if (_values.ContainsKey(key))
-        {
-            value = _values[key];
-            return true;
-        }
-
-        return false;
+        return _values.TryGetValue(key, out value);
     }
 
     public void Each(Action<TValue> action)
