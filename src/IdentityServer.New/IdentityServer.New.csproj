@@ -6,7 +6,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Duende.IdentityServer" Version="6.3.2" />
+		<PackageReference Include="Duende.IdentityServer" Version="6.3.8" />
+		<PackageReference Include="IdentityModel" Version="6.2.0" />
+		<!-- explicit reference to avoid CVE -->
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.35.0" />
 		<PackageReference Include="Serilog.AspNetCore" Version="6.0.0" />
 	</ItemGroup>
 
