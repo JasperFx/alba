@@ -85,14 +85,7 @@ public class LightweightCache<TKey, TValue> : IEnumerable<TValue> where TKey : n
         }
         set
         {
-            if (_values.ContainsKey(key))
-            {
-                _values[key] = value;
-            }
-            else
-            {
-                _values.Add(key, value);
-            }
+            _values[key] = value;
         }
     }
 
