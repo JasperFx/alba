@@ -10,8 +10,6 @@
     <RepositoryUrl>git://github.com/JasperFx/alba</RepositoryUrl>
     <OutputType>library</OutputType>
     <PackageIconUrl>https://avatars2.githubusercontent.com/u/10048186?v=3&amp;s=200</PackageIconUrl>
-    <langversion>10</langversion>
-    <nullable>enable</nullable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>CS1591;</NoWarn>
   </PropertyGroup>
