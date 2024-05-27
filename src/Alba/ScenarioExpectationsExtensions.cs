@@ -51,6 +51,16 @@ namespace Alba
         }
 
         /// <summary>
+        /// Assert tha the Http Status Code is between 200 and 299
+        /// </summary>
+        /// <param name="scenario"></param>
+        /// <returns></returns>
+        public static Scenario StatusCodeShouldBeSuccess(this Scenario scenario)
+        {
+            return scenario.AssertThat(new StatusCodeSuccessAssertion());
+        }
+
+        /// <summary>
         /// Assert that the content-type header value of the Http response
         /// matches the expected value
         /// </summary>
