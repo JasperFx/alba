@@ -69,5 +69,53 @@ namespace Alba.Testing.Acceptance
             ex.Message.ShouldContain("Expected status code 200, but was 500");
             ex.Message.ShouldContain("the error text");
         }
+
+        [Fact]
+        public async Task using_scenario_with_StatusCodeShouldBeSuccess_happy_path()
+        {
+            router.Handlers["/one"] = c =>
+            {
+                c.Response.StatusCode = 204;
+                c.Response.ContentType("text/plain");
+                c.Response.Write("Some text");
+
+                return Task.CompletedTask;
+            };
+
+            var ex = await Exception<ScenarioAssertionException>.ShouldBeThrownBy(() =>
+            {
+                return host.Scenario(x =>
+                {
+                    x.Get.Url("/one");
+                    x.StatusCodeShouldBeSuccess();
+                });
+            });
+
+        }
+
+        [Fact]
+        public async Task using_scenario_with_StatusCodeShouldBeSuccess_sad_path()
+        {
+            router.Handlers["/one"] = c =>
+            {
+                c.Response.StatusCode = 500;
+                c.Response.ContentType("text/plain");
+                c.Response.Write("Some text");
+
+                return Task.CompletedTask;
+            };
+
+            var ex = await Exception<ScenarioAssertionException>.ShouldBeThrownBy(() =>
+            {
+                return host.Scenario(x =>
+                {
+                    x.Get.Url("/one");
+                    x.StatusCodeShouldBeSuccess();
+                });
+            });
+
+            ex.Message.ShouldContain("Expected status code 200, but was 500");
+        }
+
     }
 }
