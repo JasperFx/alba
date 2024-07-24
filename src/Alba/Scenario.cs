@@ -270,13 +270,14 @@ public class Scenario : IUrlExpression
 
     internal void RunAssertions(HttpContext context)
     {
+        var assertionContext = new AssertionContext(context, _assertionRecords);
         if (!_ignoreStatusCode)
         {
-            new StatusCodeAssertion(_expectedStatusCode).Assert(this, context, _assertionRecords);
+            new StatusCodeAssertion(_expectedStatusCode).Assert(this, assertionContext);
         }
 
-        foreach (var assertion in _assertions) assertion.Assert(this, context, _assertionRecords);
-
+        foreach (var assertion in _assertions) assertion.Assert(this, assertionContext);
+        
         _assertionRecords.AssertAll();
     }
 

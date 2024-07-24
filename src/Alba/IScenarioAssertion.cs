@@ -5,6 +5,6 @@ namespace Alba;
 #region sample_IScenarioAssertion
 public interface IScenarioAssertion
 {
-    void Assert(Scenario scenario, HttpContext context, ScenarioAssertionException ex);
+    void Assert(Scenario scenario, AssertionContext context);
 }
 #endregion

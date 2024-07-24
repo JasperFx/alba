@@ -12,14 +12,14 @@ internal sealed class HasSingleHeaderValueAssertion : IScenarioAssertion
         _headerKey = headerKey;
     }
 
-    public void Assert(Scenario scenario, HttpContext context, ScenarioAssertionException ex)
+    public void Assert(Scenario scenario, AssertionContext context)
     {
-        var values = context.Response.Headers[_headerKey];
+        var values = context.HttpContext.Response.Headers[_headerKey];
 
         switch (values.Count)
         {
             case 0:
-                ex.Add(
+                context.AddFailure(
                     $"Expected a single header value of '{_headerKey}', but no values were found on the response");
                 break;
             case 1:
@@ -28,7 +28,7 @@ internal sealed class HasSingleHeaderValueAssertion : IScenarioAssertion
 
             default:
                 var valueText = values.Select(x => "'" + x + "'").Aggregate((s1, s2) => $"{s1}, {s2}");
-                ex.Add($"Expected a single header value of '{_headerKey}', but found multiple values on the response: {valueText}");
+                context.AddFailure($"Expected a single header value of '{_headerKey}', but found multiple values on the response: {valueText}");
                 break;
         }
     }
