@@ -1,5 +1,4 @@
-﻿using Hellang.Middleware.ProblemDetails;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,8 +34,8 @@ namespace WebApp
                 FileProvider = new PhysicalFileProvider(env.ContentRootPath)
             });
 
-            app.UseProblemDetails();
-
+            app.UseExceptionHandler();
+            
             app.UseRouting();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });

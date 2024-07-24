@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
@@ -10,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
@@ -61,7 +61,7 @@ namespace Alba.Security
             });
         }
 
-        internal JwtSecurityToken BuildToken(Claim[]? additionalClaims = null, string[]? removedClaims = null)
+        internal SecurityTokenDescriptor BuildToken(Claim[]? additionalClaims = null, string[]? removedClaims = null)
         {
             if (_options == null)
                 throw new InvalidOperationException("Unable to determine the JwtBearerOptions for this AlbaHost");
@@ -77,14 +77,21 @@ namespace Alba.Security
                 _options.TokenValidationParameters.IssuerSigningKey, 
                 algorithm);
 
-            return new JwtSecurityToken(_options.ClaimsIssuer, audience, processedClaims(additionalClaims, removedClaims),
-                expires: DateTime.UtcNow.AddDays(1), signingCredentials: credentials);
+            return new SecurityTokenDescriptor()
+            {
+                Subject = new ClaimsIdentity(processedClaims(additionalClaims, removedClaims)),
+                Issuer = _options.ClaimsIssuer,
+                Audience = audience,
+                Expires = DateTime.UtcNow.AddDays(1),
+                SigningCredentials = credentials
+            };
         }
         
         internal string BuildJwtString(Claim[] additionalClaims, string[]? removedClaims = null)
         {
-            var token = BuildToken(additionalClaims, removedClaims);
-            return new JwtSecurityTokenHandler().WriteToken(token); 
+            var tokenHandler = new JsonWebTokenHandler();
+            var tokenDescriptor = BuildToken(additionalClaims, removedClaims);
+            return tokenHandler.CreateToken(tokenDescriptor);
         }
 
         protected override IEnumerable<Claim> stubTypeSpecificClaims()
