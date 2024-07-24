@@ -12,6 +12,8 @@
 
   <ItemGroup>
     <PackageReference Include="Oakton" Version="4.7.0" />
+    <!-- fixing version due to indirect sec vln -->
+    <PackageReference Include="System.Text.Json" Version="8.0.4"/>    
   </ItemGroup>
 
 </Project>
