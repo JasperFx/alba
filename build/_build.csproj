@@ -13,6 +13,11 @@
 
   <ItemGroup>
     <PackageReference Include="Nuke.Common" Version="8.0.0" />
+    <!-- Those are indirect dependancies fixed because of security vulnerabilities -->
+    <PackageReference Include="NuGet.Packaging" Version="6.10.1" />
+    <PackageReference Include="Azure.Identity" Version="1.12.0" />
+    <PackageReference Include="Microsoft.Identity.Client" Version="4.62.0" />
   </ItemGroup>
-
+    
+  
 </Project>
