@@ -4,73 +4,72 @@ using System.Linq;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 
-namespace Alba.Security
+namespace Alba.Security;
+
+/// <summary>
+/// Base class for extensions that apply authentication mechanics to AlbaHosts
+/// </summary>
+public abstract class AuthenticationExtensionBase : IHasClaims
 {
-    /// <summary>
-    /// Base class for extensions that apply authentication mechanics to AlbaHosts
-    /// </summary>
-    public abstract class AuthenticationExtensionBase : IHasClaims
+    private readonly List<Claim> _baselineClaims = new();
+
+
+    void IHasClaims.AddClaim(Claim claim)
     {
-        private readonly List<Claim> _baselineClaims = new();
+        _baselineClaims.Add(claim);
+    }
 
+    protected IEnumerable<Claim> defaultClaims()
+    {
+        foreach (var claim1 in stubTypeSpecificClaims()) yield return claim1;
 
-        void IHasClaims.AddClaim(Claim claim)
+        foreach (var claim in _baselineClaims) yield return claim;
+    }
+
+    protected IEnumerable<Claim> processedClaims(Claim[]? additiveClaims, string[]? removedClaims)
+    {
+        var claims = defaultClaims().ToList();
+        if(removedClaims is not null)
+            claims.RemoveAll(c => removedClaims.Contains(c.Type));
+        if(additiveClaims is not null)
+            claims.AddRange(additiveClaims);
+        return claims;
+    }
+
+    protected virtual IEnumerable<Claim> stubTypeSpecificClaims()
+    {
+        return Enumerable.Empty<Claim>();
+    }
+
+    protected (Claim[] additiveClaims, string[] removedClaims) extractScenarioSpecificClaims(HttpContext context)
+    {
+        var additiveClaims = Array.Empty<Claim>();
+
+        if (context.Items.TryGetValue("alba_claims", out var raw))
         {
-            _baselineClaims.Add(claim);
-        }
-
-        protected IEnumerable<Claim> defaultClaims()
-        {
-            foreach (var claim1 in stubTypeSpecificClaims()) yield return claim1;
-
-            foreach (var claim in _baselineClaims) yield return claim;
-        }
-
-        protected IEnumerable<Claim> processedClaims(Claim[]? additiveClaims, string[]? removedClaims)
-        {
-            var claims = defaultClaims().ToList();
-            if(removedClaims is not null)
-                claims.RemoveAll(c => removedClaims.Contains(c.Type));
-            if(additiveClaims is not null)
-                claims.AddRange(additiveClaims);
-            return claims;
-        }
-
-        protected virtual IEnumerable<Claim> stubTypeSpecificClaims()
-        {
-            return Enumerable.Empty<Claim>();
-        }
-
-        protected (Claim[] additiveClaims, string[] removedClaims) extractScenarioSpecificClaims(HttpContext context)
-        {
-            var additiveClaims = Array.Empty<Claim>();
-
-            if (context.Items.TryGetValue("alba_claims", out var raw))
+            if (raw is Claim[] ca)
             {
-                if (raw is Claim[] ca)
-                {
-                    additiveClaims = ca;
-                }
+                additiveClaims = ca;
             }
-
-            var removalClaims = Array.Empty<string>();
-
-            if (context.Items.TryGetValue("alba_removed_claims", out var rawRc))
-            {
-                if (rawRc is string[] cr)
-                {
-                    removalClaims = cr;
-                }
-            }
-
-            return (additiveClaims, removalClaims);
         }
+
+        var removalClaims = Array.Empty<string>();
+
+        if (context.Items.TryGetValue("alba_removed_claims", out var rawRc))
+        {
+            if (rawRc is string[] cr)
+            {
+                removalClaims = cr;
+            }
+        }
+
+        return (additiveClaims, removalClaims);
+    }
       
-        protected IEnumerable<Claim> allClaims(HttpContext context)
-        {
-            var (additiveClaims, removedClaims) = extractScenarioSpecificClaims(context);
+    protected IEnumerable<Claim> allClaims(HttpContext context)
+    {
+        var (additiveClaims, removedClaims) = extractScenarioSpecificClaims(context);
 
-            return processedClaims(additiveClaims, removedClaims);
-        }
+        return processedClaims(additiveClaims, removedClaims);
     }
 }

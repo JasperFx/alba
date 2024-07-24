@@ -1,23 +1,22 @@
 using Microsoft.AspNetCore.Http;
 
-namespace Alba.Assertions
+namespace Alba.Assertions;
+
+internal sealed class BodyTextAssertion : IScenarioAssertion
 {
-    internal class BodyTextAssertion : IScenarioAssertion
+    public string Text { get; set; }
+
+    public BodyTextAssertion(string text)
     {
-        public string Text { get; set; }
+        Text = text;
+    }
 
-        public BodyTextAssertion(string text)
+    public void Assert(Scenario scenario, HttpContext context, ScenarioAssertionException ex)
+    {
+        var body = ex.ReadBody(context);
+        if (!body.Equals(Text))
         {
-            Text = text;
-        }
-
-        public void Assert(Scenario scenario, HttpContext context, ScenarioAssertionException ex)
-        {
-            var body = ex.ReadBody(context);
-            if (!body.Equals(Text))
-            {
-                ex.Add($"Expected the content to be '{Text}'");
-            }
+            ex.Add($"Expected the content to be '{Text}'");
         }
     }
 }

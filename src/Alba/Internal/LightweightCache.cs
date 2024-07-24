@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Alba.Internal;
 
-public class LightweightCache<TKey, TValue> : IEnumerable<TValue> where TKey : notnull
+internal sealed class LightweightCache<TKey, TValue> : IEnumerable<TValue> where TKey : notnull
 {
     private readonly IDictionary<TKey, TValue> _values;
 
