@@ -134,7 +134,7 @@ namespace Alba.Testing.Security
                 x.StatusCodeShouldBeOk();
             });
 
-            var output = response.ReadAsJson<Result>();
+            var output = await response.ReadAsJsonAsync<Result>();
             output.Sum.ShouldBe(9);
             output.Product.ShouldBe(24);
         }
