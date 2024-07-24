@@ -1,27 +1,26 @@
 using Microsoft.AspNetCore.Http;
 
-namespace Alba.Assertions
+namespace Alba.Assertions;
+
+#region sample_BodyContainsAssertion
+internal sealed class BodyContainsAssertion : IScenarioAssertion
 {
-    #region sample_BodyContainsAssertion
-    internal class BodyContainsAssertion : IScenarioAssertion
+    public string Text { get; set; }
+
+    public BodyContainsAssertion(string text)
     {
-        public string Text { get; set; }
+        Text = text;
+    }
 
-        public BodyContainsAssertion(string text)
+    public void Assert(Scenario scenario, HttpContext context, ScenarioAssertionException ex)
+    {
+        var body = ex.ReadBody(context);
+        if (!body.Contains(Text))
         {
-            Text = text;
-        }
-
-        public void Assert(Scenario scenario, HttpContext context, ScenarioAssertionException ex)
-        {
-            var body = ex.ReadBody(context);
-            if (!body.Contains(Text))
-            {
-                // Add the failure message to the exception. This exception only
-                // gets thrown if there are failures.
-                ex.Add($"Expected text '{Text}' was not found in the response body");
-            }
+            // Add the failure message to the exception. This exception only
+            // gets thrown if there are failures.
+            ex.Add($"Expected text '{Text}' was not found in the response body");
         }
     }
-    #endregion
 }
+#endregion

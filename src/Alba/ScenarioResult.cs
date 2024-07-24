@@ -6,136 +6,135 @@ using System.Xml.Serialization;
 using Alba.Internal;
 using Microsoft.AspNetCore.Http;
 
-namespace Alba
+namespace Alba;
+
+public class ScenarioResult : IScenarioResult
 {
-    public class ScenarioResult : IScenarioResult
+    private readonly AlbaHost _system;
+
+    internal ScenarioResult(AlbaHost system, HttpContext context)
     {
-        private readonly AlbaHost _system;
+        _system = system;
+        Context = context;
+    }
 
-        internal ScenarioResult(AlbaHost system, HttpContext context)
+    public HttpContext Context { get; }
+
+    /// <inheritdoc />
+    public string ReadAsText()
+    {
+        return Read(s => s.ReadAllText());
+    }
+
+    /// <inheritdoc />
+    public Task<string> ReadAsTextAsync()
+    {
+        return ReadAsync(s => s.ReadAllTextAsync());
+    }
+
+    /// <inheritdoc />
+    public XmlDocument? ReadAsXml()
+    {
+        Func<Stream, XmlDocument?> read = s =>
         {
-            _system = system;
-            Context = context;
-        }
+            var body = s.ReadAllText();
 
-        public HttpContext Context { get; }
-
-        /// <inheritdoc />
-        public string ReadAsText()
-        {
-            return Read(s => s.ReadAllText());
-        }
-
-        /// <inheritdoc />
-        public Task<string> ReadAsTextAsync()
-        {
-            return ReadAsync(s => s.ReadAllTextAsync());
-        }
-
-        /// <inheritdoc />
-        public XmlDocument? ReadAsXml()
-        {
-            Func<Stream, XmlDocument?> read = s =>
+            if (body.Contains("Error"))
             {
-                var body = s.ReadAllText();
+                return null;
+            }
 
-                if (body.Contains("Error"))
-                {
-                    return null;
-                }
+            var document = new XmlDocument();
+            document.LoadXml(body);
 
-                var document = new XmlDocument();
-                document.LoadXml(body);
+            return document;
+        };
 
-                return document;
-            };
+        return Read(read);
+    }
 
-            return Read(read);
-        }
-
-        /// <inheritdoc />
-        public Task<XmlDocument?> ReadAsXmlAsync()
+    /// <inheritdoc />
+    public Task<XmlDocument?> ReadAsXmlAsync()
+    {
+        Func<Stream, Task<XmlDocument?>> read = async s =>
         {
-            Func<Stream, Task<XmlDocument?>> read = async s =>
+            var body = await s.ReadAllTextAsync();
+
+            if (body.Contains("Error"))
             {
-                var body = await s.ReadAllTextAsync();
+                return null;
+            }
 
-                if (body.Contains("Error"))
-                {
-                    return null;
-                }
+            var document = new XmlDocument();
+            document.LoadXml(body);
 
-                var document = new XmlDocument();
-                document.LoadXml(body);
+            return document;
+        };
 
-                return document;
-            };
+        return Read(read);
+    }
 
-            return Read(read);
-        }
+    /// <inheritdoc />
+    public T? ReadAsXml<T>() where T : class
+    {
+        Context.Response.Body.Position = 0;
+        var serializer = new XmlSerializer(typeof(T));
+        return serializer.Deserialize(Context.Response.Body) as T;
+    }
 
-        /// <inheritdoc />
-        public T? ReadAsXml<T>() where T : class
+    /// <inheritdoc />
+    public T? ReadAsJson<T>()
+    {
+        return _system.DefaultJson.Read<T>(this);
+    }
+
+    /// <inheritdoc />
+    public Task<T?> ReadAsJsonAsync<T>()
+    {
+        return _system.DefaultJson.ReadAsync<T>(this);
+    }
+
+    public T Read<T>(Func<Stream, T> read)
+    {
+        if (Context.Response.Body.CanSeek || Context.Response.Body is MemoryStream)
         {
             Context.Response.Body.Position = 0;
-            var serializer = new XmlSerializer(typeof(T));
-            return serializer.Deserialize(Context.Response.Body) as T;
+        }
+        else
+        {
+            var stream = new MemoryStream();
+            Context.Response.Body.CopyTo(stream);
+            stream.Position = 0;
+            Context.Response.Body = stream;
         }
 
-        /// <inheritdoc />
-        public T? ReadAsJson<T>()
-        {
-            return _system.DefaultJson.Read<T>(this);
-        }
+        var returnValue = read(Context.Response.Body);
+        Context.Response.Body.Position = 0;
 
-        /// <inheritdoc />
-        public Task<T?> ReadAsJsonAsync<T>()
-        {
-            return _system.DefaultJson.ReadAsync<T>(this);
-        }
+        return returnValue;
+    }
 
-        public T Read<T>(Func<Stream, T> read)
+    public async Task<T> ReadAsync<T>(Func<Stream, Task<T>> read)
+    {
+        if (Context.Response.Body.CanSeek || Context.Response.Body is MemoryStream)
         {
-            if (Context.Response.Body.CanSeek || Context.Response.Body is MemoryStream)
-            {
-                Context.Response.Body.Position = 0;
-            }
-            else
-            {
-                var stream = new MemoryStream();
-                Context.Response.Body.CopyTo(stream);
-                stream.Position = 0;
-                Context.Response.Body = stream;
-            }
-
-            var returnValue = read(Context.Response.Body);
             Context.Response.Body.Position = 0;
-
-            return returnValue;
+        }
+        else
+        {
+            var stream = new MemoryStream();
+            await Context.Response.Body.CopyToAsync(stream);
+            stream.Position = 0;
+            Context.Response.Body = stream;
         }
 
-        public async Task<T> ReadAsync<T>(Func<Stream, Task<T>> read)
+        try
         {
-            if (Context.Response.Body.CanSeek || Context.Response.Body is MemoryStream)
-            {
-                Context.Response.Body.Position = 0;
-            }
-            else
-            {
-                var stream = new MemoryStream();
-                await Context.Response.Body.CopyToAsync(stream);
-                stream.Position = 0;
-                Context.Response.Body = stream;
-            }
-
-            try
-            {
-                return await read(Context.Response.Body);
-            }
-            finally
-            {
-                Context.Response.Body.Position = 0;
-            }
+            return await read(Context.Response.Body);
+        }
+        finally
+        {
+            Context.Response.Body.Position = 0;
         }
     }
 }

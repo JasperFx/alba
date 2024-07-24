@@ -14,123 +14,122 @@ using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Alba.Security
+namespace Alba.Security;
+
+/// <summary>
+/// Use this extension to generate and apply JWT tokens to scenario requests using
+/// a set of baseline claims
+/// </summary>
+public class JwtSecurityStub : AuthenticationExtensionBase, IAlbaExtension, IPostConfigureOptions<JwtBearerOptions>
 {
-    /// <summary>
-    /// Use this extension to generate and apply JWT tokens to scenario requests using
-    /// a set of baseline claims
-    /// </summary>
-    public class JwtSecurityStub : AuthenticationExtensionBase, IAlbaExtension, IPostConfigureOptions<JwtBearerOptions>
+    private JwtBearerOptions? _options;
+
+    void IDisposable.Dispose()
     {
-        private JwtBearerOptions? _options;
+        // Nothing
+    }
 
-        void IDisposable.Dispose()
+    ValueTask IAsyncDisposable.DisposeAsync()
+    {
+        return ValueTask.CompletedTask;
+    }
+
+    Task IAlbaExtension.Start(IAlbaHost host)
+    {
+        // This seems to be necessary to "bake" in the JwtBearerOptions modifications
+        var options = host.Services.GetRequiredService<IOptionsMonitor<JwtBearerOptions>>()
+            .Get("Bearer");
+
+
+        host.BeforeEach(ConfigureJwt);
+        return Task.CompletedTask;
+    }
+
+    internal void ConfigureJwt(HttpContext context)
+    {
+        var (additiveClaims, removedClaims) = extractScenarioSpecificClaims(context);
+        var jwt = BuildJwtString(additiveClaims, removedClaims);
+
+        context.SetBearerToken(jwt);
+    }
+
+    IHostBuilder IAlbaExtension.Configure(IHostBuilder builder)
+    {
+        return builder.ConfigureServices(services =>
         {
-            // Nothing
-        }
+            services.AddSingleton<IPostConfigureOptions<JwtBearerOptions>>(this);
+        });
+    }
 
-        ValueTask IAsyncDisposable.DisposeAsync()
-        {
-            return ValueTask.CompletedTask;
-        }
+    internal SecurityTokenDescriptor BuildToken(Claim[]? additionalClaims = null, string[]? removedClaims = null)
+    {
+        if (_options == null)
+            throw new InvalidOperationException("Unable to determine the JwtBearerOptions for this AlbaHost");
 
-        Task IAlbaExtension.Start(IAlbaHost host)
-        {
-            // This seems to be necessary to "bake" in the JwtBearerOptions modifications
-            var options = host.Services.GetRequiredService<IOptionsMonitor<JwtBearerOptions>>()
-                .Get("Bearer");
+        var algorithm = _options.TokenValidationParameters.ValidAlgorithms?.FirstOrDefault()
+                        ?? SecurityAlgorithms.HmacSha256;
 
-
-            host.BeforeEach(ConfigureJwt);
-            return Task.CompletedTask;
-        }
-
-        internal void ConfigureJwt(HttpContext context)
-        {
-            var (additiveClaims, removedClaims) = extractScenarioSpecificClaims(context);
-            var jwt = BuildJwtString(additiveClaims, removedClaims);
-
-            context.SetBearerToken(jwt);
-        }
-
-        IHostBuilder IAlbaExtension.Configure(IHostBuilder builder)
-        {
-            return builder.ConfigureServices(services =>
-            {
-                services.AddSingleton<IPostConfigureOptions<JwtBearerOptions>>(this);
-            });
-        }
-
-        internal SecurityTokenDescriptor BuildToken(Claim[]? additionalClaims = null, string[]? removedClaims = null)
-        {
-            if (_options == null)
-                throw new InvalidOperationException("Unable to determine the JwtBearerOptions for this AlbaHost");
-
-            var algorithm = _options.TokenValidationParameters.ValidAlgorithms?.FirstOrDefault()
-                            ?? SecurityAlgorithms.HmacSha256;
-
-            var audience = _options.TokenValidationParameters.ValidAudiences?.FirstOrDefault() 
-                           ?? _options.TokenValidationParameters.ValidAudience 
-                           ?? _options.Audience;
+        var audience = _options.TokenValidationParameters.ValidAudiences?.FirstOrDefault() 
+                       ?? _options.TokenValidationParameters.ValidAudience 
+                       ?? _options.Audience;
             
-            var credentials = new SigningCredentials(
-                _options.TokenValidationParameters.IssuerSigningKey, 
-                algorithm);
+        var credentials = new SigningCredentials(
+            _options.TokenValidationParameters.IssuerSigningKey, 
+            algorithm);
 
-            return new SecurityTokenDescriptor()
-            {
-                Subject = new ClaimsIdentity(processedClaims(additionalClaims, removedClaims)),
-                Issuer = _options.ClaimsIssuer,
-                Audience = audience,
-                Expires = DateTime.UtcNow.AddDays(1),
-                SigningCredentials = credentials
-            };
-        }
+        return new SecurityTokenDescriptor()
+        {
+            Subject = new ClaimsIdentity(processedClaims(additionalClaims, removedClaims)),
+            Issuer = _options.ClaimsIssuer,
+            Audience = audience,
+            Expires = DateTime.UtcNow.AddDays(1),
+            SigningCredentials = credentials
+        };
+    }
         
-        internal string BuildJwtString(Claim[] additionalClaims, string[]? removedClaims = null)
-        {
-            var tokenHandler = new JsonWebTokenHandler();
-            var tokenDescriptor = BuildToken(additionalClaims, removedClaims);
-            return tokenHandler.CreateToken(tokenDescriptor);
-        }
+    internal string BuildJwtString(Claim[] additionalClaims, string[]? removedClaims = null)
+    {
+        var tokenHandler = new JsonWebTokenHandler();
+        var tokenDescriptor = BuildToken(additionalClaims, removedClaims);
+        return tokenHandler.CreateToken(tokenDescriptor);
+    }
 
-        protected override IEnumerable<Claim> stubTypeSpecificClaims()
+    protected override IEnumerable<Claim> stubTypeSpecificClaims()
+    {
+        yield return new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString());
+        if (_options?.ClaimsIssuer != null)
         {
-            yield return new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString());
-            if (_options?.ClaimsIssuer != null)
+            yield return new Claim(JwtRegisteredClaimNames.Iss, _options.ClaimsIssuer);
+        }
+    }
+
+    void IPostConfigureOptions<JwtBearerOptions>.PostConfigure(string? name, JwtBearerOptions options)
+    {
+        // This will deactivate the callout to the OIDC server
+        options.ConfigurationManager =
+            new StaticConfigurationManager<OpenIdConnectConfiguration>(new OpenIdConnectConfiguration
             {
-                yield return new Claim(JwtRegisteredClaimNames.Iss, _options.ClaimsIssuer);
-            }
-        }
-
-        void IPostConfigureOptions<JwtBearerOptions>.PostConfigure(string? name, JwtBearerOptions options)
-        {
-            // This will deactivate the callout to the OIDC server
-            options.ConfigurationManager =
-                new StaticConfigurationManager<OpenIdConnectConfiguration>(new OpenIdConnectConfiguration
-                {
                     
-                });
+            });
             
-            var validationParameters = options.TokenValidationParameters.Clone();
-            validationParameters.IssuerSigningKey ??= new SymmetricSecurityKey(Encoding.UTF8.GetBytes("some really big key that should work"));
-            validationParameters.ValidateIssuer = false;
-            options.TokenValidationParameters = validationParameters;
+        var validationParameters = options.TokenValidationParameters.Clone();
+        validationParameters.IssuerSigningKey ??= new SymmetricSecurityKey(Encoding.UTF8.GetBytes("some really big key that should work"));
+        validationParameters.ValidateIssuer = false;
+        options.TokenValidationParameters = validationParameters;
 
-            options.Authority = null;
-            options.MetadataAddress = null!;
+        options.Authority = null;
+        options.MetadataAddress = null!;
 
-            _options = options;
-        }
+        _options = options;
+    }
 
-        internal JwtBearerOptions? Options
+    internal JwtBearerOptions? Options
+    {
+        get => _options;
+        set
         {
-            get => _options;
-            set
-            {
-                _options = value ?? throw new ArgumentNullException(nameof(value));
-                _options.TokenValidationParameters.IssuerSigningKey ??= new SymmetricSecurityKey(Encoding.UTF8.GetBytes("some really big key that should work"));
-            }
+            _options = value ?? throw new ArgumentNullException(nameof(value));
+            _options.TokenValidationParameters.IssuerSigningKey ??= new SymmetricSecurityKey(Encoding.UTF8.GetBytes("some really big key that should work"));
         }
     }
 }
