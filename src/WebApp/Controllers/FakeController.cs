@@ -1,5 +1,5 @@
 ﻿using System;
-using Hellang.Middleware.ProblemDetails;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApp.Controllers
@@ -9,7 +9,7 @@ namespace WebApp.Controllers
     public class FakeController : ControllerBase
     {
         [HttpGet("{status}")]
-        public string Fake(string status)
+        public IResult Fake(string status)
         {
             switch (status)
             {
@@ -17,16 +17,11 @@ namespace WebApp.Controllers
                     throw new DivideByZeroException("Boom!");
 
                 case "invalid":
-                    throw new ProblemDetailsException(new ProblemDetails
-                    {
-                        Status = 400,
-                        Detail = "It's all wrong",
-                        Title = "This stinks!"
-                    });
+                    return Results.Problem("It's all wrong", title: "This stinks!");
 
                 default:
 
-                    return "it's all good";
+                    return Results.Ok("it's all good");
             }
         }
     }

@@ -48,10 +48,8 @@ namespace WebAppSecuredWithJwt
                     
                     // don't worry about this, our JwtSecurityStub is gonna switch it off in
                     // tests
-                    options.Authority = "https://localhost:5010";
+                    options.Authority = "https://localhost:5001";
                     
-                        
-            
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateAudience = false,
@@ -59,6 +57,7 @@ namespace WebAppSecuredWithJwt
                         NameClaimType = ClaimTypes.NameIdentifier
                     };
                 });
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

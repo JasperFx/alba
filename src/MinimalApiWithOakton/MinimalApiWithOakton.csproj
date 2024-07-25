@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Lamar.Microsoft.DependencyInjection" Version="13.0.2" />
+      <PackageReference Include="Lamar.Microsoft.DependencyInjection" Version="13.0.4" />
       <PackageReference Include="Oakton" Version="6.1.0" />
         <!-- fixing version due to indirect sec vln -->
         <PackageReference Include="System.Text.Json" Version="8.0.4"/>

@@ -65,7 +65,7 @@ public class WebAppFixture : IAsyncLifetime
             {
                 _.Get.Url("/fake/invalid");
                 _.ContentTypeShouldBe("application/problem+json; charset=utf-8");
-                _.StatusCodeShouldBe(400);
+                _.StatusCodeShouldBe(500);
             });
 
             var problems = result.ReadAsJson<ProblemDetails>();

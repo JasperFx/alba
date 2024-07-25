@@ -2,7 +2,7 @@
 
 namespace Alba.Assertions;
 
-internal class HeaderExistsAssertion : IScenarioAssertion
+internal sealed  class HeaderExistsAssertion : IScenarioAssertion
 {
     private readonly string _headerKey;
 

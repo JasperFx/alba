@@ -1,12 +1,11 @@
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Alba.Serialization
+namespace Alba.Serialization;
+
+public interface IJsonStrategy
 {
-    public interface IJsonStrategy
-    {
-        Stream Write<T>(T body);
-        T Read<T>(ScenarioResult response);
-        Task<T> ReadAsync<T>(ScenarioResult scenarioResult);
-    }
+    Stream Write<T>(T body);
+    T Read<T>(ScenarioResult response);
+    Task<T> ReadAsync<T>(ScenarioResult scenarioResult);
 }

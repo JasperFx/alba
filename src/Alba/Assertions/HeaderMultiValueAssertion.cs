@@ -2,38 +2,37 @@
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 
-namespace Alba.Assertions
+namespace Alba.Assertions;
+
+internal sealed class HeaderMultiValueAssertion : IScenarioAssertion
 {
-    internal class HeaderMultiValueAssertion : IScenarioAssertion
+    private readonly string _headerKey;
+    private readonly List<string> _expected;
+
+    public HeaderMultiValueAssertion(string headerKey, IEnumerable<string> expected)
     {
-        private readonly string _headerKey;
-        private readonly List<string> _expected;
+        _headerKey = headerKey;
+        _expected = expected.ToList();
+    }
 
-        public HeaderMultiValueAssertion(string headerKey, IEnumerable<string> expected)
+    public void Assert(Scenario scenario, HttpContext context, ScenarioAssertionException ex)
+    {
+        var values = context.Response.Headers[_headerKey];
+        var expectedText = _expected.Select(x => "'" + x + "'").Aggregate((s1, s2) => $"{s1}, {s2}");
+
+        switch (values.Count)
         {
-            _headerKey = headerKey;
-            _expected = expected.ToList();
-        }
+            case 0:
+                ex.Add($"Expected header values of '{_headerKey}'={expectedText}, but no values were found on the response.");
+                break;
 
-        public void Assert(Scenario scenario, HttpContext context, ScenarioAssertionException ex)
-        {
-            var values = context.Response.Headers[_headerKey];
-            var expectedText = _expected.Select(x => "'" + x + "'").Aggregate((s1, s2) => $"{s1}, {s2}");
-
-            switch (values.Count)
-            {
-                case 0:
-                    ex.Add($"Expected header values of '{_headerKey}'={expectedText}, but no values were found on the response.");
-                    break;
-
-                default:
-                    if (!_expected.All(x => values.Contains(x)))
-                    {
-                        var valueText = values.Select(x => "'" + x + "'").Aggregate((s1, s2) => $"{s1}, {s2}");
-                        ex.Add($"Expected header values of '{_headerKey}'={expectedText}, but the actual values were {valueText}.");
-                    }
-                    break;
-            }
+            default:
+                if (!_expected.All(x => values.Contains(x)))
+                {
+                    var valueText = values.Select(x => "'" + x + "'").Aggregate((s1, s2) => $"{s1}, {s2}");
+                    ex.Add($"Expected header values of '{_headerKey}'={expectedText}, but the actual values were {valueText}.");
+                }
+                break;
         }
     }
 }

@@ -1,11 +1,10 @@
 using System;
 
-namespace Alba
+namespace Alba;
+
+public class EmptyResponseException : Exception
 {
-    public class EmptyResponseException : Exception
+    public EmptyResponseException() : base("There is no content in the Response.Body")
     {
-        public EmptyResponseException() : base("There is no content in the Response.Body")
-        {
-        }
     }
 }
