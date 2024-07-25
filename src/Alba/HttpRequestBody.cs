@@ -44,15 +44,16 @@ namespace Alba
 
         private void writeTextToBody(string json, HttpContext context)
         {
-            var stream = new MemoryStream();
-            using var writer = new StreamWriter(stream);
+            var stream = context.Request.Body;
+
+            var writer = new StreamWriter(stream);
             writer.Write(json);
             writer.Flush();
+
             stream.Position = 0;
-            context.Request.Body = stream;
+
             context.Request.ContentLength = stream.Length;
         }
-
 
         public void WriteFormData(Dictionary<string, string> input)
         {
