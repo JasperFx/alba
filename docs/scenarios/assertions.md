@@ -18,7 +18,7 @@ public interface IScenarioAssertion
     void Assert(Scenario scenario, HttpContext context, ScenarioAssertionException ex);
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba/IScenarioAssertion.cs#L6-L11' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_iscenarioassertion' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba/IScenarioAssertion.cs#L5-L10' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_iscenarioassertion' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 As an example, here's the assertion from Alba that validates that the response body is supposed to 
@@ -26,7 +26,7 @@ As an example, here's the assertion from Alba that validates that the response b
 <!-- snippet: sample_BodyContainsAssertion -->
 <a id='snippet-sample_bodycontainsassertion'></a>
 ```cs
-internal class BodyContainsAssertion : IScenarioAssertion
+internal sealed class BodyContainsAssertion : IScenarioAssertion
 {
     public string Text { get; set; }
 
