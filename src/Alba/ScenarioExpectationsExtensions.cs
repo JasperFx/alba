@@ -1,11 +1,12 @@
 using System.Net;
 using Alba.Assertions;
- 
+
 namespace Alba;
 
 public static class ScenarioExpectationsExtensions
 {
     #region sample_ContentShouldContain
+
     /// <summary>
     /// Assert that the Http response contains the designated text
     /// </summary>
@@ -16,6 +17,7 @@ public static class ScenarioExpectationsExtensions
     {
         return scenario.AssertThat(new BodyContainsAssertion(text));
     }
+
     #endregion
 
     /// <summary>
@@ -48,6 +50,16 @@ public static class ScenarioExpectationsExtensions
     public static Scenario StatusCodeShouldBeOk(this Scenario scenario)
     {
         return scenario.StatusCodeShouldBe(HttpStatusCode.OK);
+    }
+
+    /// <summary>
+    /// Assert that the Http Status Code is between 200 and 299
+    /// </summary>
+    /// <param name="scenario"></param>
+    /// <returns></returns>
+    public static Scenario StatusCodeShouldBeSuccess(this Scenario scenario)
+    {
+        return scenario.AssertThat(new StatusCodeSuccessAssertion());
     }
 
     /// <summary>
