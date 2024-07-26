@@ -83,13 +83,13 @@ public class ScenarioResult : IScenarioResult
     }
 
     /// <inheritdoc />
-    public T? ReadAsJson<T>()
+    public T ReadAsJson<T>()
     {
         return _system.DefaultJson.Read<T>(this);
     }
 
     /// <inheritdoc />
-    public Task<T?> ReadAsJsonAsync<T>()
+    public Task<T> ReadAsJsonAsync<T>()
     {
         return _system.DefaultJson.ReadAsync<T>(this);
     }

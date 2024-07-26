@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using Alba.Internal;
@@ -8,13 +7,9 @@ using Alba.Internal;
 
 namespace Alba;
 
-public class ScenarioAssertionException : Exception
+public sealed class ScenarioAssertionException : Exception
 {
     private readonly IList<string> _messages = new List<string>();
-
-    public ScenarioAssertionException()
-    {
-    }
 
     /// <summary>
     /// Add an assertion failure message
