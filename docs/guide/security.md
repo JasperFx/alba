@@ -88,6 +88,25 @@ the JWT tokens with a real Open Id Connect server **so you can test your service
 The `JwtSecurityStub` will also honor the `WithClaim()` method to add additional claims on a scenario by scenario basis
 as shown in the previous section.
 
+## Override a specific scheme
+
+Both `AuthenticationSecurityStub` and `JwtSecuritySnub` will replace all authentication schemes by default. If you only want a single scheme to be replaced,
+you can pass the scheme name via the constructor:
+
+<!-- snippet: sample_bootstrapping_with_stub_scheme_extension -->
+<a id='snippet-sample_bootstrapping_with_stub_scheme_extension'></a>
+```cs
+// Stub out an individual scheme
+var securityStub = new AuthenticationStub("custom")
+    .With("foo", "bar")
+    .With(JwtRegisteredClaimNames.Email, "guy@company.com")
+    .WithName("jeremy");
+
+await using var host = await AlbaHost.For<WebAppSecuredWithJwt.Program>(securityStub);
+```
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/web_api_authentication_with_individual_stub.cs#L14-L22' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_bootstrapping_with_stub_scheme_extension' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
 ## Integration with JWT Authentication
 
 ::: tip

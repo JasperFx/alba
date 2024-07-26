@@ -15,14 +15,14 @@ public sealed class AuthenticationStub : AuthenticationExtensionBase, IAlbaExten
 {
     private const string TestSchemaName = "Test";
 
-    internal string? OverrideSchemaTargetName { get; }
+    internal string? OverrideSchemeTargetName { get; }
 
     /// <summary>
     /// Creates a new authentication stub. Will override all implementations by default.
     /// </summary>
-    /// <param name="overrideSchemaTargetName">Override a specific authentication schema.</param>
-    public AuthenticationStub(string? overrideSchemaTargetName = null)
-        => OverrideSchemaTargetName = overrideSchemaTargetName;
+    /// <param name="overrideSchemeTargetName">Override a specific authentication schema.</param>
+    public AuthenticationStub(string? overrideSchemeTargetName = null)
+        => OverrideSchemeTargetName = overrideSchemeTargetName;
 
     void IDisposable.Dispose()
     {
@@ -57,7 +57,7 @@ public sealed class AuthenticationStub : AuthenticationExtensionBase, IAlbaExten
         public MockSchemeProvider(AuthenticationStub authSchemaStub, IOptions<AuthenticationOptions> options)
             : base(options)
         {
-            _overrideSchemaTarget = authSchemaStub.OverrideSchemaTargetName;
+            _overrideSchemaTarget = authSchemaStub.OverrideSchemeTargetName;
         }
 
         public override Task<AuthenticationScheme?> GetSchemeAsync(string name)

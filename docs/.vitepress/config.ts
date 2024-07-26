@@ -1,10 +1,4 @@
 import { defineConfig } from 'vitepress'
-import { BUNDLED_LANGUAGES } from 'shiki'
-
-// Include `cs` as alias for csharp
-BUNDLED_LANGUAGES
-  .find(lang => lang.id === 'csharp')!.aliases!.push('cs');
-
 
 export default defineConfig({
     title: 'Alba',

@@ -18,7 +18,7 @@ public interface IAlbaExtension : IDisposable, IAsyncDisposable
     /// <param name="host"></param>
     /// <returns></returns>
     Task Start(IAlbaHost host);
-    
+        
     /// <summary>
     /// Allow an extension to alter the application's
     /// IHostBuilder prior to starting the application

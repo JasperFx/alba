@@ -20,10 +20,14 @@ namespace Alba.Security;
 /// Use this extension to generate and apply JWT tokens to scenario requests using
 /// a set of baseline claims
 /// </summary>
-public class JwtSecurityStub : AuthenticationExtensionBase, IAlbaExtension, IPostConfigureOptions<JwtBearerOptions>
+public class JwtSecurityStub : AuthenticationExtensionBase, IAlbaExtension
 {
     private JwtBearerOptions? _options;
 
+    private readonly string? _overrideSchemaTargetName;
+    public JwtSecurityStub(string? overrideSchemaTargetName = null)
+        => _overrideSchemaTargetName = overrideSchemaTargetName;
+    
     void IDisposable.Dispose()
     {
         // Nothing
@@ -38,7 +42,7 @@ public class JwtSecurityStub : AuthenticationExtensionBase, IAlbaExtension, IPos
     {
         // This seems to be necessary to "bake" in the JwtBearerOptions modifications
         var options = host.Services.GetRequiredService<IOptionsMonitor<JwtBearerOptions>>()
-            .Get("Bearer");
+            .Get(_overrideSchemaTargetName ?? JwtBearerDefaults.AuthenticationScheme);
 
 
         host.BeforeEach(ConfigureJwt);
@@ -57,7 +61,15 @@ public class JwtSecurityStub : AuthenticationExtensionBase, IAlbaExtension, IPos
     {
         return builder.ConfigureServices(services =>
         {
-            services.AddSingleton<IPostConfigureOptions<JwtBearerOptions>>(this);
+            if (_overrideSchemaTargetName != null)
+            {
+                services.PostConfigure<JwtBearerOptions>(_overrideSchemaTargetName, PostConfigure);
+            }
+            else
+            {
+                services.PostConfigureAll<JwtBearerOptions>(PostConfigure);
+            }
+           
         });
     }
 
@@ -103,7 +115,7 @@ public class JwtSecurityStub : AuthenticationExtensionBase, IAlbaExtension, IPos
         }
     }
 
-    void IPostConfigureOptions<JwtBearerOptions>.PostConfigure(string? name, JwtBearerOptions options)
+    void PostConfigure(JwtBearerOptions options)
     {
         // This will deactivate the callout to the OIDC server
         options.ConfigurationManager =
