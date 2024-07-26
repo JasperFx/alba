@@ -1,11 +1,12 @@
 using System.Net;
 using Alba.Assertions;
- 
+
 namespace Alba;
 
 public static class ScenarioExpectationsExtensions
 {
     #region sample_ContentShouldContain
+
     /// <summary>
     /// Assert that the Http response contains the designated text
     /// </summary>
@@ -16,6 +17,7 @@ public static class ScenarioExpectationsExtensions
     {
         return scenario.AssertThat(new BodyContainsAssertion(text));
     }
+
     #endregion
 
     /// <summary>
@@ -50,27 +52,27 @@ public static class ScenarioExpectationsExtensions
         return scenario.StatusCodeShouldBe(HttpStatusCode.OK);
     }
 
-        /// <summary>
-        /// Assert tha the Http Status Code is between 200 and 299
-        /// </summary>
-        /// <param name="scenario"></param>
-        /// <returns></returns>
-        public static Scenario StatusCodeShouldBeSuccess(this Scenario scenario)
-        {
-            return scenario.AssertThat(new StatusCodeSuccessAssertion());
-        }
+    /// <summary>
+    /// Assert that the Http Status Code is between 200 and 299
+    /// </summary>
+    /// <param name="scenario"></param>
+    /// <returns></returns>
+    public static Scenario StatusCodeShouldBeSuccess(this Scenario scenario)
+    {
+        return scenario.AssertThat(new StatusCodeSuccessAssertion());
+    }
 
-        /// <summary>
-        /// Assert that the content-type header value of the Http response
-        /// matches the expected value
-        /// </summary>
-        /// <param name="scenario"></param>
-        /// <param name="mimeType"></param>
-        /// <returns></returns>
-        public static Scenario ContentTypeShouldBe(this Scenario scenario, MimeType mimeType)
-        {
-            return scenario.ContentTypeShouldBe(mimeType.Value);
-        }
+    /// <summary>
+    /// Assert that the content-type header value of the Http response
+    /// matches the expected value
+    /// </summary>
+    /// <param name="scenario"></param>
+    /// <param name="mimeType"></param>
+    /// <returns></returns>
+    public static Scenario ContentTypeShouldBe(this Scenario scenario, MimeType mimeType)
+    {
+        return scenario.ContentTypeShouldBe(mimeType.Value);
+    }
 
 
     /// <summary>
