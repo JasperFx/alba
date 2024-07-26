@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.WebUtilities;
  
 namespace Alba;
 
-public class SendExpression
+public sealed class SendExpression
 {
     private readonly Scenario _context;
 

@@ -8,7 +8,7 @@ using Microsoft.Extensions.Hosting;
 namespace Alba;
 
 /// <inheritdoc cref="WebApplicationFactory{TEntryPoint}"/>
-public class AlbaWebApplicationFactory<TEntryPoint> : WebApplicationFactory<TEntryPoint>, IAlbaWebApplicationFactory where TEntryPoint : class
+internal sealed class AlbaWebApplicationFactory<TEntryPoint> : WebApplicationFactory<TEntryPoint>, IAlbaWebApplicationFactory where TEntryPoint : class
 {
     private readonly Action<IWebHostBuilder> _configuration;
     private readonly IAlbaExtension[] _extensions;

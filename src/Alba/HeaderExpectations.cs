@@ -4,7 +4,7 @@ using Alba.Assertions;
  
 namespace Alba;
 
-public class HeaderExpectations
+public sealed class HeaderExpectations
 {
     private readonly Scenario _parent;
     private readonly string _headerKey;

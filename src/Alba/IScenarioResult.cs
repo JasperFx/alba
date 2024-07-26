@@ -50,17 +50,17 @@ public interface IScenarioResult
     /// Deserialize the contents of the HttpResponse.Body into an object
     /// of type T using the configured Json serializer
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <returns></returns>
-    T? ReadAsJson<T>();
+    /// <exception cref="AlbaJsonFormatterException">Throws if the response cannot be deserialized.</exception>
+    /// <exception cref="EmptyResponseException">Throws if the response is empty.</exception>
+    T ReadAsJson<T>();
 
     /// <summary>
     /// Deserialize the contents of the HttpResponse.Body into an object
     /// of type T using the configured Json serializer
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <returns></returns>
-    Task<T?> ReadAsJsonAsync<T>();
+    /// <exception cref="AlbaJsonFormatterException">Throws if the response cannot be deserialized.</exception>
+    /// <exception cref="EmptyResponseException">Throws if the response is empty.</exception>
+    Task<T> ReadAsJsonAsync<T>();
         
 }
 #endregion
