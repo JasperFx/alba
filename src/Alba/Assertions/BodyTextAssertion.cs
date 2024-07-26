@@ -11,12 +11,12 @@ internal sealed class BodyTextAssertion : IScenarioAssertion
         Text = text;
     }
 
-    public void Assert(Scenario scenario, HttpContext context, ScenarioAssertionException ex)
+    public void Assert(Scenario scenario, AssertionContext context)
     {
-        var body = ex.ReadBody(context);
+        var body = context.ReadBodyAsString();
         if (!body.Equals(Text))
         {
-            ex.Add($"Expected the content to be '{Text}'");
+            context.AddFailure($"Expected the content to be '{Text}'");
         }
     }
 }

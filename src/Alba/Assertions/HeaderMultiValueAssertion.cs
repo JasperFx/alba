@@ -15,22 +15,22 @@ internal sealed class HeaderMultiValueAssertion : IScenarioAssertion
         _expected = expected.ToList();
     }
 
-    public void Assert(Scenario scenario, HttpContext context, ScenarioAssertionException ex)
+    public void Assert(Scenario scenario, AssertionContext context)
     {
-        var values = context.Response.Headers[_headerKey];
+        var values = context.HttpContext.Response.Headers[_headerKey];
         var expectedText = _expected.Select(x => "'" + x + "'").Aggregate((s1, s2) => $"{s1}, {s2}");
 
         switch (values.Count)
         {
             case 0:
-                ex.Add($"Expected header values of '{_headerKey}'={expectedText}, but no values were found on the response.");
+                context.AddFailure($"Expected header values of '{_headerKey}'={expectedText}, but no values were found on the response.");
                 break;
 
             default:
                 if (!_expected.All(x => values.Contains(x)))
                 {
                     var valueText = values.Select(x => "'" + x + "'").Aggregate((s1, s2) => $"{s1}, {s2}");
-                    ex.Add($"Expected header values of '{_headerKey}'={expectedText}, but the actual values were {valueText}.");
+                    context.AddFailure($"Expected header values of '{_headerKey}'={expectedText}, but the actual values were {valueText}.");
                 }
                 break;
         }

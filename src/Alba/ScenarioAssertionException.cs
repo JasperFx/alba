@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
 using Alba.Internal;
-using Microsoft.AspNetCore.Http;
 
- 
+
 namespace Alba;
 
 public class ScenarioAssertionException : Exception
@@ -27,6 +25,10 @@ public class ScenarioAssertionException : Exception
         _messages.Add(message);
     }
 
+    private string? _body;
+    
+    public void AddBody(string body) => _body = body;
+
     internal void AssertAll()
     {
         if (_messages.Any())
@@ -44,58 +46,23 @@ public class ScenarioAssertionException : Exception
     {
         get
         {
-            var writer = new StringWriter();
+            var writer = new StringBuilder();
 
             foreach (var message in _messages)
             {
-                writer.WriteLine(message);
+                writer.AppendLine(message);
             }
 
-            if (Body.IsNotEmpty())
+            if (_body.IsNotEmpty())
             {
-                writer.WriteLine();
-                writer.WriteLine();
-                writer.WriteLine("Actual body text was:");
-                writer.WriteLine();
-                writer.WriteLine(Body);
+                writer.AppendLine();
+                writer.AppendLine();
+                writer.AppendLine("Actual body text was:");
+                writer.AppendLine();
+                writer.AppendLine(_body);
             }
 
             return writer.ToString();
         }
-    }
-
-    /// <summary>
-    /// A textual representation of the HTTP response body for diagnostic purposes. This property will be null unless <see cref="ReadBody"/> is called.
-    /// </summary>
-    public string? Body { get; set; }
-
-    /// <summary>
-    /// Reads the response body and returns it as a string
-    /// </summary>
-    /// <param name="context">The context of the response</param>
-    /// <returns>A string with the content of the body</returns>
-    [MemberNotNull(nameof(Body))]
-    public string ReadBody(HttpContext context)
-    {
-        // Hardening for GH-95
-        try
-        {
-            var stream = context.Response.Body;
-            if (Body == null)
-            {
-                if (stream.CanSeek)
-                {
-                    stream.Position = 0;
-                }
-                
-                Body = Encoding.UTF8.GetString(stream.ReadAllBytes());
-            }
-        }
-        catch (Exception)
-        {
-            Body = string.Empty;
-        }
-
-        return Body;
     }
 }

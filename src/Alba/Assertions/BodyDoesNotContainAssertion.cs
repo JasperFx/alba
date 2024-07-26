@@ -11,12 +11,12 @@ internal sealed class BodyDoesNotContainAssertion : IScenarioAssertion
         Text = text;
     }
 
-    public void Assert(Scenario scenario, HttpContext context, ScenarioAssertionException ex)
+    public void Assert(Scenario scenario, AssertionContext context)
     {
-        var body = ex.ReadBody(context);
+        var body = context.ReadBodyAsString();
         if (body.Contains(Text))
         {
-            ex.Add($"Text '{Text}' should not be found in the response body");
+            context.AddFailure($"Text '{Text}' should not be found in the response body");
         }
     }
 }

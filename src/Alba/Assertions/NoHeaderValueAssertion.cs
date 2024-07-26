@@ -12,14 +12,14 @@ internal sealed  class NoHeaderValueAssertion : IScenarioAssertion
         _headerKey = headerKey;
     }
 
-    public void Assert(Scenario scenario, HttpContext context, ScenarioAssertionException ex)
+    public void Assert(Scenario scenario, AssertionContext context)
     {
-        var headers = context.Response.Headers;
+        var headers = context.HttpContext.Response.Headers;
         if (headers.ContainsKey(_headerKey))
         {
             var values = headers[_headerKey];
             var valueText = values.Select(x => "'" + x + "'").Aggregate((s1, s2) => $"{s1}, {s2}");
-            ex.Add($"Expected no value for header '{_headerKey}', but found values {valueText}");
+            context.AddFailure($"Expected no value for header '{_headerKey}', but found values {valueText}");
         }
     }
 }

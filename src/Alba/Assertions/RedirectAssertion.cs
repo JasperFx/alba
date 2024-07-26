@@ -14,14 +14,14 @@ internal sealed class RedirectAssertion : IScenarioAssertion
     public string Expected { get; }
     public bool Permanent { get; }
 
-    public void Assert(Scenario scenario, HttpContext context, ScenarioAssertionException ex)
+    public void Assert(Scenario scenario, AssertionContext context)
     {
-        var location = context.Response.Headers["Location"];
+        var location = context.HttpContext.Response.Headers.Location;
         if (!string.Equals(location, Expected, StringComparison.OrdinalIgnoreCase))
         {
-            ex.Add($"Expected to be redirected to '{Expected}' but was '{location}'.");
+            context.AddFailure($"Expected to be redirected to '{Expected}' but was '{location}'.");
         }
 
-        new StatusCodeAssertion(Permanent ? 301 : 302).Assert(scenario, context, ex);
+        new StatusCodeAssertion(Permanent ? 301 : 302).Assert(scenario, context);
     }
 }

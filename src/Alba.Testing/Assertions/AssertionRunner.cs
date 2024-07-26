@@ -21,7 +21,7 @@ namespace Alba.Testing.Assertions
             var stream = context.Response.Body;
             stream.Position = 0;
 
-            assertion.Assert(null, context, ex);
+            assertion.Assert(null, new AssertionContext(context, ex));
 
             return ex;
         }

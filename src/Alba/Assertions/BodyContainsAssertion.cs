@@ -12,14 +12,16 @@ internal sealed class BodyContainsAssertion : IScenarioAssertion
         Text = text;
     }
 
-    public void Assert(Scenario scenario, HttpContext context, ScenarioAssertionException ex)
+    public void Assert(Scenario scenario, AssertionContext context)
     {
-        var body = ex.ReadBody(context);
+        // Context has this useful extension to read the body as a string.
+        // This will bake the body contents into the exception message to make debugging easier.
+        var body = context.ReadBodyAsString();
         if (!body.Contains(Text))
         {
             // Add the failure message to the exception. This exception only
             // gets thrown if there are failures.
-            ex.Add($"Expected text '{Text}' was not found in the response body");
+            context.AddFailure($"Expected text '{Text}' was not found in the response body");
         }
     }
 }
