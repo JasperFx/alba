@@ -14,6 +14,8 @@ internal sealed class BodyContainsAssertion : IScenarioAssertion
 
     public void Assert(Scenario scenario, AssertionContext context)
     {
+        // Context has this useful extension to read the body as a string.
+        // This will bake the body contents into the exception message to make debugging easier.
         var body = context.ReadBodyAsString();
         if (!body.Contains(Text))
         {
