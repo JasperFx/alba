@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Http;
-
 namespace Alba.Assertions;
 
 internal sealed class BodyTextAssertion : IScenarioAssertion
@@ -16,7 +14,7 @@ internal sealed class BodyTextAssertion : IScenarioAssertion
         var body = context.ReadBodyAsString();
         if (!body.Equals(Text))
         {
-            context.AddFailure($"Expected the content to be '{Text}'");
+            context.AddFailure($"Expected the content to be '{Text}', but was '{body}'");
         }
     }
 }
