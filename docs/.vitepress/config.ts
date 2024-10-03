@@ -48,8 +48,9 @@ export default defineConfig({
 function getGuideSidebar() {
     return [
         { text: 'Alba Setup', link: '/guide/gettingstarted' },
-        { text: 'Integrating with xUnit.Net', link: '/guide/xunit' },
+        { text: 'Integrating with xUnit', link: '/guide/xunit' },
         { text: 'Integrating with NUnit', link: '/guide/nunit' },
+        { text: 'Integrating with TUnit', link: '/guide/tunit' },
         { text: 'Extension Model', link: '/guide/extensions' },
         { text: 'Security Extensions', link: '/guide/security' },
         { text: 'Tracing & Open Telemetry', link: '/guide/opentelemetry' },

@@ -1,4 +1,4 @@
-# Integrating Alba with xUnit.Net
+# Integrating with xUnit
 
 If you are writing only a few Alba specifications in your testing project and your application spins up very quickly, you can just happily write tests like this:
 

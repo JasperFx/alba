@@ -69,7 +69,7 @@ public static Scenario ContentShouldContain(this Scenario scenario, string text)
     return scenario.AssertThat(new BodyContainsAssertion(text));
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba/ScenarioExpectationsExtensions.cs#L8-L19' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_contentshouldcontain' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba/ScenarioExpectationsExtensions.cs#L8-L21' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_contentshouldcontain' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 Finally, use your new assertion in a Scenario like this:
