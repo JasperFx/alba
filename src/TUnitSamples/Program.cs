@@ -26,7 +26,7 @@ public abstract class AlbaTestBase(AlbaBootstrap albaBootstrap)
     protected IAlbaHost Host => albaBootstrap.Host;
 }
 
-[ClassDataSource<AlbaBootstrap>(Shared = SharedType.Globally)]
+[ClassDataSource<AlbaBootstrap>(Shared = SharedType.PerAssembly)]
 public class MyTestClass(AlbaBootstrap albaBootstrap) : AlbaTestBase(albaBootstrap)
 {
     [Test]
