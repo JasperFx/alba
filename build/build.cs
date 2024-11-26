@@ -18,15 +18,17 @@ using static Nuke.Common.Tools.DotNet.DotNetTasks;
 [GitHubActions(
     "Build & Test",
     GitHubActionsImage.UbuntuLatest,
-    OnPushBranches = new []{ "master" },
-    OnPullRequestBranches = new []{ "master" },
-    InvokedTargets = new[] { nameof(Test) })]
+    OnPushBranches = ["master"],
+    OnPullRequestBranches = ["master"],
+    InvokedTargets = [nameof(Test)],
+    AutoGenerate = false)]
 [GitHubActions(
     "Manual Nuget Push",
     GitHubActionsImage.UbuntuLatest,
-    On = new[] { GitHubActionsTrigger.WorkflowDispatch },
-    InvokedTargets = new[] { nameof(NugetPush) },
-    ImportSecrets = new[] { nameof(NugetApiKey) })]
+    On = [GitHubActionsTrigger.WorkflowDispatch],
+    InvokedTargets = [nameof(NugetPush)],
+    ImportSecrets = [nameof(NugetApiKey)],
+    AutoGenerate = false)]
 class Build : NukeBuild
 {
     /// Support plugins are available for:
