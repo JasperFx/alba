@@ -23,7 +23,7 @@ namespace Alba.Testing.Security
             _fixture = fixture;
         }
 
-        public async Task InitializeAsync()
+        public async ValueTask InitializeAsync()
         {
             #region sample_OpenConnectClientCredentials
 
@@ -51,7 +51,7 @@ namespace Alba.Testing.Security
             #endregion
         }
 
-        public async Task DisposeAsync()
+        public async ValueTask DisposeAsync()
         {
             await theHost.DisposeAsync();
         }

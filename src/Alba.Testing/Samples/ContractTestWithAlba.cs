@@ -11,7 +11,7 @@ public class WebAppFixture : IAsyncLifetime
 {
     public IAlbaHost AlbaHost = null!;
 
-    public async Task InitializeAsync()
+    public async ValueTask InitializeAsync()
     {
         AlbaHost = await Alba.AlbaHost.For<WebApp.Program>(builder =>
         {
@@ -19,7 +19,7 @@ public class WebAppFixture : IAsyncLifetime
         });
     }
 
-    public async Task DisposeAsync()
+    public async ValueTask DisposeAsync()
     {
         await AlbaHost.DisposeAsync();
     }

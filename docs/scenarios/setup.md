@@ -43,5 +43,5 @@ public void sample_usage(AlbaHost system)
 
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/before_and_after_actions.cs#L33-L66' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_before_and_after' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/before_and_after_actions.cs#L32-L65' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_before_and_after' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
