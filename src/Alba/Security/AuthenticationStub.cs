@@ -38,7 +38,9 @@ public sealed class AuthenticationStub : AuthenticationExtensionBase, IAlbaExten
         return builder.ConfigureServices(services =>
         {
             services.AddSingleton(this);
+            services.AddAuthentication(OverrideSchemeTargetName ?? TestSchemaName);
             services.AddTransient<IAuthenticationSchemeProvider, MockSchemeProvider>();
+            services.AddTransient<IAuthenticationHandlerProvider, StubAuthenticationHandlerProvider>();
         });
     }
 
@@ -48,6 +50,46 @@ public sealed class AuthenticationStub : AuthenticationExtensionBase, IAlbaExten
         var identity = new ClaimsIdentity(claims, TestSchemaName);
         var principal = new ClaimsPrincipal(identity);
         return principal;
+    }
+
+    private sealed class StubAuthenticationHandlerProvider : IAuthenticationHandlerProvider, IAuthenticationHandler
+    {
+        private readonly AuthenticationStub _authSchemaStub;
+        private HttpContext _context;
+
+        public StubAuthenticationHandlerProvider(AuthenticationStub authSchemaStub)
+        {
+            _authSchemaStub = authSchemaStub;
+        }
+
+        public Task<IAuthenticationHandler?> GetHandlerAsync(HttpContext context, string authenticationScheme)
+        {
+            _context = context;
+            return Task.FromResult<IAuthenticationHandler?>(this);
+        }
+
+        public Task InitializeAsync(AuthenticationScheme scheme, HttpContext context)
+        {
+            _context = context;
+            return Task.CompletedTask;
+        }
+
+        public Task<AuthenticateResult> AuthenticateAsync()
+        {
+            var principal = _authSchemaStub.BuildPrincipal(_context);
+            var ticket = new AuthenticationTicket(principal, TestSchemaName);
+            return Task.FromResult(AuthenticateResult.Success(ticket));
+        }
+
+        public Task ChallengeAsync(AuthenticationProperties? properties)
+        {
+            return Task.CompletedTask;
+        }
+
+        public Task ForbidAsync(AuthenticationProperties? properties)
+        {
+            return Task.CompletedTask;
+        }
     }
 
     private sealed class MockSchemeProvider : AuthenticationSchemeProvider
