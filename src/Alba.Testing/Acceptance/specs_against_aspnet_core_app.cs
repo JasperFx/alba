@@ -382,12 +382,12 @@ namespace Alba.Testing.Acceptance
             });
         }
 
-        public async Task InitializeAsync()
+        public async ValueTask InitializeAsync()
         {
             _system = await AlbaHost.For<Startup>();
         }
 
-        public async Task DisposeAsync()
+        public async ValueTask DisposeAsync()
         {
             await _system.DisposeAsync();
         }

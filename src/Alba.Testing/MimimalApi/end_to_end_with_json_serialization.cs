@@ -5,7 +5,6 @@ using MinimalApiWithOakton;
 using Oakton;
 using Shouldly;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Alba.Testing.MimimalApi;
 
@@ -19,7 +18,7 @@ public class end_to_end_with_json_serialization : IAsyncLifetime
         _output = output;
     }
 
-    public async Task InitializeAsync()
+    public async ValueTask InitializeAsync()
     {
         OaktonEnvironment.AutoStartHost = true;
         _host = await AlbaHost.For<MinimalApiWithOakton.Program>();
@@ -28,9 +27,9 @@ public class end_to_end_with_json_serialization : IAsyncLifetime
         _output.WriteLine(container.WhatDoIHave());
     }
 
-    public Task DisposeAsync()
+    public async ValueTask DisposeAsync()
     {
-        return _host.StopAsync();
+        await _host.StopAsync();
     }
 
     [Fact]

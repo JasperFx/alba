@@ -3,7 +3,7 @@ layout: home
 
 hero:
   name: Alba
-  text: Easy Integration testing for ASP.NET Core
+  text: Easy Integration Testing for ASP.NET Core
   actions:
     - theme: brand
       text: Get Started

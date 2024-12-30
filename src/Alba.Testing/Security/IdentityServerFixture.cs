@@ -18,16 +18,16 @@ namespace Alba.Testing.Security
     public class IdentityServerFixture : IAsyncLifetime 
     {
         public TestServer IdentityServer { get; set; }
-        public Task InitializeAsync()
+        public ValueTask InitializeAsync()
         {
             IdentityServer = new WebApplicationFactory<IdentityServer.New.Program>().Server;
-            return Task.CompletedTask;
+            return ValueTask.CompletedTask;
         }
 
-        public Task DisposeAsync()
+        public ValueTask DisposeAsync()
         {
             IdentityServer.Dispose();
-            return Task.CompletedTask;
+            return ValueTask.CompletedTask;
         }
 
     }

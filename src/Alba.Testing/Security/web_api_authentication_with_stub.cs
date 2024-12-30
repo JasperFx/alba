@@ -16,7 +16,7 @@ namespace Alba.Testing.Security
     {
         private IAlbaHost theHost = null!;
 
-        public async Task InitializeAsync()
+        public async ValueTask InitializeAsync()
         {
             #region sample_bootstrapping_with_stub_extension
             // This is a Alba extension that can "stub" out authentication
@@ -32,7 +32,7 @@ namespace Alba.Testing.Security
             #endregion
         }
 
-        public async Task DisposeAsync()
+        public async ValueTask DisposeAsync()
         {
             await theHost.DisposeAsync();
         }
