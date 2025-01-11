@@ -25,4 +25,15 @@ namespace WebApi
             return new JsonResult(from c in User.Claims select new { c.Type, c.Value });
         }
     }
+    
+    [Route("identity3")]
+    [Authorize(AuthenticationSchemes = "AzureAuthentication")]
+    public class Identity3Controller : ControllerBase
+    {
+        [HttpGet]
+        public IActionResult Get()
+        {
+            return new JsonResult(from c in User.Claims select new { c.Type, c.Value });
+        }
+    }
 }

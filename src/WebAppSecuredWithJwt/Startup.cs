@@ -14,6 +14,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Identity.Web;
+using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -37,6 +39,9 @@ namespace WebAppSecuredWithJwt
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "WebAppSecuredWithJwt", Version = "v1"});
             });
             
+            services.AddMicrosoftIdentityWebApiAuthentication(Configuration, "AzureAdB2C", "AzureAuthentication");
+            IdentityModelEventSource.LogCompleteSecurityArtifact = true;
+            IdentityModelEventSource.ShowPII = true;
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
