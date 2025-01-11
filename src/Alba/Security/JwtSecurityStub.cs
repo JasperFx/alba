@@ -125,8 +125,9 @@ public class JwtSecurityStub : AuthenticationExtensionBase, IAlbaExtension
             });
             
         var validationParameters = options.TokenValidationParameters.Clone();
-        validationParameters.IssuerSigningKey ??= new SymmetricSecurityKey(Encoding.UTF8.GetBytes("some really big key that should work"));
+        validationParameters.IssuerSigningKey ??= new SymmetricSecurityKey("some really big key that should work"u8.ToArray());
         validationParameters.ValidateIssuer = false;
+        validationParameters.IssuerValidator = (issuer, token, parameters) => issuer;
         options.TokenValidationParameters = validationParameters;
 
         options.Authority = null;
