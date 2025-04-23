@@ -1,5 +1,3 @@
-using System;
-
 namespace Alba;
 
 public sealed class AlbaJsonFormatterException : Exception
