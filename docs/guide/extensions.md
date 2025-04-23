@@ -51,8 +51,8 @@ theHost = await AlbaHost.For<WebAppSecuredWithJwt.Program>(securityStub);
 
 ## Configuration Extension
 
-In some scenarios it may be more convienent to just override a configuration value rather than modify the service configuration. Due to a [limitation](https://github.com/dotnet/aspnetcore/issues/37680) in the ASP.NET Core test host, overriding your application's configuration values currently requires a workaround. Alba includes this workaround out of the box via the `ConfigurationOverride` extension.
-An example is below of overriding the Postgres connection string:
+In some scenarios it may be more convienent to override a configuration value rather than modifying the service configuration. Due to a current [limitation](https://github.com/dotnet/aspnetcore/issues/37680) in the ASP.NET Core test host, overriding your application's configuration values requires a workaround. Alba includes this workaround out of the box via the `ConfigurationOverride` extension.
+For example, to override an application's Postgres connection string:
 
 <!-- snippet: sample_configuration_extension -->
 <a id='snippet-sample_configuration_extension'></a>

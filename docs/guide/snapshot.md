@@ -24,6 +24,6 @@ await Verify(new {
 <sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/SnapshotTesting.cs#L17-L31' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_snapshot_testing' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
-Will result in snapshot of:
+Will result in a snapshot of:
 
 <<< ../../src/Alba.Testing/Samples/SnapshotTesting.SnapshotTest.verified.txt{json}
