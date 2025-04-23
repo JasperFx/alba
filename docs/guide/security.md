@@ -2,7 +2,7 @@
 
 ## Stub out all authentication
 
-To just stub out all possible authentication inside your ASP.NET Core system in testing, you can use the new
+To stub out all possible authentication inside your ASP.NET Core system, you can use the
 `AuthenticationStub` to automatically authenticate every request and build out a `ClaimsPrincipal` to your specification.
 
 Here's a sample of bootstrapping an `AlbaHost` with the `AuthenticationStub`:
@@ -104,7 +104,7 @@ var securityStub = new AuthenticationStub("custom")
 
 await using var host = await AlbaHost.For<WebAppSecuredWithJwt.Program>(securityStub);
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/web_api_authentication_with_individual_stub.cs#L14-L22' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_bootstrapping_with_stub_scheme_extension' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/web_api_authentication_with_individual_stub.cs#L20-L28' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_bootstrapping_with_stub_scheme_extension' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 ## Integration with JWT Authentication
@@ -115,7 +115,7 @@ All of these extensions depend on the `JwtBearerOptions` configuration from your
 :::
 
 If you want to test your ASP.NET Core web services that are authenticated by an [Open Id Connect](https://openid.net/connect/) workflow **and**
-you also want to be testing through the authentication from the real OIDC identity server, Alba v5 comes with new
+you also want to be testing through the authentication from the real OIDC identity server, Alba comes with
 extensions to automatically fetch and apply JWT tokens to scenario tests.
 
 To use the OIDC [Client Credentials workflow](https://auth0.com/docs/flows/client-credentials-flow), you can use the `OpenConnectClientCredentials` extension:

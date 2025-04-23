@@ -20,12 +20,10 @@ export default defineConfig({
             { text: 'Discord | Join Chat', link: 'https://discord.gg/WMxrvegf8H' }
         ],
 
-        algolia: {
-            appId: '2V5OM390DF',
-            apiKey: '674cd4f3e6b6ebe232a980c7cc5a0270',
-            indexName: 'alba_index'
+        search: {
+            provider: 'local'
         },
-
+        
         sidebar: [
             {
                 text: 'Getting Started',

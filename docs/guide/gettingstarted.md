@@ -9,7 +9,7 @@ built in [ASP.NET Core TestServer](https://docs.microsoft.com/en-us/aspnet/core/
 You can certainly write integration tests by hand using the lower level `TestServer` and `HttpClient`, but you'll write much less code with Alba. Moreover, Alba *scenarios* were meant to be declarative to maximize the readability of the integration tests, making those tests much more valuable as living technical documentation.
 
 ::: tip
-As of 7.0+, Alba only supports .NET 6.0 or greater. You can still use older versions of Alba to test previous versions of ASP.NET Core.
+As of 8.0+, Alba only supports .NET 8.0 or greater. You can still use older versions of Alba to test previous versions of ASP.NET Core.
 :::
 
 ## Alba Setup
