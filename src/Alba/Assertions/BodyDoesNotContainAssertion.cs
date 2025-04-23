@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-
-namespace Alba.Assertions;
+﻿namespace Alba.Assertions;
 
 internal sealed class BodyDoesNotContainAssertion : IScenarioAssertion
 {

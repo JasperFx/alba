@@ -1,7 +1,4 @@
-﻿using System;
-using Microsoft.AspNetCore.Http;
-
-namespace Alba.Assertions;
+﻿namespace Alba.Assertions;
 
 internal sealed class RedirectAssertion : IScenarioAssertion
 {

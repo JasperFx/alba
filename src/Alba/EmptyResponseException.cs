@@ -1,5 +1,3 @@
-using System;
-
 namespace Alba;
 
 public class EmptyResponseException : Exception

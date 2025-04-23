@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.AspNetCore.TestHost;
+﻿using Microsoft.AspNetCore.TestHost;
 
 namespace Alba;
 

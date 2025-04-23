@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Http;
-
 namespace Alba.Assertions;
 
 #region sample_StatusCodeAssertion

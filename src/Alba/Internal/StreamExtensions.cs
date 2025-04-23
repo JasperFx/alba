@@ -1,8 +1,4 @@
-﻿using System.IO;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-
-namespace Alba.Internal;
+﻿namespace Alba.Internal;
 
 internal static class StreamExtensions
 {

@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Microsoft.AspNetCore.Http;
-
-namespace Alba.Assertions;
+﻿namespace Alba.Assertions;
 
 internal sealed class HeaderMultiValueAssertion : IScenarioAssertion
 {

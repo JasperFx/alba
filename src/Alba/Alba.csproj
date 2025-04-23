@@ -11,6 +11,7 @@
     <OutputType>library</OutputType>
     <PackageIcon>icon.png</PackageIcon>
     <nullable>enable</nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>CS1591;</NoWarn>
     <PackageReadmeFile>README.md</PackageReadmeFile>

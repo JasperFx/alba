@@ -1,6 +1,3 @@
-using System.Linq;
-using Microsoft.AspNetCore.Http;
-
 namespace Alba.Assertions;
 
 internal sealed class HeaderValueAssertion : IScenarioAssertion
