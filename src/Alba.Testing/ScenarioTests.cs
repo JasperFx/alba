@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Threading.Tasks;
-using Alba.Internal;
+﻿using Alba.Internal;
 using Shouldly;
-using Xunit;
 
 namespace Alba.Testing
 {

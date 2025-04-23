@@ -1,11 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using WebApp;
 using WebApp.Controllers;
-using Xunit;
 
 namespace Alba.Testing.Acceptance
 {

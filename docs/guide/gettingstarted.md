@@ -45,7 +45,7 @@ app.MapPost("/json", (MyEntity entity) => entity);
 
 app.Run();
 
-public record MyEntity(Guid Id);
+public record MyEntity(Guid Id, string MyValue);
 ```
 <sup><a href='https://github.com/JasperFx/alba/blob/master/src/WebApiNet6/Program.cs#L1-L23' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_minimal_web_api' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
@@ -73,7 +73,7 @@ await using var host = await AlbaHost.For<global::Program>(x =>
     });
 });
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Acceptance/web_application_factory_usage.cs#L44-L53' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_bootstrapping_with_web_application_factory' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Acceptance/web_application_factory_usage.cs#L42-L51' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_bootstrapping_with_web_application_factory' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 The `AlbaHost.For<T>(Action<WebApplicationFactory<T>> configuration)` method uses `WebApplicationFactory` and all its magic static
@@ -112,7 +112,7 @@ public async Task should_say_hello_world()
     });
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Quickstart.cs#L23-L39' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_should_say_hello_world' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Quickstart.cs#L13-L29' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_should_say_hello_world' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -132,7 +132,7 @@ public async Task should_return_entity_assert_response()
     var guid = Guid.NewGuid();
     var res = await host.Scenario(_ =>
     {
-        _.Post.Json(new MyEntity(guid)).ToUrl("/json");
+        _.Post.Json(new MyEntity(guid, "SomeValue")).ToUrl("/json");
         _.StatusCodeShouldBeOk();
     });
 
@@ -140,7 +140,7 @@ public async Task should_return_entity_assert_response()
     Assert.Equal(guid, json.Id);
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Quickstart.cs#L41-L57' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_should_return_entity_assert_response' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Quickstart.cs#L31-L47' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_should_return_entity_assert_response' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 If the existing *Scenario* assertions aren't enough to verify your test case, you can work directly against the raw response:
@@ -163,7 +163,7 @@ public async Task should_say_hello_world_with_raw_objects()
 
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Quickstart.cs#L61-L76' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_should_say_hello_world_with_raw_objects' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Quickstart.cs#L51-L66' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_should_say_hello_world_with_raw_objects' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 Do note that Alba quietly "rewinds" the `HttpContext.Response.Body` stream so that you can more readily read and work with the contents.
@@ -199,7 +199,7 @@ host.BeforeEach(httpContext =>
         // do any kind of cleanup after each scenario completes
     });
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Quickstart.cs#L103-L127' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_configuration_overrides' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Quickstart.cs#L93-L117' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_configuration_overrides' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 Alba does not do anything to set the hosting environment, but you can do that yourself via the `IWebHostBuilder`

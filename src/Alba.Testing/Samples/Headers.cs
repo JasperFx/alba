@@ -1,5 +1,4 @@
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Microsoft.Net.Http.Headers;
 
 namespace Alba.Testing.Samples

@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net.Http;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using System.Net.Mime;
-using System.Threading.Tasks;
-using NSubstitute.Core;
 using Shouldly;
 using WebApp;
 using WebApp.Controllers;
-using Xunit;
 
 namespace Alba.Testing.Acceptance
 {
@@ -21,11 +14,7 @@ namespace Alba.Testing.Acceptance
         {
             return _system.Scenario(configuration);
         }
-
-        public void Dispose()
-        {
-            _system?.Dispose();
-        }
+        
 
         [Fact]
         public void services_are_non_null()

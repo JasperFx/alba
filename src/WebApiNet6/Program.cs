@@ -18,7 +18,7 @@ app.MapPost("/json", (MyEntity entity) => entity);
 
 app.Run();
 
-public record MyEntity(Guid Id);
+public record MyEntity(Guid Id, string MyValue);
 
 #endregion
 

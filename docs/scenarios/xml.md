@@ -30,7 +30,7 @@ public async Task send_xml(IAlbaHost host)
     });
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/JsonAndXml.cs#L40-L57' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_sending_xml' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/JsonAndXml.cs#L37-L54' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_sending_xml' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -58,5 +58,5 @@ public async Task read_xml(IAlbaHost host)
     XmlDocument document = await result.ReadAsXmlAsync();
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/JsonAndXml.cs#L128-L145' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_read_xml' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/JsonAndXml.cs#L125-L142' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_read_xml' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->

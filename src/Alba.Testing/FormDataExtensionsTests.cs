@@ -1,10 +1,6 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Net;
-using JasperFx.Core;
+﻿using JasperFx.Core;
 using Microsoft.AspNetCore.Http;
 using Shouldly;
-using Xunit;
 
 namespace Alba.Testing
 {

@@ -1,14 +1,8 @@
-using System;
-using System.Linq;
-using System.Net;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using Alba.Security;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Shouldly;
 using WebApi;
-using WebAppSecuredWithJwt;
-using Xunit;
 
 namespace Alba.Testing.Security
 {

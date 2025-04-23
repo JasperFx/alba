@@ -25,7 +25,7 @@ public async Task write_form_data(IAlbaHost system)
     });
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/FormData.cs#L14-L33' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_write_form_data' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/FormData.cs#L8-L27' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_write_form_data' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 There's a second overload that attempts to use an object and its properties to populate the form data:
@@ -57,7 +57,7 @@ public async Task can_bind_to_form_data()
     GatewayController.LastInput.Three.ShouldBe("three");
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Acceptance/data_binding_in_mvc_app.cs#L12-L38' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_binding_against_a_model' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Acceptance/data_binding_in_mvc_app.cs#L9-L35' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_binding_against_a_model' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 Do note that this only adds first level properties, so if you need to deeper accessors like add "Prop1.Prop2.Prop3,"
@@ -98,5 +98,5 @@ public async Task write_multipart_form_data(IAlbaHost system)
     });
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/FormData.cs#L35-L62' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_write_multipart_form_data' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/FormData.cs#L29-L56' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_write_multipart_form_data' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->

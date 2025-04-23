@@ -51,6 +51,7 @@ function getGuideSidebar() {
         { text: 'Integrating with TUnit', link: '/guide/tunit' },
         { text: 'Extension Model', link: '/guide/extensions' },
         { text: 'Security Extensions', link: '/guide/security' },
+        { text: 'Snapshot Testing', link: '/guide/snapshot' },
         { text: 'Tracing & Open Telemetry', link: '/guide/opentelemetry' },
         { text: 'Alternative Bootstrapping', link:'/guide/bootstrapping'},
         { text: 'History & Architecture', link: '/guide/history' },

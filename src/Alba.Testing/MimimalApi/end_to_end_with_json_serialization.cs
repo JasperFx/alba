@@ -1,10 +1,7 @@
-using System;
-using System.Threading.Tasks;
 using Lamar;
 using MinimalApiWithOakton;
 using Oakton;
 using Shouldly;
-using Xunit;
 
 namespace Alba.Testing.MimimalApi;
 

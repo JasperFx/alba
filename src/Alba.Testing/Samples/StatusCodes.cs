@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-
 namespace Alba.Testing.Samples
 {
     public class StatusCodes

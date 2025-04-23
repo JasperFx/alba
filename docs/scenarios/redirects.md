@@ -19,5 +19,5 @@ public async Task asserting_redirects(IAlbaHost system)
     });
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Redirects.cs#L7-L19' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_asserting_redirects' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Redirects.cs#L5-L17' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_asserting_redirects' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->

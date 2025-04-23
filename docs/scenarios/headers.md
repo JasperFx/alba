@@ -20,7 +20,7 @@ public async Task setting_request_headers(IAlbaHost system)
     });
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Headers.cs#L30-L39' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_setting_request_headers' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Headers.cs#L29-L38' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_setting_request_headers' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 There are also some specific helpers for very common [content negotiation-related](https://en.wikipedia.org/wiki/Content_negotiation) headers:
@@ -47,7 +47,7 @@ public async Task conneg_helpers(IAlbaHost system)
     });
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Headers.cs#L9-L28' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_conneg_helpers' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Headers.cs#L8-L27' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_conneg_helpers' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 **Do add extension methods off of the Alba `Scenario` class for common operations in your tests to remove
@@ -87,7 +87,7 @@ public async Task asserting_on_header_values(IAlbaHost system)
     });
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Headers.cs#L42-L69' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_asserting_on_header_values' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Headers.cs#L41-L68' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_asserting_on_header_values' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 You do also have the ability to just interrogate the `HttpContext.Response` in your unit test methods for

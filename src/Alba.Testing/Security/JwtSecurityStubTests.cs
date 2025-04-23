@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using Alba.Security;
@@ -9,7 +7,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using Shouldly;
-using Xunit;
 
 namespace Alba.Testing.Security
 {
