@@ -1,9 +1,5 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using Alba.Internal;
-using Xunit;
 
 namespace Alba.Testing;
 
@@ -55,7 +51,7 @@ public class ActivityTests
         
         await host.Scenario(_ =>
         {
-            _.Post.Json(new MyEntity(Guid.NewGuid())).ToUrl("/json");
+            _.Post.Json(new MyEntity(Guid.NewGuid(), "SomeValue")).ToUrl("/json");
         });
         
         Assert.True(startCalled);

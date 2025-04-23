@@ -1,11 +1,5 @@
-using System;
-using System.Threading.Tasks;
-using Alba.Testing.Samples;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
 using Shouldly;
 using WebApp.Controllers;
-using Xunit;
 
 namespace Alba.Testing
 {

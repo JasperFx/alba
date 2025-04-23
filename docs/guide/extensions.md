@@ -28,7 +28,7 @@ public interface IAlbaExtension : IDisposable, IAsyncDisposable
     IHostBuilder Configure(IHostBuilder builder);
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba/IAlbaExtension.cs#L7-L32' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_ialbaextension' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba/IAlbaExtension.cs#L5-L30' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_ialbaextension' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 When you are initializing an `AlbaHost`, you can pass in an optional array of extensions like this sample from the security stub
@@ -46,7 +46,7 @@ var securityStub = new AuthenticationStub()
 // We're calling your real web service's configuration
 theHost = await AlbaHost.For<WebAppSecuredWithJwt.Program>(securityStub);
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/web_api_authentication_with_stub.cs#L21-L32' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_bootstrapping_with_stub_extension' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/web_api_authentication_with_stub.cs#L15-L26' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_bootstrapping_with_stub_extension' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 ## Configuration Extension
@@ -70,5 +70,5 @@ var host = await AlbaHost.For<WebAppSecuredWithJwt.Program>(builder =>
     });
 }, ConfigurationOverride.Create(configValues));
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Extensions.cs#L11-L25' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_configuration_extension' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Extensions.cs#L8-L22' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_configuration_extension' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->

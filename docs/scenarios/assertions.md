@@ -18,7 +18,7 @@ public interface IScenarioAssertion
     void Assert(Scenario scenario, AssertionContext context);
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba/IScenarioAssertion.cs#L5-L10' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_iscenarioassertion' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba/IScenarioAssertion.cs#L3-L8' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_iscenarioassertion' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 As an example, here's the assertion from Alba that validates that the response body is supposed to 
@@ -49,7 +49,7 @@ internal sealed class BodyContainsAssertion : IScenarioAssertion
     }
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba/Assertions/BodyContainsAssertion.cs#L5-L28' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_bodycontainsassertion' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba/Assertions/BodyContainsAssertion.cs#L3-L26' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_bodycontainsassertion' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 Once you have your assertion class, you can apply it to a scenario through an extension method against the 
@@ -93,5 +93,5 @@ public Task using_scenario_with_ContentShouldContain_declaration_happy_path()
     });
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Acceptance/asserting_against_the_response_body_text.cs#L10-L26' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_using_contentshouldbe' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Acceptance/asserting_against_the_response_body_text.cs#L7-L23' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_using_contentshouldbe' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->

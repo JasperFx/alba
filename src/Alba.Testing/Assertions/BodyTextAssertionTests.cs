@@ -1,7 +1,5 @@
-﻿using System.Linq;
-using Alba.Assertions;
+﻿using Alba.Assertions;
 using Shouldly;
-using Xunit;
 
 namespace Alba.Testing.Assertions
 {

@@ -1,7 +1,6 @@
 ﻿using Alba.Assertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
-using Xunit;
 
 namespace Alba.Testing.Assertions
 {

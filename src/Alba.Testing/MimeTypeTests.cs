@@ -1,5 +1,4 @@
 ﻿using Shouldly;
-using Xunit;
 
 namespace Alba.Testing
 {

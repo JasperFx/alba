@@ -21,7 +21,7 @@ public async Task should_say_hello_world()
     });
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Quickstart.cs#L23-L39' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_should_say_hello_world' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Quickstart.cs#L13-L29' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_should_say_hello_world' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 Do note that your `[Fact]` method needs to be declared as `async Task` to ensure that xUnit finishes the specification before disposing the system or
@@ -54,7 +54,7 @@ public class WebAppFixture : IAsyncLifetime
     }
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/ContractTestWithAlba.cs#L8-L27' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_xunit_fixture_net6' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/ContractTestWithAlba.cs#L6-L25' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_xunit_fixture_net6' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 Then in your actual xUnit fixture classes, implement the `IClassFixture<T>` class like this:
@@ -71,7 +71,7 @@ public class ContractTestWithAlba : IClassFixture<WebAppFixture>
 
     private readonly IAlbaHost _host;
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/ContractTestWithAlba.cs#L30-L39' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_using_xunit_fixture' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/ContractTestWithAlba.cs#L28-L37' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_using_xunit_fixture' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 ## Collection Fixtures
@@ -90,7 +90,7 @@ public class ScenarioCollection : ICollectionFixture<WebAppFixture>
     
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/ContractTestWithAlba.cs#L76-L84' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_scenariocollection' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/ContractTestWithAlba.cs#L74-L82' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_scenariocollection' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 As a convenience, I like to have a base class for all test fixture classes that will be using scenarios like this:
@@ -109,7 +109,7 @@ public abstract class ScenarioContext
     public IAlbaHost Host { get; }
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/ContractTestWithAlba.cs#L86-L99' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_scenariocontext' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/ContractTestWithAlba.cs#L84-L97' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_scenariocontext' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 And then inherit from that `ScenarioContext` base class in actual test fixture classes:
@@ -134,5 +134,5 @@ public class sample_integration_fixture : ScenarioContext
     }
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/ContractTestWithAlba.cs#L101-L120' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_integration_fixture' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/ContractTestWithAlba.cs#L99-L118' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_integration_fixture' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->

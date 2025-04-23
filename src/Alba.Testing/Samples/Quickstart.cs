@@ -1,19 +1,9 @@
-﻿using System;
-using System.IO;
-using System.Threading.Tasks;
-using JasperFx.Core;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Builder;
+﻿using JasperFx.Core;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
-using NSubstitute.Extensions;
 using Shouldly;
-using WebApp;
-using Xunit;
 
 namespace Alba.Testing.Samples
 {
@@ -47,7 +37,7 @@ namespace Alba.Testing.Samples
             var guid = Guid.NewGuid();
             var res = await host.Scenario(_ =>
             {
-                _.Post.Json(new MyEntity(guid)).ToUrl("/json");
+                _.Post.Json(new MyEntity(guid, "SomeValue")).ToUrl("/json");
                 _.StatusCodeShouldBeOk();
             });
 
@@ -98,7 +88,7 @@ namespace Alba.Testing.Samples
             
         }
 
-        public async Task configuration_overrides()
+        internal async Task configuration_overrides()
         {
             #region sample_configuration_overrides
             var stubbedWebService = new StubbedWebService();

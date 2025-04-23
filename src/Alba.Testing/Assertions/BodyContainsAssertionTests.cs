@@ -1,5 +1,4 @@
 ﻿using Alba.Assertions;
-using Xunit;
 
 namespace Alba.Testing.Assertions
 {

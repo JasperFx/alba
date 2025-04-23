@@ -1,11 +1,5 @@
-using System.Collections.Generic;
-using System.IO;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Mime;
-using System.Threading.Tasks;
-using WebApp.Controllers;
-using Xunit;
 
 namespace Alba.Testing.Samples
 {

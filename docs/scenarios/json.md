@@ -44,7 +44,7 @@ public async Task send_json_minimal_api(IAlbaHost host)
     });
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/JsonAndXml.cs#L10-L37' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_sending_json' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/JsonAndXml.cs#L7-L34' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_sending_json' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -69,7 +69,7 @@ public async Task read_json(IAlbaHost host)
     // do assertions against the Output model
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/JsonAndXml.cs#L59-L73' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_read_json' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/JsonAndXml.cs#L56-L70' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_read_json' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 You can also use a shorthand syntax to skip `Scenario()` like this:
@@ -84,7 +84,7 @@ public async Task read_json_shorthand(IAlbaHost host)
     // do assertions against the Output model
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/JsonAndXml.cs#L75-L82' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_read_json_shorthand' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/JsonAndXml.cs#L72-L79' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_read_json_shorthand' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 This code snippet is functionally identical to the previous usage.
@@ -115,7 +115,7 @@ public async Task post_and_expect_response()
     result.Method.ShouldBe("POST");
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/using_json_helpers.cs#L27-L45' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_post_json_get_json' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/using_json_helpers.cs#L21-L39' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_post_json_get_json' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 There are similar helpers for other HTTP verbs like `PUT` and `DELETE`.

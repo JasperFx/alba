@@ -1,7 +1,5 @@
-﻿using System.Threading.Tasks;
-using Shouldly;
+﻿using Shouldly;
 using WebApp;
-using Xunit;
 
 namespace Alba.Testing.Acceptance
 {

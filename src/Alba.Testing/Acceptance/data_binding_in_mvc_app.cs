@@ -1,9 +1,6 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Shouldly;
 using WebApp;
 using WebApp.Controllers;
-using Xunit;
 
 namespace Alba.Testing.Acceptance
 {

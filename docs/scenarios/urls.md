@@ -20,6 +20,6 @@ public async Task specify_url(AlbaHost system)
     });
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Urls.cs#L7-L21' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_specify_the_url_directly' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Urls.cs#L5-L19' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_specify_the_url_directly' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 

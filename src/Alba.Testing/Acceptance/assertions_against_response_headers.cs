@@ -1,8 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Shouldly;
-using Xunit;
 
 namespace Alba.Testing.Acceptance
 {

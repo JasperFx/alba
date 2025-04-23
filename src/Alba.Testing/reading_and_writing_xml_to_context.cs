@@ -1,12 +1,10 @@
-﻿using System.IO;
-using System.Xml;
+﻿using System.Xml;
 using System.Xml.Serialization;
 using JasperFx.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Shouldly;
-using Xunit;
 
 namespace Alba.Testing
 {

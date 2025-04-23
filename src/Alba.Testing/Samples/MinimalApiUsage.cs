@@ -1,7 +1,5 @@
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Shouldly;
-using Xunit;
 
 namespace MinimalApiUsageSample
 {

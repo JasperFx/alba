@@ -1,13 +1,9 @@
-using System;
 using System.Security.Claims;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 using Shouldly;
-using Xunit;
 
 namespace Alba.Testing
 {
@@ -29,15 +25,15 @@ namespace Alba.Testing
 
         }
 
-        #region sample_before_and_after
-        public void sample_usage(AlbaHost system)
+        internal void sample_usage(AlbaHost system)
         {
+            #region sample_before_and_after
             // Synchronously
             system.BeforeEach(context =>
             {
                 // Modify the HttpContext immediately before each
                 // Scenario()/HTTP request is executed
-                context.Request.Headers.Add("trace", "something");
+                context.Request.Headers.Append("trace", "something");
             });
 
             system.AfterEach(context =>
@@ -60,9 +56,9 @@ namespace Alba.Testing
                 return Task.CompletedTask;
             });
 
-
+            #endregion
         }
-        #endregion
+
 
         [Fact]
         public async Task synchronous_before_and_after()

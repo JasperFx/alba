@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace Alba.Testing.Samples;
+﻿namespace Alba.Testing.Samples;
 
 public class Extensions
 {

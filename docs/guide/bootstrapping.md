@@ -27,7 +27,7 @@ public async Task build_host_from_Program()
     });
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Quickstart3.cs#L35-L52' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_quickstart3' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Quickstart3.cs#L29-L46' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_quickstart3' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 ::: tip
@@ -57,7 +57,7 @@ public async Task fluent_interface_bootstrapping()
     });
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Quickstart3.cs#L55-L71' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_shorthand_bootstrapping' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Quickstart3.cs#L49-L65' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_shorthand_bootstrapping' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 The `AlbaHost` is an extension of the standard .Net Core [IHost](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.hosting.ihost?view=dotnet-plat-ext-5.0) interface with a few additions for testing support.

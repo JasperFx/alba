@@ -1,13 +1,9 @@
-using System;
-using System.Threading.Tasks;
 using Alba.Security;
 using IdentityServer.New;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using WebApi;
-using Xunit;
-using Program = WebAppSecuredWithJwt.Program;
 
 namespace Alba.Testing.Security
 {

@@ -1,7 +1,4 @@
-using System;
-using System.Threading.Tasks;
 using System.Xml;
-using Newtonsoft.Json;
 
 namespace Alba.Testing.Samples
 {
