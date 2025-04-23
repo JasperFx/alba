@@ -48,3 +48,27 @@ theHost = await AlbaHost.For<WebAppSecuredWithJwt.Program>(securityStub);
 ```
 <sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/web_api_authentication_with_stub.cs#L21-L32' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_bootstrapping_with_stub_extension' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
+
+## Configuration Extension
+
+In some scenarios it may be more convienent to just override a configuration value rather than modify the service configuration. Due to a [limitation](https://github.com/dotnet/aspnetcore/issues/37680) in the ASP.NET Core test host, overriding your application's configuration values currently requires a workaround. Alba includes this workaround out of the box via the `ConfigurationOverride` extension.
+An example is below of overriding the Postgres connection string:
+
+<!-- snippet: sample_configuration_extension -->
+<a id='snippet-sample_configuration_extension'></a>
+```cs
+var configValues = new Dictionary<string, string?>()
+{
+    { "ConnectionStrings:Postgres", "MyOverriddenValue" }
+};
+
+var host = await AlbaHost.For<WebAppSecuredWithJwt.Program>(builder =>
+{
+    builder.ConfigureServices(c =>
+    {
+        // services config
+    });
+}, ConfigurationOverride.Create(configValues));
+```
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Extensions.cs#L11-L25' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_configuration_extension' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->

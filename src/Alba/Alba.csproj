@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Description>Supercharged integration testing for ASP.NET Core HTTP endpoints</Description>
-    <Version>8.1.1</Version>
+    <Version>8.2.0</Version>
     <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
     <PackageProjectUrl>http://jasperfx.github.io/alba/</PackageProjectUrl>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
