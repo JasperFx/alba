@@ -216,10 +216,7 @@ public class AlbaHost : IAlbaHost
 
                     foreach (var pair in scenario.Items) c.Items.Add(pair.Key, pair.Value);
 
-                    // I know what you're thinking, this is stupid, you shouldn't 
-                    // ever mix sync and async if you can help it, and yet tests
-                    // for long running before each *wiI do NOT understand why this is soll* break if you try to 
-                    // use async _beforeEach here. .
+                    // No async available here :(
                     foreach (var func in _beforeEach) func(c).GetAwaiter().GetResult();
 
                     c.Request.Body.Position = 0;
