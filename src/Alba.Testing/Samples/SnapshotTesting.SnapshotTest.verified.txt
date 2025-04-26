@@ -12,11 +12,11 @@
       StatusCode: OK,
       Headers: {
         Content-Type: application/json; charset=utf-8
+      },
+      Value: {
+        id: Guid_1,
+        myValue: SomeValue
       }
     }
-  },
-  ResponseBody: {
-    Id: Guid_1,
-    MyValue: SomeValue
   }
 }
