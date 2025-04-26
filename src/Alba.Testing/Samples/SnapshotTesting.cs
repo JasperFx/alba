@@ -22,12 +22,7 @@ public class SnapshotTesting
             s.Post.Json(new MyEntity(Guid.NewGuid(), "SomeValue")).ToUrl("/json");
         });
 
-        var body = scenario.ReadAsJson<MyEntity>();
-
-        await Verify(new {
-            scenario.Context,
-            ResponseBody = body,
-        });
+        await Verify(scenario);
         #endregion
     }
 }
