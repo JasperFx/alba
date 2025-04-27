@@ -12,9 +12,8 @@ internal sealed  class NoHeaderValueAssertion : IScenarioAssertion
     public void Assert(Scenario scenario, AssertionContext context)
     {
         var headers = context.HttpContext.Response.Headers;
-        if (headers.ContainsKey(_headerKey))
+        if (headers.TryGetValue(_headerKey, out var values))
         {
-            var values = headers[_headerKey];
             var valueText = values.Select(x => "'" + x + "'").Aggregate((s1, s2) => $"{s1}, {s2}");
             context.AddFailure($"Expected no value for header '{_headerKey}', but found values {valueText}");
         }
