@@ -18,7 +18,7 @@ namespace Alba.Testing.Samples
         {
             builder.Run(context =>
             {
-                context.Response.Headers["content-type"] = "text/plain";
+                context.Response.Headers.ContentType = "text/plain";
                 return context.Response.WriteAsync("Hello, World!");
             });
         }
