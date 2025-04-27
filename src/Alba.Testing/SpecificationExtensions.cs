@@ -54,7 +54,7 @@ namespace Alba.Testing
 
             actualArray.Length.ShouldBe(expectedArray.Length);
 
-            for (int i = 0; i < actual.Count(); i++)
+            for (int i = 0; i < actualArray.Length; i++)
             {
                 keySelector(actualArray[i]).ShouldBe(expectedArray[i]);
             }
