@@ -40,15 +40,15 @@ public sealed class AssertionContext
                 {
                     stream.Position = 0;
                 }
-                
-                _body = Encoding.UTF8.GetString(stream.ReadAllBytes());
-                
+
+                _body = stream.ReadAllText();
+
                 // reset the position so users can do follow up activities without tripping up.
                 if (stream.CanSeek)
                 {
                     stream.Position = 0;
                 }
-                
+
                 _assertionException.AddBody(_body);
             }
         }
