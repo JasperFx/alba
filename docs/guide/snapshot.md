@@ -1,7 +1,7 @@
 # Snapshot Testing
 
 Although Alba does not ship built-in snapshotting support, it does easily integrate with the popular [Verify](https://github.com/VerifyTests/Verify) framework.
-Given `Verify` and `Verify.AspNetCore` has been added and initialized for your test framework of choice, you can reliably feed in the `HttpContext` and response data for a complete picture of your network request.
+Given Verify and [Verify.AspNetCore](https://github.com/VerifyTests/Verify.AspNetCore) has been added and initialized for your test framework of choice, you can reliably feed in the `HttpContext` and response data for a complete picture of your network request.
 
 Given a test with the shape of:
 <!-- snippet: sample_snapshot_testing -->
