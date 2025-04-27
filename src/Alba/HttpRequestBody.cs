@@ -6,18 +6,16 @@ namespace Alba;
 
 public class HttpRequestBody
 {
-    private readonly IAlbaHost _system;
     private readonly Scenario _parent;
 
-    internal HttpRequestBody(IAlbaHost system, Scenario parent)
+    internal HttpRequestBody(Scenario parent)
     {
-        _system = system;
         _parent = parent;
     }
 
     public void XmlInputIs(object target)
     {
-        var writer = new StringWriter();
+        using var writer = new StringWriter();
 
         var serializer = new XmlSerializer(target.GetType());
         serializer.Serialize(writer, target);
@@ -34,11 +32,9 @@ public class HttpRequestBody
             context.Accepts(MimeType.Xml.Value);
             context.Request.ContentLength = xml.Length;
         });
-
-
     }
 
-    private void writeTextToBody(string json, HttpContext context)
+    private static void WriteTextToBody(string json, HttpContext context)
     {
         var stream = context.Request.Body;
 
@@ -71,11 +67,9 @@ public class HttpRequestBody
     {
         _parent.ConfigureHttpContext(context =>
         {
-            writeTextToBody(body, context);
+            WriteTextToBody(body, context);
             context.Request.ContentType = MimeType.Text.Value;
             context.Request.ContentLength = body.Length;
         });
-
-
     }
 }

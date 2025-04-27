@@ -24,7 +24,7 @@ public class Scenario : IUrlExpression
     internal Scenario(AlbaHost system)
     {
         _system = system ?? throw new ArgumentNullException(nameof(system));
-        Body = new HttpRequestBody(system, this);
+        Body = new HttpRequestBody(this);
 
         ConfigureHttpContext(c =>
         {

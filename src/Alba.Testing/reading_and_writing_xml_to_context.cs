@@ -53,7 +53,7 @@ namespace Alba.Testing
                 b.Configure(app => app.Run(c => c.Response.WriteAsync("Hello"))));
             
             var scenario = new Scenario(system);
-            new HttpRequestBody(null, scenario).XmlInputIs(new MyMessage { Age = 3, Name = "Declan" });
+            new HttpRequestBody(scenario).XmlInputIs(new MyMessage { Age = 3, Name = "Declan" });
 
             scenario.SetupHttpContext(context);
 
