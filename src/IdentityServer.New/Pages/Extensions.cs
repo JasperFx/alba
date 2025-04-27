@@ -36,7 +36,7 @@ namespace IdentityServer.New.Pages
         public static IActionResult LoadingPage(this PageModel page, string redirectUri)
         {
             page.HttpContext.Response.StatusCode = 200;
-            page.HttpContext.Response.Headers["Location"] = "";
+            page.HttpContext.Response.Headers.Location = "";
 
             return page.RedirectToPage("/Redirect/Index", new { RedirectUri = redirectUri });
         }
