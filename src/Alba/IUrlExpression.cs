@@ -34,7 +34,7 @@ public interface IUrlExpression
     /// <param name="jsonStyle"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    SendExpression Json<T>(T input, JsonStyle? jsonStyle = null) where T : class;
+    SendExpression Json<T>(T input, JsonStyle? jsonStyle = null);
 
 
     /// <summary>
