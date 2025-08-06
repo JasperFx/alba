@@ -78,7 +78,7 @@ public sealed class AuthenticationStub : AuthenticationExtensionBase, IAlbaExten
             return base.GetSchemeAsync(name);
         }
 
-        private sealed class MockAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
+        private sealed class MockAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>, IAuthenticationSignOutHandler
         {
             private readonly AuthenticationStub _authenticationSchemaStub;
 
@@ -93,6 +93,11 @@ public sealed class AuthenticationStub : AuthenticationExtensionBase, IAlbaExten
                 var principal = _authenticationSchemaStub.BuildPrincipal(Context);
                 var ticket = new AuthenticationTicket(principal, TestSchemaName);
                 return Task.FromResult(AuthenticateResult.Success(ticket));
+            }
+
+            public Task SignOutAsync(AuthenticationProperties? properties)
+            {
+                return Task.CompletedTask;
             }
         }
     }
