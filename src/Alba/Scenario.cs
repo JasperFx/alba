@@ -197,6 +197,23 @@ public class Scenario : IUrlExpression
 
         return new SendExpression(this);
     }
+    
+    /// <summary>
+    /// Write the supplied stream to the body of the request
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    public SendExpression Stream(Stream input)
+    {
+        ConfigureHttpContext(x =>
+        {
+            var content = new StreamContent(input);
+            content.CopyTo(x.Request.Body, null, CancellationToken.None);
+            x.Request.Headers.ContentLength = content.Headers.ContentLength;
+        });
+
+        return new SendExpression(this);
+    }
 
     /// <summary>
     /// Write the supplied text to the body of the request

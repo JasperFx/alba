@@ -20,7 +20,7 @@ public static class HttpContextExtensions
 
     public static void RelativeUrl(this HttpContext context, [StringSyntax(StringSyntaxAttribute.Uri)]string? relativeUrl)
     {
-        if (relativeUrl != null && relativeUrl.Contains("?"))
+        if (relativeUrl != null && relativeUrl.Contains('?'))
         {
             var parts = relativeUrl.Trim().Split('?');
             context.Request.Path = parts[0];
