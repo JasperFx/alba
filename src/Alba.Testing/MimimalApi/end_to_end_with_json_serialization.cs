@@ -1,6 +1,6 @@
 using Lamar;
 using MinimalApiWithOakton;
-using Oakton;
+using JasperFx.CommandLine;
 using Shouldly;
 
 namespace Alba.Testing.MimimalApi;

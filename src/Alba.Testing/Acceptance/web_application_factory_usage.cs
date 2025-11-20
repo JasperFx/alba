@@ -1,6 +1,5 @@
 using JasperFx.CommandLine;
 using Microsoft.Extensions.DependencyInjection;
-using Oakton;
 using Shouldly;
 
 namespace Alba.Testing.Acceptance
