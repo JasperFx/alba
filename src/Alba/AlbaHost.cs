@@ -412,16 +412,6 @@ public class AlbaHost : IAlbaHost
             activity?.SetResponseTags(context.Response);
             return context;
         }
-        catch (Exception e)
-        {
-            if (e.Message.Contains("The server has not been started or no web application was configured."))
-            {
-                await Server.Host.StartAsync();
-                return await Server.SendAsync(setup);
-            }
-
-            throw;
-        }
         finally
         {
             activity?.Dispose();

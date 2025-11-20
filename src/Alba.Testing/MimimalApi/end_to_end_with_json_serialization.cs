@@ -17,7 +17,7 @@ public class end_to_end_with_json_serialization : IAsyncLifetime
 
     public async ValueTask InitializeAsync()
     {
-        OaktonEnvironment.AutoStartHost = true;
+        JasperFxEnvironment.AutoStartHost = true;
         _host = await AlbaHost.For<MinimalApiWithOakton.Program>();
 
         var container = (IContainer)_host.Services;
