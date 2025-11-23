@@ -1,6 +1,6 @@
+using JasperFx;
 using Lamar.Microsoft.DependencyInjection;
 using Microsoft.AspNetCore.Http.Json;
-using Oakton;
 
 namespace MinimalApiWithOakton
 {
@@ -22,7 +22,7 @@ namespace MinimalApiWithOakton
 
             app.MapPost("/go", (PostedMessage input) => new OutputMessage(input.Id));
 
-            return app.RunOaktonCommands(args);
+            return app.RunJasperFxCommands(args);
         }
     }
     
