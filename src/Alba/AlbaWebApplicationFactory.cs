@@ -13,6 +13,8 @@ internal sealed class AlbaWebApplicationFactory<TEntryPoint> : WebApplicationFac
     private readonly Action<IWebHostBuilder> _configuration;
     private readonly IAlbaExtension[] _extensions;
 
+    public IHost? CreatedHost { get; private set; }
+
     public AlbaWebApplicationFactory(Action<IWebHostBuilder> configuration, IAlbaExtension[] extensions)
     {
         _configuration = configuration;
@@ -23,10 +25,7 @@ internal sealed class AlbaWebApplicationFactory<TEntryPoint> : WebApplicationFac
     {
         DisableIdentityLogger(builder);
 
-        builder.ConfigureServices(services =>
-        {
-            services.AddHttpContextAccessor();
-        });
+        builder.ConfigureServices(services => services.AddHttpContextAccessor());
 
         _configuration(builder);
 
@@ -47,6 +46,8 @@ internal sealed class AlbaWebApplicationFactory<TEntryPoint> : WebApplicationFac
             extension.Configure(builder);
         }
 
-        return base.CreateHost(builder);
+        CreatedHost = base.CreateHost(builder);
+
+        return CreatedHost;
     }
 }

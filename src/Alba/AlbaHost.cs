@@ -36,7 +36,7 @@ public class AlbaHost : IAlbaHost
         Server.AllowSynchronousIO = true;
 
         Extensions = extensions;
-            
+
         var jsonInput = findInputFormatter("application/json");
         var jsonOutput = findOutputFormatter("application/json");
 
@@ -48,7 +48,6 @@ public class AlbaHost : IAlbaHost
         MinimalApiStrategy = new SystemTextJsonSerializer(this);
 
         DefaultJson = MvcStrategy ?? MinimalApiStrategy;
-
     }
 
     public AlbaHost(IHostBuilder builder, params IAlbaExtension[] extensions)
@@ -83,7 +82,7 @@ public class AlbaHost : IAlbaHost
 
         DefaultJson = MvcStrategy ?? MinimalApiStrategy;
     }
-        
+
     internal IJsonStrategy? MvcStrategy { get; }
     internal IJsonStrategy MinimalApiStrategy { get; }
     internal IJsonStrategy DefaultJson { get; }
@@ -100,9 +99,14 @@ public class AlbaHost : IAlbaHost
         return Task.CompletedTask;
     }
 
-    public Task StopAsync(CancellationToken cancellationToken = new())
+    public async Task StopAsync(CancellationToken cancellationToken = new())
     {
-        return _host == null ? Task.CompletedTask : _host.StopAsync(cancellationToken);
+        var factoryHost = _factory?.CreatedHost;
+        if (factoryHost is not null)
+            await factoryHost.StopAsync(cancellationToken);
+
+        if (_host is not null)
+            await _host.StopAsync(cancellationToken);
     }
 
     /// <summary>
@@ -178,6 +182,7 @@ public class AlbaHost : IAlbaHost
     }
 
     #region sample_ScenarioSignature
+
     /// <summary>
     ///     Define and execute an integration test by running an Http request through
     ///     your ASP.Net Core system
@@ -187,21 +192,21 @@ public class AlbaHost : IAlbaHost
     /// <exception cref="InvalidOperationException"></exception>
     public async Task<IScenarioResult> Scenario(
             Action<Scenario> configure)
+
         #endregion
 
     {
         var scenario = new Scenario(this);
-                
+
         configure(scenario);
 
         scenario.Rewind();
-            
+
         HttpContext? context = null;
         try
         {
             context = await Invoke(c =>
             {
-                    
                 try
                 {
                     if (scenario.Claims.Any())
@@ -250,7 +255,7 @@ public class AlbaHost : IAlbaHost
         {
             context.Response.Body.Position = 0;
         }
-            
+
         return new ScenarioResult(this, context);
     }
 
@@ -263,7 +268,7 @@ public class AlbaHost : IAlbaHost
             await _host.StopAsync();
             _host.Dispose();
         }
-            
+
         Server.Dispose();
 
         if (_factory is not null)
@@ -327,8 +332,7 @@ public class AlbaHost : IAlbaHost
         return host;
     }
 
-       
-                
+
     /// <summary>
     /// Creates an AlbaHost using an underlying WebApplicationFactory.
     /// </summary>
@@ -336,7 +340,8 @@ public class AlbaHost : IAlbaHost
     /// <param name="configuration"></param>
     /// <param name="extensions"></param>
     /// <returns></returns>
-    public static async Task<IAlbaHost> For<TEntryPoint>(Action<IWebHostBuilder> configuration, params IAlbaExtension[] extensions) where TEntryPoint : class
+    public static async Task<IAlbaHost> For<TEntryPoint>(Action<IWebHostBuilder> configuration,
+        params IAlbaExtension[] extensions) where TEntryPoint : class
     {
         var factory = new AlbaWebApplicationFactory<TEntryPoint>(configuration, extensions);
 
@@ -358,7 +363,7 @@ public class AlbaHost : IAlbaHost
     /// <returns></returns>
     public static Task<IAlbaHost> For<TEntryPoint>(params IAlbaExtension[] extensions) where TEntryPoint : class
     {
-        return For<TEntryPoint>(_ => {}, extensions);
+        return For<TEntryPoint>(_ => { }, extensions);
     }
 
     private AlbaHost(IAlbaWebApplicationFactory factory, params IAlbaExtension[] extensions)
@@ -370,7 +375,7 @@ public class AlbaHost : IAlbaHost
         Server.AllowSynchronousIO = true;
 
         Extensions = extensions;
-            
+
         var jsonInput = findInputFormatter("application/json");
         var jsonOutput = findOutputFormatter("application/json");
 
