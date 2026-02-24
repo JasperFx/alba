@@ -3,7 +3,9 @@ using Alba.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Abstractions;
 using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Shouldly;
@@ -109,5 +111,48 @@ public class web_api_authentication_with_individual_stub
             s.StatusCodeShouldBeOk();
         });
         
+    }
+
+    [Fact]
+    public async Task can_stub_schemes_for_different_hosts_with_identity_logger_disabled_by_default()
+    {
+        var securityStub1 = new JwtSecurityStub("AzureAuthentication")
+            .With("iss", "bar")
+            .With("tid", "tenantid")
+            .With("roles", "")
+            .With(JwtRegisteredClaimNames.Email, "guy@company.com")
+            .WithName("jeremy");
+
+        var securityStub2 = new JwtSecurityStub(JwtBearerDefaults.AuthenticationScheme)
+            .With("foo", "bar")
+            .With(JwtRegisteredClaimNames.Email, "guy@company.com")
+            .WithName("jeremy");
+        
+        var checkpoints = new HashSet<IIdentityLogger> { LogHelper.Logger };
+        await using (var host = await AlbaHost.For<WebAppSecuredWithJwt.Program>(securityStub1))
+        {
+            checkpoints.Add(LogHelper.Logger);
+            await host.Scenario(s =>
+            {
+                s.Get.Url("/identity3");
+                s.StatusCodeShouldBeOk();
+            });
+            checkpoints.Add(LogHelper.Logger);
+        }
+        
+        checkpoints.Add(LogHelper.Logger);
+        await using (var host = await AlbaHost.For<WebAppSecuredWithJwt.Program>(securityStub2))
+        {
+            checkpoints.Add(LogHelper.Logger);
+            await host.Scenario(s =>
+            {
+                s.Get.Url("/identity");
+                s.StatusCodeShouldBeOk();
+            });
+            checkpoints.Add(LogHelper.Logger);
+        }
+        checkpoints.Add(LogHelper.Logger);
+        
+        checkpoints.ShouldBe([NullIdentityModelLogger.Instance]);
     }
 }
