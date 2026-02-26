@@ -24,8 +24,9 @@ internal sealed class AlbaWebApplicationFactory<TEntryPoint> : WebApplicationFac
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         DisableIdentityLogger(builder);
+        DisableWindowsEventLog(builder);
 
-        builder.ConfigureServices(services => services.AddHttpContextAccessor());
+        builder.ConfigureServices(services => { services.AddHttpContextAccessor(); });
 
         _configuration(builder);
 
@@ -34,9 +35,16 @@ internal sealed class AlbaWebApplicationFactory<TEntryPoint> : WebApplicationFac
 
     private static void DisableIdentityLogger(IWebHostBuilder builder)
     {
-        const string key = "Logging:LogLevel:Microsoft.Identity.Web";
-        if (builder.GetSetting(key) is null)
-            builder.UseSetting(key, nameof(LogLevel.None));
+        // Avoid using LogHelper.Logger static singleton from Microsoft.Identity.Web
+        // as it captures ILogger from the "active" host potentially introducing side effects for other hosts.
+        // See https://github.com/AzureAD/microsoft-identity-web/blob/50cbeb29b399dea8936e73cca6c846e3664d57c5/src/Microsoft.Identity.Web.TokenAcquisition/MicrosoftIdentityBaseAuthenticationBuilder.cs#L70
+        builder.UseSetting("Logging:LogLevel:Microsoft.Identity.Web", nameof(LogLevel.None));
+    }
+
+    private static void DisableWindowsEventLog(IWebHostBuilder builder)
+    {
+        // Avoid using Windows EventLog as it can cause exceptions during host stop/disposal. 
+        builder.UseSetting("Logging:EventLog:LogLevel:Default", nameof(LogLevel.None));
     }
 
     protected override IHost CreateHost(IHostBuilder builder)

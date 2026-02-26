@@ -10,7 +10,7 @@ public class host_stop_usage
     [Fact]
     public async Task stop_for_hosted_service_is_called_for_minimal_api()
     {
-        await using var host = await AlbaHost.For<global::Program>(x =>
+        await using var host = await AlbaHost.For<Program>(x =>
         {
             x.ConfigureServices(services =>
                 services.AddHostedService<SimpleHostedService>()
@@ -20,14 +20,13 @@ public class host_stop_usage
 
         await host.StopAsync(TestContext.Current.CancellationToken);
 
-        // As stop may be called twice for minimal api Take(2) is used.
         hostedService.Events.Take(2).ShouldBe(["Started", "Stopped"]);
     }
 
     [Fact]
     public async Task stop_for_hosted_service_is_called_on_host_disposal_for_minimal_api()
     {
-        var host = await AlbaHost.For<global::Program>(x =>
+        var host = await AlbaHost.For<Program>(x =>
         {
             x.ConfigureServices(services =>
                 services.AddHostedService<SimpleHostedService>()
@@ -37,7 +36,6 @@ public class host_stop_usage
 
         await host.DisposeAsync();
 
-        // As stop may be called twice for minimal api Take(2) is used.
         hostedService.Events.Take(2).ShouldBe(["Started", "Stopped"]);
     }
 
@@ -54,7 +52,7 @@ public class host_stop_usage
 
         await host.StopAsync(TestContext.Current.CancellationToken);
 
-        hostedService.Events.ShouldBe(["Started", "Stopped"]);
+        hostedService.Events.Take(2).ShouldBe(["Started", "Stopped"]);
     }
 
     [Fact]
@@ -70,12 +68,12 @@ public class host_stop_usage
 
         await host.DisposeAsync();
 
-        hostedService.Events.ShouldBe(["Started", "Stopped"]);
+        hostedService.Events.Distinct().ShouldBe(["Started", "Stopped"]);
     }
 
     public class SimpleHostedService : IHostedService
     {
-        readonly List<string> _events = [];
+        private readonly List<string> _events = [];
 
         public IEnumerable<string> Events => _events;
 

@@ -18,13 +18,15 @@ public class web_api_authentication_with_individual_stub
     public async Task can_stub_individual_scheme()
     {
         #region sample_bootstrapping_with_stub_scheme_extension
+
         // Stub out an individual scheme
         var securityStub = new AuthenticationStub("custom")
             .With("foo", "bar")
             .With(JwtRegisteredClaimNames.Email, "guy@company.com")
             .WithName("jeremy");
-        
+
         await using var host = await AlbaHost.For<WebAppSecuredWithJwt.Program>(securityStub);
+
         #endregion
 
         await host.Scenario(s =>
@@ -32,15 +34,14 @@ public class web_api_authentication_with_individual_stub
             s.Get.Url("/identity2");
             s.StatusCodeShouldBeOk();
         });
-        
+
         await host.Scenario(s =>
         {
             s.Get.Url("/identity");
             s.StatusCodeShouldBe(HttpStatusCode.Unauthorized);
         });
-        
     }
-    
+
     [Fact]
     public async Task can_stub_individual_scheme_jwt()
     {
@@ -58,28 +59,27 @@ public class web_api_authentication_with_individual_stub
             s.Get.Url("/identity");
             s.StatusCodeShouldBeOk();
         });
-        
+
         await host.Scenario(s =>
         {
             s.Get.Url("/identity2");
             s.StatusCodeShouldBe(HttpStatusCode.Unauthorized);
         });
-        
     }
-    
+
     [Fact]
     public async Task can_stub_individual_schemes_microsoft_identity_web()
-    {       
+    {
         var securityStub1 = new AuthenticationStub("custom")
             .With("foo", "bar")
             .With(JwtRegisteredClaimNames.Email, "guy@company.com")
             .WithName("jeremy");
-        
+
         var securityStub2 = new JwtSecurityStub(JwtBearerDefaults.AuthenticationScheme)
             .With("foo", "bar")
             .With(JwtRegisteredClaimNames.Email, "guy@company.com")
             .WithName("jeremy");
-        
+
         var securityStub3 = new JwtSecurityStub("AzureAuthentication")
             .With("iss", "bar")
             .With("tid", "tenantid")
@@ -88,29 +88,30 @@ public class web_api_authentication_with_individual_stub
             .WithName("jeremy");
 
         // We're calling your real web service's configuration
-        await using var host = await AlbaHost.For<WebAppSecuredWithJwt.Program>(securityStub1, securityStub2, securityStub3);
-        var postConfigures = host.Services.GetRequiredService<IOptionsMonitor<JwtBearerOptions>>().Get("AzureAuthentication");
-        
+        await using var host = await AlbaHost.For<WebAppSecuredWithJwt.Program>(
+            securityStub1, securityStub2, securityStub3);
+        var postConfigures = host.Services.GetRequiredService<IOptionsMonitor<JwtBearerOptions>>()
+            .Get("AzureAuthentication");
+
         postConfigures.ConfigurationManager.ShouldBeOfType<StaticConfigurationManager<OpenIdConnectConfiguration>>();
-        
+
         await host.Scenario(s =>
         {
             s.Get.Url("/identity");
             s.StatusCodeShouldBeOk();
         });
-        
+
         await host.Scenario(s =>
         {
             s.Get.Url("/identity2");
             s.StatusCodeShouldBeOk();
         });
-        
+
         await host.Scenario(s =>
         {
             s.Get.Url("/identity3");
             s.StatusCodeShouldBeOk();
         });
-        
     }
 
     [Fact]
@@ -127,7 +128,7 @@ public class web_api_authentication_with_individual_stub
             .With("foo", "bar")
             .With(JwtRegisteredClaimNames.Email, "guy@company.com")
             .WithName("jeremy");
-        
+
         var checkpoints = new HashSet<IIdentityLogger> { LogHelper.Logger };
         await using (var host = await AlbaHost.For<WebAppSecuredWithJwt.Program>(securityStub1))
         {
@@ -139,7 +140,7 @@ public class web_api_authentication_with_individual_stub
             });
             checkpoints.Add(LogHelper.Logger);
         }
-        
+
         checkpoints.Add(LogHelper.Logger);
         await using (var host = await AlbaHost.For<WebAppSecuredWithJwt.Program>(securityStub2))
         {
@@ -151,8 +152,9 @@ public class web_api_authentication_with_individual_stub
             });
             checkpoints.Add(LogHelper.Logger);
         }
+
         checkpoints.Add(LogHelper.Logger);
-        
+
         checkpoints.ShouldBe([NullIdentityModelLogger.Instance]);
     }
 }
