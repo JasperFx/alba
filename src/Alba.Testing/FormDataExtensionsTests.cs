@@ -30,6 +30,25 @@ namespace Alba.Testing
 
         }
 
+        [Fact]
+        public void duplicate_values_are_allowed()
+        {
+            IEnumerable<KeyValuePair<string, string>> form1 = [
+                new("test", "what?"),
+                new("test", "now?"),
+                new("test", "really?")
+            ];
 
+            var context = new DefaultHttpContext();
+            using var stream = new MemoryStream();
+            context.Request.Body = stream;
+
+            context.WriteFormData(form1);
+
+            context.Request.Body.Position = 0;
+
+            context.Request.Body.ReadAllText()
+                .ShouldBe("test=what%3F&test=now%3F&test=really%3F");
+        }
     }
 }
