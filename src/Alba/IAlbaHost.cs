@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Hosting;
- 
+
 namespace Alba;
 
 public interface IAlbaHost : IHost, IAsyncDisposable
@@ -16,28 +16,28 @@ public interface IAlbaHost : IHost, IAsyncDisposable
     Task<IScenarioResult> Scenario(Action<Scenario> configure);
 
     /// <summary>
-    /// Execute some kind of action before each scenario. This is NOT additive
+    /// Execute some kind of action before each scenario. This is additive as of Alba v5
     /// </summary>
     /// <param name="beforeEach"></param>
     /// <returns></returns>
     IAlbaHost BeforeEach(Action<HttpContext> beforeEach);
 
     /// <summary>
-    /// Execute some clean up action immediately after executing each HTTP execution. This is NOT additive
+    /// Execute some clean up action immediately after executing each HTTP execution. This is additive as of Alba v5
     /// </summary>
     /// <param name="afterEach"></param>
     /// <returns></returns>
     IAlbaHost AfterEach(Action<HttpContext?> afterEach);
 
     /// <summary>
-    /// Run some kind of set up action immediately before executing an HTTP request
+    /// Run some kind of set up action immediately before executing an HTTP request. This is additive as of Alba v5
     /// </summary>
     /// <param name="beforeEach"></param>
     /// <returns></returns>
     IAlbaHost BeforeEachAsync(Func<HttpContext, Task> beforeEach);
 
     /// <summary>
-    /// Execute some clean up action immediately after executing each HTTP execution. This is NOT additive
+    /// Execute some clean up action immediately after executing each HTTP execution. This is additive as of Alba v5
     /// </summary>
     /// <param name="afterEach"></param>
     /// <returns></returns>
@@ -48,5 +48,5 @@ public interface IAlbaHost : IHost, IAsyncDisposable
     /// </summary>
     TestServer Server { get; }
 
-        
+
 }
