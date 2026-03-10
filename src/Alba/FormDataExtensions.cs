@@ -11,7 +11,7 @@ public static class FormDataExtensions
     /// </summary>
     /// <param name="context"></param>
     /// <param name="values"></param>
-    public static void WriteFormData(this HttpContext context, Dictionary<string, string> values)
+    public static void WriteFormData(this HttpContext context, IEnumerable<KeyValuePair<string, string>> values)
     {
         using var form = new FormUrlEncodedContent(values);
 
