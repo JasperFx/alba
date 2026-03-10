@@ -111,6 +111,7 @@ public class WebAppFixture : IAsyncLifetime
             {
                 _.Get.Url("/fake/okay");
                 _.StatusCodeShouldBeOk();
+                _.StatusCodeShouldBeSuccess();
             });
         }
     }
