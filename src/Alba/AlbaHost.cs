@@ -122,13 +122,7 @@ public class AlbaHost : IAlbaHost
         _host?.Dispose();
         _factory?.Dispose();
     }
-
-
-    /// <summary>
-    ///     Execute some kind of action before each scenario. This is additive as of Alba v5
-    /// </summary>
-    /// <param name="beforeEach"></param>
-    /// <returns></returns>
+    
     public IAlbaHost BeforeEach(Action<HttpContext> beforeEach)
     {
         _beforeEach.Add(c =>
@@ -139,13 +133,7 @@ public class AlbaHost : IAlbaHost
 
         return this;
     }
-
-
-    /// <summary>
-    ///     Execute some clean up action immediately after executing each HTTP execution. This is additive as of Alba v5
-    /// </summary>
-    /// <param name="afterEach"></param>
-    /// <returns></returns>
+    
     public IAlbaHost AfterEach(Action<HttpContext?> afterEach)
     {
         _afterEach.Add(c =>
@@ -157,23 +145,13 @@ public class AlbaHost : IAlbaHost
         return this;
     }
 
-    /// <summary>
-    ///     Run some kind of set up action immediately before executing an HTTP request. This is additive as of Alba v5
-    /// </summary>
-    /// <param name="beforeEach"></param>
-    /// <returns></returns>
     public IAlbaHost BeforeEachAsync(Func<HttpContext, Task> beforeEach)
     {
         _beforeEach.Add(beforeEach);
 
         return this;
     }
-
-    /// <summary>
-    ///     Execute some clean up action immediately after executing each HTTP execution. This is additive as of Alba v5
-    /// </summary>
-    /// <param name="afterEach"></param>
-    /// <returns></returns>
+    
     public IAlbaHost AfterEachAsync(Func<HttpContext?, Task> afterEach)
     {
         _afterEach.Add(afterEach);

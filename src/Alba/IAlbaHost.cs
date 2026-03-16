@@ -16,14 +16,14 @@ public interface IAlbaHost : IHost, IAsyncDisposable
     Task<IScenarioResult> Scenario(Action<Scenario> configure);
 
     /// <summary>
-    /// Execute some kind of action before each scenario. This is NOT additive
+    /// Execute some kind of action before each scenario. This is additive for each call made.
     /// </summary>
     /// <param name="beforeEach"></param>
     /// <returns></returns>
     IAlbaHost BeforeEach(Action<HttpContext> beforeEach);
 
     /// <summary>
-    /// Execute some clean up action immediately after executing each HTTP execution. This is NOT additive
+    /// Execute some clean up action immediately after executing each HTTP execution. This is additive for each call made.
     /// </summary>
     /// <param name="afterEach"></param>
     /// <returns></returns>
@@ -37,7 +37,7 @@ public interface IAlbaHost : IHost, IAsyncDisposable
     IAlbaHost BeforeEachAsync(Func<HttpContext, Task> beforeEach);
 
     /// <summary>
-    /// Execute some clean up action immediately after executing each HTTP execution. This is NOT additive
+    /// Execute some clean up action immediately after executing each HTTP execution. This is additive for each call made.
     /// </summary>
     /// <param name="afterEach"></param>
     /// <returns></returns>
