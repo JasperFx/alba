@@ -26,17 +26,21 @@ public interface IUrlExpression
     SendExpression Url([StringSyntax(StringSyntaxAttribute.Uri)]string relativeUrl);
 
     /// <summary>
-    /// Writes the input object into Json to the Http Request, and
-    /// if enabled in your Alba system, sets the Url to match the
-    /// input type and Http method
+    /// Serializes the input object as JSON.
     /// </summary>
     /// <param name="input"></param>
     /// <param name="jsonStyle"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
     SendExpression Json<T>(T input, JsonStyle? jsonStyle = null);
-
-
+    
+    /// <summary>
+    /// Writes the input string as JSON. Useful if your data is already serialized.
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    SendExpression RawJson(string input);
+    
     /// <summary>
     /// Writes the input object into Xml to the Http Request, and
     /// if enabled in your Alba system, sets the Url to match the
