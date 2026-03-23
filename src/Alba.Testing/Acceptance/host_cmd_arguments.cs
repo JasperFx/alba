@@ -5,7 +5,6 @@ namespace Alba.Testing.Acceptance;
 
 public class host_cmd_arguments
 {
-
     [Fact]
     public async Task should_start_host_when_running_without_RunJasperFxCommands()
     {
@@ -13,8 +12,6 @@ public class host_cmd_arguments
 
         var args = await GetCmdArgumentsAsync(host);
         args.Keys.ShouldBe([
-            "--Logging__LogLevel__Microsoft.Identity.Web",
-            "--Logging__EventLog__LogLevel__Default",
             "--environment",
             "--contentRoot",
             "--applicationName",
@@ -22,16 +19,16 @@ public class host_cmd_arguments
     }
 
     [Fact]
-    public async Task should_start_host_when_using_RunJasperFxCommands()
+    public async Task should_start_host_when_running_with_RunJasperFxCommands()
     {
+        JasperFxEnvironment.AutoStartHost = true; // to start the host
+        
         await using var host = await AlbaHost.For<Program>(x =>
             x.UseSetting("UseRunJasperFxCommands", "true"));
 
         var args = await GetCmdArgumentsAsync(host);
         args.Keys.ShouldBe([
             "--UseRunJasperFxCommands",
-            "--Logging__LogLevel__Microsoft.Identity.Web",
-            "--Logging__EventLog__LogLevel__Default",
             "--environment",
             "--contentRoot",
             "--applicationName"
