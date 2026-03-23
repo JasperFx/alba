@@ -1,4 +1,5 @@
-﻿using Alba.Internal;
+﻿using System.Text.Json;
+using Alba.Internal;
 using Shouldly;
 
 namespace Alba.Testing
@@ -63,6 +64,35 @@ namespace Alba.Testing
                 x.ContentShouldBe("hello from the in memory host");
             });
         }
+        
+        [Fact]
+        public Task using_scenario_with_raw_json_and_content_type()
+        {
+            var body = JsonSerializer.Serialize(new { name = "John", age = 30 });
+            string contentType = MimeType.Json.Value;
+            router.Handlers["/json/raw"] = c =>
+            {
+                var text = c.Request.Body.ReadAllText();
+                text.ShouldBe(body);
+                var entity = JsonSerializer.Deserialize<PersonRecord>(text, JsonSerializerOptions.Web);
+                entity.ShouldNotBeNull();
+                entity.Name.ShouldBe("John");
+                entity.Age.ShouldBe(30);
+                c.Request.ContentType.ShouldBe(contentType);
+                c.Response.Write("hello from the in memory host");
+                return Task.CompletedTask;
+            };
+            
+            return host.Scenario(x =>
+            {
+                x.Post.RawJson(body).ToUrl("/json/raw").ContentType(contentType);
+                x.StatusCodeShouldBeOk();
+                
+                x.ContentShouldBe("hello from the in memory host");
+            });
+        }
+
+        public sealed record PersonRecord(string Name, int Age);
     }
 
     public class InMemoryEndpoint

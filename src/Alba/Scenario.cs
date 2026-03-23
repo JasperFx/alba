@@ -133,6 +133,15 @@ public class Scenario : IUrlExpression
         return new SendExpression(this);
     }
 
+    public SendExpression RawJson(string input)
+    {
+        Body.TextIs(input);
+        
+        ConfigureHttpContext(x => x.Accepts(MimeType.Json.Value));
+        
+        return new SendExpression(this);
+    }
+
     SendExpression IUrlExpression.Xml<T>(T input)
     {
         Body.XmlInputIs(input);
@@ -224,7 +233,6 @@ public class Scenario : IUrlExpression
     {
         Body.TextIs(text);
         ConfigureHttpContext(context => context.Request.ContentType = MimeType.Text.Value);
-        ConfigureHttpContext(context => context.Request.ContentLength = text.Length);
 
         return new SendExpression(this);
     }
