@@ -17,7 +17,7 @@ app.MapGet("/blowup", context => throw new Exception("Boo!"));
 app.MapPost("/json", (MyEntity entity) => entity);
 app.MapGet("/args", () => Results.Ok(args));
 
-if (args.Contains("--UseRunJasperFxCommands"))
+if (args.Contains("--UseRunJasperFxCommands=true"))
     await app.RunJasperFxCommands(args);
 else
     app.Run();
