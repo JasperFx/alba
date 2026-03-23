@@ -40,8 +40,8 @@ internal sealed class AlbaWebApplicationFactory<TEntryPoint> : WebApplicationFac
         
         var dict = new Dictionary<string, string?>()
         {
-            { "Logging:EventLog:LogLevel:Default", nameof(LogLevel.None) },
-            { "Logging:LogLevel:Microsoft.Identity.Web", nameof(LogLevel.None)}
+            { "Logging__EventLog__LogLevel__Default", nameof(LogLevel.None) },
+            { "Logging__LogLevel__Microsoft.Identity.Web", nameof(LogLevel.None)}
         };
 
         return new ConfigurationOverride(dict);
