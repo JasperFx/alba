@@ -22,7 +22,7 @@ public class host_cmd_arguments
     public async Task should_start_host_when_running_with_RunJasperFxCommands()
     {
         JasperFxEnvironment.AutoStartHost = true; // to start the host
-        
+
         await using var host = await AlbaHost.For<Program>(x =>
             x.UseSetting("UseRunJasperFxCommands", "true"));
 
