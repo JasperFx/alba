@@ -23,9 +23,6 @@ internal sealed class AlbaWebApplicationFactory<TEntryPoint> : WebApplicationFac
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        DisableIdentityLogger(builder);
-        DisableWindowsEventLog(builder);
-
         builder.ConfigureServices(services => { services.AddHttpContextAccessor(); });
 
         _configuration(builder);
@@ -33,18 +30,21 @@ internal sealed class AlbaWebApplicationFactory<TEntryPoint> : WebApplicationFac
         base.ConfigureWebHost(builder);
     }
 
-    private static void DisableIdentityLogger(IWebHostBuilder builder)
+    private static ConfigurationOverride GetConfigurationOverride()
     {
+        // Avoid using Windows EventLog as it can cause exceptions during host stop/disposal. 
+        
         // Avoid using LogHelper.Logger static singleton from Microsoft.Identity.Web
         // as it captures ILogger from the "active" host potentially introducing side effects for other hosts.
         // See https://github.com/AzureAD/microsoft-identity-web/blob/50cbeb29b399dea8936e73cca6c846e3664d57c5/src/Microsoft.Identity.Web.TokenAcquisition/MicrosoftIdentityBaseAuthenticationBuilder.cs#L70
-        builder.UseSetting("Logging:LogLevel:Microsoft.Identity.Web", nameof(LogLevel.None));
-    }
+        
+        var dict = new Dictionary<string, string?>()
+        {
+            { "Logging:EventLog:LogLevel:Default", nameof(LogLevel.None) },
+            { "Logging:LogLevel:Microsoft.Identity.Web", nameof(LogLevel.None)}
+        };
 
-    private static void DisableWindowsEventLog(IWebHostBuilder builder)
-    {
-        // Avoid using Windows EventLog as it can cause exceptions during host stop/disposal. 
-        builder.UseSetting("Logging:EventLog:LogLevel:Default", nameof(LogLevel.None));
+        return new ConfigurationOverride(dict);
     }
 
     protected override IHost CreateHost(IHostBuilder builder)
@@ -53,6 +53,8 @@ internal sealed class AlbaWebApplicationFactory<TEntryPoint> : WebApplicationFac
         {
             extension.Configure(builder);
         }
+        
+        GetConfigurationOverride().Configure(builder);
 
         CreatedHost = base.CreateHost(builder);
 
