@@ -137,7 +137,7 @@ public class Scenario : IUrlExpression
     {
         Body.TextIs(input);
         
-        ConfigureHttpContext(x => x.Accepts(MimeType.Json.Value));
+        ConfigureHttpContext(x => x.Request.ContentType = MimeType.Json.Value);
         
         return new SendExpression(this);
     }
