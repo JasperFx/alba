@@ -10,4 +10,8 @@
     <InternalsVisibleTo Include="Alba.Testing" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="JasperFx" Version="1.10.1" />
+  </ItemGroup>
+
 </Project>
