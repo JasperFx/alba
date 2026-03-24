@@ -6,8 +6,7 @@ namespace Alba.Testing
 {
     public class ScenarioTests : ScenarioContext
     {
-        
-
+        private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
 
         [Fact]
         public Task invoke_a_simple_string_endpoint()
@@ -74,7 +73,7 @@ namespace Alba.Testing
             {
                 var text = c.Request.Body.ReadAllText();
                 text.ShouldBe(body);
-                var entity = JsonSerializer.Deserialize<PersonRecord>(text, JsonSerializerOptions.Web);
+                var entity = JsonSerializer.Deserialize<PersonRecord>(text, JsonOptions);
                 entity.ShouldNotBeNull();
                 entity.Name.ShouldBe("John");
                 entity.Age.ShouldBe(30);

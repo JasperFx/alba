@@ -5,8 +5,10 @@ namespace Alba.Testing.Samples;
 public static class ModuleInitializer
 {
     [ModuleInitializer]
-    public static void Initialize() =>
+    public static void Initialize() {
         VerifierSettings.InitializePlugins();
+        VerifierSettings.UniqueForTargetFrameworkAndVersion();
+    }
 }
 
 public class SnapshotTesting
