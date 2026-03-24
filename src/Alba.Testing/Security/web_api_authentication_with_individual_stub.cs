@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Abstractions;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Logging;
+using Microsoft.IdentityModel.LoggingExtensions;
 using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Shouldly;
@@ -115,7 +116,7 @@ public class web_api_authentication_with_individual_stub
     }
 
     [Fact]
-    public async Task can_stub_schemes_for_different_hosts_with_identity_logger_disabled_by_default()
+    public async Task can_return_successful_response_when_host_used_to_create_LogHelper_singleton_is_disposed()
     {
         var securityStub1 = new JwtSecurityStub("AzureAuthentication")
             .With("iss", "bar")
@@ -129,32 +130,32 @@ public class web_api_authentication_with_individual_stub
             .With(JwtRegisteredClaimNames.Email, "guy@company.com")
             .WithName("jeremy");
 
-        var checkpoints = new HashSet<IIdentityLogger> { LogHelper.Logger };
-        await using (var host = await AlbaHost.For<WebAppSecuredWithJwt.Program>(securityStub1))
+        IIdentityLogger identityLogger;
+        await using (var hostA = await AlbaHost.For<WebAppSecuredWithJwt.Program>(securityStub1))
         {
-            checkpoints.Add(LogHelper.Logger);
-            await host.Scenario(s =>
+            await hostA.Scenario(s =>
             {
                 s.Get.Url("/identity3");
                 s.StatusCodeShouldBeOk();
             });
-            checkpoints.Add(LogHelper.Logger);
+            // LogHelper.Logger is a singleton. Either it's initialized using ILogger from hostA
+            // or maybe from another host.
+            // What is important is that the hostB below does not return 401
+            // because of the disposed Windows EventLog (OS-specific).
+            // See https://github.com/AzureAD/microsoft-identity-web/blob/50cbeb29b399dea8936e73cca6c846e3664d57c5/src/Microsoft.Identity.Web.TokenAcquisition/MicrosoftIdentityBaseAuthenticationBuilder.cs#L70
+            identityLogger = LogHelper.Logger;
         }
 
-        checkpoints.Add(LogHelper.Logger);
-        await using (var host = await AlbaHost.For<WebAppSecuredWithJwt.Program>(securityStub2))
+        await using (var hostB = await AlbaHost.For<WebAppSecuredWithJwt.Program>(securityStub2))
         {
-            checkpoints.Add(LogHelper.Logger);
-            await host.Scenario(s =>
+            await hostB.Scenario(s =>
             {
                 s.Get.Url("/identity");
                 s.StatusCodeShouldBeOk();
             });
-            checkpoints.Add(LogHelper.Logger);
         }
 
-        checkpoints.Add(LogHelper.Logger);
-
-        checkpoints.ShouldBe([NullIdentityModelLogger.Instance]);
+        identityLogger.ShouldBeOfType<IdentityLoggerAdapter>();
+        identityLogger.ShouldNotBe(NullIdentityModelLogger.Instance);
     }
 }
