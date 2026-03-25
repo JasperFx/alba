@@ -62,7 +62,7 @@ public class OpenConnectUserPassword : OpenConnectExtension
             return client.RequestPasswordTokenAsync(new PasswordTokenRequest
             {
                 Address = disco.TokenEndpoint,
-                ClientId = ClientId,
+                ClientId = ClientId!,
                 ClientSecret = ClientSecret,
                 UserName = u.UserName,
                 Password = u.Password
@@ -72,9 +72,9 @@ public class OpenConnectUserPassword : OpenConnectExtension
         return client.RequestPasswordTokenAsync(new PasswordTokenRequest
         {
             Address = disco.TokenEndpoint,
-            ClientId = ClientId,
+            ClientId = ClientId!,
             ClientSecret = ClientSecret,
-            UserName = UserName,
+            UserName = UserName!,
             Password = Password
         });
     }

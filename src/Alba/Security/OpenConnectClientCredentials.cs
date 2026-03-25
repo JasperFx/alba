@@ -29,7 +29,7 @@ public class OpenConnectClientCredentials : OpenConnectExtension
         return client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
         {
             Address = disco.TokenEndpoint,
-            ClientId = ClientId,
+            ClientId = ClientId!,
             ClientSecret = ClientSecret,
             Scope = Scope
         });
