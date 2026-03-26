@@ -19,7 +19,7 @@ namespace MinimalApiWithOakton
 
             var app = builder.Build();
             app.MapGet("/", () => "Hello World!");
-
+            app.MapGet("/args", () => Results.Ok(args));
             app.MapPost("/go", (PostedMessage input) => new OutputMessage(input.Id));
 
             return app.RunJasperFxCommands(args);

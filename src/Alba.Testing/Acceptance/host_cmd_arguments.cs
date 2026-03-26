@@ -1,38 +1,32 @@
-﻿using JasperFx.CommandLine;
-using Shouldly;
+﻿using Shouldly;
 
 namespace Alba.Testing.Acceptance;
 
 public class host_cmd_arguments
 {
+    private static readonly string[] DefaultParameters =
+    [
+        "--environment",
+        "--contentRoot",
+        "--applicationName",
+    ];
+
     [Fact]
-    public async Task should_start_host_when_running_without_RunJasperFxCommands()
+    public async Task should_use_default_cmd_parameters_when_running_without_RunJasperFxCommand()
     {
         await using var host = await AlbaHost.For<Program>();
 
         var args = await GetCmdArgumentsAsync(host);
-        args.Keys.ShouldBe([
-            "--environment",
-            "--contentRoot",
-            "--applicationName",
-        ]);
+        args.Keys.ShouldBe(DefaultParameters);
     }
 
     [Fact]
-    public async Task should_start_host_when_running_with_RunJasperFxCommands()
+    public async Task should_use_default_cmd_parameters_when_running_with_RunJasperFxCommand()
     {
-        JasperFxEnvironment.AutoStartHost = true; // to start the host
-
-        await using var host = await AlbaHost.For<Program>(x =>
-            x.UseSetting("UseRunJasperFxCommands", "true"));
+        await using var host = await AlbaHost.For<MinimalApiWithOakton.Program>();
 
         var args = await GetCmdArgumentsAsync(host);
-        args.Keys.ShouldBe([
-            "--UseRunJasperFxCommands",
-            "--environment",
-            "--contentRoot",
-            "--applicationName"
-        ]);
+        args.Keys.ShouldBe(DefaultParameters);
     }
 
     private static async Task<Dictionary<string, string>> GetCmdArgumentsAsync(IAlbaHost host)

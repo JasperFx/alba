@@ -1,7 +1,5 @@
 #region sample_minimal_web_api
 
-using JasperFx;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -17,10 +15,7 @@ app.MapGet("/blowup", context => throw new Exception("Boo!"));
 app.MapPost("/json", (MyEntity entity) => entity);
 app.MapGet("/args", () => Results.Ok(args));
 
-if (args.Contains("--UseRunJasperFxCommands=true"))
-    await app.RunJasperFxCommands(args);
-else
-    app.Run();
+app.Run();
 
 public record MyEntity(Guid Id, string MyValue);
 
