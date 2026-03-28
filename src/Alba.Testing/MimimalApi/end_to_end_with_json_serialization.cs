@@ -1,6 +1,5 @@
 using Lamar;
 using MinimalApiWithOakton;
-using JasperFx.CommandLine;
 using Shouldly;
 
 namespace Alba.Testing.MimimalApi;
@@ -17,7 +16,6 @@ public class end_to_end_with_json_serialization : IAsyncLifetime
 
     public async ValueTask InitializeAsync()
     {
-        JasperFxEnvironment.AutoStartHost = true;
         _host = await AlbaHost.For<MinimalApiWithOakton.Program>();
 
         var container = (IContainer)_host.Services;

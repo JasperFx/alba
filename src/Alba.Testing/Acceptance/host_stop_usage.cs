@@ -1,5 +1,4 @@
-﻿using JasperFx.CommandLine;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Shouldly;
 using WebApp;
@@ -11,7 +10,6 @@ public class host_stop_usage
     [Fact]
     public async Task stop_for_hosted_service_is_called_for_minimal_api()
     {
-        JasperFxEnvironment.AutoStartHost = true;
         await using var host = await AlbaHost.For<Program>(x =>
         {
             x.ConfigureServices(services =>
@@ -28,7 +26,6 @@ public class host_stop_usage
     [Fact]
     public async Task stop_for_hosted_service_is_called_on_host_disposal_for_minimal_api()
     {
-        JasperFxEnvironment.AutoStartHost = true;
         var host = await AlbaHost.For<Program>(x =>
         {
             x.ConfigureServices(services =>

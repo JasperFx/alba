@@ -1,4 +1,4 @@
-﻿using Shouldly;
+using Shouldly;
 
 namespace Alba.Testing.Acceptance;
 
