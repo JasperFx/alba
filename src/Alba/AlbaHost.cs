@@ -321,6 +321,7 @@ public class AlbaHost : IAlbaHost
     public static async Task<IAlbaHost> For<TEntryPoint>(Action<IWebHostBuilder> configuration,
         params IAlbaExtension[] extensions) where TEntryPoint : class
     {
+        JasperFxEnvironmentAutoStartHost.Enable();
         var factory = new AlbaWebApplicationFactory<TEntryPoint>(configuration, extensions);
 
         var host = new AlbaHost(factory, extensions);
