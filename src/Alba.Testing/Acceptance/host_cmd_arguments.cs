@@ -17,7 +17,20 @@ public class host_cmd_arguments
         await using var host = await AlbaHost.For<Program>();
 
         var args = await GetCmdArgumentsAsync(host);
-        args.Keys.ShouldBe(DefaultParameters);
+        args.Keys.ShouldBe(DefaultParameters, ignoreOrder: true);
+    }
+
+    [Fact]
+    public async Task should_use_extra_cmd_parameters_when_running_without_RunJasperFxCommand()
+    {
+        await using var host = await AlbaHost.For<Program>(x => x
+            .UseSetting("extra1", "value")
+            .UseSetting("extra2", null));
+
+        var args = await GetCmdArgumentsAsync(host);
+        args.Keys.ShouldBe(
+            DefaultParameters.Concat(["--extra1", "--extra2"]),
+            ignoreOrder: true);
     }
 
     [Fact]
@@ -26,7 +39,20 @@ public class host_cmd_arguments
         await using var host = await AlbaHost.For<MinimalApiWithOakton.Program>();
 
         var args = await GetCmdArgumentsAsync(host);
-        args.Keys.ShouldBe(DefaultParameters);
+        args.Keys.ShouldBe(DefaultParameters, ignoreOrder: true);
+    }
+
+    [Fact]
+    public async Task should_use_extra_cmd_parameters_when_running_with_RunJasperFxCommand()
+    {
+        await using var host = await AlbaHost.For<MinimalApiWithOakton.Program>(x => x
+            .UseSetting("extra1", "value")
+            .UseSetting("extra2", null));
+
+        var args = await GetCmdArgumentsAsync(host);
+        args.Keys.ShouldBe(
+            DefaultParameters.Concat(["--extra1", "--extra2"]),
+            ignoreOrder: true);
     }
 
     private static async Task<Dictionary<string, string>> GetCmdArgumentsAsync(IAlbaHost host)
