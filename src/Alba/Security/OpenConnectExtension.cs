@@ -21,11 +21,13 @@ public abstract class OpenConnectExtension : IAlbaExtension
     void IDisposable.Dispose()
     {
         _client.Dispose();
+        GC.SuppressFinalize(this);
     }
 
     ValueTask IAsyncDisposable.DisposeAsync()
     {
         _client.Dispose();
+        GC.SuppressFinalize(this);
         return ValueTask.CompletedTask;
     }
 
@@ -43,7 +45,8 @@ public abstract class OpenConnectExtension : IAlbaExtension
         _disco = await _client.GetDiscoveryDocumentAsync(authorityUrl);
         if (_disco.IsError)
         {
-            throw _disco.Exception;
+            throw _disco.Exception
+                ?? throw new InvalidOperationException($"Discovery document request failed: {_disco.Error}");
         }
 
         host.BeforeEachAsync(ConfigureJwt);
@@ -77,7 +80,7 @@ public abstract class OpenConnectExtension : IAlbaExtension
     public abstract Task<TokenResponse> FetchToken(HttpClient client, DiscoveryDocumentResponse? disco,
         object? tokenCustomization);
 
-    private async Task<TokenResponse> determineJwt(HttpContext context)
+    private async Task<TokenResponse> DetermineJwt(HttpContext context)
     {
         if (context.Items.TryGetValue(OverrideKey, out var scenarioOverride))
         {
@@ -91,8 +94,9 @@ public abstract class OpenConnectExtension : IAlbaExtension
         
     internal async Task ConfigureJwt(HttpContext context)
     {
-        var token = await determineJwt(context);
-        context.SetBearerToken(token.AccessToken);
+        var token = await DetermineJwt(context);
+        if (token.AccessToken is not null)
+            context.SetBearerToken(token.AccessToken);
     }
 
     IHostBuilder IAlbaExtension.Configure(IHostBuilder builder)

@@ -11,6 +11,7 @@
   <ItemGroup>
     <PackageReference Include="JasperFx" Version="1.10.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.5" />
   </ItemGroup>
 
 </Project>

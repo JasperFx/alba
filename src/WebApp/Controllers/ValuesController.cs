@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,7 +21,7 @@ namespace WebApp.Controllers
         }
 
         [HttpGet("/empty")]
-        public string Empty()
+        public string GetEmptyString()
         {
             return string.Empty;
         }

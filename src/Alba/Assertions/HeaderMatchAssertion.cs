@@ -25,7 +25,7 @@ internal sealed class HeaderMatchAssertion : IScenarioAssertion
 
             case 1:
                 var actual = values.Single();
-                if (_regex.IsMatch(actual) == false)
+                if (actual is null || _regex.IsMatch(actual) == false)
                 {
                     context.AddFailure($"Expected a single header value of '{_headerKey}' matching '{_regex}', but the actual value was '{actual}'");
                 }
