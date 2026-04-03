@@ -1,4 +1,3 @@
-using JasperFx.CommandLine;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 
@@ -73,8 +72,6 @@ namespace Alba.Testing.Acceptance
         [Fact]
         public async Task using_with_oakton_as_runner()
         {
-            // This is required. Sad trombone.
-            JasperFxEnvironment.AutoStartHost = true;
             await using var host = await AlbaHost.For<MinimalApiWithOakton.Program>(x =>
             {
                 x.ConfigureServices((context, services) =>
