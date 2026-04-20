@@ -1,7 +1,7 @@
 namespace Alba.Assertions;
 
 #region sample_StatusCodeAssertion
-internal sealed class StatusCodeAssertion : IScenarioAssertion
+internal sealed class StatusCodeAssertion : IScenarioAssertion, IStatusCodeAssertion
 {
     public int Expected { get; set; }
 
