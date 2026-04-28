@@ -14,16 +14,11 @@ var scenario = await host.Scenario(s =>
     s.Post.Json(new MyEntity(Guid.NewGuid(), "SomeValue")).ToUrl("/json");
 });
 
-var body = scenario.ReadAsJson<MyEntity>();
-
-await Verify(new {
-    scenario.Context,
-    ResponseBody = body,
-});
+await Verify(scenario);
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/SnapshotTesting.cs#L17-L31' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_snapshot_testing' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/SnapshotTesting.cs#L19-L28' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_snapshot_testing' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 Will result in a snapshot of:
 
-<<< ../../src/Alba.Testing/Samples/SnapshotTesting.SnapshotTest.verified.txt{json}
+<<< ../../src/Alba.Testing/Samples/SnapshotTesting.SnapshotTest.DotNet10_0.verified.txt{json}

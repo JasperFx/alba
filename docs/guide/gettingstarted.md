@@ -42,12 +42,13 @@ app.UseHttpsRedirection();
 app.MapGet("/", () => "Hello World!");
 app.MapGet("/blowup", context => throw new Exception("Boo!"));
 app.MapPost("/json", (MyEntity entity) => entity);
+app.MapGet("/args", () => Results.Ok(args));
 
 app.Run();
 
 public record MyEntity(Guid Id, string MyValue);
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/WebApiNet6/Program.cs#L1-L23' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_minimal_web_api' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/WebApiNet6/Program.cs#L1-L22' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_minimal_web_api' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 **As this is a Minimal API project, you will need to allow your test project access to the internal types of your application under test**. You
@@ -73,7 +74,7 @@ await using var host = await AlbaHost.For<global::Program>(x =>
     });
 });
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Acceptance/web_application_factory_usage.cs#L42-L51' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_bootstrapping_with_web_application_factory' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Acceptance/web_application_factory_usage.cs#L41-L50' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_bootstrapping_with_web_application_factory' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 The `AlbaHost.For<T>(Action<WebApplicationFactory<T>> configuration)` method uses `WebApplicationFactory` and all its magic static

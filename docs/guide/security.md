@@ -104,7 +104,7 @@ var securityStub = new AuthenticationStub("custom")
 
 await using var host = await AlbaHost.For<WebAppSecuredWithJwt.Program>(securityStub);
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/web_api_authentication_with_individual_stub.cs#L18-L26' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_bootstrapping_with_stub_scheme_extension' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/web_api_authentication_with_individual_stub.cs#L21-L31' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_bootstrapping_with_stub_scheme_extension' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 ## Integration with JWT Authentication
@@ -121,7 +121,7 @@ extensions to automatically fetch and apply JWT tokens to scenario tests.
 To use the OIDC [Client Credentials workflow](https://auth0.com/docs/flows/client-credentials-flow), you can use the `OpenConnectClientCredentials` extension:
 
 <!-- snippet: sample_OpenConnectClientCredentials -->
-<a id='snippet-sample_openconnectclientcredentials'></a>
+<a id='snippet-sample_OpenConnectClientCredentials'></a>
 ```cs
 oidc = new OpenConnectClientCredentials
 {
@@ -145,14 +145,14 @@ theHost = await AlbaHost.For<WebAppSecuredWithJwt.Program>(x =>
             }));
 }, oidc);
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/OpenConnectClientCredentialsTests.cs#L24-L47' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_openconnectclientcredentials' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/OpenConnectClientCredentialsTests.cs#L24-L47' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_OpenConnectClientCredentials' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 To use the OIDC [Resource Owner Password Grant](https://docs.identityserver.io/en/release/quickstarts/2_resource_owner_passwords.html) workflow, 
 you can use the `OpenConnectUserPassword` extension:
 
 <!-- snippet: sample_applying_OpenConnectUserPassword -->
-<a id='snippet-sample_applying_openconnectuserpassword'></a>
+<a id='snippet-sample_applying_OpenConnectUserPassword'></a>
 ```cs
 oidc = new OpenConnectUserPassword
 {
@@ -175,7 +175,7 @@ theHost = await AlbaHost.For<WebAppSecuredWithJwt.Program>(x =>
             }));
 }, oidc);
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/OpenConnectUserPasswordTests.cs#L25-L48' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_applying_openconnectuserpassword' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/OpenConnectUserPasswordTests.cs#L25-L48' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_applying_OpenConnectUserPassword' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 With the `OpenConnectUserPassword` extension, you can also use a different user name and password for a single scenario with the `Scenario.UserAndPasswordIs(user, password)`

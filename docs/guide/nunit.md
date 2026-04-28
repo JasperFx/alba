@@ -5,7 +5,7 @@ When using Alba within NUnit testing projects, you probably want to reuse the `I
 track a single `AlbaHost` on a static class like this one:
 
 <!-- snippet: sample_NUnit_Application -->
-<a id='snippet-sample_nunit_application'></a>
+<a id='snippet-sample_NUnit_Application'></a>
 ```cs
 [SetUpFixture]
 public class Application
@@ -27,13 +27,13 @@ public class Application
     }
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/NUnitSamples/UnitTest1.cs#L7-L29' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_nunit_application' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/NUnitSamples/UnitTest1.cs#L7-L29' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_NUnit_Application' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 Then reference the `AlbaHost` in tests like this sample:
 
 <!-- snippet: sample_NUnit_scenario_test -->
-<a id='snippet-sample_nunit_scenario_test'></a>
+<a id='snippet-sample_NUnit_scenario_test'></a>
 ```cs
 public class sample_integration_fixture
 {
@@ -48,5 +48,5 @@ public class sample_integration_fixture
     }
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/NUnitSamples/UnitTest1.cs#L31-L44' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_nunit_scenario_test' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/NUnitSamples/UnitTest1.cs#L31-L44' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_NUnit_scenario_test' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->

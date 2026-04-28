@@ -8,7 +8,7 @@ Whilst `AlbaHost.For<T>` is the preferred way of bootstrapping, other options ex
 To bootstrap a **ASP.NET Core Startup.cs-style** application, create a `AlbaHost` using the definition of your `IHostBuilder` as shown below:
 
 <!-- snippet: sample_Quickstart3 -->
-<a id='snippet-sample_quickstart3'></a>
+<a id='snippet-sample_Quickstart3'></a>
 ```cs
 [Fact]
 public async Task build_host_from_Program()    
@@ -27,7 +27,7 @@ public async Task build_host_from_Program()
     });
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Quickstart3.cs#L29-L46' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_quickstart3' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Quickstart3.cs#L29-L46' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_Quickstart3' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 ::: tip
