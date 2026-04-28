@@ -5,7 +5,7 @@ Like other testing frameworks, you'll want to reuse the `IAlbaHost` across tests
  that inherits from `IAsyncInitializer` and `IAsyncDisposable`:
 
 <!-- snippet: sample_TUnit_Application -->
-<a id='snippet-sample_tunit_application'></a>
+<a id='snippet-sample_TUnit_Application'></a>
 ```cs
 public sealed class AlbaBootstrap : IAsyncInitializer, IAsyncDisposable
 {
@@ -22,13 +22,13 @@ public sealed class AlbaBootstrap : IAsyncInitializer, IAsyncDisposable
     }
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/TUnitSamples/Program.cs#L6-L21' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_tunit_application' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/TUnitSamples/Program.cs#L6-L21' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_TUnit_Application' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 Then inject the instance by adding `[ClassDataSource<AlbaBootstrap>(Shared = SharedType.PerTestSession)]` to your test class. We recommend creating a base class to allow easier access of the host and any other dependencies.
 
 <!-- snippet: sample_TUnit_scenario_test -->
-<a id='snippet-sample_tunit_scenario_test'></a>
+<a id='snippet-sample_TUnit_scenario_test'></a>
 ```cs
 public abstract class AlbaTestBase(AlbaBootstrap albaBootstrap)
 {
@@ -49,5 +49,5 @@ public class MyTestClass(AlbaBootstrap albaBootstrap) : AlbaTestBase(albaBootstr
     }
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/TUnitSamples/Program.cs#L23-L42' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_tunit_scenario_test' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/TUnitSamples/Program.cs#L23-L42' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_TUnit_scenario_test' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->

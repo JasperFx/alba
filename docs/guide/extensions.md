@@ -3,7 +3,7 @@
 Alba has an extension model based on this interface:
 
 <!-- snippet: sample_IAlbaExtension -->
-<a id='snippet-sample_ialbaextension'></a>
+<a id='snippet-sample_IAlbaExtension'></a>
 ```cs
 /// <summary>
 /// Models an extension to an AlbaHost
@@ -28,7 +28,7 @@ public interface IAlbaExtension : IDisposable, IAsyncDisposable
     IHostBuilder Configure(IHostBuilder builder);
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba/IAlbaExtension.cs#L5-L30' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_ialbaextension' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba/IAlbaExtension.cs#L5-L30' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_IAlbaExtension' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 When you are initializing an `AlbaHost`, you can pass in an optional array of extensions like this sample from the security stub

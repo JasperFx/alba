@@ -9,7 +9,7 @@ For the purpose of this sample, let's say you have a very simple web service app
 
 
 <!-- snippet: sample_MathController -->
-<a id='snippet-sample_mathcontroller'></a>
+<a id='snippet-sample_MathController'></a>
 ```cs
 public enum OperationType
 {
@@ -83,7 +83,7 @@ public class MathController : Controller
         }
     }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/WebApp/Controllers/MathController.cs#L6-L79' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_mathcontroller' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/WebApp/Controllers/MathController.cs#L6-L79' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_MathController' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 Back in your test project, the easiest, and probably most common, usage of Alba is to send and verify JSON message bodies to `Controller` actions. To that end,

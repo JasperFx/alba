@@ -1,10 +1,14 @@
 import { defineConfig } from 'vitepress'
+import llmstxt from 'vitepress-plugin-llms'
 
 export default defineConfig({
     title: 'Alba',
     description: 'Supercharged integration testing for ASP.Net Core web services',
     base: '/alba/',
     head: [],
+    vite: {
+        plugins: [llmstxt()],
+    },
     themeConfig: {
         socialLinks: [
             { icon: 'github', link: 'https://github.com/JasperFx/alba' }
@@ -23,7 +27,7 @@ export default defineConfig({
         search: {
             provider: 'local'
         },
-        
+
         sidebar: [
             {
                 text: 'Getting Started',
@@ -53,21 +57,21 @@ function getGuideSidebar() {
         { text: 'Security Extensions', link: '/guide/security' },
         { text: 'Snapshot Testing', link: '/guide/snapshot' },
         { text: 'Tracing & Open Telemetry', link: '/guide/opentelemetry' },
-        { text: 'Alternative Bootstrapping', link:'/guide/bootstrapping'},
+        { text: 'Alternative Bootstrapping', link: '/guide/bootstrapping' },
         { text: 'History & Architecture', link: '/guide/history' },
     ]
 }
 
 function getScenarioSidebar() {
     return [
-        { text: 'Writing Scenarios', link: '/scenarios/writingscenarios' },      
+        { text: 'Writing Scenarios', link: '/scenarios/writingscenarios' },
         { text: 'Specifying Urls', link: '/scenarios/urls' },
         { text: 'HTTP Status Codes', link: '/scenarios/statuscode' },
         { text: 'HTTP Headers', link: '/scenarios/headers' },
         { text: 'JSON Web Services', link: '/scenarios/json' },
         { text: 'Plain Text Web Services', link: '/scenarios/text' },
         { text: 'Xml Web Services', link: '/scenarios/xml' },
-        { text: 'Sending Form Data', link: '/scenarios/formdata'},
+        { text: 'Sending Form Data', link: '/scenarios/formdata' },
         { text: 'Before and After Actions', link: '/scenarios/setup' },
         { text: 'Custom Assertions', link: '/scenarios/assertions' },
         { text: 'Redirects', link: '/scenarios/redirects' },
