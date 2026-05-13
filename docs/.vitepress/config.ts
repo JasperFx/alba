@@ -5,11 +5,15 @@ export default defineConfig({
     title: 'Alba',
     description: 'Supercharged integration testing for ASP.Net Core web services',
     base: '/alba/',
-    head: [],
+    head: [
+        ['link', { rel: 'icon', type: 'image/png', href: '/alba/favicon.png' }]
+    ],
     vite: {
         plugins: [llmstxt()],
     },
     themeConfig: {
+        logo: '/alba_logo.png',
+        siteTitle: false,
         socialLinks: [
             { icon: 'github', link: 'https://github.com/JasperFx/alba' }
         ],
