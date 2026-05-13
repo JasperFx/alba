@@ -18,3 +18,14 @@
     --alba-green-dark: #03726b;
     --alba-green: #4db6ac;
   }
+
+  :root {
+    --vp-nav-height: 80px;
+  }
+
+  .VPNavBar .VPNavBarTitle .logo {
+    height: 64px;
+    max-height: 64px;
+    width: auto;
+    margin-right: 0;
+  }
