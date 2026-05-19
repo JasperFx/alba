@@ -80,13 +80,10 @@ namespace Alba.Testing.Acceptance
                 return Task.CompletedTask;
             };
 
-            var ex = await Exception<ScenarioAssertionException>.ShouldBeThrownBy(() =>
+            await host.Scenario(x =>
             {
-                return host.Scenario(x =>
-                {
-                    x.Get.Url("/one");
-                    x.StatusCodeShouldBeSuccess();
-                });
+                x.Get.Url("/one");
+                x.StatusCodeShouldBeSuccess();
             });
 
         }
