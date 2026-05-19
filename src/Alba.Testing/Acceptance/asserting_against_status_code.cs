@@ -5,6 +5,7 @@ namespace Alba.Testing.Acceptance
 {
     public class asserting_against_status_code : ScenarioContext
     {
+
         [Fact]
         public Task using_scenario_with_StatusCodeShouldBe_happy_path()
         {
@@ -69,7 +70,7 @@ namespace Alba.Testing.Acceptance
         }
 
         [Fact]
-        public async Task using_scenario_with_StatusCodeShouldBeSuccess_happy_path()
+        public Task using_scenario_with_StatusCodeShouldBeSuccess_happy_path()
         {
             router.Handlers["/one"] = c =>
             {
@@ -80,14 +81,13 @@ namespace Alba.Testing.Acceptance
                 return Task.CompletedTask;
             };
 
-            var ex = await Exception<ScenarioAssertionException>.ShouldBeThrownBy(() =>
-            {
+         
                 return host.Scenario(x =>
                 {
                     x.Get.Url("/one");
                     x.StatusCodeShouldBeSuccess();
                 });
-            });
+            
 
         }
 
@@ -112,7 +112,7 @@ namespace Alba.Testing.Acceptance
                 });
             });
 
-            ex.Message.ShouldContain("Expected status code 200, but was 500");
+            ex.Message.ShouldContain("Expected a status code between 200 and 299, but was 500");
         }
 
     }

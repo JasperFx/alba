@@ -289,6 +289,8 @@ public class Scenario : IUrlExpression
 
     internal void RunAssertions(HttpContext context)
     {
+       _ignoreStatusCode = _ignoreStatusCode || _assertions.Any(x => x is IStatusCodeAssertion);
+       
         var assertionContext = new AssertionContext(context, _assertionRecords);
         if (!_ignoreStatusCode)
         {
