@@ -58,7 +58,8 @@ public static class ScenarioExpectationsExtensions
     /// <param name="scenario"></param>
     /// <returns></returns>
     public static Scenario StatusCodeShouldBeSuccess(this Scenario scenario)
-    {
+    {   
+        //scenario.IgnoreStatusCode();
         return scenario.AssertThat(new StatusCodeSuccessAssertion());
     }
 
