@@ -48,4 +48,41 @@ public class end_to_end_with_json_serialization : IAsyncLifetime
 
         result.Id.ShouldBe(guid);
     }
+
+    [Fact]
+    public async Task response_body_can_be_read_repeatedly_after_reading_json()
+    {
+        // Reading the body as JSON must not consume the one-shot TestHost response stream,
+        // so that a subsequent read (e.g. snapshot tooling capturing the raw response)
+        // still sees the body. See https://github.com/JasperFx/alba/issues/234
+        var guid = Guid.NewGuid();
+
+        var result = await _host.Scenario(x =>
+        {
+            x.Post.Json(new PostedMessage(guid)).ToUrl("/go");
+        });
+
+        (await result.ReadAsJsonAsync<OutputMessage>()).Id.ShouldBe(guid);
+
+        (await result.ReadAsTextAsync()).ShouldNotBeNullOrEmpty();
+
+        (await result.ReadAsJsonAsync<OutputMessage>()).Id.ShouldBe(guid);
+    }
+
+    [Fact]
+    public async Task response_body_can_be_read_repeatedly_after_reading_json_synchronously()
+    {
+        var guid = Guid.NewGuid();
+
+        var result = await _host.Scenario(x =>
+        {
+            x.Post.Json(new PostedMessage(guid)).ToUrl("/go");
+        });
+
+        result.ReadAsJson<OutputMessage>().Id.ShouldBe(guid);
+
+        result.ReadAsText().ShouldNotBeNullOrEmpty();
+
+        result.ReadAsJson<OutputMessage>().Id.ShouldBe(guid);
+    }
 }

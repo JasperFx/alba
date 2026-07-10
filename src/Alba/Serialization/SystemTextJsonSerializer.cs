@@ -25,7 +25,7 @@ public class SystemTextJsonSerializer : IJsonStrategy
 
     public T Read<T>(ScenarioResult response)
     {
-        var json = response.Context.Response.Body.ReadAllText();
+        var json = response.ReadAsText();
         var res = JsonSerializer.Deserialize<T>(json, _options);
 
         if (res is not null) return res;
@@ -35,7 +35,7 @@ public class SystemTextJsonSerializer : IJsonStrategy
 
     public async Task<T> ReadAsync<T>(ScenarioResult response)
     {
-        var json = await response.Context.Response.Body.ReadAllTextAsync();
+        var json = await response.ReadAsTextAsync();
         var res = JsonSerializer.Deserialize<T>(json, _options);
 
         if (res is not null) return res;
