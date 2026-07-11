@@ -5,31 +5,30 @@ using Microsoft.Extensions.Hosting;
 
 namespace Alba.Testing
 {
-    public class ScenarioContext : IDisposable
+    public class ScenarioContext : IAsyncLifetime
     {
         protected CrudeRouter router = new CrudeRouter();
-        protected readonly IAlbaHost host;
+        protected IAlbaHost host = null!;
 
-        public ScenarioContext()
+        public async ValueTask InitializeAsync()
         {
-            host = new AlbaHost(Host.CreateDefaultBuilder()
+            host = await AlbaHost.For(Host.CreateDefaultBuilder()
                 .ConfigureServices((s) => s.AddMvcCore())
                 .ConfigureWebHostDefaults(c =>
                 c.Configure(app =>
                 {
                     app.Run(router.Invoke);
-                })));            
+                })));
         }
-
 
         protected Task<ScenarioAssertionException> fails(Action<Scenario> configuration)
         {
             return Exception<ScenarioAssertionException>.ShouldBeThrownBy(() => host.Scenario(configuration));
         }
 
-        public void Dispose()
+        public async ValueTask DisposeAsync()
         {
-            host?.Dispose();
+            if (host != null) await host.DisposeAsync();
         }
     }
 }

@@ -33,7 +33,7 @@ namespace Alba.Testing.Samples
             // Bootstrap your application just as your real application does
             var hostBuilder = Program.CreateHostBuilder(Array.Empty<string>());
 
-            await using var host = new AlbaHost(hostBuilder);
+            await using var host = await AlbaHost.For(hostBuilder);
 
             // Just as a sample, I'll run a scenario against
             // a "hello, world" application's root url

@@ -34,11 +34,6 @@ public static class AlbaHostExtensions
         return AlbaHost.For(builder, extensions);
     }
 
-    public static IAlbaHost StartAlba(this IHostBuilder builder, params IAlbaExtension[] extensions)
-    {
-        return new AlbaHost(builder, extensions);
-    }
-
     /// <summary>
     ///     Shortcut to issue a POST with a Json serialized request body and a Json serialized
     ///     response body

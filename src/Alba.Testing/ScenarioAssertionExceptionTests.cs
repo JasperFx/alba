@@ -1,4 +1,5 @@
-﻿using Alba.Internal;
+using Microsoft.AspNetCore.Http;
+using Alba.Internal;
 using Shouldly;
 
 namespace Alba.Testing;
@@ -10,8 +11,7 @@ public class ScenarioExtensionsTests : ScenarioContext
     {
         router.Handlers["/api/test"] = c =>
         {
-            c.Response.Write("success");
-            return Task.CompletedTask;
+            return c.Response.WriteAsync("success");
         };
 
         var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost/api/test");
@@ -32,8 +32,7 @@ public class ScenarioExtensionsTests : ScenarioContext
             var body = c.Request.Body.ReadAllBytes();
             var text = System.Text.Encoding.UTF8.GetString(body);
             text.ShouldBe("test data");
-            c.Response.Write("received");
-            return Task.CompletedTask;
+            return c.Response.WriteAsync("received");
         };
 
         var request = new HttpRequestMessage(HttpMethod.Post, "http://localhost/api/data")
@@ -54,8 +53,7 @@ public class ScenarioExtensionsTests : ScenarioContext
     {
         router.Handlers["/api/update"] = c =>
         {
-            c.Response.Write("updated");
-            return Task.CompletedTask;
+            return c.Response.WriteAsync("updated");
         };
 
         var request = new HttpRequestMessage(HttpMethod.Put, "http://localhost/api/update");
@@ -73,8 +71,7 @@ public class ScenarioExtensionsTests : ScenarioContext
     {
         router.Handlers["/api/remove"] = c =>
         {
-            c.Response.Write("deleted");
-            return Task.CompletedTask;
+            return c.Response.WriteAsync("deleted");
         };
 
         var request = new HttpRequestMessage(HttpMethod.Delete, "http://localhost/api/remove");
@@ -92,8 +89,7 @@ public class ScenarioExtensionsTests : ScenarioContext
     {
         router.Handlers["/api/patch"] = c =>
         {
-            c.Response.Write("patched");
-            return Task.CompletedTask;
+            return c.Response.WriteAsync("patched");
         };
 
         var request = new HttpRequestMessage(HttpMethod.Patch, "http://localhost/api/patch");
@@ -126,8 +122,7 @@ public class ScenarioExtensionsTests : ScenarioContext
         router.Handlers["/api/search"] = c =>
         {
             c.Request.Query["q"].ToString().ShouldBe("test");
-            c.Response.Write("found");
-            return Task.CompletedTask;
+            return c.Response.WriteAsync("found");
         };
 
         var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost/api/search?q=test");
@@ -146,8 +141,7 @@ public class ScenarioExtensionsTests : ScenarioContext
         router.Handlers["/api/headers"] = c =>
         {
             c.Request.Headers["X-Custom-Header"].ToString().ShouldBe("custom-value");
-            c.Response.Write("ok");
-            return Task.CompletedTask;
+            return c.Response.WriteAsync("ok");
         };
 
         var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost/api/headers");
@@ -168,8 +162,7 @@ public class ScenarioExtensionsTests : ScenarioContext
         {
             var auth = c.Request.Headers["Authorization"].ToString();
             auth.ShouldBe("Bearer test-token-123");
-            c.Response.Write("authorized");
-            return Task.CompletedTask;
+            return c.Response.WriteAsync("authorized");
         };
 
         var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost/api/secure");
@@ -192,8 +185,7 @@ public class ScenarioExtensionsTests : ScenarioContext
             var json = System.Text.Encoding.UTF8.GetString(body);
             json.ShouldBe("{\"name\":\"test\"}");
             c.Request.ContentType.ShouldBe("application/json; charset=utf-8");
-            c.Response.Write("processed");
-            return Task.CompletedTask;
+            return c.Response.WriteAsync("processed");
         };
 
         var request = new HttpRequestMessage(HttpMethod.Post, "http://localhost/api/json")
@@ -219,8 +211,7 @@ public class ScenarioExtensionsTests : ScenarioContext
             var body = c.Request.Body.ReadAllBytes();
             body.ShouldBe(bytes);
             c.Request.ContentType.ShouldBe("image/png");
-            c.Response.Write("uploaded");
-            return Task.CompletedTask;
+            return c.Response.WriteAsync("uploaded");
         };
 
         var request = new HttpRequestMessage(HttpMethod.Post, "http://localhost/api/binary")
@@ -242,8 +233,7 @@ public class ScenarioExtensionsTests : ScenarioContext
     {
         router.Handlers["/api/relative"] = c =>
         {
-            c.Response.Write("relative path");
-            return Task.CompletedTask;
+            return c.Response.WriteAsync("relative path");
         };
 
         var request = new HttpRequestMessage(HttpMethod.Get, "/api/relative");
@@ -263,8 +253,7 @@ public class ScenarioExtensionsTests : ScenarioContext
         {
             c.Request.Headers["X-Custom-1"].ToString().ShouldBe("value1");
             c.Request.Headers["X-Custom-2"].ToString().ShouldBe("value2");
-            c.Response.Write("multi");
-            return Task.CompletedTask;
+            return c.Response.WriteAsync("multi");
         };
 
         var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost/api/multiheader");
@@ -325,8 +314,7 @@ public class ScenarioExtensionsTests : ScenarioContext
         router.Handlers["/api/content-headers"] = c =>
         {
             c.Request.Headers["Content-Language"].ToString().ShouldBe("en-US");
-            c.Response.Write("ok");
-            return Task.CompletedTask;
+            return c.Response.WriteAsync("ok");
         };
 
         var request = new HttpRequestMessage(HttpMethod.Post, "http://localhost/api/content-headers")

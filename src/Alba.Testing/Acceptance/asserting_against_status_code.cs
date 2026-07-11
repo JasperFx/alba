@@ -1,4 +1,5 @@
-﻿using System.Net;
+using Microsoft.AspNetCore.Http;
+using System.Net;
 using Shouldly;
 
 namespace Alba.Testing.Acceptance
@@ -12,9 +13,7 @@ namespace Alba.Testing.Acceptance
             {
                 c.Response.StatusCode = 200;
                 c.Response.ContentType("text/plain");
-                c.Response.Write("Some text");
-
-                return Task.CompletedTask;
+                return c.Response.WriteAsync("Some text");
             };
 
             return host.Scenario(x =>
@@ -31,9 +30,7 @@ namespace Alba.Testing.Acceptance
             {
                 c.Response.StatusCode = 200;
                 c.Response.ContentType("text/plain");
-                c.Response.Write("Some text");
-
-                return Task.CompletedTask;
+                return c.Response.WriteAsync("Some text");
             };
 
             var ex = await Exception<ScenarioAssertionException>.ShouldBeThrownBy(() =>
@@ -54,9 +51,7 @@ namespace Alba.Testing.Acceptance
             router.Handlers["/wrong/status/code"] = c =>
             {
                 c.Response.StatusCode = 500;
-                c.Response.Write("the error text");
-
-                return Task.CompletedTask;
+                return c.Response.WriteAsync("the error text");
             };
 
             var ex = await fails(_ =>
@@ -75,9 +70,7 @@ namespace Alba.Testing.Acceptance
             {
                 c.Response.StatusCode = 204;
                 c.Response.ContentType("text/plain");
-                c.Response.Write("Some text");
-
-                return Task.CompletedTask;
+                return c.Response.WriteAsync("Some text");
             };
 
             var ex = await Exception<ScenarioAssertionException>.ShouldBeThrownBy(() =>
@@ -98,9 +91,7 @@ namespace Alba.Testing.Acceptance
             {
                 c.Response.StatusCode = 500;
                 c.Response.ContentType("text/plain");
-                c.Response.Write("Some text");
-
-                return Task.CompletedTask;
+                return c.Response.WriteAsync("Some text");
             };
 
             var ex = await Exception<ScenarioAssertionException>.ShouldBeThrownBy(() =>

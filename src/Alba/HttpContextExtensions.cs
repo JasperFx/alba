@@ -61,11 +61,4 @@ public static class HttpContextExtensions
         context.Response.StatusCode = statusCode;
     }
 
-    public static void Write(this HttpResponse response, string content)
-    {
-        var bytes = Encoding.UTF8.GetBytes(content);
-        response.Body.Write(bytes, 0, bytes.Length);
-        response.Body.Flush();
-    }
-
 }

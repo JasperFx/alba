@@ -106,7 +106,7 @@ public async Task get_happy_path()
 <sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/using_json_helpers.cs#L8-L19' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_get_json' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
-So what just happened in that test? First off, the call to `new AlbaHost(IHostBuilder)` bootstraps your web application.
+So what just happened in that test? First off, the call to `AlbaHost.For(IHostBuilder)` bootstraps your web application.
 
 The call to `host.GetAsJson<OperationResult>("/math/add/3/4")` is performing these steps internally:
 

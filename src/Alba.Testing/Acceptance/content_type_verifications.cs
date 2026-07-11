@@ -1,4 +1,5 @@
-﻿using Shouldly;
+using Microsoft.AspNetCore.Http;
+using Shouldly;
 
 namespace Alba.Testing
 {
@@ -11,9 +12,7 @@ namespace Alba.Testing
             router.Handlers["/memory/hello"] = c =>
             {
                 c.Response.ContentType("text/plain");
-                c.Response.Write("some text");
-
-                return Task.CompletedTask;
+                return c.Response.WriteAsync("some text");
             };
 
             return host.Scenario(_ =>
@@ -32,9 +31,7 @@ namespace Alba.Testing
             router.Handlers["/memory/hello"] = c =>
             {
                 c.Response.ContentType("text/plain");
-                c.Response.Write("Some text");
-
-                return Task.CompletedTask;
+                return c.Response.WriteAsync("Some text");
             };
 
             var ex = await fails(_ =>

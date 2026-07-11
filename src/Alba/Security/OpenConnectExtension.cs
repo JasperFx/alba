@@ -1,6 +1,5 @@
 using IdentityModel.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -80,9 +79,9 @@ public abstract class OpenConnectExtension : IAlbaExtension
     public abstract Task<TokenResponse> FetchToken(HttpClient client, DiscoveryDocumentResponse? disco,
         object? tokenCustomization);
 
-    private async Task<TokenResponse> DetermineJwt(HttpContext context)
+    private async Task<TokenResponse> DetermineJwt(Scenario scenario)
     {
-        if (context.Items.TryGetValue(OverrideKey, out var scenarioOverride))
+        if (scenario.Items.TryGetValue(OverrideKey, out var scenarioOverride))
         {
             return await FetchToken(_client, _disco, scenarioOverride);
         }
@@ -91,12 +90,12 @@ public abstract class OpenConnectExtension : IAlbaExtension
 
         return _cached;
     }
-        
-    internal async Task ConfigureJwt(HttpContext context)
+
+    internal async Task ConfigureJwt(Scenario scenario)
     {
-        var token = await DetermineJwt(context);
+        var token = await DetermineJwt(scenario);
         if (token.AccessToken is not null)
-            context.SetBearerToken(token.AccessToken);
+            scenario.WithBearerToken(token.AccessToken);
     }
 
     IHostBuilder IAlbaExtension.Configure(IHostBuilder builder)

@@ -1,11 +1,16 @@
 # Before and After actions
 
-::: warning
-The Before/After actions are **not** additive. The last one specified is the only one executed.
-:::
+Alba lets you register actions that run immediately before or after each scenario's HTTP request for common setup or teardown
+work like setting up authentication credentials or tracing. Registrations are additive — every registered action runs for every scenario.
 
-Alba allows you to specify actions that run immediately before or after an HTTP request is executed for common setup or teardown
-work like setting up authentication credentials or tracing or whatever.
+There are two kinds of *before* actions:
+
+- `BeforeEachAsync(Func<Scenario, Task>)` — asynchronous preparation that runs **before** the HTTP request is created. It receives the
+  `Scenario`, so it can do real asynchronous work (fetch a token, hit a database) and then modify the outgoing request through
+  `scenario.ConfigureHttpContext(...)` or helpers like `scenario.WithRequestHeader(...)` and `scenario.WithBearerToken(...)`.
+- `BeforeEach(Action<HttpContext>)` — synchronous work that runs against the live `HttpContext` immediately before the request executes.
+
+All asynchronous prepare actions run first (in registration order), then all synchronous actions (in registration order).
 
 Here's a sample:
 
@@ -26,8 +31,9 @@ system.AfterEach(context =>
     // is executed
 });
 
-// Asynchronously
-system.BeforeEachAsync(context =>
+// Asynchronously, before the HTTP request executes. Modify the
+// outgoing request itself through scenario.ConfigureHttpContext()
+system.BeforeEachAsync(scenario =>
 {
     // do something asynchronous here
     return Task.CompletedTask;
@@ -39,5 +45,5 @@ system.AfterEachAsync(context =>
     return Task.CompletedTask;
 });
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/before_and_after_actions.cs#L30-L59' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_before_and_after' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/before_and_after_actions.cs#L30-L61' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_before_and_after' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->

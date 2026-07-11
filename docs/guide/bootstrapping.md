@@ -16,7 +16,7 @@ public async Task build_host_from_Program()
     // Bootstrap your application just as your real application does
     var hostBuilder = Program.CreateHostBuilder(Array.Empty<string>());
 
-    await using var host = new AlbaHost(hostBuilder);
+    await using var host = await AlbaHost.For(hostBuilder);
 
     // Just as a sample, I'll run a scenario against
     // a "hello, world" application's root url
@@ -31,8 +31,8 @@ public async Task build_host_from_Program()
 <!-- endSnippet -->
 
 ::: tip
-There are both synchronous and asynchronous methods to bootstrap an `AlbaHost`. Depending on your test harness, I recommend using 
-the asynchronous version whenever applicable.
+Bootstrapping an `AlbaHost` is asynchronous. Use your test framework's asynchronous
+initialization support (e.g. xUnit's `IAsyncLifetime`) to start the host.
 :::
 
 Or alternatively, you can use one of the Alba extension methods off of `IHostBuilder` to start an `AlbaHost` object in a fluent interface

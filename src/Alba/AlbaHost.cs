@@ -25,50 +25,15 @@ public class AlbaHost : IAlbaHost
 
     private readonly List<Func<HttpContext?, Task>> _afterEach = new();
 
-
-    private readonly List<Func<HttpContext, Task>> _beforeEach = new();
+    private readonly List<Func<Scenario, Task>> _beforeEachAsync = new();
+    private readonly List<Action<HttpContext>> _beforeEachSync = new();
 
     private AlbaHost(IHost host, params IAlbaExtension[] extensions)
     {
         _host = host;
         Server = host.GetTestServer();
 
-        Server.AllowSynchronousIO = true;
-
         Extensions = extensions;
-
-        var jsonInput = findInputFormatter("application/json");
-        var jsonOutput = findOutputFormatter("application/json");
-
-        if (jsonInput != null && jsonOutput != null)
-        {
-            MvcStrategy = new FormatterSerializer(this, jsonInput, jsonOutput);
-        }
-
-        MinimalApiStrategy = new SystemTextJsonSerializer(this);
-
-        DefaultJson = MvcStrategy ?? MinimalApiStrategy;
-    }
-
-    public AlbaHost(IHostBuilder builder, params IAlbaExtension[] extensions)
-    {
-        builder = builder
-            .ConfigureServices(_ =>
-            {
-                _.AddHttpContextAccessor();
-                _.AddSingleton<IServer, TestServer>();
-            });
-
-        foreach (var extension in extensions) builder = extension.Configure(builder);
-
-        _host = builder.Start();
-
-        Server = _host.GetTestServer();
-        Server.AllowSynchronousIO = true;
-
-        Extensions = extensions;
-
-        foreach (var extension in extensions) extension.Start(this).GetAwaiter().GetResult();
 
         var jsonInput = findInputFormatter("application/json");
         var jsonOutput = findOutputFormatter("application/json");
@@ -116,20 +81,14 @@ public class AlbaHost : IAlbaHost
 
     public void Dispose()
     {
-        foreach (var extension in Extensions) extension.Dispose();
-        Server.Dispose();
-        _host?.StopAsync();
-        _host?.Dispose();
-        _factory?.Dispose();
+        // Single teardown implementation lives in DisposeAsync; blocking once
+        // at teardown is the only intentional block left in Alba
+        DisposeAsync().AsTask().GetAwaiter().GetResult();
     }
     
     public IAlbaHost BeforeEach(Action<HttpContext> beforeEach)
     {
-        _beforeEach.Add(c =>
-        {
-            beforeEach(c);
-            return Task.CompletedTask;
-        });
+        _beforeEachSync.Add(beforeEach);
 
         return this;
     }
@@ -145,9 +104,9 @@ public class AlbaHost : IAlbaHost
         return this;
     }
 
-    public IAlbaHost BeforeEachAsync(Func<HttpContext, Task> beforeEach)
+    public IAlbaHost BeforeEachAsync(Func<Scenario, Task> beforeEach)
     {
-        _beforeEach.Add(beforeEach);
+        _beforeEachAsync.Add(beforeEach);
 
         return this;
     }
@@ -178,6 +137,10 @@ public class AlbaHost : IAlbaHost
 
         configure(scenario);
 
+        foreach (var prepare in _beforeEachAsync) await prepare(scenario);
+
+        foreach (var preparation in scenario.AsyncPreparations) await preparation();
+
         scenario.Rewind();
 
         HttpContext? context = null;
@@ -199,8 +162,7 @@ public class AlbaHost : IAlbaHost
 
                     foreach (var pair in scenario.Items) c.Items.Add(pair.Key, pair.Value);
 
-                    // No async available here :(
-                    foreach (var func in _beforeEach) func(c).GetAwaiter().GetResult();
+                    foreach (var apply in _beforeEachSync) apply(c);
 
                     c.Request.Body.Position = 0;
 
@@ -351,8 +313,6 @@ public class AlbaHost : IAlbaHost
         // This version of the test server will internally startup when initialized here
         Server = factory.Server;
 
-        Server.AllowSynchronousIO = true;
-
         Extensions = extensions;
 
         var jsonInput = findInputFormatter("application/json");
@@ -394,6 +354,17 @@ public class AlbaHost : IAlbaHost
                 activity = AlbaTracing.StartRequestActivity(c.Request);
             });
             activity?.SetResponseTags(context.Response);
+
+            // Buffer the response so all subsequent reads are seekable,
+            // memory-only operations
+            if (!context.Response.Body.CanSeek)
+            {
+                var buffered = new MemoryStream();
+                await context.Response.Body.CopyToAsync(buffered);
+                buffered.Position = 0;
+                context.Response.Body = buffered;
+            }
+
             return context;
         }
         finally
@@ -411,12 +382,12 @@ public class AlbaHost : IAlbaHost
     ///     UseStartup()
     /// </param>
     /// <returns>The system under test</returns>
-    public static AlbaHost For(Action<IWebHostBuilder> configuration)
+    public static Task<IAlbaHost> For(Action<IWebHostBuilder> configuration)
     {
         var builder = Host.CreateDefaultBuilder();
 
         builder.ConfigureWebHostDefaults(configuration);
 
-        return new AlbaHost(builder);
+        return For(builder);
     }
 }

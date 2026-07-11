@@ -43,8 +43,9 @@ namespace Alba.Testing
             });
 
 
-            // Asynchronously
-            system.BeforeEachAsync(context =>
+            // Asynchronously, before the HTTP request executes. Modify the
+            // outgoing request itself through scenario.ConfigureHttpContext()
+            system.BeforeEachAsync(scenario =>
             {
                 // do something asynchronous here
                 return Task.CompletedTask;
@@ -63,7 +64,7 @@ namespace Alba.Testing
         [Fact]
         public async Task synchronous_before_and_after()
         {
-            using (var system = new AlbaHost(EmptyHostBuilder()))
+            await using (var system = await EmptyHostBuilder().StartAlbaAsync())
             {
                 // Quick check
                 system.Services.ShouldNotBeNull();
@@ -159,11 +160,11 @@ namespace Alba.Testing
             var authenticatedUser = new ClaimsPrincipal(new ClaimsIdentity(null, "Basic"));
 
             //This works
-            await using var system = new AlbaHost(AuthenticatedHostBuilder())
-                .BeforeEachAsync(c => Task.Run(() =>
+            await using var system = (await AuthenticatedHostBuilder().StartAlbaAsync())
+                .BeforeEachAsync(s => Task.Run(() =>
                 {
                     _output.WriteLine("In BeforeEach");
-                    c.User = authenticatedUser;
+                    s.ConfigureHttpContext(c => c.User = authenticatedUser);
                 }));
             var result = await system.Scenario(x => x.Get.Url("/"));
             result.Context.Response.StatusCode.ShouldBe(200);
@@ -175,7 +176,7 @@ namespace Alba.Testing
             
 
             //This doesn't
-            using (var system = new AlbaHost(AuthenticatedHostBuilder())
+            await using (var system = (await AuthenticatedHostBuilder().StartAlbaAsync())
                 .BeforeEachAsync(doSecurity))
             {
                 var result = await system.Scenario(x => x.Get.Url("/"));
@@ -183,14 +184,64 @@ namespace Alba.Testing
             }
         }
 
-        private async Task doSecurity(HttpContext context)
+        [Fact]
+        public async Task async_prepare_can_modify_the_outgoing_request()
+        {
+            var builder = new HostBuilder().ConfigureWebHost(x =>
+            {
+                x.Configure(app =>
+                    app.Run(c => c.Response.WriteAsync(c.Request.Headers["x-prepared"].ToString())));
+            });
+
+            await using var system = await builder.StartAlbaAsync();
+
+            system.BeforeEachAsync(async scenario =>
+            {
+                await Task.Delay(50);
+                scenario.WithRequestHeader("x-prepared", "from-prepare");
+            });
+
+            var result = await system.Scenario(x => x.Get.Url("/"));
+
+            (await result.ReadAsTextAsync()).ShouldBe("from-prepare");
+        }
+
+        [Fact]
+        public async Task async_prepares_run_before_synchronous_before_actions()
+        {
+            await using var system = await EmptyHostBuilder().StartAlbaAsync();
+
+            var order = new List<string>();
+
+            system.BeforeEach(c => order.Add("sync"));
+            system.BeforeEachAsync(s =>
+            {
+                order.Add("async");
+                return Task.CompletedTask;
+            });
+
+            await system.Scenario(x => x.Get.Url("/"));
+
+            order.ShouldBe(new[] { "async", "sync" });
+        }
+
+        [Fact]
+        public async Task failing_async_prepare_fails_the_scenario()
+        {
+            await using var system = await EmptyHostBuilder().StartAlbaAsync();
+
+            system.BeforeEachAsync(_ => throw new DivideByZeroException());
+
+            await Should.ThrowAsync<DivideByZeroException>(() => system.Scenario(x => x.Get.Url("/")));
+        }
+
+        private async Task doSecurity(Scenario scenario)
         {
             var authenticatedUser = new ClaimsPrincipal(new ClaimsIdentity(null, "Basic"));
-            
+
             _output.WriteLine("Start BeforeEach");
             await Task.Delay(100);
-            //Thread.Sleep(100);
-            context.User = authenticatedUser;
+            scenario.ConfigureHttpContext(c => c.User = authenticatedUser);
             _output.WriteLine("End BeforeEach");
         }
     }

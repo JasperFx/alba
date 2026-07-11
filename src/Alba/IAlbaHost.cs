@@ -16,7 +16,8 @@ public interface IAlbaHost : IHost, IAsyncDisposable
     Task<IScenarioResult> Scenario(Action<Scenario> configure);
 
     /// <summary>
-    /// Execute some kind of action before each scenario. This is additive for each call made.
+    /// Execute a synchronous action against the HttpContext immediately before each
+    /// scenario's HTTP request executes. This is additive for each call made.
     /// </summary>
     /// <param name="beforeEach"></param>
     /// <returns></returns>
@@ -30,11 +31,14 @@ public interface IAlbaHost : IHost, IAsyncDisposable
     IAlbaHost AfterEach(Action<HttpContext?> afterEach);
 
     /// <summary>
-    /// Run some kind of set up action immediately before executing an HTTP request
+    /// Run an asynchronous set up action against the Scenario before its HTTP request
+    /// executes. All asynchronous actions run before any synchronous BeforeEach action.
+    /// To modify the outgoing HttpContext, register a callback through
+    /// <see cref="Alba.Scenario.ConfigureHttpContext"/>. This is additive for each call made.
     /// </summary>
     /// <param name="beforeEach"></param>
     /// <returns></returns>
-    IAlbaHost BeforeEachAsync(Func<HttpContext, Task> beforeEach);
+    IAlbaHost BeforeEachAsync(Func<Scenario, Task> beforeEach);
 
     /// <summary>
     /// Execute some clean up action immediately after executing each HTTP execution. This is additive for each call made.

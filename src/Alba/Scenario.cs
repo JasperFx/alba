@@ -17,6 +17,7 @@ public class Scenario : IUrlExpression
 
     private readonly List<IScenarioAssertion> _assertions = new();
     private readonly List<Action<HttpContext>> _setups = new();
+    internal List<Func<Task>> AsyncPreparations { get; } = new();
     private readonly AlbaHost _system;
     private int _expectedStatusCode = 200;
     private bool _ignoreStatusCode;
@@ -263,13 +264,15 @@ public class Scenario : IUrlExpression
         if (jsonStyle == JsonStyle.Mvc) jsonStrategy = _system.MvcStrategy;
         if (jsonStyle == JsonStyle.MinimalApi) jsonStrategy = _system.MinimalApiStrategy;
             
+        // Serialization happens in the awaited preparation phase before the
+        // request executes; the setup callback applies the resulting stream
+        Stream? stream = null;
+        AsyncPreparations.Add(async () => stream = await jsonStrategy!.WriteAsync(input));
+
         ConfigureHttpContext(c =>
         {
-                
-            var stream = jsonStrategy!.Write(input);
-
             c.Request.ContentType = "application/json";
-            c.Request.Body = stream;
+            c.Request.Body = stream!;
             c.Request.Body.Position = 0;
             c.Request.ContentLength = c.Request.Body.Length;
         });

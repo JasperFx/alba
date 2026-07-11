@@ -46,13 +46,13 @@ namespace Alba.Testing
         }
 
         [Fact]
-        public void can_write_xml_to_request()
+        public async Task can_write_xml_to_request()
         {
             var context = new DefaultHttpContext();
-            using var system = AlbaHost.For(b => 
+            await using var system = await AlbaHost.For(b =>
                 b.Configure(app => app.Run(c => c.Response.WriteAsync("Hello"))));
-            
-            var scenario = new Scenario(system);
+
+            var scenario = new Scenario((AlbaHost)system);
             new HttpRequestBody(scenario).XmlInputIs(new MyMessage { Age = 3, Name = "Declan" });
 
             scenario.SetupHttpContext(context);

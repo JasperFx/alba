@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+using Microsoft.AspNetCore.Http;
+using System.Text.Json;
 using Alba.Internal;
 using Shouldly;
 
@@ -13,8 +14,7 @@ namespace Alba.Testing
         {
             router.Handlers["/memory/hello"] = c =>
             {
-                c.Response.Write("hello from the in memory host");
-                return Task.CompletedTask;
+                return c.Response.WriteAsync("hello from the in memory host");
             };
 
             return host.Scenario(_ =>
@@ -29,8 +29,7 @@ namespace Alba.Testing
         {
             router.Handlers["/memory/hello"] = c =>
             {
-                c.Response.Write("hello from the in memory host");
-                return Task.CompletedTask;
+                return c.Response.WriteAsync("hello from the in memory host");
             };
 
            return host.Scenario(x =>
@@ -51,8 +50,7 @@ namespace Alba.Testing
             {
                 c.Request.Body.ReadAllBytes().ShouldBe(bytes);
                 c.Request.ContentType.ShouldBe(contentType);
-                c.Response.Write("hello from the in memory host");
-                return Task.CompletedTask;
+                return c.Response.WriteAsync("hello from the in memory host");
             };
             
             return host.Scenario(x =>
@@ -78,8 +76,7 @@ namespace Alba.Testing
                 entity.Name.ShouldBe("John");
                 entity.Age.ShouldBe(30);
                 c.Request.ContentType.ShouldBe(contentType);
-                c.Response.Write("hello from the in memory host");
-                return Task.CompletedTask;
+                return c.Response.WriteAsync("hello from the in memory host");
             };
             
             return host.Scenario(x =>

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using Shouldly;
 
 namespace Alba.Testing.Acceptance
@@ -10,8 +11,7 @@ namespace Alba.Testing.Acceptance
         {
             router.Handlers["/one"] = c =>
             {
-                c.Response.Write("**just the marker**");
-                return Task.CompletedTask;
+                return c.Response.WriteAsync("**just the marker**");
             };
 
             return host.Scenario(x =>
@@ -28,8 +28,7 @@ namespace Alba.Testing.Acceptance
         {
             router.Handlers["/one"] = c =>
             {
-                c.Response.Write("**just the marker**");
-                return Task.CompletedTask;
+                return c.Response.WriteAsync("**just the marker**");
             };
 
             var ex = await fails(x =>
@@ -46,8 +45,7 @@ namespace Alba.Testing.Acceptance
         {
             router.Handlers["/one"] = c =>
             {
-                c.Response.Write("**just the marker**");
-                return Task.CompletedTask;
+                return c.Response.WriteAsync("**just the marker**");
             };
 
             return host.Scenario(x =>
@@ -62,8 +60,7 @@ namespace Alba.Testing.Acceptance
         {
             router.Handlers["/one"] = c =>
             {
-                c.Response.Write("**just the marker**");
-                return Task.CompletedTask;
+                return c.Response.WriteAsync("**just the marker**");
             };
 
             var ex = await Exception<ScenarioAssertionException>.ShouldBeThrownBy(() =>
@@ -89,9 +86,7 @@ namespace Alba.Testing.Acceptance
             router.Handlers["/memory/hello"] = c =>
             {
                 c.Response.ContentType("text/plain");
-                c.Response.Write("some text");
-
-                return Task.CompletedTask;
+                return c.Response.WriteAsync("some text");
             };
 
             var e = await Exception<ScenarioAssertionException>.ShouldBeThrownBy(() =>
@@ -113,9 +108,7 @@ namespace Alba.Testing.Acceptance
             router.Handlers["/memory/hello"] = c =>
             {
                 c.Response.ContentType("text/plain");
-                c.Response.Write("hello from the in memory host");
-
-                return Task.CompletedTask;
+                return c.Response.WriteAsync("hello from the in memory host");
             };
 
             return host.Scenario(x =>

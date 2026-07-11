@@ -10,20 +10,21 @@ using Shouldly;
 
 namespace Alba.Testing.Security
 {
-    public class JwtSecurityStubTests : IDisposable
+    public class JwtSecurityStubTests : IAsyncLifetime
     {
         private readonly JwtSecurityStub theStub;
-        private readonly IAlbaHost _host;
+        private IAlbaHost _host = null!;
 
         public JwtSecurityStubTests()
         {
             theStub = new JwtSecurityStub()
                 .With("foo", "bar")
                 .With("team", "chiefs");
+        }
 
-
-
-            _host = Host.CreateDefaultBuilder().StartAlba(theStub);
+        public async ValueTask InitializeAsync()
+        {
+            _host = await Host.CreateDefaultBuilder().StartAlbaAsync(theStub);
 
             theStub.Options = new JwtBearerOptions
             {
@@ -79,10 +80,10 @@ namespace Alba.Testing.Security
         
         
         [Fact]
-        public void should_handle_non_hmac_signing_key()
+        public async Task should_handle_non_hmac_signing_key()
         {
             using var ecdsa = ECDsa.Create();
-            var host = Host.CreateDefaultBuilder()
+            await using var host = await Host.CreateDefaultBuilder()
                 .ConfigureServices(services =>
                 {
                     services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -101,16 +102,16 @@ z/iMv39jDM5WBfFLh32DmBzDKPaAq7yMXA==
                             };
                         });
                 })
-                .StartAlba(theStub);
+                .StartAlbaAsync(theStub);
 
             Action act = () => theStub.BuildJwtString(Array.Empty<Claim>());
-            
+
             act.ShouldNotThrow();
         }
 
-        public void Dispose()
+        public async ValueTask DisposeAsync()
         {
-            _host?.Dispose();
+            if (_host != null) await _host.DisposeAsync();
         }
     }
 }
