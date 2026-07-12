@@ -1,7 +1,6 @@
 using IdentityModel.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
  
@@ -98,8 +97,4 @@ public abstract class OpenConnectExtension : IAlbaExtension
             scenario.WithBearerToken(token.AccessToken);
     }
 
-    IHostBuilder IAlbaExtension.Configure(IHostBuilder builder)
-    {
-        return builder;
-    }
 }

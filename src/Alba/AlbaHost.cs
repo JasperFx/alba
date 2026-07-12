@@ -227,7 +227,8 @@ public class AlbaHost : IAlbaHost
                 _.AddSingleton<IServer, TestServer>();
             });
 
-        foreach (var extension in extensions) builder = extension.Configure(builder);
+        var adapter = new HostBuilderAdapter(builder);
+        foreach (var extension in extensions) extension.Configure(adapter);
 
         var host = await builder.StartAsync();
 
@@ -252,9 +253,10 @@ public class AlbaHost : IAlbaHost
         builder.Services.AddHttpContextAccessor();
         builder.WebHost.UseTestServer();
 
+        var adapter = new WebApplicationBuilderAdapter(builder);
         foreach (var extension in extensions)
         {
-            extension.Configure(builder.Host);
+            extension.Configure(adapter);
         }
 
         var app = builder.Build();

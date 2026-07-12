@@ -3,7 +3,6 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Protocols;
@@ -53,9 +52,9 @@ public class JwtSecurityStub : AuthenticationExtensionBase, IAlbaExtension
         context.SetBearerToken(jwt);
     }
 
-    IHostBuilder IAlbaExtension.Configure(IHostBuilder builder)
+    void IAlbaExtension.Configure(IAlbaHostBuilder builder)
     {
-        return builder.ConfigureServices(services =>
+        builder.ConfigureServices(services =>
         {
             if (_overrideSchemaTargetName != null)
             {
@@ -65,7 +64,6 @@ public class JwtSecurityStub : AuthenticationExtensionBase, IAlbaExtension
             {
                 services.PostConfigureAll<JwtBearerOptions>(PostConfigure);
             }
-           
         });
     }
 

@@ -59,6 +59,34 @@ in explicitly after starting the host:
 host.Server.AllowSynchronousIO = true;
 ```
 
+### Extension model redesigned around `IAlbaHostBuilder`
+
+`IAlbaExtension.Configure` changed from `IHostBuilder Configure(IHostBuilder builder)` to
+`void Configure(IAlbaHostBuilder builder)`. The new `IAlbaHostBuilder` surface is
+hosting-model-agnostic and behaves identically for every bootstrapping style (`IHostBuilder`,
+`WebApplicationBuilder`, and `WebApplicationFactory`); in Alba 8 the `WebApplicationBuilder` path
+went through a partial `IHostBuilder` facade and the `WebApplicationFactory` path silently ignored
+the returned builder.
+
+```cs
+// Alba 8
+public IHostBuilder Configure(IHostBuilder builder)
+{
+    return builder.ConfigureServices(services => services.AddSingleton<MyStub>());
+}
+
+// Alba 9
+public void Configure(IAlbaHostBuilder builder)
+{
+    builder.ConfigureServices(services => services.AddSingleton<MyStub>());
+}
+```
+
+Configuration overrides use `builder.ConfigureConfiguration(c => c.AddInMemoryCollection(...))`,
+which takes precedence over the application's own configuration on every path. `Configure` now has
+a default no-op implementation, so extensions that only need post-start logic can implement
+`Start` alone.
+
 ### `IJsonStrategy.Write` is now asynchronous
 
 `IJsonStrategy.Write<T>(T body)` changed to `Task<Stream> WriteAsync<T>(T body)`. This only

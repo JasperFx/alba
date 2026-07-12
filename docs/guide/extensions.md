@@ -13,23 +13,47 @@ public interface IAlbaExtension : IDisposable, IAsyncDisposable
     /// <summary>
     /// Called during the initialization of an AlbaHost after the application is started,
     /// so the application DI container is available. Useful for registering setup or teardown
-    /// actions on an AlbaHOst
+    /// actions on an AlbaHost
     /// </summary>
     /// <param name="host"></param>
     /// <returns></returns>
     Task Start(IAlbaHost host);
-        
+
     /// <summary>
-    /// Allow an extension to alter the application's
-    /// IHostBuilder prior to starting the application
+    /// Allow an extension to alter the application under test before it starts.
+    /// Behaves identically for every AlbaHost bootstrapping style.
     /// </summary>
     /// <param name="builder"></param>
-    /// <returns></returns>
-    IHostBuilder Configure(IHostBuilder builder);
+    void Configure(IAlbaHostBuilder builder)
+    {
+    }
+}
+
+/// <summary>
+/// Hosting-model-agnostic configuration surface handed to Alba extensions
+/// before the application under test starts
+/// </summary>
+public interface IAlbaHostBuilder
+{
+    /// <summary>
+    /// Add or replace services in the application under test
+    /// </summary>
+    void ConfigureServices(Action<IServiceCollection> configure);
+
+    /// <summary>
+    /// Add configuration sources for the application under test. Sources added
+    /// here take precedence over the application's own configuration.
+    /// </summary>
+    void ConfigureConfiguration(Action<IConfigurationBuilder> configure);
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba/IAlbaExtension.cs#L5-L30' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_IAlbaExtension' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba/IAlbaExtension.cs#L6-L50' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_IAlbaExtension' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
+
+`Configure` runs before the application under test starts and behaves the same regardless of how the
+`AlbaHost` was bootstrapped (`IHostBuilder`, `WebApplicationBuilder`, or `WebApplicationFactory`). It
+has a default no-op implementation, so extensions that only need post-start logic can implement
+`Start` alone.
 
 When you are initializing an `AlbaHost`, you can pass in an optional array of extensions like this sample from the security stub
 testing:

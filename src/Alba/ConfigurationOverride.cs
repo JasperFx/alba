@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 
 namespace Alba;
 
@@ -35,9 +34,9 @@ public sealed class ConfigurationOverride : IAlbaExtension
         return Task.CompletedTask;
     }
 
-    public IHostBuilder Configure(IHostBuilder builder)
+    public void Configure(IAlbaHostBuilder builder)
     {
-        return builder.ConfigureHostConfiguration(config =>
+        builder.ConfigureConfiguration(config =>
         {
             config.AddInMemoryCollection(_configDictionary);
         });

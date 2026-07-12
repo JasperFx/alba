@@ -3,7 +3,6 @@ using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -31,9 +30,9 @@ public sealed class AuthenticationStub : AuthenticationExtensionBase, IAlbaExten
 
     Task IAlbaExtension.Start(IAlbaHost host) => Task.CompletedTask;
 
-    IHostBuilder IAlbaExtension.Configure(IHostBuilder builder)
+    void IAlbaExtension.Configure(IAlbaHostBuilder builder)
     {
-        return builder.ConfigureServices(services =>
+        builder.ConfigureServices(services =>
         {
             services.AddSingleton(this);
             services.AddTransient<IAuthenticationSchemeProvider, MockSchemeProvider>();

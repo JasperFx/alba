@@ -33,9 +33,10 @@ internal sealed class AlbaWebApplicationFactory<TEntryPoint> : WebApplicationFac
 
     protected override IHost CreateHost(IHostBuilder builder)
     {
+        var adapter = new HostBuilderAdapter(builder);
         foreach (var extension in _extensions)
         {
-            extension.Configure(builder);
+            extension.Configure(adapter);
         }
 
         // Avoid using Windows EventLog as it can cause exceptions during host stop/disposal. 
