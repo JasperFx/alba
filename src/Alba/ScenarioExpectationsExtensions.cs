@@ -59,6 +59,8 @@ public static class ScenarioExpectationsExtensions
     /// <returns></returns>
     public static Scenario StatusCodeShouldBeSuccess(this Scenario scenario)
     {
+        // The range assertion replaces the default exact-200 check
+        scenario.IgnoreStatusCode();
         return scenario.AssertThat(new StatusCodeSuccessAssertion());
     }
 

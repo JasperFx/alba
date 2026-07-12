@@ -314,6 +314,7 @@ public class Scenario : IUrlExpression
     public Scenario StatusCodeShouldBe(HttpStatusCode httpStatusCode)
     {
         _expectedStatusCode = (int) httpStatusCode;
+        _ignoreStatusCode = false;
         return this;
     }
 
@@ -324,6 +325,7 @@ public class Scenario : IUrlExpression
     public void StatusCodeShouldBe(int statusCode)
     {
         _expectedStatusCode = statusCode;
+        _ignoreStatusCode = false;
     }
 
     /// <summary>

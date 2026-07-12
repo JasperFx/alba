@@ -142,3 +142,13 @@ happen to contain the text "Error" now parse successfully.
   `HttpContext.RequestAborted`) and then runs `AfterEach`/`AfterEachAsync` actions with a `null`
   `HttpContext`. Response assertions other than the expected status code are not supported on the
   streaming path and are rejected up front.
+
+## Bug fixes
+
+- `StatusCodeShouldBeSuccess()` no longer runs the default exact-200 assertion alongside the
+  2xx-range check ([#228](https://github.com/JasperFx/alba/issues/228)). Any status code between
+  200 and 299 now passes, and failures report "Expected a status code between 200 and 299, but
+  was ..." instead of "Expected status code 200, but was ...". Tests asserting the old message
+  for this helper need updating.
+- An explicit `StatusCodeShouldBe(...)` now re-enables the exact status code check even when
+  `IgnoreStatusCode()` (or `StatusCodeShouldBeSuccess()`) was called earlier on the scenario.
