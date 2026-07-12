@@ -20,11 +20,14 @@ namespace MinimalApiWithOakton
             });
 
             builder.Services.AddSingleton<SseAbortTracker>();
+            builder.Services.AddSingleton(TimeProvider.System);
 
             var app = builder.Build();
             app.MapGet("/", () => "Hello World!");
             app.MapGet("/args", () => Results.Ok(args));
             app.MapPost("/go", (PostedMessage input) => new OutputMessage(input.Id));
+
+            app.MapGet("/time", (TimeProvider timeProvider) => new CurrentTime(timeProvider.GetUtcNow()));
 
             app.MapMethods("/api/query", ["QUERY"], async (HttpContext context) =>
             {
@@ -69,6 +72,7 @@ namespace MinimalApiWithOakton
 
     public record PostedMessage(Guid Id);
     public record OutputMessage(Guid Id);
+    public record CurrentTime(DateTimeOffset UtcNow);
 
     public class Counter
     {

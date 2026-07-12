@@ -163,6 +163,12 @@ happen to contain the text "Error" now parse successfully.
   streaming path and are rejected up front.
 - **HTTP QUERY support.** Scenarios can issue HTTP QUERY requests via `Scenario.Query`, matching
   the existing verb properties (`x.Query.Url("/api/query")`).
+- **Time-travel testing with `TimeProviderOverride`.** A `FakeTimeProvider`-based extension that
+  replaces the application's `TimeProvider` registration on every bootstrapping style. The
+  extension is the clock: pass it to `AlbaHost.For(...)`, then drive time from the test with
+  `Advance(...)` and `SetUtcNow(...)`
+  ([#230](https://github.com/JasperFx/alba/issues/230)). Alba now depends on the
+  `Microsoft.Extensions.TimeProvider.Testing` package.
 
 ## Improvements
 

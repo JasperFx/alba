@@ -96,3 +96,105 @@ var host = await AlbaHost.For<WebAppSecuredWithJwt.Program>(builder =>
 ```
 <sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Extensions.cs#L8-L22' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_configuration_extension' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
+
+## Time Travel with TimeProviderOverride
+
+Time-sensitive endpoints — token or session expiry, cache TTLs, scheduling, "valid until" business
+rules — need a deterministic clock. The `TimeProviderOverride` extension replaces the application's
+`TimeProvider` registration with a controllable [FakeTimeProvider](https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.time.testing.faketimeprovider)
+on every bootstrapping style. The extension *is* the clock: pass it to `AlbaHost.For(...)`, then
+drive time from the test.
+
+<!-- snippet: sample_time_provider_override -->
+<a id='snippet-sample_time_provider_override'></a>
+```cs
+[Fact]
+public async Task freezing_and_advancing_the_clock()
+{
+    // The clock is both the extension and the controllable TimeProvider
+    var clock = new TimeProviderOverride(new DateTimeOffset(2030, 1, 1, 0, 0, 0, TimeSpan.Zero));
+
+    await using var host = await AlbaHost.For<MinimalApiWithOakton.Program>(clock);
+
+    // Time is frozen at the configured start instant
+    (await host.GetAsJson<CurrentTime>("/time"))!.UtcNow
+        .ShouldBe(new DateTimeOffset(2030, 1, 1, 0, 0, 0, TimeSpan.Zero));
+    (await host.GetAsJson<CurrentTime>("/time"))!.UtcNow
+        .ShouldBe(new DateTimeOffset(2030, 1, 1, 0, 0, 0, TimeSpan.Zero));
+
+    // Travel forward three days
+    clock.Advance(TimeSpan.FromDays(3));
+    (await host.GetAsJson<CurrentTime>("/time"))!.UtcNow
+        .ShouldBe(new DateTimeOffset(2030, 1, 4, 0, 0, 0, TimeSpan.Zero));
+
+    // Or pin the clock to any instant
+    clock.SetUtcNow(new DateTimeOffset(2031, 6, 15, 12, 0, 0, TimeSpan.Zero));
+    (await host.GetAsJson<CurrentTime>("/time"))!.UtcNow
+        .ShouldBe(new DateTimeOffset(2031, 6, 15, 12, 0, 0, TimeSpan.Zero));
+}
+```
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/time_provider_override_usage.cs#L15-L40' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_time_provider_override' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+The clock is frozen: `GetUtcNow()` returns the same instant until the test moves it with
+`Advance(...)` or `SetUtcNow(...)`, or opts into automatic movement via `AutoAdvanceAmount`. Timers
+created from the provider (including `Task.Delay(..., timeProvider)` and cache expirations) fire
+when `Advance` crosses their due time.
+
+The override only affects code that resolves `TimeProvider` from the container. Calls to
+`DateTime.UtcNow` or a directly captured `TimeProvider.System` are not intercepted — that is
+inherent to the `TimeProvider` pattern, not specific to Alba.
+
+The extension itself doubles as a compact example of the extension model:
+
+<!-- snippet: sample_TimeProviderOverride -->
+<a id='snippet-sample_TimeProviderOverride'></a>
+```cs
+/// <summary>
+/// Alba extension that replaces the application's <see cref="TimeProvider"/> registration
+/// with this controllable <see cref="FakeTimeProvider"/> for time-travel testing. Pass an
+/// instance to AlbaHost.For(...), then drive time from the test with Advance(...) and
+/// SetUtcNow(...). Time is frozen unless AutoAdvanceAmount is set.
+/// </summary>
+public sealed class TimeProviderOverride : FakeTimeProvider, IAlbaExtension
+{
+    /// <summary>
+    /// Starts the clock at FakeTimeProvider's default of 2000-01-01T00:00:00Z
+    /// </summary>
+    public TimeProviderOverride()
+    {
+    }
+
+    /// <summary>
+    /// Starts the clock at the supplied instant
+    /// </summary>
+    public TimeProviderOverride(DateTimeOffset startDateTime) : base(startDateTime)
+    {
+    }
+
+    void IAlbaExtension.Configure(IAlbaHostBuilder builder)
+    {
+        builder.ConfigureServices(services =>
+        {
+            services.RemoveAll<TimeProvider>();
+            services.AddSingleton<TimeProvider>(this);
+        });
+    }
+
+    Task IAlbaExtension.Start(IAlbaHost host)
+    {
+        return Task.CompletedTask;
+    }
+
+    void IDisposable.Dispose()
+    {
+    }
+
+    ValueTask IAsyncDisposable.DisposeAsync()
+    {
+        return ValueTask.CompletedTask;
+    }
+}
+```
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba/TimeProviderOverride.cs#L7-L55' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_TimeProviderOverride' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
