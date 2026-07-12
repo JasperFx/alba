@@ -69,3 +69,20 @@ public async Task send_text(IAlbaHost host)
 
 Do note that this also sets the `content-length` header to the string length and
 sets the `content-type` header of the request to "text/plain."
+
+## Sending Binary Data
+
+Raw bytes or a stream can be written directly to the request body:
+
+```cs
+await host.Scenario(_ =>
+{
+    _.Post.ByteArray(bytes).ToUrl("/upload").ContentType("application/octet-stream");
+
+    // or from any readable Stream
+    _.Post.Stream(stream).ToUrl("/upload").ContentType("application/octet-stream");
+});
+```
+
+Both set the `content-length` header from the written content; set the `content-type` header
+yourself as shown.

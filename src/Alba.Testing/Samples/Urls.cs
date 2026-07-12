@@ -13,7 +13,23 @@ namespace Alba.Testing.Samples
                 _.Put.Url("/");
                 _.Post.Url("/");
                 _.Delete.Url("/");
+                _.Patch.Url("/");
                 _.Head.Url("/");
+            });
+        }
+        #endregion
+
+        #region sample_query_string_parameters
+        public async Task query_string_parameters(AlbaHost system)
+        {
+            await system.Scenario(_ =>
+            {
+                // Add individual query string parameters
+                _.Get.Url("/search").QueryString("q", "alba").QueryString("page", "2");
+
+                // Or append one parameter per public property or field
+                // of an object
+                _.Get.Url("/search").QueryString(new { q = "alba", page = 2 });
             });
         }
         #endregion

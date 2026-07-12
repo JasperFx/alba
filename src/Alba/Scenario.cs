@@ -2,6 +2,7 @@
 using System.Net;
 using System.Security.Claims;
 using Alba.Assertions;
+using Alba.Internal;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 
@@ -154,16 +155,14 @@ public class Scenario : IUrlExpression
     {
         var values = new Dictionary<string, string>();
 
-        var properties = typeof(T).GetProperties().Where(x => x.CanWrite && x.CanRead);
+        var (properties, fields) = TypeMemberCache.MembersOf(typeof(T));
 
-        foreach (var prop in properties)
+        foreach (var prop in properties.Where(x => x.CanWrite))
         {
             var rawValue = prop.GetValue(target, null);
 
             values.Add(prop.Name, rawValue?.ToString() ?? string.Empty);
         }
-
-        var fields = typeof(T).GetFields();
 
         foreach (var field in fields)
         {

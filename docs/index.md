@@ -22,5 +22,5 @@ features:
   - icon: 🔓
     title: Authorization Stubbing
     details: Stop fighting with your authorization system. Modify the shape of your user at the test level.
-footer: MIT Licensed | Copyright © Jeremy D. Miller and contributors.
+footer: Apache 2.0 Licensed | Copyright © Jeremy D. Miller and contributors.
 ---

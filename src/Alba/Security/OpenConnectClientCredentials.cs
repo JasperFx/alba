@@ -1,5 +1,5 @@
 using Alba.Internal;
-using IdentityModel.Client;
+using Duende.IdentityModel.Client;
 
 namespace Alba.Security;
 

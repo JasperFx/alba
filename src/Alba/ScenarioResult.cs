@@ -32,20 +32,7 @@ public class ScenarioResult : IScenarioResult
     /// <inheritdoc />
     public XmlDocument? ReadAsXml()
     {
-        Func<Stream, XmlDocument?> read = s =>
-        {
-            var body = s.ReadAllText();
-
-            if (body.Contains("Error"))
-            {
-                return null;
-            }
-
-            var document = new XmlDocument();
-            document.LoadXml(body);
-
-            return document;
-        };
+        Func<Stream, XmlDocument?> read = s => tryParseXml(s.ReadAllText());
 
         return Read(read);
     }
@@ -53,22 +40,24 @@ public class ScenarioResult : IScenarioResult
     /// <inheritdoc />
     public Task<XmlDocument?> ReadAsXmlAsync()
     {
-        Func<Stream, Task<XmlDocument?>> read = async s =>
-        {
-            var body = await s.ReadAllTextAsync();
-
-            if (body.Contains("Error"))
-            {
-                return null;
-            }
-
-            var document = new XmlDocument();
-            document.LoadXml(body);
-
-            return document;
-        };
+        Func<Stream, Task<XmlDocument?>> read = async s => tryParseXml(await s.ReadAllTextAsync());
 
         return Read(read);
+    }
+
+    private static XmlDocument? tryParseXml(string body)
+    {
+        var document = new XmlDocument();
+        try
+        {
+            document.LoadXml(body);
+        }
+        catch (XmlException)
+        {
+            return null;
+        }
+
+        return document;
     }
 
     /// <inheritdoc />

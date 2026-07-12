@@ -71,9 +71,16 @@ class Build : NukeBuild
         {
             DotNetTest(_ => _
                 .SetProjectFile(Solution.Alba_Testing));
-            
+
             DotNetTest(_ => _
                 .SetProjectFile(Solution.NUnitSamples));
+
+            // TUnit runs on Microsoft.Testing.Platform, which the VSTest-based
+            // dotnet test no longer supports on the .NET 10 SDK
+            foreach (var framework in new[] { "net8.0", "net9.0", "net10.0" })
+            {
+                DotNet($"run --project {Solution.TUnitSamples.Path} --framework {framework}");
+            }
         });
 
     Target NugetPack => _ => _

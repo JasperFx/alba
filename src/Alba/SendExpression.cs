@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using Alba.Internal;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
  
@@ -89,14 +90,13 @@ public sealed class SendExpression
     /// <returns></returns>
     public SendExpression QueryString<T>(T target)
     {
-        var properties = typeof(T).GetProperties().Where(x => x.CanRead);
+        var (properties, fields) = TypeMemberCache.MembersOf(typeof(T));
 
         foreach (var prop in properties)
         {
             var rawValue = prop.GetValue(target, null);
             QueryString(prop.Name, rawValue?.ToString() ?? string.Empty);
         }
-        var fields = typeof(T).GetFields();
 
         foreach (var field in fields)
         {

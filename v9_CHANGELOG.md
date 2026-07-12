@@ -94,6 +94,14 @@ affects custom `IJsonStrategy` implementations; request JSON serialization now h
 awaited preparation phase before the request executes instead of blocking inside the test
 server's setup callback.
 
+### `IdentityModel` replaced by `Duende.IdentityModel`
+
+Alba's OpenID Connect extensions now use the `Duende.IdentityModel` package (the renamed successor
+of `IdentityModel`). This is visible in the public API of `OpenConnectExtension` and its
+subclasses: types like `TokenResponse` and `DiscoveryDocumentResponse` now come from the
+`Duende.IdentityModel.Client` namespace. If you override `FetchToken` or consume the token types,
+update your `using IdentityModel.Client;` directives to `using Duende.IdentityModel.Client;`.
+
 ### `HttpResponse.Write` extension removed
 
 The `Alba.HttpContextExtensions.Write(this HttpResponse, string)` helper performed synchronous
@@ -104,6 +112,13 @@ stream writes. Use ASP.NET Core's built-in `HttpResponse.WriteAsync(...)` instea
 `IAlbaHost.Dispose()` previously fired the host stop without awaiting it. It now performs the
 complete teardown (equivalent to awaiting `DisposeAsync()`), including disposing extensions via
 `DisposeAsync`. Prefer `await using` / `DisposeAsync()` in new code.
+
+### `ReadAsXml` returns null on unparseable bodies instead of matching on "Error"
+
+`IScenarioResult.ReadAsXml()` / `ReadAsXmlAsync()` previously returned `null` whenever the response
+body merely *contained* the substring "Error", and threw on any other unparseable body. They now
+attempt to parse and return `null` only when the body is not valid XML. Valid XML documents that
+happen to contain the text "Error" now parse successfully.
 
 ## Improvements
 

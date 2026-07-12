@@ -35,17 +35,23 @@ public class AlbaHost : IAlbaHost
 
         Extensions = extensions;
 
+        (MvcStrategy, MinimalApiStrategy, DefaultJson) = buildJsonStrategies();
+    }
+
+    private (IJsonStrategy? Mvc, IJsonStrategy MinimalApi, IJsonStrategy Default) buildJsonStrategies()
+    {
         var jsonInput = findInputFormatter("application/json");
         var jsonOutput = findOutputFormatter("application/json");
 
+        IJsonStrategy? mvc = null;
         if (jsonInput != null && jsonOutput != null)
         {
-            MvcStrategy = new FormatterSerializer(this, jsonInput, jsonOutput);
+            mvc = new FormatterSerializer(this, jsonInput, jsonOutput);
         }
 
-        MinimalApiStrategy = new SystemTextJsonSerializer(this);
+        var minimalApi = new SystemTextJsonSerializer(this);
 
-        DefaultJson = MvcStrategy ?? MinimalApiStrategy;
+        return (mvc, minimalApi, mvc ?? minimalApi);
     }
 
     internal IJsonStrategy? MvcStrategy { get; }
@@ -185,18 +191,18 @@ public class AlbaHost : IAlbaHost
             }
 
             scenario.RunAssertions(context);
+
+            if (context.Response.Body.CanSeek)
+            {
+                context.Response.Body.Position = 0;
+            }
+
+            return new ScenarioResult(this, context);
         }
         finally
         {
             foreach (var func in _afterEach) await func(context);
         }
-
-        if (context.Response.Body.CanSeek)
-        {
-            context.Response.Body.Position = 0;
-        }
-
-        return new ScenarioResult(this, context);
     }
 
 
@@ -317,17 +323,7 @@ public class AlbaHost : IAlbaHost
 
         Extensions = extensions;
 
-        var jsonInput = findInputFormatter("application/json");
-        var jsonOutput = findOutputFormatter("application/json");
-
-        if (jsonInput != null && jsonOutput != null)
-        {
-            MvcStrategy = new FormatterSerializer(this, jsonInput, jsonOutput);
-        }
-
-        MinimalApiStrategy = new SystemTextJsonSerializer(this);
-
-        DefaultJson = MvcStrategy ?? MinimalApiStrategy;
+        (MvcStrategy, MinimalApiStrategy, DefaultJson) = buildJsonStrategies();
     }
 
 
