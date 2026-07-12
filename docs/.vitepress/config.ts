@@ -74,6 +74,7 @@ function getScenarioSidebar() {
         { text: 'HTTP Headers', link: '/scenarios/headers' },
         { text: 'JSON Web Services', link: '/scenarios/json' },
         { text: 'Plain Text Web Services', link: '/scenarios/text' },
+        { text: 'Server-Sent Events', link: '/scenarios/sse' },
         { text: 'Xml Web Services', link: '/scenarios/xml' },
         { text: 'Sending Form Data', link: '/scenarios/formdata' },
         { text: 'Before and After Actions', link: '/scenarios/setup' },

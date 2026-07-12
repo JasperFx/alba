@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Runtime.ExceptionServices;
+using System.Text.Json;
 using Alba.Internal;
 using Alba.Serialization;
 using Microsoft.AspNetCore.Builder;
@@ -57,6 +58,8 @@ public class AlbaHost : IAlbaHost
     internal IJsonStrategy? MvcStrategy { get; }
     internal IJsonStrategy MinimalApiStrategy { get; }
     internal IJsonStrategy DefaultJson { get; }
+
+    internal JsonSerializerOptions StjJsonOptions => ((SystemTextJsonSerializer)MinimalApiStrategy).Options;
 
     public IReadOnlyList<IAlbaExtension> Extensions { get; }
 
@@ -205,6 +208,121 @@ public class AlbaHost : IAlbaHost
         }
     }
 
+
+    public async Task<SseStreamResult> StreamServerSentEvents(Action<Scenario> configure,
+        CancellationToken cancellationToken = default)
+    {
+        var scenario = new Scenario(this);
+
+        configure(scenario);
+
+        if (scenario.HasResponseAssertions)
+        {
+            throw new InvalidOperationException(
+                "Response assertions are not supported with StreamServerSentEvents(). Assert on the streamed events instead.");
+        }
+
+        foreach (var prepare in _beforeEachAsync) await prepare(scenario);
+
+        foreach (var preparation in scenario.AsyncPreparations) await preparation();
+
+        scenario.Rewind();
+
+        Activity? activity = null;
+        var handler = Server.CreateHandler(c =>
+        {
+            try
+            {
+                if (scenario.Claims.Any())
+                {
+                    c.Items.Add("alba_claims", scenario.Claims.ToArray());
+                }
+
+                if (scenario.RemovedClaims.Any())
+                {
+                    c.Items.Add("alba_removed_claims", scenario.RemovedClaims.ToArray());
+                }
+
+                foreach (var pair in scenario.Items) c.Items.Add(pair.Key, pair.Value);
+
+                foreach (var apply in _beforeEachSync) apply(c);
+
+                // The placeholder request message maps to "/"; clear the path so
+                // the missing-url check below still applies
+                c.Request.Path = PathString.Empty;
+
+                scenario.SetupHttpContext(c);
+
+                if (c.Request.Path == null)
+                {
+                    throw new InvalidOperationException("This scenario has no defined url");
+                }
+
+                activity = AlbaTracing.StartRequestActivity(c.Request);
+            }
+            catch (Exception e)
+            {
+                scenario.Exception = e;
+            }
+        });
+
+        var invoker = new HttpMessageInvoker(handler);
+        var request = new HttpRequestMessage(HttpMethod.Get, new Uri(Server.BaseAddress, "/"));
+
+        HttpResponseMessage response;
+        try
+        {
+            // HttpMessageInvoker does not buffer response content, so this returns
+            // as soon as the application flushes its response headers
+            response = await invoker.SendAsync(request, cancellationToken);
+        }
+        catch
+        {
+            invoker.Dispose();
+            activity?.Dispose();
+            throw;
+        }
+
+        if (scenario.Exception != null)
+        {
+            await cleanupFailedStream(response, invoker, activity);
+            ExceptionDispatchInfo.Throw(scenario.Exception);
+        }
+
+        if (!scenario.StatusCodeIgnored && (int)response.StatusCode != scenario.ExpectedStatusCode)
+        {
+            var body = await response.Content.ReadAsStringAsync(cancellationToken);
+            await cleanupFailedStream(response, invoker, activity);
+
+            var ex = new ScenarioAssertionException();
+            ex.Add($"Expected status code {scenario.ExpectedStatusCode}, but was {(int)response.StatusCode}");
+            ex.AddBody(body);
+            throw ex;
+        }
+
+        var contentType = response.Content.Headers.ContentType?.MediaType;
+        if (contentType != MimeType.EventStream.Value)
+        {
+            await cleanupFailedStream(response, invoker, activity);
+            throw new InvalidOperationException(
+                $"The response content type is '{contentType ?? "unknown"}', not '{MimeType.EventStream.Value}'");
+        }
+
+        activity?.SetTag(AlbaTracing.HttpStatusCode, (int)response.StatusCode);
+
+        var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
+        return new SseStreamResult(this, response, stream, invoker, activity, _afterEach);
+    }
+
+    private async Task cleanupFailedStream(HttpResponseMessage response, HttpMessageInvoker invoker,
+        Activity? activity)
+    {
+        response.Dispose();
+        invoker.Dispose();
+        activity?.Dispose();
+
+        foreach (var func in _afterEach) await func(null);
+    }
 
     public async ValueTask DisposeAsync()
     {

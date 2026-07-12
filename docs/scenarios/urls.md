@@ -45,6 +45,6 @@ public async Task query_string_parameters(AlbaHost system)
     });
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Urls.cs#L22-L36' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_query_string_parameters' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Urls.cs#L22-L35' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_query_string_parameters' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 

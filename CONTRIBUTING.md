@@ -15,7 +15,7 @@ Alba builds with the .NET SDK pinned in `global.json` and uses a [Nuke](https://
 ```
 
 Or work directly with the solution at `src/Alba.sln` from your IDE or `dotnet` CLI. The main test
-project is `src/Alba.Testing`, which multi-targets every supported .NET version.
+project is `src/Alba.Testing`.
 
 Package versions are managed centrally in `src/Directory.Packages.props`.
 

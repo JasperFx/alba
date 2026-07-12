@@ -82,8 +82,7 @@ public Task using_scenario_with_ContentShouldContain_declaration_happy_path()
 {
     router.Handlers["/one"] = c =>
     {
-        c.Response.Write("**just the marker**");
-        return Task.CompletedTask;
+        return c.Response.WriteAsync("**just the marker**");
     };
 
     return host.Scenario(x =>
@@ -93,5 +92,5 @@ public Task using_scenario_with_ContentShouldContain_declaration_happy_path()
     });
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Acceptance/asserting_against_the_response_body_text.cs#L7-L23' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_using_ContentShouldBe' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Acceptance/asserting_against_the_response_body_text.cs#L8-L23' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_using_ContentShouldBe' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->

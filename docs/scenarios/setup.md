@@ -45,5 +45,5 @@ system.AfterEachAsync(context =>
     return Task.CompletedTask;
 });
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/before_and_after_actions.cs#L30-L61' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_before_and_after' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/before_and_after_actions.cs#L30-L60' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_before_and_after' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->

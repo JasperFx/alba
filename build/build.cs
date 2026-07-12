@@ -77,10 +77,7 @@ class Build : NukeBuild
 
             // TUnit runs on Microsoft.Testing.Platform, which the VSTest-based
             // dotnet test no longer supports on the .NET 10 SDK
-            foreach (var framework in new[] { "net8.0", "net9.0", "net10.0" })
-            {
-                DotNet($"run --project {Solution.TUnitSamples.Path} --framework {framework}");
-            }
+            DotNet($"run --project {Solution.TUnitSamples.Path}");
         });
 
     Target NugetPack => _ => _

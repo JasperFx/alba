@@ -9,6 +9,8 @@ public class SystemTextJsonSerializer : IJsonStrategy
 {
     private readonly JsonSerializerOptions _options;
 
+    internal JsonSerializerOptions Options => _options;
+
     public SystemTextJsonSerializer(IAlbaHost host)
     {
         var options = host.Services.GetService<IOptions<Microsoft.AspNetCore.Http.Json.JsonOptions>> ();

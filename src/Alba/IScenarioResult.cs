@@ -1,3 +1,4 @@
+using System.Net.ServerSentEvents;
 using System.Xml;
 using Microsoft.AspNetCore.Http;
 
@@ -58,6 +59,19 @@ public interface IScenarioResult
     /// <exception cref="AlbaJsonFormatterException">Throws if the response cannot be deserialized.</exception>
     /// <exception cref="EmptyResponseException">Throws if the response is empty.</exception>
     Task<T> ReadAsJsonAsync<T>();
-        
+
+    /// <summary>
+    /// Parse the contents of the HttpResponse.Body as a finite stream
+    /// of server-sent events
+    /// </summary>
+    IReadOnlyList<SseItem<string>> ReadAsServerSentEvents();
+
+    /// <summary>
+    /// Parse the contents of the HttpResponse.Body as a finite stream of
+    /// server-sent events, deserializing each data payload as JSON with the
+    /// application's serializer options
+    /// </summary>
+    IReadOnlyList<SseItem<T>> ReadAsServerSentEvents<T>();
+
 }
 #endregion

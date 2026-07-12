@@ -16,6 +16,20 @@ public interface IAlbaHost : IHost, IAsyncDisposable
     Task<IScenarioResult> Scenario(Action<Scenario> configure);
 
     /// <summary>
+    ///     Open a live server-sent event stream against the application without
+    ///     buffering the response. All BeforeEach/BeforeEachAsync actions apply as
+    ///     they do for scenarios. Response assertions other than the expected status
+    ///     code are not supported; assert on the streamed events instead. Disposing
+    ///     the result aborts the request on the server.
+    /// </summary>
+    /// <param name="configure"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
+    Task<SseStreamResult> StreamServerSentEvents(Action<Scenario> configure,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Execute a synchronous action against the HttpContext immediately before each
     /// scenario's HTTP request executes. This is additive for each call made.
     /// </summary>

@@ -116,8 +116,12 @@ public class Scenario : IUrlExpression
     }
 
     internal List<Claim> Claims { get; } = new();
-    internal List<string> RemovedClaims { get; } = new(); 
+    internal List<string> RemovedClaims { get; } = new();
     internal Exception? Exception { get; set; }
+
+    internal int ExpectedStatusCode => _expectedStatusCode;
+    internal bool StatusCodeIgnored => _ignoreStatusCode;
+    internal bool HasResponseAssertions => _assertions.Count > 0;
 
 
     SendExpression IUrlExpression.Url([StringSyntax(StringSyntaxAttribute.Uri)]string relativeUrl)

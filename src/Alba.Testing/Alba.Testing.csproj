@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+    <TargetFramework>net10.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <OutputType>Exe</OutputType>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -20,6 +20,7 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="NSubstitute" />
     <PackageReference Include="Shouldly" />
+    <PackageReference Include="System.Security.Cryptography.Xml" />
     <PackageReference Include="Verify.AspNetCore" />
     <PackageReference Include="Verify.XunitV3" />
     <PackageReference Include="xunit.v3" />
@@ -41,12 +42,6 @@
     </None>
     <None Update="TestTextFile.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Samples\SnapshotTesting.SnapshotTest.DotNet8_0.verified.txt">
-      <DependentUpon>SnapshotTesting.cs</DependentUpon>
-    </None>
-    <None Update="Samples\SnapshotTesting.SnapshotTest.DotNet9_0.verified.txt">
-      <DependentUpon>SnapshotTesting.cs</DependentUpon>
     </None>
     <None Update="Samples\SnapshotTesting.SnapshotTest.DotNet10_0.verified.txt">
       <DependentUpon>SnapshotTesting.cs</DependentUpon>

@@ -2,6 +2,11 @@
 
 ## Breaking changes
 
+### .NET 10 is required
+
+Alba now targets `net10.0` only; support for .NET 8 and .NET 9 is dropped. Applications under
+test must run on .NET 10.
+
 ### `BeforeEachAsync` now receives the `Scenario` and runs before the request
 
 `IAlbaHost.BeforeEachAsync` changed from `Func<HttpContext, Task>` to `Func<Scenario, Task>`. In
@@ -127,3 +132,13 @@ happen to contain the text "Error" now parse successfully.
   assertions — are seekable, repeatable, memory-only operations.
 - Scenario setup exceptions from asynchronous before-each actions surface directly with their
   original stack traces instead of being marshalled out of the test server callback.
+- **Server-sent events support.** Finite streams: `IScenarioResult.ReadAsServerSentEvents()` and
+  `ReadAsServerSentEvents<T>()` parse a buffered response body as `SseItem<T>` values, with the
+  typed overload deserializing each data payload through the application's JSON options. Live
+  streams: `IAlbaHost.StreamServerSentEvents(Action<Scenario>, CancellationToken)` opens an
+  unbuffered event stream that yields events as the application writes them; all
+  `BeforeEach`/`BeforeEachAsync` actions and the security extensions apply exactly as they do for
+  scenarios. Disposing the returned `SseStreamResult` aborts the request on the server (cancelling
+  `HttpContext.RequestAborted`) and then runs `AfterEach`/`AfterEachAsync` actions with a `null`
+  `HttpContext`. Response assertions other than the expected status code are not supported on the
+  streaming path and are rejected up front.

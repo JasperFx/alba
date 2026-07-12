@@ -1,3 +1,5 @@
+using System.Net.ServerSentEvents;
+using System.Text.Json;
 using System.Xml;
 using System.Xml.Serialization;
 using Alba.Internal;
@@ -78,6 +80,22 @@ public class ScenarioResult : IScenarioResult
     public Task<T> ReadAsJsonAsync<T>()
     {
         return _system.DefaultJson.ReadAsync<T>(this);
+    }
+
+    /// <inheritdoc />
+    public IReadOnlyList<SseItem<string>> ReadAsServerSentEvents()
+    {
+        // The response body is a fully buffered MemoryStream, so the
+        // synchronous parse never touches server streams
+        return Read(s => SseParser.Create(s).Enumerate().ToList());
+    }
+
+    /// <inheritdoc />
+    public IReadOnlyList<SseItem<T>> ReadAsServerSentEvents<T>()
+    {
+        return Read(s => SseParser
+            .Create(s, (_, data) => JsonSerializer.Deserialize<T>(data, _system.StjJsonOptions)!)
+            .Enumerate().ToList());
     }
 
     public T Read<T>(Func<Stream, T> read)
