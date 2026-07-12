@@ -53,6 +53,20 @@ await using var host = await hostBuilder.StartAlbaAsync();
 Use your test framework's asynchronous initialization support (e.g. xUnit's `IAsyncLifetime`) to
 start the host.
 
+### `AlbaHost.For(Action<IWebHostBuilder>)` removed
+
+This overload implicitly created a `Host.CreateDefaultBuilder()` host and could not accept Alba
+extensions. Build the host builder explicitly instead:
+
+```cs
+// Alba 8
+var host = await AlbaHost.For(w => w.UseStartup<Startup>());
+
+// Alba 9
+var host = await AlbaHost.For(Host.CreateDefaultBuilder()
+    .ConfigureWebHostDefaults(w => w.UseStartup<Startup>()));
+```
+
 ### `AllowSynchronousIO` is no longer forced on
 
 Alba no longer performs any synchronous I/O against server streams and no longer sets

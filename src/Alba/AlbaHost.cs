@@ -519,22 +519,4 @@ public class AlbaHost : IAlbaHost
             activity?.Dispose();
         }
     }
-
-
-    /// <summary>
-    ///     Creates a SystemUnderTest from a default HostBuilder using the provided <c>IWebHostBuilder</c>
-    /// </summary>
-    /// <param name="configuration">
-    ///     Optional configuration of the IWebHostBuilder to be applied *after* the call to
-    ///     UseStartup()
-    /// </param>
-    /// <returns>The system under test</returns>
-    public static Task<IAlbaHost> For(Action<IWebHostBuilder> configuration)
-    {
-        var builder = Host.CreateDefaultBuilder();
-
-        builder.ConfigureWebHostDefaults(configuration);
-
-        return For(builder);
-    }
 }
