@@ -28,7 +28,7 @@ namespace Alba.Testing.Acceptance
                 });
             });
 
-            ex.Message.ShouldContain("Expected status code 200, but was 500");
+            ex.Message.ShouldContain("Expected a status code between 200 and 299, but was 500");
         }
         public interface IService { }
         public class ServiceA : IService { }

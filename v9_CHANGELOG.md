@@ -118,6 +118,30 @@ stream writes. Use ASP.NET Core's built-in `HttpResponse.WriteAsync(...)` instea
 complete teardown (equivalent to awaiting `DisposeAsync()`), including disposing extensions via
 `DisposeAsync`. Prefer `await using` / `DisposeAsync()` in new code.
 
+### The default status code expectation accepts any 2xx
+
+Scenarios that do not configure a status code expectation now pass for any status code between
+200 and 299 instead of requiring exactly 200, and the default failure message changed to
+"Expected a status code between 200 and 299, but was ...". Require one exact code with
+`StatusCodeShouldBe(...)` or `StatusCodeShouldBeOk()`:
+
+```cs
+await host.Scenario(x =>
+{
+    x.Get.Url("/");
+
+    // Only needed when exactly 200 is required; any 2xx passes by default
+    x.StatusCodeShouldBeOk();
+});
+```
+
+`StatusCodeShouldBeSuccess()` restores the default success-range expectation after
+`StatusCodeShouldBe(...)` or `IgnoreStatusCode()`, no longer registers a scenario assertion (so
+it also works with `StreamServerSentEvents`), and moved from an extension method to an instance
+method on `Scenario` (source compatible). This also fixes
+[#228](https://github.com/JasperFx/alba/issues/228), where `StatusCodeShouldBeSuccess()` ran the
+default exact-200 assertion alongside the range check and failed 201/202/204 responses.
+
 ### `ReadAsXml` returns null on unparseable bodies instead of matching on "Error"
 
 `IScenarioResult.ReadAsXml()` / `ReadAsXmlAsync()` previously returned `null` whenever the response
@@ -145,10 +169,5 @@ happen to contain the text "Error" now parse successfully.
 
 ## Bug fixes
 
-- `StatusCodeShouldBeSuccess()` no longer runs the default exact-200 assertion alongside the
-  2xx-range check ([#228](https://github.com/JasperFx/alba/issues/228)). Any status code between
-  200 and 299 now passes, and failures report "Expected a status code between 200 and 299, but
-  was ..." instead of "Expected status code 200, but was ...". Tests asserting the old message
-  for this helper need updating.
 - An explicit `StatusCodeShouldBe(...)` now re-enables the exact status code check even when
-  `IgnoreStatusCode()` (or `StatusCodeShouldBeSuccess()`) was called earlier on the scenario.
+  `IgnoreStatusCode()` was called earlier on the scenario.

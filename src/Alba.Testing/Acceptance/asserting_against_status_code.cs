@@ -59,8 +59,28 @@ namespace Alba.Testing.Acceptance
                 _.Get.Url("/wrong/status/code");
             });
 
-            ex.Message.ShouldContain("Expected status code 200, but was 500");
+            ex.Message.ShouldContain("Expected a status code between 200 and 299, but was 500");
             ex.Message.ShouldContain("the error text");
+        }
+
+        [Theory]
+        [InlineData(200)]
+        [InlineData(201)]
+        [InlineData(204)]
+        [InlineData(299)]
+        public Task success_status_codes_pass_by_default(int statusCode)
+        {
+            router.Handlers["/one"] = c =>
+            {
+                c.Response.StatusCode = statusCode;
+                c.Response.ContentType("text/plain");
+                return c.Response.WriteAsync("Some text");
+            };
+
+            return host.Scenario(x =>
+            {
+                x.Get.Url("/one");
+            });
         }
 
         [Theory]

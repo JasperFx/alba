@@ -20,7 +20,8 @@ public class Scenario : IUrlExpression
     private readonly List<Action<HttpContext>> _setups = new();
     internal List<Func<Task>> AsyncPreparations { get; } = new();
     private readonly AlbaHost _system;
-    private int _expectedStatusCode = 200;
+    // Null means the default expectation: any 200-299 status code
+    private int? _expectedStatusCode;
     private bool _ignoreStatusCode;
         
     internal Scenario(AlbaHost system)
@@ -119,7 +120,7 @@ public class Scenario : IUrlExpression
     internal List<string> RemovedClaims { get; } = new();
     internal Exception? Exception { get; set; }
 
-    internal int ExpectedStatusCode => _expectedStatusCode;
+    internal int? ExpectedStatusCode => _expectedStatusCode;
     internal bool StatusCodeIgnored => _ignoreStatusCode;
     internal bool HasResponseAssertions => _assertions.Count > 0;
 
@@ -298,7 +299,11 @@ public class Scenario : IUrlExpression
         var assertionContext = new AssertionContext(context, _assertionRecords);
         if (!_ignoreStatusCode)
         {
-            new StatusCodeAssertion(_expectedStatusCode).Assert(this, assertionContext);
+            IScenarioAssertion statusAssertion = _expectedStatusCode.HasValue
+                ? new StatusCodeAssertion(_expectedStatusCode.Value)
+                : new StatusCodeSuccessAssertion();
+
+            statusAssertion.Assert(this, assertionContext);
         }
 
         foreach (var assertion in _assertions) assertion.Assert(this, assertionContext);
@@ -326,6 +331,19 @@ public class Scenario : IUrlExpression
     {
         _expectedStatusCode = statusCode;
         _ignoreStatusCode = false;
+    }
+
+    /// <summary>
+    ///     Expect any Http Status Code between 200 and 299. This is the default
+    ///     expectation for every scenario; call this to restore it after
+    ///     StatusCodeShouldBe(...) or IgnoreStatusCode()
+    /// </summary>
+    /// <returns></returns>
+    public Scenario StatusCodeShouldBeSuccess()
+    {
+        _expectedStatusCode = null;
+        _ignoreStatusCode = false;
+        return this;
     }
 
     /// <summary>

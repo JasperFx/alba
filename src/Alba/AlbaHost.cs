@@ -289,13 +289,19 @@ public class AlbaHost : IAlbaHost
             ExceptionDispatchInfo.Throw(scenario.Exception);
         }
 
-        if (!scenario.StatusCodeIgnored && (int)response.StatusCode != scenario.ExpectedStatusCode)
+        var statusCode = (int)response.StatusCode;
+        var statusFailure = !scenario.StatusCodeIgnored && (scenario.ExpectedStatusCode.HasValue
+            ? statusCode != scenario.ExpectedStatusCode.Value
+            : statusCode < 200 || statusCode >= 300);
+        if (statusFailure)
         {
             var body = await response.Content.ReadAsStringAsync(cancellationToken);
             await cleanupFailedStream(response, invoker, activity);
 
             var ex = new ScenarioAssertionException();
-            ex.Add($"Expected status code {scenario.ExpectedStatusCode}, but was {(int)response.StatusCode}");
+            ex.Add(scenario.ExpectedStatusCode.HasValue
+                ? $"Expected status code {scenario.ExpectedStatusCode}, but was {statusCode}"
+                : $"Expected a status code between 200 and 299, but was {statusCode}");
             ex.AddBody(body);
             throw ex;
         }

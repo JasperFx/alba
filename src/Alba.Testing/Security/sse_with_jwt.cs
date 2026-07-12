@@ -69,6 +69,6 @@ public class sse_with_jwt : IAsyncLifetime
                 x.Get.Url("/sse/secured");
             }));
 
-        ex.Message.ShouldContain("Expected status code 200, but was 401");
+        ex.Message.ShouldContain("Expected a status code between 200 and 299, but was 401");
     }
 }

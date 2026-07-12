@@ -13,7 +13,8 @@ namespace Alba.Testing.Samples
                 // Or a specific status code
                 _.StatusCodeShouldBe(403);
 
-                // Any status code between 200 and 299
+                // Any status code between 200 and 299; this is the
+                // default expectation for every scenario
                 _.StatusCodeShouldBeSuccess();
 
                 // Ignore the status code altogether
