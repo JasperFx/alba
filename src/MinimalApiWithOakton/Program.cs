@@ -26,6 +26,13 @@ namespace MinimalApiWithOakton
             app.MapGet("/args", () => Results.Ok(args));
             app.MapPost("/go", (PostedMessage input) => new OutputMessage(input.Id));
 
+            app.MapMethods("/api/query", ["QUERY"], async (HttpContext context) =>
+            {
+                using var reader = new StreamReader(context.Request.Body);
+                var body = await reader.ReadToEndAsync(context.RequestAborted);
+                return $"I ran a QUERY with value {body}";
+            });
+
             app.MapGet("/sse/finite", () => TypedResults.ServerSentEvents(
                 Enumerable.Range(1, 3)
                     .Select(i => new SseItem<Counter>(new Counter { Number = i }, "count") { EventId = i.ToString() })

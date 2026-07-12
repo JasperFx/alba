@@ -151,6 +151,8 @@ happen to contain the text "Error" now parse successfully.
 
 ## Improvements
 
+- Scenarios can issue HTTP QUERY requests via `Scenario.Query`, matching the existing verb
+  properties (`x.Query.Url("/api/query")`).
 - The response body is buffered once, asynchronously, immediately after each request completes.
   All response reads — including the synchronous `ReadAsText()`, `ReadAsJson<T>()`, and body
   assertions — are seekable, repeatable, memory-only operations.

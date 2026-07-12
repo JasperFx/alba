@@ -15,6 +15,7 @@ namespace Alba.Testing.Samples
                 _.Delete.Url("/");
                 _.Patch.Url("/");
                 _.Head.Url("/");
+                _.Query.Url("/");
             });
         }
         #endregion

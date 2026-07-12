@@ -116,6 +116,18 @@ public class Scenario : IUrlExpression
         }
     }
 
+    /// <summary>
+    /// Specify an HTTP QUERY Url
+    /// </summary>
+    public IUrlExpression Query
+    {
+        get
+        {
+            ConfigureHttpContext(context => context.HttpMethod("QUERY"));
+            return this;
+        }
+    }
+
     internal List<Claim> Claims { get; } = new();
     internal List<string> RemovedClaims { get; } = new();
     internal Exception? Exception { get; set; }
