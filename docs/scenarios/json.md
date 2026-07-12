@@ -1,7 +1,9 @@
 # Sending and Checking Json
 
 JSON serialization is done with the configured input and output formatters within the underlying application. This means that
-Alba can support systems using both System.Text.Json and Newtonsoft.Json.
+Alba can support systems using both System.Text.Json and Newtonsoft.Json. Alba picks the application's System.Text.Json or
+Newtonsoft.Json formatters even when other registered formatters (such as ASP.NET Core OData's) also advertise
+`application/json`, so the JSON helpers work in applications that mix OData and plain API controllers.
 
 ## Sending Json
 

@@ -138,7 +138,7 @@ await host.Scenario(x =>
 `StatusCodeShouldBeSuccess()` restores the default success-range expectation after
 `StatusCodeShouldBe(...)` or `IgnoreStatusCode()`, no longer registers a scenario assertion (so
 it also works with `StreamServerSentEvents`), and moved from an extension method to an instance
-method on `Scenario` (source compatible). This also fixes
+method on `Scenario`. This also fixes
 [#228](https://github.com/JasperFx/alba/issues/228), where `StatusCodeShouldBeSuccess()` ran the
 default exact-200 assertion alongside the range check and failed 201/202/204 responses.
 
@@ -149,15 +149,8 @@ body merely *contained* the substring "Error", and threw on any other unparseabl
 attempt to parse and return `null` only when the body is not valid XML. Valid XML documents that
 happen to contain the text "Error" now parse successfully.
 
-## Improvements
+## New features
 
-- Scenarios can issue HTTP QUERY requests via `Scenario.Query`, matching the existing verb
-  properties (`x.Query.Url("/api/query")`).
-- The response body is buffered once, asynchronously, immediately after each request completes.
-  All response reads — including the synchronous `ReadAsText()`, `ReadAsJson<T>()`, and body
-  assertions — are seekable, repeatable, memory-only operations.
-- Scenario setup exceptions from asynchronous before-each actions surface directly with their
-  original stack traces instead of being marshalled out of the test server callback.
 - **Server-sent events support.** Finite streams: `IScenarioResult.ReadAsServerSentEvents()` and
   `ReadAsServerSentEvents<T>()` parse a buffered response body as `SseItem<T>` values, with the
   typed overload deserializing each data payload through the application's JSON options. Live
@@ -168,8 +161,24 @@ happen to contain the text "Error" now parse successfully.
   `HttpContext.RequestAborted`) and then runs `AfterEach`/`AfterEachAsync` actions with a `null`
   `HttpContext`. Response assertions other than the expected status code are not supported on the
   streaming path and are rejected up front.
+- **HTTP QUERY support.** Scenarios can issue HTTP QUERY requests via `Scenario.Query`, matching
+  the existing verb properties (`x.Query.Url("/api/query")`).
+
+## Improvements
+
+- The response body is buffered once, asynchronously, immediately after each request completes.
+  All response reads — including the synchronous `ReadAsText()`, `ReadAsJson<T>()`, and body
+  assertions — are seekable, repeatable, memory-only operations.
+- Scenario setup exceptions from asynchronous before-each actions surface directly with their
+  original stack traces instead of being marshalled out of the test server callback.
 
 ## Bug fixes
 
-- An explicit `StatusCodeShouldBe(...)` now re-enables the exact status code check even when
-  `IgnoreStatusCode()` was called earlier on the scenario.
+- Alba's MVC JSON strategy no longer selects third-party formatters (such as
+  Microsoft.AspNetCore.OData's) that advertise `application/json` but cannot run outside their
+  own pipeline. The framework's System.Text.Json or Newtonsoft.Json formatters are preferred
+  regardless of registration order, fixing `PostJson`/`ReadAsJson` in applications that register
+  OData ([#116](https://github.com/JasperFx/alba/issues/116)). Applications that intentionally
+  front-loaded a custom JSON formatter alongside the framework one and relied on Alba picking
+  the custom one now get the framework formatter; remove the framework JSON formatters if the
+  custom one should win.

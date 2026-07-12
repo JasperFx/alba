@@ -19,6 +19,9 @@ public class FormatterSerializer : IJsonStrategy
         _output = jsonOutput;
     }
 
+    internal InputFormatter InputFormatter => _input;
+    internal OutputFormatter OutputFormatter => _output;
+
     public async Task<Stream> WriteAsync<T>(T body)
     {
         var stubContext = new DefaultHttpContext();

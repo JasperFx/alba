@@ -455,14 +455,39 @@ public class AlbaHost : IAlbaHost
     {
         var options = Services.GetRequiredService<IOptionsMonitor<MvcOptions>>();
         return options.Get("").OutputFormatters.OfType<OutputFormatter>()
-            .FirstOrDefault(x => x.SupportedMediaTypes.Contains(contentType));
+            .Where(x => x.SupportedMediaTypes.Contains(contentType))
+            .OrderBy(rankJsonFormatter)
+            .FirstOrDefault();
     }
 
     private InputFormatter? findInputFormatter(string contentType)
     {
         var options = Services.GetRequiredService<IOptionsMonitor<MvcOptions>>();
         return options.Get("").InputFormatters.OfType<InputFormatter>()
-            .FirstOrDefault(x => x.SupportedMediaTypes.Contains(contentType));
+            .Where(x => x.SupportedMediaTypes.Contains(contentType))
+            .OrderBy(rankJsonFormatter)
+            .FirstOrDefault();
+    }
+
+    // Third-party formatters such as OData's register ahead of the framework's JSON
+    // formatters and advertise "application/json", but cannot run outside their own
+    // pipeline (GH-116). Prefer the formatter the application actually uses for plain JSON.
+    private static int rankJsonFormatter(object formatter)
+    {
+        if (formatter is SystemTextJsonInputFormatter or SystemTextJsonOutputFormatter) return 0;
+
+        // Alba doesn't reference Microsoft.AspNetCore.Mvc.NewtonsoftJson, so match by name;
+        // walk base types so subclasses rank the same
+        for (var type = formatter.GetType(); type != null; type = type.BaseType)
+        {
+            if (type.FullName is "Microsoft.AspNetCore.Mvc.Formatters.NewtonsoftJsonInputFormatter"
+                or "Microsoft.AspNetCore.Mvc.Formatters.NewtonsoftJsonOutputFormatter")
+            {
+                return 1;
+            }
+        }
+
+        return 2;
     }
 
     public async Task<HttpContext> Invoke(Action<HttpContext> setup)
