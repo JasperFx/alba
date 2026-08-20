@@ -186,6 +186,13 @@ happen to contain the text "Error" now parse successfully.
   assertions — are seekable, repeatable, memory-only operations.
 - Scenario setup exceptions from asynchronous before-each actions surface directly with their
   original stack traces instead of being marshalled out of the test server callback.
+- `FromHttpRequestMessage(...)` accepts every HTTP method. QUERY maps to `Scenario.Query`, and
+  OPTIONS, TRACE, or any custom verb the application routes are applied directly instead of
+  throwing `NotSupportedException`.
+- A failure inside `IAlbaExtension.Start` now tears down the application that Alba already
+  started instead of leaving an orphaned host and `TestServer` running for the rest of the test
+  session. `IAlbaHost.DisposeAsync()` likewise completes every teardown step even when one fails,
+  reporting the failures together as an `AggregateException`.
 
 ## Bug fixes
 
@@ -197,3 +204,15 @@ happen to contain the text "Error" now parse successfully.
   front-loaded a custom JSON formatter alongside the framework one and relied on Alba picking
   the custom one now get the framework formatter; remove the framework JSON formatters if the
   custom one should win.
+- Text and XML request bodies declare a `Content-Length` in bytes rather than characters.
+  Non-ASCII bodies previously advertised a length shorter than the payload actually written.
+- Scenario setup failures no longer execute the request. A `ConfigureHttpContext(...)` callback
+  that throws, or a scenario with no url, used to run against the application with a half
+  configured request before the exception surfaced. This applies to `StreamServerSentEvents`
+  as well, and after-each actions now receive a null `HttpContext` for these failures.
+- `PostJson(...)` serialized the request body twice. Custom `IJsonStrategy` implementations are
+  now invoked once per scenario, matching `PutJson(...)`.
+- OpenID Connect extensions dispose cleanly when they were never started. Disposing an extension
+  whose `Start` failed validation threw a `NullReferenceException` that masked the real error.
+- `MimeType` lookups are safe to use from multiple threads. `MimeTypeByValue(...)` and
+  `MimeTypeByFileName(...)` cache misses into static state shared by every host.

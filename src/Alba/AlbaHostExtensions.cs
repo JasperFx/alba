@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
 
@@ -46,11 +46,7 @@ public static class AlbaHostExtensions
     /// <returns></returns>
     public static ResponseExpression PostJson<T>(this IAlbaHost system, T request, [StringSyntax(StringSyntaxAttribute.Uri)]string url, JsonStyle? jsonStyle = null) where T : class
     {
-        return new(system, s =>
-        {
-            s.WriteJson(request, jsonStyle);
-            s.Post.Json(request, jsonStyle).ToUrl(url);
-        });
+        return new(system, s => { s.Post.Json(request, jsonStyle).ToUrl(url); });
     }
 
     /// <summary>

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Alba.Internal;
@@ -6,6 +6,10 @@ namespace Alba.Internal;
 internal sealed class LightweightCache<TKey, TValue> : IEnumerable<TValue> where TKey : notnull
 {
     private readonly IDictionary<TKey, TValue> _values;
+
+    // The cache backs static MimeType state that is shared by every AlbaHost.
+    // Locking keeps the dictionary intact and its enumeration order stable.
+    private readonly object _lock = new();
 
     private Func<TValue, TKey> _getKey = delegate { throw new NotImplementedException(); };
 
@@ -47,18 +51,30 @@ internal sealed class LightweightCache<TKey, TValue> : IEnumerable<TValue> where
         set => _getKey = value;
     }
 
-    public int Count => _values.Count;
+    public int Count
+    {
+        get
+        {
+            lock (_lock)
+            {
+                return _values.Count;
+            }
+        }
+    }
 
     public TValue? First
     {
         get
         {
-            foreach (var pair in _values)
+            lock (_lock)
             {
-                return pair.Value;
-            }
+                foreach (var pair in _values)
+                {
+                    return pair.Value;
+                }
 
-            return default(TValue);
+                return default(TValue);
+            }
         }
     }
 
@@ -66,21 +82,27 @@ internal sealed class LightweightCache<TKey, TValue> : IEnumerable<TValue> where
     {
         get
         {
-            if (!_values.TryGetValue(key, out TValue? value))
+            lock (_lock)
             {
-                value = _onMissing(key);
-
-                if (value != null)
+                if (!_values.TryGetValue(key, out TValue? value))
                 {
-                    _values[key] = value;
-                }
-            }
+                    value = _onMissing(key);
 
-            return value;
+                    if (value != null)
+                    {
+                        _values[key] = value;
+                    }
+                }
+
+                return value;
+            }
         }
         set
         {
-            _values[key] = value;
+            lock (_lock)
+            {
+                _values[key] = value;
+            }
         }
     }
 
@@ -91,7 +113,7 @@ internal sealed class LightweightCache<TKey, TValue> : IEnumerable<TValue> where
 
     public IEnumerator<TValue> GetEnumerator()
     {
-        return _values.Values.GetEnumerator();
+        return ((IEnumerable<TValue>)GetAll()).GetEnumerator();
     }
 
     /// <summary>
@@ -106,30 +128,42 @@ internal sealed class LightweightCache<TKey, TValue> : IEnumerable<TValue> where
 
     public void Fill(TKey key, TValue value)
     {
-        if (_values.ContainsKey(key))
+        lock (_lock)
         {
-            return;
-        }
+            if (_values.ContainsKey(key))
+            {
+                return;
+            }
 
-        _values.Add(key, value);
+            _values.Add(key, value);
+        }
     }
 
     public bool TryRetrieve(TKey key, [MaybeNullWhen(false)] out TValue value)
     {
-        return _values.TryGetValue(key, out value);
+        lock (_lock)
+        {
+            return _values.TryGetValue(key, out value);
+        }
     }
 
     public void Each(Action<TValue> action)
     {
-        foreach (var pair in _values)
+        foreach (var value in GetAll())
         {
-            action(pair.Value);
+            action(value);
         }
     }
 
     public void Each(Action<TKey, TValue> action)
     {
-        foreach (var pair in _values)
+        KeyValuePair<TKey, TValue>[] pairs;
+        lock (_lock)
+        {
+            pairs = _values.ToArray();
+        }
+
+        foreach (var pair in pairs)
         {
             action(pair.Key, pair.Value);
         }
@@ -137,7 +171,10 @@ internal sealed class LightweightCache<TKey, TValue> : IEnumerable<TValue> where
 
     public bool Has(TKey key)
     {
-        return _values.ContainsKey(key);
+        lock (_lock)
+        {
+            return _values.ContainsKey(key);
+        }
     }
 
     public bool Exists(Predicate<TValue> predicate)
@@ -151,11 +188,11 @@ internal sealed class LightweightCache<TKey, TValue> : IEnumerable<TValue> where
 
     public TValue? Find(Predicate<TValue> predicate)
     {
-        foreach (var pair in _values)
+        foreach (var value in GetAll())
         {
-            if (predicate(pair.Value))
+            if (predicate(value))
             {
-                return pair.Value;
+                return value;
             }
         }
 
@@ -164,15 +201,18 @@ internal sealed class LightweightCache<TKey, TValue> : IEnumerable<TValue> where
 
     public TValue[] GetAll()
     {
-        var returnValue = new TValue[Count];
-        _values.Values.CopyTo(returnValue, 0);
+        lock (_lock)
+        {
+            var returnValue = new TValue[_values.Count];
+            _values.Values.CopyTo(returnValue, 0);
 
-        return returnValue;
+            return returnValue;
+        }
     }
 
     public void Remove(TKey key)
     {
-        if (_values.ContainsKey(key))
+        lock (_lock)
         {
             _values.Remove(key);
         }
@@ -180,19 +220,25 @@ internal sealed class LightweightCache<TKey, TValue> : IEnumerable<TValue> where
 
     public void Clear()
     {
-        _values.Clear();
+        lock (_lock)
+        {
+            _values.Clear();
+        }
     }
 
     public void WithValue(TKey key, Action<TValue> action)
     {
-        if (_values.ContainsKey(key))
+        lock (_lock)
         {
-            action(this[key]);
+            if (_values.ContainsKey(key))
+            {
+                action(this[key]);
+            }
         }
     }
 
     public void ClearAll()
     {
-        _values.Clear();
+        Clear();
     }
 }

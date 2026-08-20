@@ -1,4 +1,4 @@
-﻿namespace Alba;
+namespace Alba;
 
 public static class ScenarioExtensions
 {
@@ -22,16 +22,37 @@ public static class ScenarioExtensions
             : request.RequestUri.ToString();
 
         // Map HTTP method to the appropriate expression
-        IUrlExpression urlExpression = request.Method.Method.ToUpperInvariant() switch
+        var method = request.Method.Method.ToUpperInvariant();
+        IUrlExpression urlExpression;
+        switch (method)
         {
-            "GET" => scenario.Get,
-            "POST" => scenario.Post,
-            "PUT" => scenario.Put,
-            "DELETE" => scenario.Delete,
-            "PATCH" => scenario.Patch,
-            "HEAD" => scenario.Head,
-            _ => throw new NotSupportedException($"HTTP method '{request.Method}' is not supported")
-        };
+            case "GET":
+                urlExpression = scenario.Get;
+                break;
+            case "POST":
+                urlExpression = scenario.Post;
+                break;
+            case "PUT":
+                urlExpression = scenario.Put;
+                break;
+            case "DELETE":
+                urlExpression = scenario.Delete;
+                break;
+            case "PATCH":
+                urlExpression = scenario.Patch;
+                break;
+            case "HEAD":
+                urlExpression = scenario.Head;
+                break;
+            case "QUERY":
+                urlExpression = scenario.Query;
+                break;
+            default:
+                // OPTIONS, TRACE, and any custom verb the application routes
+                scenario.ConfigureHttpContext(c => c.HttpMethod(method));
+                urlExpression = scenario;
+                break;
+        }
 
         // Set the URL
         var sendExpression = urlExpression.Url(relativeUrl);

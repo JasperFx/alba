@@ -185,13 +185,12 @@ public class AlbaHost : IAlbaHost
                 }
                 catch (Exception e)
                 {
+                    // Capture the original exception for its stack trace, then abort
+                    // the send so the application never sees a half configured request
                     scenario.Exception = e;
+                    throw;
                 }
             });
-            if (scenario.Exception != null)
-            {
-                ExceptionDispatchInfo.Throw(scenario.Exception);
-            }
 
             scenario.RunAssertions(context);
 
@@ -201,6 +200,11 @@ public class AlbaHost : IAlbaHost
             }
 
             return new ScenarioResult(this, context);
+        }
+        catch (Exception) when (scenario.Exception != null)
+        {
+            ExceptionDispatchInfo.Throw(scenario.Exception);
+            throw;
         }
         finally
         {
@@ -262,7 +266,10 @@ public class AlbaHost : IAlbaHost
             }
             catch (Exception e)
             {
+                // Capture the original exception for its stack trace, then abort
+                // the send so the application never sees a half configured request
                 scenario.Exception = e;
+                throw;
             }
         });
 
@@ -280,13 +287,15 @@ public class AlbaHost : IAlbaHost
         {
             invoker.Dispose();
             activity?.Dispose();
-            throw;
-        }
 
-        if (scenario.Exception != null)
-        {
-            await cleanupFailedStream(response, invoker, activity);
-            ExceptionDispatchInfo.Throw(scenario.Exception);
+            foreach (var func in _afterEach) await func(null);
+
+            if (scenario.Exception != null)
+            {
+                ExceptionDispatchInfo.Throw(scenario.Exception);
+            }
+
+            throw;
         }
 
         var statusCode = (int)response.StatusCode;
@@ -332,18 +341,46 @@ public class AlbaHost : IAlbaHost
 
     public async ValueTask DisposeAsync()
     {
-        foreach (var extension in Extensions) await extension.DisposeAsync();
-        if (_host is not null)
+        List<Exception>? failures = null;
+
+        foreach (var extension in Extensions)
         {
-            await _host.StopAsync();
-            _host.Dispose();
+            await tryTeardown(() => extension.DisposeAsync());
         }
 
-        Server.Dispose();
-
-        if (_factory is not null)
+        await tryTeardown(async () =>
         {
-            await _factory.DisposeAsync();
+            if (_host is not null)
+            {
+                await _host.StopAsync();
+                _host.Dispose();
+            }
+        });
+
+        await tryTeardown(() =>
+        {
+            Server.Dispose();
+            return ValueTask.CompletedTask;
+        });
+
+        await tryTeardown(() => _factory?.DisposeAsync() ?? ValueTask.CompletedTask);
+
+        if (failures is not null)
+        {
+            throw new AggregateException("One or more failures while tearing down the AlbaHost", failures);
+        }
+
+        // Every teardown step runs even if an earlier one fails
+        async ValueTask tryTeardown(Func<ValueTask> step)
+        {
+            try
+            {
+                await step();
+            }
+            catch (Exception e)
+            {
+                (failures ??= new List<Exception>()).Add(e);
+            }
         }
     }
 
@@ -362,11 +399,63 @@ public class AlbaHost : IAlbaHost
 
         var host = await builder.StartAsync();
 
-        var albaHost = new AlbaHost(host, extensions);
+        AlbaHost albaHost;
+        try
+        {
+            albaHost = new AlbaHost(host, extensions);
+        }
+        catch
+        {
+            await stopQuietly(host);
+            throw;
+        }
 
-        foreach (var extension in extensions) await extension.Start(albaHost);
+        return await startExtensions(albaHost, extensions);
+    }
 
-        return albaHost;
+    private static async Task<IAlbaHost> startExtensions(AlbaHost host, IAlbaExtension[] extensions)
+    {
+        try
+        {
+            foreach (var extension in extensions) await extension.Start(host);
+        }
+        catch
+        {
+            // The application is already running at this point, so tear it down
+            // rather than leaking a TestServer for the rest of the test run
+            await disposeQuietly(host);
+            throw;
+        }
+
+        return host;
+    }
+
+    private static async Task disposeQuietly(IAsyncDisposable host)
+    {
+        try
+        {
+            await host.DisposeAsync();
+        }
+        catch (Exception)
+        {
+            // A teardown failure here would only mask the startup failure that matters
+        }
+    }
+
+    private static async Task stopQuietly(IHost host)
+    {
+        try
+        {
+            await host.StopAsync();
+        }
+        catch (Exception)
+        {
+            // A teardown failure here would only mask the startup failure that matters
+        }
+        finally
+        {
+            host.Dispose();
+        }
     }
 
 
@@ -394,14 +483,18 @@ public class AlbaHost : IAlbaHost
 
         await app.StartAsync();
 
-        var host = new AlbaHost(app, extensions);
-
-        foreach (var extension in extensions)
+        AlbaHost host;
+        try
         {
-            await extension.Start(host);
+            host = new AlbaHost(app, extensions);
+        }
+        catch
+        {
+            await stopQuietly(app);
+            throw;
         }
 
-        return host;
+        return await startExtensions(host, extensions);
     }
 
 
@@ -418,14 +511,19 @@ public class AlbaHost : IAlbaHost
         JasperFxEnvironmentAutoStartHost.Enable();
         var factory = new AlbaWebApplicationFactory<TEntryPoint>(configuration, extensions);
 
-        var host = new AlbaHost(factory, extensions);
-
-        foreach (var extension in extensions)
+        AlbaHost host;
+        try
         {
-            await extension.Start(host);
+            // The factory builds and starts the application when its TestServer is resolved
+            host = new AlbaHost(factory, extensions);
+        }
+        catch
+        {
+            await disposeQuietly(factory);
+            throw;
         }
 
-        return host;
+        return await startExtensions(host, extensions);
     }
 
     /// <summary>

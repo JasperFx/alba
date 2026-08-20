@@ -1,4 +1,4 @@
-﻿using Shouldly;
+using Shouldly;
 
 namespace Alba.Testing
 {
@@ -65,6 +65,22 @@ namespace Alba.Testing
         {
             MimeType.MimeTypeByFileName("foo.323")
                 .Value.ShouldBe("text/h323");
+        }
+
+        [Fact]
+        public void lookups_are_safe_from_multiple_threads()
+        {
+            // The lookups cache misses into static state shared by every host
+            var values = Enumerable.Range(0, 500).Select(i => $"application/vnd.alba-{i}").ToArray();
+
+            Parallel.ForEach(values.Concat(values), value =>
+            {
+                MimeType.MimeTypeByValue(value).Value.ShouldBe(value);
+                MimeType.MimeTypeByFileName("foo.js")!.Value.ShouldBe("application/javascript");
+            });
+
+            var all = MimeType.All().Select(x => x.Value).ToArray();
+            values.Where(x => !all.Contains(x)).ShouldBeEmpty();
         }
     }
 }

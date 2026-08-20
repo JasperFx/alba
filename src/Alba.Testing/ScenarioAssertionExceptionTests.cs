@@ -295,16 +295,38 @@ public class ScenarioExtensionsTests : ScenarioContext
     }
 
     [Fact]
-    public void from_http_request_message_throws_for_unsupported_method()
+    public Task from_http_request_message_with_query_method()
     {
-        var request = new HttpRequestMessage(new HttpMethod("OPTIONS"), "http://localhost/api/test");
-
-        Should.Throw<NotSupportedException>(async () =>
+        router.Handlers["/api/search"] = c =>
         {
-            await host.Scenario(scenario =>
-            {
-                scenario.FromHttpRequestMessage(request);
-            });
+            c.Request.Method.ShouldBe("QUERY");
+            return c.Response.WriteAsync("queried");
+        };
+
+        var request = new HttpRequestMessage(new HttpMethod("QUERY"), "http://localhost/api/search");
+
+        return host.Scenario(scenario =>
+        {
+            scenario.FromHttpRequestMessage(request);
+            scenario.ContentShouldBe("queried");
+        });
+    }
+
+    [Fact]
+    public Task from_http_request_message_with_any_other_method()
+    {
+        router.Handlers["/api/preflight"] = c =>
+        {
+            c.Request.Method.ShouldBe("OPTIONS");
+            return c.Response.WriteAsync("preflighted");
+        };
+
+        var request = new HttpRequestMessage(new HttpMethod("OPTIONS"), "http://localhost/api/preflight");
+
+        return host.Scenario(scenario =>
+        {
+            scenario.FromHttpRequestMessage(request);
+            scenario.ContentShouldBe("preflighted");
         });
     }
 
