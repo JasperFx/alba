@@ -32,6 +32,28 @@ public class ScenarioResult : IScenarioResult
     }
 
     /// <inheritdoc />
+    public byte[] ReadAsBytes()
+    {
+        return Read(s =>
+        {
+            var buffer = new MemoryStream();
+            s.CopyTo(buffer);
+            return buffer.ToArray();
+        });
+    }
+
+    /// <inheritdoc />
+    public Task<byte[]> ReadAsBytesAsync()
+    {
+        return ReadAsync(async s =>
+        {
+            var buffer = new MemoryStream();
+            await s.CopyToAsync(buffer);
+            return buffer.ToArray();
+        });
+    }
+
+    /// <inheritdoc />
     public XmlDocument? ReadAsXml()
     {
         Func<Stream, XmlDocument?> read = s => tryParseXml(s.ReadAllText());

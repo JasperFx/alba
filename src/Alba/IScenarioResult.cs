@@ -25,6 +25,20 @@ public interface IScenarioResult
     Task<string> ReadAsTextAsync();
 
     /// <summary>
+    /// Read the contents of the HttpResponse.Body as raw bytes, for binary payloads
+    /// such as files or images that would be corrupted by reading them as text
+    /// </summary>
+    /// <returns></returns>
+    byte[] ReadAsBytes();
+
+    /// <summary>
+    /// Read the contents of the HttpResponse.Body as raw bytes, for binary payloads
+    /// such as files or images that would be corrupted by reading them as text
+    /// </summary>
+    /// <returns></returns>
+    Task<byte[]> ReadAsBytesAsync();
+
+    /// <summary>
     /// Read the contents of the HttpResponse.Body into an XmlDocument object
     /// </summary>
     /// <returns></returns>

@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Headers;
+using System.Text;
 using System.Net.Mime;
 using Shouldly;
 using WebApp;
@@ -110,6 +111,46 @@ namespace Alba.Testing.Acceptance
 
             person.FirstName.ShouldBe("Jeremy");
             person.LastName.ShouldBe("Miller");
+        }
+
+        [Fact]
+        public async Task read_the_response_as_bytes()
+        {
+            var expectedJson = "{\"firstName\":\"Jeremy\",\"lastName\":\"Miller\"}";
+            var result = await run(_ =>
+            {
+                _.Get.Url("/api/json");
+                _.Body.TextIs(expectedJson);
+            });
+
+            result.ReadAsBytes().ShouldBe(Encoding.UTF8.GetBytes(expectedJson));
+        }
+
+        [Fact]
+        public async Task read_the_response_as_bytes_async()
+        {
+            var expectedJson = "{\"firstName\":\"Jeremy\",\"lastName\":\"Miller\"}";
+            var result = await run(_ =>
+            {
+                _.Get.Url("/api/json");
+                _.Body.TextIs(expectedJson);
+            });
+
+            (await result.ReadAsBytesAsync()).ShouldBe(Encoding.UTF8.GetBytes(expectedJson));
+        }
+
+        [Fact]
+        public async Task reading_as_bytes_does_not_consume_the_response()
+        {
+            var expectedJson = "{\"firstName\":\"Jeremy\",\"lastName\":\"Miller\"}";
+            var result = await run(_ =>
+            {
+                _.Get.Url("/api/json");
+                _.Body.TextIs(expectedJson);
+            });
+
+            result.ReadAsBytes().Length.ShouldBe(Encoding.UTF8.GetByteCount(expectedJson));
+            result.ReadAsJson<Person>().FirstName.ShouldBe("Jeremy");
         }
 
         [Fact]

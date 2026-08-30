@@ -166,6 +166,10 @@ happen to contain the text "Error" now parse successfully.
 ## New features
 
 - **Server-sent events support.** See the [docs page](https://github.com/JasperFx/alba/blob/master/docs/scenarios/sse.md)
+- **Binary response reads.** `IScenarioResult.ReadAsBytes()` and `ReadAsBytesAsync()` return the
+  response body as `byte[]`, for endpoints that return files, images or other payloads that
+  `ReadAsText()` would corrupt. Like the other readers they leave the body readable, so a scenario
+  can assert on the bytes and still call `ReadAsJson<T>()` afterwards.
 - **HTTP QUERY support.** Scenarios can issue HTTP QUERY requests via `Scenario.Query`, matching
   the existing verb properties (`x.Query.Url("/api/query")`).
 - **Time-travel testing with `TimeProviderOverride`.** A `FakeTimeProvider`-based extension that
