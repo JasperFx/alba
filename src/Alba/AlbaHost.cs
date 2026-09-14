@@ -29,7 +29,7 @@ public class AlbaHost : IAlbaHost
     private readonly List<Func<Scenario, Task>> _beforeEachAsync = new();
     private readonly List<Action<HttpContext>> _beforeEachSync = new();
 
-    private AlbaHost(IHost host, params IAlbaExtension[] extensions)
+    internal AlbaHost(IHost host, params IAlbaExtension[] extensions)
     {
         _host = host;
         Server = host.GetTestServer();
@@ -385,35 +385,20 @@ public class AlbaHost : IAlbaHost
     }
 
 
-    public static async Task<IAlbaHost> For(IHostBuilder builder, params IAlbaExtension[] extensions)
+    /// <summary>
+    /// Configure an AlbaHost for the supplied IHostBuilder. The application starts
+    /// when the returned builder is awaited
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="extensions"></param>
+    /// <returns></returns>
+    public static AlbaHostBuilder For(IHostBuilder builder, params IAlbaExtension[] extensions)
     {
-        builder = builder
-            .ConfigureServices(_ =>
-            {
-                _.AddHttpContextAccessor();
-                _.AddSingleton<IServer, TestServer>();
-            });
-
-        var adapter = new HostBuilderAdapter(builder);
-        foreach (var extension in extensions) extension.Configure(adapter);
-
-        var host = await builder.StartAsync();
-
-        AlbaHost albaHost;
-        try
-        {
-            albaHost = new AlbaHost(host, extensions);
-        }
-        catch
-        {
-            await stopQuietly(host);
-            throw;
-        }
-
-        return await startExtensions(albaHost, extensions);
+        ArgumentNullException.ThrowIfNull(builder);
+        return new AlbaHostBuilder(new HostBuilderBootstrapper(builder)).WithExtensions(extensions);
     }
 
-    private static async Task<IAlbaHost> startExtensions(AlbaHost host, IAlbaExtension[] extensions)
+    internal static async Task<IAlbaHost> StartExtensions(AlbaHost host, IAlbaExtension[] extensions)
     {
         try
         {
@@ -423,14 +408,14 @@ public class AlbaHost : IAlbaHost
         {
             // The application is already running at this point, so tear it down
             // rather than leaking a TestServer for the rest of the test run
-            await disposeQuietly(host);
+            await DisposeQuietly(host);
             throw;
         }
 
         return host;
     }
 
-    private static async Task disposeQuietly(IAsyncDisposable host)
+    internal static async Task DisposeQuietly(IAsyncDisposable host)
     {
         try
         {
@@ -442,7 +427,7 @@ public class AlbaHost : IAlbaHost
         }
     }
 
-    private static async Task stopQuietly(IHost host)
+    internal static async Task StopQuietly(IHost host)
     {
         try
         {
@@ -460,84 +445,52 @@ public class AlbaHost : IAlbaHost
 
 
     /// <summary>
-    /// Create an AlbaHost using the new WebApplicationBuilder
+    /// Configure an AlbaHost for a WebApplicationBuilder. The application is built
+    /// and started when the returned builder is awaited
     /// </summary>
     /// <param name="builder"></param>
-    /// <param name="configureRoutes"></param>
+    /// <param name="configureRoutes">Configure the WebApplication for routing and/or middleware</param>
     /// <param name="extensions"></param>
     /// <returns></returns>
-    public static async Task<IAlbaHost> For(WebApplicationBuilder builder, Action<WebApplication> configureRoutes,
+    public static AlbaHostBuilder For(WebApplicationBuilder builder, Action<WebApplication> configureRoutes,
         params IAlbaExtension[] extensions)
     {
-        builder.Services.AddHttpContextAccessor();
-        builder.WebHost.UseTestServer();
-
-        var adapter = new WebApplicationBuilderAdapter(builder);
-        foreach (var extension in extensions)
-        {
-            extension.Configure(adapter);
-        }
-
-        var app = builder.Build();
-        configureRoutes(app);
-
-        await app.StartAsync();
-
-        AlbaHost host;
-        try
-        {
-            host = new AlbaHost(app, extensions);
-        }
-        catch
-        {
-            await stopQuietly(app);
-            throw;
-        }
-
-        return await startExtensions(host, extensions);
+        ArgumentNullException.ThrowIfNull(builder);
+        ArgumentNullException.ThrowIfNull(configureRoutes);
+        return new AlbaHostBuilder(new WebApplicationBuilderBootstrapper(builder, configureRoutes))
+            .WithExtensions(extensions);
     }
 
 
     /// <summary>
-    /// Creates an AlbaHost using an underlying WebApplicationFactory.
+    /// Configure an AlbaHost for an application bootstrapped through WebApplicationFactory.
+    /// The application starts when the returned builder is awaited
     /// </summary>
     /// <typeparam name="TEntryPoint">A type in the entry point assembly of the application. Typically the Startup or Program classes can be used.</typeparam>
     /// <param name="configuration"></param>
     /// <param name="extensions"></param>
     /// <returns></returns>
-    public static async Task<IAlbaHost> For<TEntryPoint>(Action<IWebHostBuilder> configuration,
+    public static AlbaHostBuilder For<TEntryPoint>(Action<IWebHostBuilder> configuration,
         params IAlbaExtension[] extensions) where TEntryPoint : class
     {
-        JasperFxEnvironmentAutoStartHost.Enable();
-        var factory = new AlbaWebApplicationFactory<TEntryPoint>(configuration, extensions);
-
-        AlbaHost host;
-        try
-        {
-            // The factory builds and starts the application when its TestServer is resolved
-            host = new AlbaHost(factory, extensions);
-        }
-        catch
-        {
-            await disposeQuietly(factory);
-            throw;
-        }
-
-        return await startExtensions(host, extensions);
+        ArgumentNullException.ThrowIfNull(configuration);
+        return new AlbaHostBuilder(new WebApplicationFactoryBootstrapper<TEntryPoint>(configuration))
+            .WithExtensions(extensions);
     }
 
     /// <summary>
-    /// Creates an AlbaHost using an underlying WebApplicationFactory with the application defaults.
+    /// Configure an AlbaHost for an application bootstrapped through WebApplicationFactory
+    /// with the application defaults. The application starts when the returned builder is awaited
     /// </summary>
     /// <typeparam name="TEntryPoint">A type in the entry point assembly of the application. Typically the Startup or Program classes can be used.</typeparam>
     /// <param name="extensions"></param>
     /// <returns></returns>
-    public static Task<IAlbaHost> For<TEntryPoint>(params IAlbaExtension[] extensions) where TEntryPoint : class
+    public static AlbaHostBuilder For<TEntryPoint>(params IAlbaExtension[] extensions) where TEntryPoint : class
     {
         return For<TEntryPoint>(_ => { }, extensions);
     }
 
-    private AlbaHost(IAlbaWebApplicationFactory factory, params IAlbaExtension[] extensions)
+    internal AlbaHost(IAlbaWebApplicationFactory factory, params IAlbaExtension[] extensions)
     {
         _factory = factory;
         // This version of the test server will internally startup when initialized here

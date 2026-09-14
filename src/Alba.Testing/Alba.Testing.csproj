@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFrameworks>net10.0;net11.0</TargetFrameworks>
     <IsPackable>false</IsPackable>
     <OutputType>Exe</OutputType>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -13,6 +13,7 @@
     <ProjectReference Include="..\WebApiAspNetCore3\WebApiStartupHostingModel.csproj" />
     <ProjectReference Include="..\WebApiNet6\WebApiNet6.csproj" />
     <ProjectReference Include="..\MinimalApiWithOakton\MinimalApiWithOakton.csproj" />
+    <ProjectReference Include="..\MinimalApiWithoutArgs\MinimalApiWithoutArgs.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -44,6 +45,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Samples\SnapshotTesting.SnapshotTest.DotNet10_0.verified.txt">
+      <DependentUpon>SnapshotTesting.cs</DependentUpon>
+    </None>
+    <None Update="Samples\SnapshotTesting.SnapshotTest.DotNet11_0.verified.txt">
       <DependentUpon>SnapshotTesting.cs</DependentUpon>
     </None>
   </ItemGroup>

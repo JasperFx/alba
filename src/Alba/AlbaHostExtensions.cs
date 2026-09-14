@@ -9,27 +9,29 @@ public static class AlbaHostExtensions
 {
 
     /// <summary>
-    /// Start an AlbaHost for a configured WebApplicationBuilder and WebApplication
+    /// Configure an AlbaHost for a WebApplicationBuilder and WebApplication. The
+    /// application starts when the returned builder is awaited
     /// </summary>
     /// <param name="builder"></param>
     /// <param name="configureRoutes">Configure the WebApplication for routing and/or middleware</param>
     /// <param name="extensions"></param>
     /// <returns></returns>
-    public static Task<IAlbaHost> StartAlbaAsync(this WebApplicationBuilder builder,
+    public static AlbaHostBuilder StartAlbaAsync(this WebApplicationBuilder builder,
         Action<WebApplication> configureRoutes,
         params IAlbaExtension[] extensions)
     {
         return AlbaHost.For(builder, configureRoutes, extensions);
     }
 
-        
+
     /// <summary>
-    /// Start an AlbaHost for the supplied IHostBuilder
+    /// Configure an AlbaHost for the supplied IHostBuilder. The application starts
+    /// when the returned builder is awaited
     /// </summary>
     /// <param name="builder"></param>
     /// <param name="extensions"></param>
     /// <returns></returns>
-    public static Task<IAlbaHost> StartAlbaAsync(this IHostBuilder builder, params IAlbaExtension[] extensions)
+    public static AlbaHostBuilder StartAlbaAsync(this IHostBuilder builder, params IAlbaExtension[] extensions)
     {
         return AlbaHost.For(builder, extensions);
     }

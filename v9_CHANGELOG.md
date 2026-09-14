@@ -4,8 +4,11 @@
 
 ### .NET 10 is required
 
-Alba now targets `net10.0` only; support for .NET 8 and .NET 9 is dropped. Applications under
-test must run on .NET 10.
+Alba now targets `net10.0` and `net11.0`; support for .NET 8 and .NET 9 is dropped. Applications
+under test must run on .NET 10 or later. The `net11.0` target builds against the .NET 11 release
+candidate packages (`Microsoft.AspNetCore.Mvc.Testing` and
+`Microsoft.AspNetCore.Authentication.JwtBearer` 11.0.0-rc.1) and will move to the final packages
+when .NET 11 ships.
 
 ### `BeforeEachAsync` now receives the `Scenario` and runs before the request
 
@@ -66,6 +69,66 @@ var host = await AlbaHost.For(w => w.UseStartup<Startup>());
 var host = await AlbaHost.For(Host.CreateDefaultBuilder()
     .ConfigureWebHostDefaults(w => w.UseStartup<Startup>()));
 ```
+
+### Bootstrapping returns an awaitable `AlbaHostBuilder`
+
+`AlbaHost.For(...)`, `AlbaHost.For<T>(...)`, and the `StartAlbaAsync()` extension methods return an
+`AlbaHostBuilder` instead of `Task<IAlbaHost>`. The builder is awaitable and the application starts
+when it is awaited, so every `await AlbaHost.For<Program>(...)` keeps working. Configuration value
+overrides and extensions can be chained onto it first; service registrations and other host
+customization stay in the configuration action:
+
+```cs
+await using var host = await AlbaHost.For<Program>(x =>
+    {
+        x.ConfigureServices(s => s.AddSingleton<IExternalWebService>(stub));
+    })
+    .WithConfiguration("ConnectionStrings:Postgres", "MyOverriddenValue")
+    .WithExtension(new AuthenticationStub().WithName("jeremy"));
+```
+
+Code that stores the result as a `Task<IAlbaHost>` or passes it where a `Func<Task>` is expected
+needs to start the builder explicitly:
+
+```cs
+// Alba 8
+Task<IAlbaHost> starting = AlbaHost.For<Program>();
+await Should.ThrowAsync<Exception>(() => AlbaHost.For<Program>(badExtension));
+
+// Alba 9
+Task<IAlbaHost> starting = AlbaHost.For<Program>().StartAsync();
+await Should.ThrowAsync<Exception>(async () => await AlbaHost.For<Program>(badExtension));
+```
+
+### `ConfigurationOverride` removed
+
+Configuration values are overridden on the builder instead:
+
+```cs
+// Alba 8
+var host = await AlbaHost.For<Program>(ConfigurationOverride.Create(values));
+
+// Alba 9
+var host = await AlbaHost.For<Program>().WithConfiguration(values);
+// or one value at a time
+var host = await AlbaHost.For<Program>().WithConfiguration("ConnectionStrings:Postgres", "value");
+```
+
+### On .NET 11, `AlbaHost.For<T>` requires a `WebApplicationBuilder` application
+
+The `net11.0` build of Alba uses `WebApplicationFactory`'s new `ConfigureWebApplicationBuilder` hook
+to apply configuration before the application's own startup code runs. `WebApplicationFactory` only
+supports that hook for applications built with `WebApplicationBuilder`, so on .NET 11 bootstrapping
+a `Startup.cs`-style application through `AlbaHost.For<T>` fails with an `InvalidOperationException`
+from `WebApplicationFactory`. Bootstrap those applications through their `IHostBuilder`, which is
+fully supported on every target:
+
+```cs
+// .NET 11, Startup.cs-style application
+await using var host = await Program.CreateHostBuilder(args).StartAlbaAsync();
+```
+
+The `net10.0` build supports both hosting models through `AlbaHost.For<T>` as before.
 
 ### `AllowSynchronousIO` is no longer forced on
 
@@ -178,6 +241,14 @@ happen to contain the text "Error" now parse successfully.
   `Advance(...)` and `SetUtcNow(...)`
   ([#230](https://github.com/JasperFx/alba/issues/230)). Alba now depends on the
   `Microsoft.Extensions.TimeProvider.Testing` package.
+- **Fluent host configuration.** Every bootstrapping method returns an awaitable `AlbaHostBuilder`
+  with `WithConfiguration(...)` and `WithExtension(...)`, applied in the order they are chained on
+  every bootstrapping style. On .NET 11, `AlbaHost.For<T>` applies
+  configuration to the `WebApplicationBuilder` as soon as it is created, so values are readable in
+  `Program.cs` before `builder.Build()` and reach applications that never forward `args` into
+  `WebApplication.CreateBuilder()`
+  ([#238](https://github.com/JasperFx/alba/issues/238)). The values no longer appear in the
+  application's command line `args` on .NET 11.
 
 ## Improvements
 

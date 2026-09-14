@@ -25,6 +25,9 @@ public sealed class AlbaBootstrap : IAsyncInitializer, IAsyncDisposable
 <sup><a href='https://github.com/JasperFx/alba/blob/master/src/TUnitSamples/Program.cs#L6-L21' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_TUnit_Application' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
+Any Alba specific setup, such as configuration overrides or extensions, is chained onto `AlbaHost.For<T>()` before it is awaited
+(see [Configuring the Host Fluently](gettingstarted.md#configuring-the-host-fluently)).
+
 Then inject the instance by adding `[ClassDataSource<AlbaBootstrap>(Shared = SharedType.PerTestSession)]` to your test class. We recommend creating a base class to allow easier access of the host and any other dependencies.
 
 <!-- snippet: sample_TUnit_scenario_test -->

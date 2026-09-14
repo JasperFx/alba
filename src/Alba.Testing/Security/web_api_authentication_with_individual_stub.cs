@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using Alba.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,7 +26,8 @@ public class web_api_authentication_with_individual_stub
             .With(JwtRegisteredClaimNames.Email, "guy@company.com")
             .WithName("jeremy");
 
-        await using var host = await AlbaHost.For<WebAppSecuredWithJwt.Program>(securityStub);
+        await using var host = await AlbaHost.For<WebAppSecuredWithJwt.Program>()
+            .WithExtension(securityStub);
 
         #endregion
 

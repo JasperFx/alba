@@ -5,7 +5,9 @@ Whilst `AlbaHost.For<T>` is the preferred way of bootstrapping, other options ex
 
 ## Initializing AlbaHost with IHostBuilder Directly
 
-To bootstrap a **ASP.NET Core Startup.cs-style** application, create a `AlbaHost` using the definition of your `IHostBuilder` as shown below:
+To bootstrap a **ASP.NET Core Startup.cs-style** application, create a `AlbaHost` using the definition of your `IHostBuilder` as shown below.
+On .NET 11 this is the way to test a `Startup.cs`-style application, because `AlbaHost.For<T>` only supports applications built
+with `WebApplicationBuilder` there.
 
 <!-- snippet: sample_Quickstart3 -->
 <a id='snippet-sample_Quickstart3'></a>
@@ -64,6 +66,6 @@ The `AlbaHost` is an extension of the standard .Net Core [IHost](https://docs.mi
 While you can always access the underlying `TestServer` through the `IAlbaHost.Server` property, you're mostly going to be using the `Scenario()` method to write Alba "Scenario" tests.
 
 ::: tip
-If you build a `AlbaHost` with `AlbaHost.ForStartup<T>()`, it will try to guess at the content root path by the name of assembly
-  that holds the `Startup` class, but you may need to override that yourself. 
+Every bootstrapping method returns an `AlbaHostBuilder`, so configuration values, service registrations, and extensions can be
+chained on before the host is awaited. See [Configuring the Host Fluently](gettingstarted.md#configuring-the-host-fluently).
 :::

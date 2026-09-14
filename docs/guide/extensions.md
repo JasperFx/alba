@@ -55,8 +55,8 @@ public interface IAlbaHostBuilder
 has a default no-op implementation, so extensions that only need post-start logic can implement
 `Start` alone.
 
-When you are initializing an `AlbaHost`, you can pass in an optional array of extensions like this sample from the security stub
-testing:
+Extensions are applied when the `AlbaHost` is bootstrapped, either as arguments to any of the `AlbaHost.For(...)` methods or
+chained onto the returned builder with `WithExtension(...)`. This sample from the security stub testing passes one as an argument:
 
 <!-- snippet: sample_bootstrapping_with_stub_extension -->
 <a id='snippet-sample_bootstrapping_with_stub_extension'></a>
@@ -73,29 +73,24 @@ theHost = await AlbaHost.For<WebAppSecuredWithJwt.Program>(securityStub);
 <sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/web_api_authentication_with_stub.cs#L15-L26' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_bootstrapping_with_stub_extension' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
-## Configuration Extension
+The same kind of extension chained onto the builder:
 
-In some scenarios it may be more convienent to override a configuration value rather than modifying the service configuration. Due to a current [limitation](https://github.com/dotnet/aspnetcore/issues/37680) in the ASP.NET Core test host, overriding your application's configuration values requires a workaround. Alba includes this workaround out of the box via the `ConfigurationOverride` extension.
-For example, to override an application's Postgres connection string:
-
-<!-- snippet: sample_configuration_extension -->
-<a id='snippet-sample_configuration_extension'></a>
+<!-- snippet: sample_bootstrapping_with_stub_scheme_extension -->
+<a id='snippet-sample_bootstrapping_with_stub_scheme_extension'></a>
 ```cs
-var configValues = new Dictionary<string, string?>()
-{
-    { "ConnectionStrings:Postgres", "MyOverriddenValue" }
-};
+// Stub out an individual scheme
+var securityStub = new AuthenticationStub("custom")
+    .With("foo", "bar")
+    .With(JwtRegisteredClaimNames.Email, "guy@company.com")
+    .WithName("jeremy");
 
-var host = await AlbaHost.For<WebAppSecuredWithJwt.Program>(builder =>
-{
-    builder.ConfigureServices(c =>
-    {
-        // services config
-    });
-}, ConfigurationOverride.Create(configValues));
+await using var host = await AlbaHost.For<WebAppSecuredWithJwt.Program>()
+    .WithExtension(securityStub);
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Extensions.cs#L8-L22' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_configuration_extension' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/web_api_authentication_with_individual_stub.cs#L21-L32' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_bootstrapping_with_stub_scheme_extension' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
+
+See [Configuring the Host Fluently](gettingstarted.md#configuring-the-host-fluently) for the full builder surface.
 
 ## Time Travel with TimeProviderOverride
 

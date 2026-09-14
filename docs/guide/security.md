@@ -5,7 +5,8 @@
 To stub out all possible authentication inside your ASP.NET Core system, you can use the
 `AuthenticationStub` to automatically authenticate every request and build out a `ClaimsPrincipal` to your specification.
 
-Here's a sample of bootstrapping an `AlbaHost` with the `AuthenticationStub`:
+Here's a sample of bootstrapping an `AlbaHost` with the `AuthenticationStub`. Security extensions can be passed as arguments to
+`AlbaHost.For(...)` as shown here, or chained onto the returned builder with `WithExtension(...)`:
 
 <!-- snippet: sample_bootstrapping_with_stub_extension -->
 <a id='snippet-sample_bootstrapping_with_stub_extension'></a>
@@ -102,9 +103,10 @@ var securityStub = new AuthenticationStub("custom")
     .With(JwtRegisteredClaimNames.Email, "guy@company.com")
     .WithName("jeremy");
 
-await using var host = await AlbaHost.For<WebAppSecuredWithJwt.Program>(securityStub);
+await using var host = await AlbaHost.For<WebAppSecuredWithJwt.Program>()
+    .WithExtension(securityStub);
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/web_api_authentication_with_individual_stub.cs#L21-L31' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_bootstrapping_with_stub_scheme_extension' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Security/web_api_authentication_with_individual_stub.cs#L21-L32' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_bootstrapping_with_stub_scheme_extension' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 ## Integration with JWT Authentication

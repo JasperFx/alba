@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -12,14 +12,19 @@ internal sealed class AlbaWebApplicationFactory<TEntryPoint> : WebApplicationFac
     IAlbaWebApplicationFactory where TEntryPoint : class
 {
     private readonly Action<IWebHostBuilder> _configuration;
-    private readonly IAlbaExtension[] _extensions;
+    private readonly IReadOnlyList<Action<IAlbaHostBuilder>> _steps;
+
+#if NET11_0_OR_GREATER
+    private WebApplicationFactoryHostBuilderAdapter? _adapter;
+#endif
 
     public IHost? CreatedHost { get; private set; }
 
-    public AlbaWebApplicationFactory(Action<IWebHostBuilder> configuration, IAlbaExtension[] extensions)
+    public AlbaWebApplicationFactory(Action<IWebHostBuilder> configuration,
+        IReadOnlyList<Action<IAlbaHostBuilder>> steps)
     {
         _configuration = configuration;
-        _extensions = extensions;
+        _steps = steps;
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -31,22 +36,34 @@ internal sealed class AlbaWebApplicationFactory<TEntryPoint> : WebApplicationFac
         base.ConfigureWebHost(builder);
     }
 
+#if NET11_0_OR_GREATER
+    // Runs during the entry point's WebApplication.CreateBuilder call, before the
+    // application's own startup code, so overridden configuration is readable there
+    protected override void ConfigureWebApplicationBuilder(IHostApplicationBuilder hostApplicationBuilder)
+    {
+        _adapter?.ApplyTo(hostApplicationBuilder);
+    }
+#endif
+
     protected override IHost CreateHost(IHostBuilder builder)
     {
-        var adapter = new HostBuilderAdapter(builder);
-        foreach (var extension in _extensions)
-        {
-            extension.Configure(adapter);
-        }
+#if NET11_0_OR_GREATER
+        _adapter = new WebApplicationFactoryHostBuilderAdapter(builder);
+        IAlbaHostBuilder adapter = _adapter;
+#else
+        IAlbaHostBuilder adapter = new HostBuilderAdapter(builder);
+#endif
+        // Extensions and caller configuration, in the order they were recorded
+        foreach (var step in _steps) step(adapter);
 
-        // Avoid using Windows EventLog as it can cause exceptions during host stop/disposal. 
+        // Avoid using Windows EventLog as it can cause exceptions during host stop/disposal.
         builder.ConfigureLogging(DisableWindowsEventLoggerProvider);
 
         CreatedHost = base.CreateHost(builder);
-        
+
         return CreatedHost;
     }
-    
+
     private static void DisableWindowsEventLoggerProvider(ILoggingBuilder loggingBuilder)
     {
         loggingBuilder.Services

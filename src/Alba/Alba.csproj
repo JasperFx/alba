@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <Description>Supercharged integration testing for ASP.NET Core HTTP endpoints</Description>
-    <Version>9.0.0-beta.1</Version>
-    <TargetFramework>net10.0</TargetFramework>
+    <Version>9.0.0-rc.1</Version>
+    <TargetFrameworks>net10.0;net11.0</TargetFrameworks>
     <PackageProjectUrl>http://jasperfx.github.io/alba/</PackageProjectUrl>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>

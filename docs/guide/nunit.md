@@ -30,6 +30,9 @@ public class Application
 <sup><a href='https://github.com/JasperFx/alba/blob/master/src/NUnitSamples/UnitTest1.cs#L7-L29' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_NUnit_Application' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
+Any Alba specific setup, such as configuration overrides or extensions, is chained onto `AlbaHost.For<T>()` before it is awaited
+(see [Configuring the Host Fluently](gettingstarted.md#configuring-the-host-fluently)).
+
 Then reference the `AlbaHost` in tests like this sample:
 
 <!-- snippet: sample_NUnit_scenario_test -->

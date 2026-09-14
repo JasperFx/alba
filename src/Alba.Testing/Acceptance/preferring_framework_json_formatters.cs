@@ -40,7 +40,7 @@ public class preferring_framework_json_formatters
             => throw new UriFormatException("Invalid URI: simulated OData formatter failure");
     }
 
-    private static Task<IAlbaHost> createHost() =>
+    private static AlbaHostBuilder createHost() =>
         AlbaHost.For<WebApp.Program>(x =>
         {
             x.ConfigureServices(services => services.PostConfigure<MvcOptions>(o =>

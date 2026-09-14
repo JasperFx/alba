@@ -12,7 +12,10 @@ namespace MinimalApiWithOakton
         {
             var builder = WebApplication.CreateBuilder(args);
             builder.Host.UseLamar();
-            
+
+            // Read before Build so tests can prove overridden configuration reaches startup code
+            var greeting = builder.Configuration["Alba:Greeting"] ?? "Hello from appsettings";
+
             // Configure JSON options.
             builder.Services.Configure<JsonOptions>(options =>
             {
@@ -25,6 +28,7 @@ namespace MinimalApiWithOakton
             var app = builder.Build();
             app.MapGet("/", () => "Hello World!");
             app.MapGet("/args", () => Results.Ok(args));
+            app.MapGet("/greeting", () => greeting);
             app.MapPost("/go", (PostedMessage input) => new OutputMessage(input.Id));
 
             app.MapGet("/time", (TimeProvider timeProvider) => new CurrentTime(timeProvider.GetUtcNow()));

@@ -11,8 +11,10 @@ At this point, Alba is a value added wrapper around the [ASP.NET Core TestServer
 
 The *scenario* testing in Alba was inspired by the [testing support in the Scala PlayFramework](https://www.playframework.com/documentation/2.8.x/ScalaFunctionalTestingWithSpecs2). 
 
-When using Alba, you actually bootstrap your web application in memory using either the "older"
-[HostBuilder model](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.hosting.hostbuilder?view=dotnet-plat-ext-6.0) or the newer [WebApplicationFactory](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.testing.webapplicationfactory-1?view=aspnetcore-6.0) model , then pass the root `IHost` of the running application to Alba's `AlbaHost`, which will be the entry point to using Alba in all of your integration tests.
+When using Alba, you bootstrap your web application in memory through one of three models: the application's `IHostBuilder`,
+a `WebApplicationBuilder`, or [WebApplicationFactory](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.testing.webapplicationfactory-1?view=aspnetcore-6.0)
+for an application's entry point. Each returns an awaitable `AlbaHostBuilder` that starts the application and hands back Alba's `AlbaHost`,
+which will be the entry point to using Alba in all of your integration tests.
 
 `AlbaHost` is shown in the class diagram below:
 

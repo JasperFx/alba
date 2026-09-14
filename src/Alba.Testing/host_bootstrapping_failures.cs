@@ -26,7 +26,7 @@ public class host_bootstrapping_failures
         var tracker = new TrackingExtension();
 
         var ex = await Should.ThrowAsync<DivideByZeroException>(
-            () => AlbaHost.For(theBuilder(), tracker, new FailsToStartExtension()));
+            async () => await AlbaHost.For(theBuilder(), tracker, new FailsToStartExtension()));
 
         ex.Message.ShouldBe("I cannot start");
 
@@ -40,7 +40,7 @@ public class host_bootstrapping_failures
         var tracker = new TrackingExtension();
 
         await Should.ThrowAsync<DivideByZeroException>(
-            () => AlbaHost.For<WebApp.Program>(tracker, new FailsToStartExtension()));
+            async () => await AlbaHost.For<WebApp.Program>(tracker, new FailsToStartExtension()));
 
         tracker.WasAsyncDisposed.ShouldBeTrue();
     }

@@ -6,8 +6,8 @@ using Microsoft.Extensions.Hosting;
 namespace Alba;
 
 /// <summary>
-/// Applies extension configuration to IHostBuilder-based bootstrapping,
-/// including the host builder supplied by WebApplicationFactory
+/// Applies configuration to IHostBuilder-based bootstrapping. On .NET 10 this also
+/// serves the host builder supplied by WebApplicationFactory
 /// </summary>
 internal sealed class HostBuilderAdapter : IAlbaHostBuilder
 {
@@ -25,11 +25,45 @@ internal sealed class HostBuilderAdapter : IAlbaHostBuilder
 
     public void ConfigureConfiguration(Action<IConfigurationBuilder> configure)
     {
-        // Host configuration is what reaches applications created through
-        // WebApplicationFactory; see dotnet/aspnetcore#37680
+        // Host configuration is the only configuration that reaches a WebApplicationBuilder
+        // application before its own startup code runs; see dotnet/aspnetcore#37680
         _builder.ConfigureHostConfiguration(configure);
     }
 }
+
+#if NET11_0_OR_GREATER
+/// <summary>
+/// Applies configuration to a WebApplicationBuilder application bootstrapped through
+/// WebApplicationFactory. Configuration lands on the WebApplicationBuilder as soon as
+/// it is created, before the application's own startup code runs
+/// </summary>
+internal sealed class WebApplicationFactoryHostBuilderAdapter : IAlbaHostBuilder
+{
+    private readonly IHostBuilder _builder;
+    private readonly List<Action<IConfigurationBuilder>> _configuration = new();
+
+    public WebApplicationFactoryHostBuilderAdapter(IHostBuilder builder)
+    {
+        _builder = builder;
+    }
+
+    public void ConfigureServices(Action<IServiceCollection> configure)
+    {
+        // Applied when the application builds, after its own registrations, so these win
+        _builder.ConfigureServices((_, services) => configure(services));
+    }
+
+    public void ConfigureConfiguration(Action<IConfigurationBuilder> configure)
+    {
+        _configuration.Add(configure);
+    }
+
+    public void ApplyTo(IHostApplicationBuilder builder)
+    {
+        foreach (var configure in _configuration) configure(builder.Configuration);
+    }
+}
+#endif
 
 /// <summary>
 /// Applies extension configuration directly to a WebApplicationBuilder

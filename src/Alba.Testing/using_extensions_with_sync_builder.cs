@@ -139,13 +139,9 @@ namespace Alba.Testing
         public async Task configuration_override_beats_existing_appsettings_value_on_minimal_hosting_under_web_application_factory()
         {
             // MinimalApiWithOakton's appsettings.json sets Logging:LogLevel:Default to "Information";
-            // this is the dotnet/aspnetcore#37680 scenario the ConfigurationOverride extension exists for
-            var overrides = ConfigurationOverride.Create(new Dictionary<string, string?>
-            {
-                ["Logging:LogLevel:Default"] = "Critical"
-            });
-
-            await using var host = await AlbaHost.For<MinimalApiWithOakton.Program>(overrides);
+            // this is the dotnet/aspnetcore#37680 scenario
+            await using var host = await AlbaHost.For<MinimalApiWithOakton.Program>()
+                .WithConfiguration("Logging:LogLevel:Default", "Critical");
 
             var configuration = host.Services.GetRequiredService<IConfiguration>();
             configuration["Logging:LogLevel:Default"].ShouldBe("Critical");

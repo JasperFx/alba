@@ -9,7 +9,7 @@ built in [ASP.NET Core TestServer](https://docs.microsoft.com/en-us/aspnet/core/
 You can certainly write integration tests by hand using the lower level `TestServer` and `HttpClient`, but you'll write much less code with Alba. Moreover, Alba *scenarios* were meant to be declarative to maximize the readability of the integration tests, making those tests much more valuable as living technical documentation.
 
 ::: tip
-As of 9.0+, Alba only supports .NET 10.0 or greater. You can still use older versions of Alba to test previous versions of ASP.NET Core.
+As of 9.0+, Alba only supports .NET 10.0 or greater and ships `net10.0` and `net11.0` targets, so .NET 11 release candidate applications are supported as well. You can still use older versions of Alba to test previous versions of ASP.NET Core.
 :::
 
 ## Alba Setup
@@ -22,7 +22,7 @@ your ASP.NET Core system with Alba and start authoring specifications with the `
 
 ## Initializing AlbaHost
 
-Alba is compatible with both traditional-style `Startup.cs` projects as well as the new `WebApplicationBuilder` minimal approach. The following instructions work with both models.
+Alba supports both traditional `Startup.cs` projects and the `WebApplicationBuilder` minimal hosting approach. On .NET 10, `AlbaHost.For<T>` works with both models. On .NET 11, `AlbaHost.For<T>` requires a `WebApplicationBuilder` application; bootstrap a `Startup.cs`-style application through its `IHostBuilder` instead, as shown in [Alternative Bootstrapping Methods](bootstrapping.md).
 
 As an example, consider this very small ASP.NET Core application utilizing the new [Minimal API](https://docs.microsoft.com/en-us/aspnet/core/tutorials/min-web-api?view=aspnetcore-6.0&tabs=visual-studio) approach:
 
@@ -77,7 +77,7 @@ await using var host = await AlbaHost.For<global::Program>(x =>
 <sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Acceptance/web_application_factory_usage.cs#L41-L50' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_bootstrapping_with_web_application_factory' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
-The `AlbaHost.For<T>(Action<WebApplicationFactory<T>> configuration)` method uses `WebApplicationFactory` and all its magic static
+The `AlbaHost.For<T>(Action<IWebHostBuilder> configuration)` method uses `WebApplicationFactory` and all its magic static
 member trickery to intercept and run the implied `Program.Main()` method from the sample application above while also allowing you to customize 
 the application configuration at testing time. The "T" in this case is only a marker type so that `WebApplicationFactory` can choose the correct 
 entry assembly for the web application that is being tested by Alba.
@@ -88,6 +88,44 @@ for more information.
 ::: tip
 `AlbaHost` is an expensive object to create, so you'll generally want to reuse it across tests. See the relevant guide for [xUnit](xunit.md) or [NUnit](nunit.md)
 :::
+
+## Configuring the Host Fluently
+
+Every bootstrapping method returns an `AlbaHostBuilder`. Nothing starts until the builder is awaited, so you can
+chain the Alba specific parts of the setup onto it first: configuration value overrides and Alba extensions. ASP.NET
+Core host customization such as service registrations stays in the configuration action passed to `AlbaHost.For<T>`.
+
+<!-- snippet: sample_fluent_configuration -->
+<a id='snippet-sample_fluent_configuration'></a>
+```cs
+await using var host = await AlbaHost.For<WebAppSecuredWithJwt.Program>(x =>
+    {
+        // Service registrations and other ASP.NET Core host
+        // customization belong in this action
+        x.ConfigureServices(services =>
+        {
+            // services.AddSingleton<IExternalService, StubbedExternalService>();
+        });
+    })
+    // Override configuration values. These are visible to the
+    // application's own startup code
+    .WithConfiguration("ConnectionStrings:Postgres", "MyOverriddenValue")
+    // Apply Alba extensions
+    .WithExtension(new AuthenticationStub().WithName("jeremy"));
+```
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Extensions.cs#L11-L28' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_fluent_configuration' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+Calls are applied in the order they are chained, so an extension chained later overrides what an earlier one
+registered.
+
+Configuration values take precedence over the application's own configuration files. On .NET 11, `AlbaHost.For<T>`
+applies them to the `WebApplicationBuilder` as soon as it is created, before the application's own startup code runs,
+so a value read in `Program.cs` before `builder.Build()` already sees the override, and the values reach applications
+that never forward `args` into `WebApplication.CreateBuilder()`. On .NET 10, `AlbaHost.For<T>` passes the values to
+the application as host configuration, which requires the application to call `WebApplication.CreateBuilder(args)`.
+Host-level keys such as `environment` and `contentRoot` cannot be changed this way; use `UseEnvironment` on the
+`Action<IWebHostBuilder>` overload for those.
 
 ## Running a Scenario
 

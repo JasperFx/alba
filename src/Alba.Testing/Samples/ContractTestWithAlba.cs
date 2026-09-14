@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Shouldly;
 
 namespace Alba.Testing.Samples
@@ -12,9 +12,11 @@ public class WebAppFixture : IAsyncLifetime
     public async ValueTask InitializeAsync()
     {
         AlbaHost = await Alba.AlbaHost.For<WebApp.Program>(builder =>
-        {
-            // Configure all the things
-        });
+            {
+                // ASP.NET Core host setup such as service registrations
+            })
+            // Alba specific setup such as configuration overrides and extensions
+            .WithConfiguration("Alba:Fixture", "xUnit");
     }
 
     public async ValueTask DisposeAsync()
