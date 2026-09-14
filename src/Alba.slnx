@@ -1,0 +1,17 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="..\README.md" />
+    <File Path="..\img\icon.png" />
+  </Folder>
+  <Project Path="Alba\Alba.csproj" />
+  <Project Path="Alba.Testing\Alba.Testing.csproj" />
+  <Project Path="WebApp\WebApp.csproj" />
+  <Project Path="WebApiAspNetCore3\WebApiStartupHostingModel.csproj" />
+  <Project Path="WebAppSecuredWithJwt\WebAppSecuredWithJwt.csproj" />
+  <Project Path="NUnitSamples\NUnitSamples.csproj" />
+  <Project Path="WebApiNet6\WebApiNet6.csproj" />
+  <Project Path="MinimalApiWithOakton\MinimalApiWithOakton.csproj" />
+  <Project Path="IdentityServer.New\IdentityServer.New.csproj" />
+  <Project Path="TUnitSamples\TUnitSamples.csproj" />
+  <Project Path="..\build\_build.csproj" />
+</Solution>
