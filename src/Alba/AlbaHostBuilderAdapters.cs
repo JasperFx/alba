@@ -6,8 +6,7 @@ using Microsoft.Extensions.Hosting;
 namespace Alba;
 
 /// <summary>
-/// Applies configuration to IHostBuilder-based bootstrapping. On .NET 10 this also
-/// serves the host builder supplied by WebApplicationFactory
+/// Applies configuration to an application bootstrapped from its own IHostBuilder
 /// </summary>
 internal sealed class HostBuilderAdapter : IAlbaHostBuilder
 {
@@ -20,14 +19,13 @@ internal sealed class HostBuilderAdapter : IAlbaHostBuilder
 
     public void ConfigureServices(Action<IServiceCollection> configure)
     {
-        _builder.ConfigureServices((_, services) => configure(services));
+        _builder.ConfigureServices(configure);
     }
 
     public void ConfigureConfiguration(Action<IConfigurationBuilder> configure)
     {
-        // Host configuration is the only configuration that reaches a WebApplicationBuilder
-        // application before its own startup code runs; see dotnet/aspnetcore#37680
-        _builder.ConfigureHostConfiguration(configure);
+        // Registered after the application's own sources, so these take precedence
+        _builder.ConfigureAppConfiguration((_, config) => configure(config));
     }
 }
 
@@ -50,7 +48,7 @@ internal sealed class WebApplicationFactoryHostBuilderAdapter : IAlbaHostBuilder
     public void ConfigureServices(Action<IServiceCollection> configure)
     {
         // Applied when the application builds, after its own registrations, so these win
-        _builder.ConfigureServices((_, services) => configure(services));
+        _builder.ConfigureServices(configure);
     }
 
     public void ConfigureConfiguration(Action<IConfigurationBuilder> configure)
@@ -61,6 +59,32 @@ internal sealed class WebApplicationFactoryHostBuilderAdapter : IAlbaHostBuilder
     public void ApplyTo(IHostApplicationBuilder builder)
     {
         foreach (var configure in _configuration) configure(builder.Configuration);
+    }
+}
+#else
+/// <summary>
+/// Applies configuration to an application bootstrapped through WebApplicationFactory
+/// </summary>
+internal sealed class WebApplicationFactoryHostBuilderAdapter : IAlbaHostBuilder
+{
+    private readonly IHostBuilder _builder;
+
+    public WebApplicationFactoryHostBuilderAdapter(IHostBuilder builder)
+    {
+        _builder = builder;
+    }
+
+    public void ConfigureServices(Action<IServiceCollection> configure)
+    {
+        _builder.ConfigureServices(configure);
+    }
+
+    public void ConfigureConfiguration(Action<IConfigurationBuilder> configure)
+    {
+        // WebApplicationFactory forwards host configuration to the entry point as command
+        // line arguments, the only configuration that reaches a WebApplicationBuilder
+        // application before its own startup code runs; see dotnet/aspnetcore#37680
+        _builder.ConfigureHostConfiguration(configure);
     }
 }
 #endif

@@ -1,11 +1,10 @@
 using System.Diagnostics;
-using System.Runtime.ExceptionServices;
 using System.Text.Json;
+using Alba.Assertions;
 using Alba.Internal;
 using Alba.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
@@ -39,10 +38,21 @@ public class AlbaHost : IAlbaHost
         (MvcStrategy, MinimalApiStrategy, DefaultJson) = buildJsonStrategies();
     }
 
+    internal AlbaHost(IAlbaWebApplicationFactory factory, params IAlbaExtension[] extensions)
+    {
+        _factory = factory;
+        // This version of the test server will internally startup when initialized here
+        Server = factory.Server;
+
+        Extensions = extensions;
+
+        (MvcStrategy, MinimalApiStrategy, DefaultJson) = buildJsonStrategies();
+    }
+
     private (IJsonStrategy? Mvc, IJsonStrategy MinimalApi, IJsonStrategy Default) buildJsonStrategies()
     {
-        var jsonInput = findInputFormatter("application/json");
-        var jsonOutput = findOutputFormatter("application/json");
+        var jsonInput = findInputFormatter(MimeType.Json.Value);
+        var jsonOutput = findOutputFormatter(MimeType.Json.Value);
 
         IJsonStrategy? mvc = null;
         if (jsonInput != null && jsonOutput != null)
@@ -86,7 +96,7 @@ public class AlbaHost : IAlbaHost
     /// <summary>
     ///     The root IoC container of the running application
     /// </summary>
-    public IServiceProvider Services => _host?.Services ?? _factory!.Services ?? Server.Services;
+    public IServiceProvider Services => _host?.Services ?? _factory!.Services;
 
     public void Dispose()
     {
@@ -94,14 +104,14 @@ public class AlbaHost : IAlbaHost
         // at teardown is the only intentional block left in Alba
         DisposeAsync().AsTask().GetAwaiter().GetResult();
     }
-    
+
     public IAlbaHost BeforeEach(Action<HttpContext> beforeEach)
     {
         _beforeEachSync.Add(beforeEach);
 
         return this;
     }
-    
+
     public IAlbaHost AfterEach(Action<HttpContext?> afterEach)
     {
         _afterEach.Add(c =>
@@ -119,7 +129,7 @@ public class AlbaHost : IAlbaHost
 
         return this;
     }
-    
+
     public IAlbaHost AfterEachAsync(Func<HttpContext?, Task> afterEach)
     {
         _afterEach.Add(afterEach);
@@ -150,61 +160,40 @@ public class AlbaHost : IAlbaHost
 
         foreach (var preparation in scenario.AsyncPreparations) await preparation();
 
-        scenario.Rewind();
-
         HttpContext? context = null;
         try
         {
+            // A setup failure surfaces from Invoke with its original stack trace,
+            // and the application never sees the half configured request
             context = await Invoke(c =>
             {
-                try
+                if (scenario.Claims.Count > 0)
                 {
-                    if (scenario.Claims.Any())
-                    {
-                        c.Items.Add("alba_claims", scenario.Claims.ToArray());
-                    }
-
-                    if (scenario.RemovedClaims.Any())
-                    {
-                        c.Items.Add("alba_removed_claims", scenario.RemovedClaims.ToArray());
-                    }
-
-                    foreach (var pair in scenario.Items) c.Items.Add(pair.Key, pair.Value);
-
-                    foreach (var apply in _beforeEachSync) apply(c);
-
-                    c.Request.Body.Position = 0;
-
-
-                    scenario.SetupHttpContext(c);
-
-                    if (c.Request.Path == null)
-                    {
-                        throw new InvalidOperationException("This scenario has no defined url");
-                    }
+                    c.Items.Add(Alba.Scenario.ClaimsItemKey, scenario.Claims.ToArray());
                 }
-                catch (Exception e)
+
+                if (scenario.RemovedClaims.Count > 0)
                 {
-                    // Capture the original exception for its stack trace, then abort
-                    // the send so the application never sees a half configured request
-                    scenario.Exception = e;
-                    throw;
+                    c.Items.Add(Alba.Scenario.RemovedClaimsItemKey, scenario.RemovedClaims.ToArray());
+                }
+
+                foreach (var pair in scenario.Items) c.Items.Add(pair.Key, pair.Value);
+
+                foreach (var apply in _beforeEachSync) apply(c);
+
+                scenario.SetupHttpContext(c);
+
+                if (c.Request.Path == null)
+                {
+                    throw new InvalidOperationException("This scenario has no defined url");
                 }
             });
 
             scenario.RunAssertions(context);
 
-            if (context.Response.Body.CanSeek)
-            {
-                context.Response.Body.Position = 0;
-            }
+            context.Response.Body.Position = 0;
 
             return new ScenarioResult(this, context);
-        }
-        catch (Exception) when (scenario.Exception != null)
-        {
-            ExceptionDispatchInfo.Throw(scenario.Exception);
-            throw;
         }
         finally
         {
@@ -230,47 +219,35 @@ public class AlbaHost : IAlbaHost
 
         foreach (var preparation in scenario.AsyncPreparations) await preparation();
 
-        scenario.Rewind();
-
         Activity? activity = null;
         var handler = Server.CreateHandler(c =>
         {
-            try
+            if (scenario.Claims.Count > 0)
             {
-                if (scenario.Claims.Any())
-                {
-                    c.Items.Add("alba_claims", scenario.Claims.ToArray());
-                }
-
-                if (scenario.RemovedClaims.Any())
-                {
-                    c.Items.Add("alba_removed_claims", scenario.RemovedClaims.ToArray());
-                }
-
-                foreach (var pair in scenario.Items) c.Items.Add(pair.Key, pair.Value);
-
-                foreach (var apply in _beforeEachSync) apply(c);
-
-                // The placeholder request message maps to "/"; clear the path so
-                // the missing-url check below still applies
-                c.Request.Path = PathString.Empty;
-
-                scenario.SetupHttpContext(c);
-
-                if (c.Request.Path == null)
-                {
-                    throw new InvalidOperationException("This scenario has no defined url");
-                }
-
-                activity = AlbaTracing.StartRequestActivity(c.Request);
+                c.Items.Add(Alba.Scenario.ClaimsItemKey, scenario.Claims.ToArray());
             }
-            catch (Exception e)
+
+            if (scenario.RemovedClaims.Count > 0)
             {
-                // Capture the original exception for its stack trace, then abort
-                // the send so the application never sees a half configured request
-                scenario.Exception = e;
-                throw;
+                c.Items.Add(Alba.Scenario.RemovedClaimsItemKey, scenario.RemovedClaims.ToArray());
             }
+
+            foreach (var pair in scenario.Items) c.Items.Add(pair.Key, pair.Value);
+
+            foreach (var apply in _beforeEachSync) apply(c);
+
+            // The placeholder request message maps to "/"; clear the path so
+            // the missing-url check below still applies
+            c.Request.Path = PathString.Empty;
+
+            scenario.SetupHttpContext(c);
+
+            if (c.Request.Path == null)
+            {
+                throw new InvalidOperationException("This scenario has no defined url");
+            }
+
+            activity = AlbaTracing.StartRequestActivity(c.Request);
         });
 
         var invoker = new HttpMessageInvoker(handler);
@@ -290,27 +267,19 @@ public class AlbaHost : IAlbaHost
 
             foreach (var func in _afterEach) await func(null);
 
-            if (scenario.Exception != null)
-            {
-                ExceptionDispatchInfo.Throw(scenario.Exception);
-            }
-
             throw;
         }
 
-        var statusCode = (int)response.StatusCode;
-        var statusFailure = !scenario.StatusCodeIgnored && (scenario.ExpectedStatusCode.HasValue
-            ? statusCode != scenario.ExpectedStatusCode.Value
-            : statusCode < 200 || statusCode >= 300);
-        if (statusFailure)
+        var statusFailure = scenario.StatusCodeIgnored
+            ? null
+            : StatusCodeExpectation.Failure(scenario.ExpectedStatusCode, (int)response.StatusCode);
+        if (statusFailure != null)
         {
             var body = await response.Content.ReadAsStringAsync(cancellationToken);
             await cleanupFailedStream(response, invoker, activity);
 
             var ex = new ScenarioAssertionException();
-            ex.Add(scenario.ExpectedStatusCode.HasValue
-                ? $"Expected status code {scenario.ExpectedStatusCode}, but was {statusCode}"
-                : $"Expected a status code between 200 and 299, but was {statusCode}");
+            ex.Add(statusFailure);
             ex.AddBody(body);
             throw ex;
         }
@@ -398,6 +367,51 @@ public class AlbaHost : IAlbaHost
         return new AlbaHostBuilder(new HostBuilderBootstrapper(builder)).WithExtensions(extensions);
     }
 
+    /// <summary>
+    /// Configure an AlbaHost for a WebApplicationBuilder. The application is built
+    /// and started when the returned builder is awaited
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="configureRoutes">Configure the WebApplication for routing and/or middleware</param>
+    /// <param name="extensions"></param>
+    /// <returns></returns>
+    public static AlbaHostBuilder For(WebApplicationBuilder builder, Action<WebApplication> configureRoutes,
+        params IAlbaExtension[] extensions)
+    {
+        ArgumentNullException.ThrowIfNull(builder);
+        ArgumentNullException.ThrowIfNull(configureRoutes);
+        return new AlbaHostBuilder(new WebApplicationBuilderBootstrapper(builder, configureRoutes))
+            .WithExtensions(extensions);
+    }
+
+    /// <summary>
+    /// Configure an AlbaHost for an application bootstrapped through WebApplicationFactory.
+    /// The application starts when the returned builder is awaited
+    /// </summary>
+    /// <typeparam name="TEntryPoint">A type in the entry point assembly of the application. Typically the Startup or Program classes can be used.</typeparam>
+    /// <param name="configuration"></param>
+    /// <param name="extensions"></param>
+    /// <returns></returns>
+    public static AlbaHostBuilder For<TEntryPoint>(Action<IWebHostBuilder> configuration,
+        params IAlbaExtension[] extensions) where TEntryPoint : class
+    {
+        ArgumentNullException.ThrowIfNull(configuration);
+        return new AlbaHostBuilder(new WebApplicationFactoryBootstrapper<TEntryPoint>(configuration))
+            .WithExtensions(extensions);
+    }
+
+    /// <summary>
+    /// Configure an AlbaHost for an application bootstrapped through WebApplicationFactory
+    /// with the application defaults. The application starts when the returned builder is awaited
+    /// </summary>
+    /// <typeparam name="TEntryPoint">A type in the entry point assembly of the application. Typically the Startup or Program classes can be used.</typeparam>
+    /// <param name="extensions"></param>
+    /// <returns></returns>
+    public static AlbaHostBuilder For<TEntryPoint>(params IAlbaExtension[] extensions) where TEntryPoint : class
+    {
+        return For<TEntryPoint>(_ => { }, extensions);
+    }
+
     internal static async Task<IAlbaHost> StartExtensions(AlbaHost host, IAlbaExtension[] extensions)
     {
         try
@@ -442,65 +456,6 @@ public class AlbaHost : IAlbaHost
             host.Dispose();
         }
     }
-
-
-    /// <summary>
-    /// Configure an AlbaHost for a WebApplicationBuilder. The application is built
-    /// and started when the returned builder is awaited
-    /// </summary>
-    /// <param name="builder"></param>
-    /// <param name="configureRoutes">Configure the WebApplication for routing and/or middleware</param>
-    /// <param name="extensions"></param>
-    /// <returns></returns>
-    public static AlbaHostBuilder For(WebApplicationBuilder builder, Action<WebApplication> configureRoutes,
-        params IAlbaExtension[] extensions)
-    {
-        ArgumentNullException.ThrowIfNull(builder);
-        ArgumentNullException.ThrowIfNull(configureRoutes);
-        return new AlbaHostBuilder(new WebApplicationBuilderBootstrapper(builder, configureRoutes))
-            .WithExtensions(extensions);
-    }
-
-
-    /// <summary>
-    /// Configure an AlbaHost for an application bootstrapped through WebApplicationFactory.
-    /// The application starts when the returned builder is awaited
-    /// </summary>
-    /// <typeparam name="TEntryPoint">A type in the entry point assembly of the application. Typically the Startup or Program classes can be used.</typeparam>
-    /// <param name="configuration"></param>
-    /// <param name="extensions"></param>
-    /// <returns></returns>
-    public static AlbaHostBuilder For<TEntryPoint>(Action<IWebHostBuilder> configuration,
-        params IAlbaExtension[] extensions) where TEntryPoint : class
-    {
-        ArgumentNullException.ThrowIfNull(configuration);
-        return new AlbaHostBuilder(new WebApplicationFactoryBootstrapper<TEntryPoint>(configuration))
-            .WithExtensions(extensions);
-    }
-
-    /// <summary>
-    /// Configure an AlbaHost for an application bootstrapped through WebApplicationFactory
-    /// with the application defaults. The application starts when the returned builder is awaited
-    /// </summary>
-    /// <typeparam name="TEntryPoint">A type in the entry point assembly of the application. Typically the Startup or Program classes can be used.</typeparam>
-    /// <param name="extensions"></param>
-    /// <returns></returns>
-    public static AlbaHostBuilder For<TEntryPoint>(params IAlbaExtension[] extensions) where TEntryPoint : class
-    {
-        return For<TEntryPoint>(_ => { }, extensions);
-    }
-
-    internal AlbaHost(IAlbaWebApplicationFactory factory, params IAlbaExtension[] extensions)
-    {
-        _factory = factory;
-        // This version of the test server will internally startup when initialized here
-        Server = factory.Server;
-
-        Extensions = extensions;
-
-        (MvcStrategy, MinimalApiStrategy, DefaultJson) = buildJsonStrategies();
-    }
-
 
     private OutputFormatter? findOutputFormatter(string contentType)
     {

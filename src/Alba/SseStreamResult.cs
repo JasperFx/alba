@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Net.ServerSentEvents;
 using System.Text.Json;
+using Microsoft.AspNetCore.Http;
 
 namespace Alba;
 
@@ -15,17 +16,19 @@ public sealed class SseStreamResult : IAsyncDisposable
     private readonly Stream _stream;
     private readonly HttpMessageInvoker _invoker;
     private readonly Activity? _activity;
+    private readonly IReadOnlyList<Func<HttpContext?, Task>> _afterEach;
     private bool _consumed;
     private bool _disposed;
 
     internal SseStreamResult(AlbaHost system, HttpResponseMessage response, Stream stream,
-        HttpMessageInvoker invoker, Activity? activity)
+        HttpMessageInvoker invoker, Activity? activity, IReadOnlyList<Func<HttpContext?, Task>> afterEach)
     {
         _system = system;
         Response = response;
         _stream = stream;
         _invoker = invoker;
         _activity = activity;
+        _afterEach = afterEach;
     }
 
     /// <summary>
@@ -80,6 +83,6 @@ public sealed class SseStreamResult : IAsyncDisposable
         _invoker.Dispose();
         _activity?.Dispose();
 
-        await _system.RunAfterEach(null);
+        foreach (var afterEach in _afterEach) await afterEach(null);
     }
 }

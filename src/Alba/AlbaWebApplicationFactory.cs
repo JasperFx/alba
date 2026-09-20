@@ -47,11 +47,9 @@ internal sealed class AlbaWebApplicationFactory<TEntryPoint> : WebApplicationFac
 
     protected override IHost CreateHost(IHostBuilder builder)
     {
+        var adapter = new WebApplicationFactoryHostBuilderAdapter(builder);
 #if NET11_0_OR_GREATER
-        _adapter = new WebApplicationFactoryHostBuilderAdapter(builder);
-        IAlbaHostBuilder adapter = _adapter;
-#else
-        IAlbaHostBuilder adapter = new HostBuilderAdapter(builder);
+        _adapter = adapter;
 #endif
         // Extensions and caller configuration, in the order they were recorded
         foreach (var step in _steps) step(adapter);
