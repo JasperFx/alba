@@ -19,13 +19,11 @@ public abstract class OpenConnectExtension : IAlbaExtension
     void IDisposable.Dispose()
     {
         _client?.Dispose();
-        GC.SuppressFinalize(this);
     }
 
     ValueTask IAsyncDisposable.DisposeAsync()
     {
         _client?.Dispose();
-        GC.SuppressFinalize(this);
         return ValueTask.CompletedTask;
     }
 

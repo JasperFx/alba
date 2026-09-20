@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
@@ -35,7 +35,7 @@ public sealed class AuthenticationStub : AuthenticationExtensionBase, IAlbaExten
         builder.ConfigureServices(services =>
         {
             services.AddSingleton(this);
-            services.AddTransient<IAuthenticationSchemeProvider, MockSchemeProvider>();
+            services.AddSingleton<IAuthenticationSchemeProvider, MockSchemeProvider>();
         });
     }
 
@@ -49,6 +49,9 @@ public sealed class AuthenticationStub : AuthenticationExtensionBase, IAlbaExten
 
     private sealed class MockSchemeProvider : AuthenticationSchemeProvider
     {
+        private static readonly Task<AuthenticationScheme?> TestScheme = Task.FromResult<AuthenticationScheme?>(
+            new AuthenticationScheme(TestSchemaName, TestSchemaName, typeof(MockAuthenticationHandler)));
+
         private readonly string? _overrideSchemaTarget;
 
         public MockSchemeProvider(AuthenticationStub authSchemaStub, IOptions<AuthenticationOptions> options)
@@ -59,19 +62,9 @@ public sealed class AuthenticationStub : AuthenticationExtensionBase, IAlbaExten
 
         public override Task<AuthenticationScheme?> GetSchemeAsync(string name)
         {
-            if(_overrideSchemaTarget == null)
-                return Task.FromResult(new AuthenticationScheme(
-                    TestSchemaName,
-                    TestSchemaName,
-                    typeof(MockAuthenticationHandler)))!;
-            if (name.Equals(_overrideSchemaTarget, StringComparison.OrdinalIgnoreCase))
+            if (_overrideSchemaTarget is null || name.Equals(_overrideSchemaTarget, StringComparison.OrdinalIgnoreCase))
             {
-                var scheme = new AuthenticationScheme(
-                    TestSchemaName,
-                    TestSchemaName,
-                    typeof(MockAuthenticationHandler));
-
-                return Task.FromResult(scheme)!;
+                return TestScheme;
             }
 
             return base.GetSchemeAsync(name);
@@ -80,7 +73,6 @@ public sealed class AuthenticationStub : AuthenticationExtensionBase, IAlbaExten
         private sealed class MockAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>, IAuthenticationSignOutHandler
         {
             private readonly AuthenticationStub _authenticationSchemaStub;
-
 
             public MockAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, AuthenticationStub authenticationSchemaStub) : base(options, logger, encoder)
             {

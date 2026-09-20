@@ -56,17 +56,13 @@ public class ScenarioResult : IScenarioResult
     /// <inheritdoc />
     public XmlDocument? ReadAsXml()
     {
-        Func<Stream, XmlDocument?> read = s => tryParseXml(s.ReadAllText());
-
-        return Read(read);
+        return Read(s => tryParseXml(s.ReadAllText()));
     }
 
     /// <inheritdoc />
     public Task<XmlDocument?> ReadAsXmlAsync()
     {
-        Func<Stream, Task<XmlDocument?>> read = async s => tryParseXml(await s.ReadAllTextAsync());
-
-        return Read(read);
+        return ReadAsync(async s => tryParseXml(await s.ReadAllTextAsync()));
     }
 
     private static XmlDocument? tryParseXml(string body)
@@ -87,9 +83,7 @@ public class ScenarioResult : IScenarioResult
     /// <inheritdoc />
     public T? ReadAsXml<T>() where T : class
     {
-        Context.Response.Body.Position = 0;
-        var serializer = new XmlSerializer(typeof(T));
-        return serializer.Deserialize(Context.Response.Body) as T;
+        return Read(s => new XmlSerializer(typeof(T)).Deserialize(s) as T);
     }
 
     /// <inheritdoc />
@@ -120,47 +114,41 @@ public class ScenarioResult : IScenarioResult
             .Enumerate().ToList());
     }
 
+    /// <summary>
+    /// Read the buffered response body from the start, leaving it rewound for
+    /// the next read
+    /// </summary>
     public T Read<T>(Func<Stream, T> read)
     {
-        if (Context.Response.Body.CanSeek || Context.Response.Body is MemoryStream)
-        {
-            Context.Response.Body.Position = 0;
-        }
-        else
-        {
-            var stream = new MemoryStream();
-            Context.Response.Body.CopyTo(stream);
-            stream.Position = 0;
-            Context.Response.Body = stream;
-        }
-
-        var returnValue = read(Context.Response.Body);
-        Context.Response.Body.Position = 0;
-
-        return returnValue;
-    }
-
-    public async Task<T> ReadAsync<T>(Func<Stream, Task<T>> read)
-    {
-        if (Context.Response.Body.CanSeek || Context.Response.Body is MemoryStream)
-        {
-            Context.Response.Body.Position = 0;
-        }
-        else
-        {
-            var stream = new MemoryStream();
-            await Context.Response.Body.CopyToAsync(stream);
-            stream.Position = 0;
-            Context.Response.Body = stream;
-        }
+        var body = Context.Response.Body;
+        body.Position = 0;
 
         try
         {
-            return await read(Context.Response.Body);
+            return read(body);
         }
         finally
         {
-            Context.Response.Body.Position = 0;
+            body.Position = 0;
+        }
+    }
+
+    /// <summary>
+    /// Read the buffered response body from the start, leaving it rewound for
+    /// the next read
+    /// </summary>
+    public async Task<T> ReadAsync<T>(Func<Stream, Task<T>> read)
+    {
+        var body = Context.Response.Body;
+        body.Position = 0;
+
+        try
+        {
+            return await read(body);
+        }
+        finally
+        {
+            body.Position = 0;
         }
     }
 }

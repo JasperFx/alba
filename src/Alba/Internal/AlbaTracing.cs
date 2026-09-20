@@ -18,6 +18,8 @@ internal static class AlbaTracing
     
     public static Activity? StartRequestActivity(HttpRequest request)
     {
+        if (!Source.HasListeners()) return null;
+
         var activity = Source.StartActivity($"{request.Method} {request.Path}", ActivityKind.Client);
         activity?.SetRequestTags(request);
         return activity;

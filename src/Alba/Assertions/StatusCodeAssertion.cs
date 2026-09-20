@@ -12,10 +12,10 @@ internal sealed class StatusCodeAssertion : IScenarioAssertion
 
     public void Assert(Scenario scenario, AssertionContext context)
     {
-        var statusCode = context.HttpContext.Response.StatusCode;
-        if (statusCode != Expected)
+        var failure = StatusCodeExpectation.Failure(Expected, context.HttpContext.Response.StatusCode);
+        if (failure != null)
         {
-            context.AddFailure($"Expected status code {Expected}, but was {statusCode}");
+            context.AddFailure(failure);
 
             context.ReadBodyAsString();
         }

@@ -23,7 +23,7 @@ public sealed class ScenarioAssertionException : Exception
 
     internal void AssertAll()
     {
-        if (_messages.Any())
+        if (_messages.Count > 0)
         {
             throw this;
         }

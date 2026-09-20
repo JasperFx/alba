@@ -13,7 +13,7 @@ public class SystemTextJsonSerializer : IJsonStrategy
 
     public SystemTextJsonSerializer(IAlbaHost host)
     {
-        var options = host.Services.GetService<IOptions<Microsoft.AspNetCore.Http.Json.JsonOptions>> ();
+        var options = host.Services.GetService<IOptions<Microsoft.AspNetCore.Http.Json.JsonOptions>>();
 
         _options = options?.Value.SerializerOptions ?? new JsonSerializerOptions(JsonSerializerDefaults.Web);
     }
@@ -21,27 +21,26 @@ public class SystemTextJsonSerializer : IJsonStrategy
     public Task<Stream> WriteAsync<T>(T body)
     {
         var stream = new MemoryStream();
-        JsonSerializer.Serialize(new Utf8JsonWriter(stream), body, _options);
+        JsonSerializer.Serialize(stream, body, _options);
         return Task.FromResult<Stream>(stream);
     }
 
     public T Read<T>(ScenarioResult response)
     {
-        var json = response.ReadAsText();
-        var res = JsonSerializer.Deserialize<T>(json, _options);
-
-        if (res is not null) return res;
-
-        throw new AlbaJsonFormatterException(json);
+        return response.Read(body => requireValue(JsonSerializer.Deserialize<T>(body, _options), body));
     }
 
-    public async Task<T> ReadAsync<T>(ScenarioResult response)
+    public Task<T> ReadAsync<T>(ScenarioResult response)
     {
-        var json = await response.ReadAsTextAsync();
-        var res = JsonSerializer.Deserialize<T>(json, _options);
+        return response.ReadAsync(async body =>
+            requireValue(await JsonSerializer.DeserializeAsync<T>(body, _options), body));
+    }
 
-        if (res is not null) return res;
+    private static T requireValue<T>(T? value, Stream body)
+    {
+        if (value is not null) return value;
 
-        throw new AlbaJsonFormatterException(json);
+        body.Position = 0;
+        throw new AlbaJsonFormatterException(body.ReadAllText());
     }
 }

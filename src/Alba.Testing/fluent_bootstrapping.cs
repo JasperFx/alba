@@ -70,6 +70,24 @@ public class fluent_bootstrapping
     }
 
     [Fact]
+    public async Task configuration_overrides_beat_the_applications_own_sources_on_host_builder()
+    {
+        var builder = new HostBuilder()
+            .ConfigureAppConfiguration(c => c.AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["Alba:Source"] = "application"
+            }))
+            .ConfigureWebHost(x =>
+            {
+                x.Configure(app => app.Run(c => c.Response.WriteAsync("ok")));
+            });
+
+        await using var host = await AlbaHost.For(builder).WithConfiguration("Alba:Source", "alba");
+
+        host.Services.GetRequiredService<IConfiguration>()["Alba:Source"].ShouldBe("alba");
+    }
+
+    [Fact]
     public async Task configuration_values_can_be_supplied_together()
     {
         await using var host = await AlbaHost.For(inlineHost())

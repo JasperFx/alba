@@ -2,19 +2,20 @@ using Alba.Internal;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Alba.Serialization;
 
 public class FormatterSerializer : IJsonStrategy
 {
-    private readonly AlbaHost _host;
+    private readonly IModelMetadataProvider _metadata;
     private readonly InputFormatter _input;
     private readonly OutputFormatter _output;
 
     public FormatterSerializer(AlbaHost host, InputFormatter jsonInput, OutputFormatter jsonOutput)
     {
-        _host = host;
+        _metadata = host.Services.GetRequiredService<IModelMetadataProvider>();
         _input = jsonInput;
         _output = jsonOutput;
     }
@@ -24,13 +25,14 @@ public class FormatterSerializer : IJsonStrategy
 
     public async Task<Stream> WriteAsync<T>(T body)
     {
+        var stream = new MemoryStream();
         var stubContext = new DefaultHttpContext();
-        var stream = new Scenario.RewindableStream();
-        stubContext.Response.Body = stream; // Has to be rewindable
+        stubContext.Response.Body = stream;
 
-        var writer = new StreamWriter(stream);
-        var outputContext =
-            new OutputFormatterWriteContext(stubContext, (_, _) => writer, typeof(T), body);
+        // The same writer MVC uses for responses: no encoding preamble, and disposing it
+        // leaves the stream open for the request to read
+        var outputContext = new OutputFormatterWriteContext(stubContext,
+            (s, encoding) => new HttpResponseStreamWriter(s, encoding), typeof(T), body);
         await _output.WriteAsync(outputContext);
 
         return stream;
@@ -38,70 +40,41 @@ public class FormatterSerializer : IJsonStrategy
 
     public T Read<T>(ScenarioResult response)
     {
-        var body = response.Context.Response.Body;
-        body.Position = 0;
-
-        if (body.Length == 0) throw new EmptyResponseException();
-
-        // The formatter gets its own copy because it may close the stream
-        // it reads from; the response body stays untouched for repeated reads
-        var buffer = new MemoryStream();
-        body.CopyTo(buffer);
-        buffer.Position = 0;
-        body.Position = 0;
-
-        // The formatter's ReadAsync only touches the in-memory buffer, so
-        // blocking here never waits on real I/O
-        var result = readWithFormatter<T>(buffer).GetAwaiter().GetResult();
-
-        return processResult<T>(result, response);
+        // The formatter only touches the in-memory body, so blocking here never waits on real I/O
+        return ReadAsync<T>(response).GetAwaiter().GetResult();
     }
 
-    public async Task<T> ReadAsync<T>(ScenarioResult response)
+    public Task<T> ReadAsync<T>(ScenarioResult response)
     {
-        var body = response.Context.Response.Body;
-        body.Position = 0;
+        return response.ReadAsync(async body =>
+        {
+            if (body.Length == 0) throw new EmptyResponseException();
 
-        if (body.Length == 0) throw new EmptyResponseException();
+            var result = await readWithFormatter<T>(body);
 
-        var buffer = new MemoryStream();
-        await body.CopyToAsync(buffer);
-        buffer.Position = 0;
-        body.Position = 0;
+            if (result.HasError)
+            {
+                body.Position = 0;
+                throw new AlbaJsonFormatterException(body.ReadAllText());
+            }
 
-        var result = await readWithFormatter<T>(buffer);
+            if (result.Model is T value) return value;
 
-        return processResult<T>(result, response);
+            throw new Exception("Unable to deserialize the response body to " + typeof(T).FullName);
+        });
     }
 
-    private Task<InputFormatterResult> readWithFormatter<T>(Stream buffer)
+    private Task<InputFormatterResult> readWithFormatter<T>(Stream body)
     {
-        var provider = _host.Services.GetRequiredService<IModelMetadataProvider>();
-        var metadata = provider.GetMetadataForType(typeof(T));
-
+        // The MVC formatter reads the request side of a context
         var standinContext = new DefaultHttpContext();
-        standinContext.Request.Body = buffer; // Need to trick the MVC conneg services
+        standinContext.Request.Body = body;
 
+        // The same reader MVC uses for requests; disposing it leaves the body open for repeated reads
         var inputContext = new InputFormatterContext(standinContext, typeof(T).Name, new ModelStateDictionary(),
-            metadata, (s, _) => new StreamReader(s));
+            _metadata.GetMetadataForType(typeof(T)),
+            (s, encoding) => new HttpRequestStreamReader(s, encoding));
 
         return _input.ReadAsync(inputContext);
-    }
-
-    private static T processResult<T>(InputFormatterResult result, ScenarioResult response)
-    {
-        var body = response.Context.Response.Body;
-
-        if (result.HasError)
-        {
-            body.Position = 0;
-            var json = body.ReadAllText();
-            body.Position = 0;
-            throw new AlbaJsonFormatterException(json);
-        }
-
-        if (result.Model is T returnValue) return returnValue;
-
-        throw new Exception("Unable to deserialize the response body to " + typeof(T).FullName);
     }
 }

@@ -1,6 +1,8 @@
+using Alba.Internal;
+
 namespace Alba.Assertions;
 
-internal sealed  class NoHeaderValueAssertion : IScenarioAssertion
+internal sealed class NoHeaderValueAssertion : IScenarioAssertion
 {
     private readonly string _headerKey;
 
@@ -14,8 +16,7 @@ internal sealed  class NoHeaderValueAssertion : IScenarioAssertion
         var headers = context.HttpContext.Response.Headers;
         if (headers.TryGetValue(_headerKey, out var values))
         {
-            var valueText = values.Select(x => "'" + x + "'").Aggregate((s1, s2) => $"{s1}, {s2}");
-            context.AddFailure($"Expected no value for header '{_headerKey}', but found values {valueText}");
+            context.AddFailure($"Expected no value for header '{_headerKey}', but found values {values.Quoted()}");
         }
     }
 }

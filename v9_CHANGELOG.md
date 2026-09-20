@@ -5,10 +5,7 @@
 ### .NET 10 is required
 
 Alba now targets `net10.0` and `net11.0`; support for .NET 8 and .NET 9 is dropped. Applications
-under test must run on .NET 10 or later. The `net11.0` target builds against the .NET 11 release
-candidate packages (`Microsoft.AspNetCore.Mvc.Testing` and
-`Microsoft.AspNetCore.Authentication.JwtBearer` 11.0.0-rc.1) and will move to the final packages
-when .NET 11 ships.
+under test must run on .NET 10 or later. 
 
 ### `BeforeEachAsync` now receives the `Scenario` and runs before the request
 
@@ -285,5 +282,11 @@ happen to contain the text "Error" now parse successfully.
   now invoked once per scenario, matching `PutJson(...)`.
 - OpenID Connect extensions dispose cleanly when they were never started. Disposing an extension
   whose `Start` failed validation threw a `NullReferenceException` that masked the real error.
+- Configuration overrides on the `IHostBuilder` bootstrapping path (`AlbaHost.For(IHostBuilder)`,
+  `StartAlbaAsync()`) now take precedence over the application's own configuration sources. They
+  were added as host configuration, which `appsettings.json` and the other application sources
+  overrode.
+- `RedirectShouldBe(...)` and `RedirectPermanentShouldBe(...)` report a wrong status code once
+  instead of twice.
 - `MimeType` lookups are safe to use from multiple threads. `MimeTypeByValue(...)` and
   `MimeTypeByFileName(...)` cache misses into static state shared by every host.

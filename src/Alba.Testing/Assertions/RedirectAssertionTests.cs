@@ -1,4 +1,4 @@
-﻿using Alba.Assertions;
+using Alba.Assertions;
 using Shouldly;
 
 namespace Alba.Testing.Assertions
@@ -8,7 +8,7 @@ namespace Alba.Testing.Assertions
         [Fact]
         public void happy_path()
         {
-            var assertion = new RedirectAssertion("/to", false);
+            var assertion = new RedirectAssertion("/to");
             AssertionRunner
                 .Run(assertion, x => x.Response.Redirect("/to"))
                 .AssertAll();
@@ -17,7 +17,7 @@ namespace Alba.Testing.Assertions
         [Fact]
         public void sad_path_no_value()
         {
-            var assertion = new RedirectAssertion("/to", false);
+            var assertion = new RedirectAssertion("/to");
             AssertionRunner
                 .Run(assertion, x => { })
                 .Messages.FirstOrDefault()
@@ -27,7 +27,7 @@ namespace Alba.Testing.Assertions
         [Fact]
         public void sad_path_wrong_value()
         {
-            var assertion = new RedirectAssertion("/to", false);
+            var assertion = new RedirectAssertion("/to");
             AssertionRunner
                 .Run(assertion, x => x.Response.Redirect("/wrong"))
                 .SingleMessageShouldBe("Expected to be redirected to '/to' but was '/wrong'.");
@@ -36,19 +36,10 @@ namespace Alba.Testing.Assertions
         [Fact]
         public void happy_path_permanent()
         {
-            var assertion = new RedirectAssertion("/to", true);
+            var assertion = new RedirectAssertion("/to");
             AssertionRunner
                 .Run(assertion, x => x.Response.Redirect("/to", true))
                 .AssertAll();
-        }
-
-        [Fact]
-        public void sad_path_permanent_wrong_value()
-        {
-            var assertion = new RedirectAssertion("/to", false);
-            AssertionRunner
-                .Run(assertion, x => x.Response.Redirect("/to", true))
-                .SingleMessageShouldBe("Expected status code 302, but was 301");
         }
     }
 }

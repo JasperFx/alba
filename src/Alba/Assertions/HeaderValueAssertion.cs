@@ -1,3 +1,5 @@
+using Alba.Internal;
+
 namespace Alba.Assertions;
 
 internal sealed class HeaderValueAssertion : IScenarioAssertion
@@ -30,10 +32,8 @@ internal sealed class HeaderValueAssertion : IScenarioAssertion
                 break;
 
             default:
-                var valueText = values.Select(x => "'" + x + "'").Aggregate((s1, s2) => $"{s1}, {s2}");
-                context.AddFailure($"Expected a single header value of '{_headerKey}'='{_expected}', but the actual values were {valueText}");
+                context.AddFailure($"Expected a single header value of '{_headerKey}'='{_expected}', but the actual values were {values.Quoted()}");
                 break;
         }
-            
     }
 }

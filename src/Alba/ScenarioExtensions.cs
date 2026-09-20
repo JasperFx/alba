@@ -16,81 +16,30 @@ public static class ScenarioExtensions
         if (request.RequestUri == null)
             throw new ArgumentException("HttpRequestMessage must have a RequestUri", nameof(request));
 
-        // Get the relative URL (path + query)
-        var relativeUrl = request.RequestUri.IsAbsoluteUri 
-            ? request.RequestUri.PathAndQuery 
+        var relativeUrl = request.RequestUri.IsAbsoluteUri
+            ? request.RequestUri.PathAndQuery
             : request.RequestUri.ToString();
 
-        // Map HTTP method to the appropriate expression
+        // Any verb the application routes, standard or custom
         var method = request.Method.Method.ToUpperInvariant();
-        IUrlExpression urlExpression;
-        switch (method)
-        {
-            case "GET":
-                urlExpression = scenario.Get;
-                break;
-            case "POST":
-                urlExpression = scenario.Post;
-                break;
-            case "PUT":
-                urlExpression = scenario.Put;
-                break;
-            case "DELETE":
-                urlExpression = scenario.Delete;
-                break;
-            case "PATCH":
-                urlExpression = scenario.Patch;
-                break;
-            case "HEAD":
-                urlExpression = scenario.Head;
-                break;
-            case "QUERY":
-                urlExpression = scenario.Query;
-                break;
-            default:
-                // OPTIONS, TRACE, and any custom verb the application routes
-                scenario.ConfigureHttpContext(c => c.HttpMethod(method));
-                urlExpression = scenario;
-                break;
-        }
+        scenario.ConfigureHttpContext(c => c.HttpMethod(method));
+        var sendExpression = ((IUrlExpression)scenario).Url(relativeUrl);
 
-        // Set the URL
-        var sendExpression = urlExpression.Url(relativeUrl);
-        
-        // Copy headers (excluding Content headers which are handled separately)
         foreach (var header in request.Headers)
         {
-            var headerValue = string.Join(", ", header.Value);
-            
-            scenario.WithRequestHeader(header.Key, headerValue);
+            scenario.WithRequestHeader(header.Key, string.Join(", ", header.Value));
         }
 
-        // Handle request content if present
         if (request.Content != null)
         {
-            var contentBytes = request.Content.ReadAsStream();
-            
-            // Copy content-type header from content
-            if (request.Content.Headers.ContentType != null)
-            {
-                scenario.WithRequestHeader("Content-Type", request.Content.Headers.ContentType.ToString());
-            }
-            
-            // Copy other content headers
             foreach (var header in request.Content.Headers)
             {
-                if (!header.Key.Equals("Content-Type", StringComparison.OrdinalIgnoreCase))
-                {
-                    var headerValue = string.Join(", ", header.Value);
-                    scenario.WithRequestHeader(header.Key, headerValue);
-                }
+                scenario.WithRequestHeader(header.Key, string.Join(", ", header.Value));
             }
 
-            // Write content to scenario
-            scenario.Stream(contentBytes);
+            scenario.Stream(request.Content.ReadAsStream());
         }
 
         return sendExpression;
     }
 }
-

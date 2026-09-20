@@ -87,7 +87,7 @@ public static class ScenarioExpectationsExtensions
     public static Scenario RedirectShouldBe(this Scenario scenario, string expected)
     {
         scenario.StatusCodeShouldBe(302);
-        scenario.AssertThat(new RedirectAssertion(expected, false));
+        scenario.AssertThat(new RedirectAssertion(expected));
         return scenario;
     }
 
@@ -100,7 +100,7 @@ public static class ScenarioExpectationsExtensions
     public static Scenario RedirectPermanentShouldBe(this Scenario scenario, string expected)
     {
         scenario.StatusCodeShouldBe(301);
-        scenario.AssertThat(new RedirectAssertion(expected, true));
+        scenario.AssertThat(new RedirectAssertion(expected));
         return scenario;
     }
 }

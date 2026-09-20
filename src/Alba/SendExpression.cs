@@ -1,8 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Alba.Internal;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.WebUtilities;
- 
+
 namespace Alba;
 
 public sealed class SendExpression
@@ -71,18 +70,13 @@ public sealed class SendExpression
     /// <returns></returns>
     public SendExpression QueryString(string paramName, string paramValue)
     {
-        modify = request =>
-        {
-            request.QueryString = request.QueryString.Add(paramName, paramValue);
-            request.Query = new QueryCollection(QueryHelpers.ParseQuery(request.QueryString.Value!));
-                
-        };
-
+        // Request.Query re-parses itself when the query string changes
+        modify = request => request.QueryString = request.QueryString.Add(paramName, paramValue);
         return this;
     }
 
     /// <summary>
-    /// Appends query string parameters for the values of all the public 
+    /// Appends query string parameters for the values of all the public
     /// read/write properties and all public fields of the target object
     /// </summary>
     /// <typeparam name="T"></typeparam>
@@ -90,18 +84,9 @@ public sealed class SendExpression
     /// <returns></returns>
     public SendExpression QueryString<T>(T target)
     {
-        var (properties, fields) = TypeMemberCache.MembersOf(typeof(T));
-
-        foreach (var prop in properties)
+        foreach (var (name, value) in TypeMemberCache.ValuesOf(typeof(T), target, writablePropertiesOnly: false))
         {
-            var rawValue = prop.GetValue(target, null);
-            QueryString(prop.Name, rawValue?.ToString() ?? string.Empty);
-        }
-
-        foreach (var field in fields)
-        {
-            var rawValue = field.GetValue(target);
-            QueryString(field.Name, rawValue?.ToString() ?? string.Empty);
+            QueryString(name, value);
         }
 
         return this;

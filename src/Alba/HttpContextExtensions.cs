@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using System.Text;
 using Alba.Internal;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;

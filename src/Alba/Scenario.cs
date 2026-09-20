@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Security.Claims;
 using Alba.Assertions;
@@ -14,6 +14,10 @@ namespace Alba;
 /// </summary>
 public class Scenario : IUrlExpression
 {
+    // HttpContext.Items keys carrying per scenario claims to the security extensions
+    internal const string ClaimsItemKey = "alba_claims";
+    internal const string RemovedClaimsItemKey = "alba_removed_claims";
+
     private readonly ScenarioAssertionException _assertionRecords = new();
 
     private readonly List<IScenarioAssertion> _assertions = new();
@@ -23,7 +27,7 @@ public class Scenario : IUrlExpression
     // Null means the default expectation: any 200-299 status code
     private int? _expectedStatusCode;
     private bool _ignoreStatusCode;
-        
+
     internal Scenario(AlbaHost system)
     {
         _system = system ?? throw new ArgumentNullException(nameof(system));
@@ -46,91 +50,46 @@ public class Scenario : IUrlExpression
     /// <summary>
     /// Specify an HTTP GET Url
     /// </summary>
-    public IUrlExpression Get
-    {
-        get
-        {
-            ConfigureHttpContext(context => context.HttpMethod("GET"));
-            return this;
-        }
-    }
+    public IUrlExpression Get => withMethod("GET");
 
-        
     /// <summary>
     /// Specify an HTTP PUT Url
     /// </summary>
-    public IUrlExpression Put
-    {
-        get
-        {
-            ConfigureHttpContext(context => context.HttpMethod("PUT"));
-            return this;
-        }
-    }
+    public IUrlExpression Put => withMethod("PUT");
 
     /// <summary>
     /// Specify an HTTP DELETE Url
     /// </summary>
-    public IUrlExpression Delete
-    {
-        get
-        {
-            ConfigureHttpContext(context => context.HttpMethod("DELETE"));
-            return this;
-        }
-    }
+    public IUrlExpression Delete => withMethod("DELETE");
 
     /// <summary>
     /// Specify an HTTP POST Url
     /// </summary>
-    public IUrlExpression Post
-    {
-        get
-        {
-            ConfigureHttpContext(context => context.HttpMethod("POST"));
-            return this;
-        }
-    }
+    public IUrlExpression Post => withMethod("POST");
 
     /// <summary>
     /// Specify an HTTP PATCH Url
     /// </summary>
-    public IUrlExpression Patch
-    {
-        get
-        {
-            ConfigureHttpContext(context => context.HttpMethod("PATCH"));
-            return this;
-        }
-    }
+    public IUrlExpression Patch => withMethod("PATCH");
 
     /// <summary>
     /// Specify an HTTP HEAD Url
     /// </summary>
-    public IUrlExpression Head
-    {
-        get
-        {
-            ConfigureHttpContext(context => context.HttpMethod("HEAD"));
-            return this;
-        }
-    }
+    public IUrlExpression Head => withMethod("HEAD");
 
     /// <summary>
     /// Specify an HTTP QUERY Url
     /// </summary>
-    public IUrlExpression Query
+    public IUrlExpression Query => withMethod("QUERY");
+
+    private IUrlExpression withMethod(string method)
     {
-        get
-        {
-            ConfigureHttpContext(context => context.HttpMethod("QUERY"));
-            return this;
-        }
+        ConfigureHttpContext(context => context.HttpMethod(method));
+        return this;
     }
 
     internal List<Claim> Claims { get; } = new();
     internal List<string> RemovedClaims { get; } = new();
-    internal Exception? Exception { get; set; }
 
     internal int? ExpectedStatusCode => _expectedStatusCode;
     internal bool StatusCodeIgnored => _ignoreStatusCode;
@@ -155,9 +114,9 @@ public class Scenario : IUrlExpression
     public SendExpression RawJson(string input)
     {
         Body.TextIs(input);
-        
+
         ConfigureHttpContext(x => x.Request.ContentType = MimeType.Json.Value);
-        
+
         return new SendExpression(this);
     }
 
@@ -170,23 +129,8 @@ public class Scenario : IUrlExpression
 
     SendExpression IUrlExpression.FormData<T>(T target)
     {
-        var values = new Dictionary<string, string>();
-
-        var (properties, fields) = TypeMemberCache.MembersOf(typeof(T));
-
-        foreach (var prop in properties.Where(x => x.CanWrite))
-        {
-            var rawValue = prop.GetValue(target, null);
-
-            values.Add(prop.Name, rawValue?.ToString() ?? string.Empty);
-        }
-
-        foreach (var field in fields)
-        {
-            var rawValue = field.GetValue(target);
-
-            values.Add(field.Name, rawValue?.ToString() ?? string.Empty);
-        }
+        var values = TypeMemberCache.ValuesOf(typeof(T), target, writablePropertiesOnly: true)
+            .ToDictionary(x => x.Key, x => x.Value);
 
         Body.WriteFormData(values);
 
@@ -214,16 +158,9 @@ public class Scenario : IUrlExpression
     /// <returns></returns>
     public SendExpression ByteArray(byte[] input)
     {
-        ConfigureHttpContext(x =>
-        {
-            var content = new ByteArrayContent(input);
-            content.CopyTo(x.Request.Body, null, CancellationToken.None);
-            x.Request.Headers.ContentLength = content.Headers.ContentLength;
-        });
-
-        return new SendExpression(this);
+        return writeContent(new ByteArrayContent(input));
     }
-    
+
     /// <summary>
     /// Write the supplied stream to the body of the request
     /// </summary>
@@ -231,9 +168,13 @@ public class Scenario : IUrlExpression
     /// <returns></returns>
     public SendExpression Stream(Stream input)
     {
+        return writeContent(new StreamContent(input));
+    }
+
+    private SendExpression writeContent(HttpContent content)
+    {
         ConfigureHttpContext(x =>
         {
-            var content = new StreamContent(input);
             content.CopyTo(x.Request.Body, null, CancellationToken.None);
             x.Request.Headers.ContentLength = content.Headers.ContentLength;
         });
@@ -249,7 +190,6 @@ public class Scenario : IUrlExpression
     public SendExpression Text(string text)
     {
         Body.TextIs(text);
-        ConfigureHttpContext(context => context.Request.ContentType = MimeType.Text.Value);
 
         return new SendExpression(this);
     }
@@ -275,11 +215,11 @@ public class Scenario : IUrlExpression
     public void WriteJson<T>(T input, JsonStyle? jsonStyle)
     {
         if (input == null) throw new ArgumentNullException(nameof(input));
-            
+
         var jsonStrategy = _system.DefaultJson;
         if (jsonStyle == JsonStyle.Mvc) jsonStrategy = _system.MvcStrategy;
         if (jsonStyle == JsonStyle.MinimalApi) jsonStrategy = _system.MinimalApiStrategy;
-            
+
         // Serialization happens in the awaited preparation phase before the
         // request executes; the setup callback applies the resulting stream
         Stream? stream = null;
@@ -287,9 +227,8 @@ public class Scenario : IUrlExpression
 
         ConfigureHttpContext(c =>
         {
-            c.Request.ContentType = "application/json";
+            c.Request.ContentType = MimeType.Json.Value;
             c.Request.Body = stream!;
-            c.Request.Body.Position = 0;
             c.Request.ContentLength = c.Request.Body.Length;
         });
     }
@@ -319,7 +258,7 @@ public class Scenario : IUrlExpression
         }
 
         foreach (var assertion in _assertions) assertion.Assert(this, assertionContext);
-        
+
         _assertionRecords.AssertAll();
     }
 
@@ -330,8 +269,7 @@ public class Scenario : IUrlExpression
     /// <returns></returns>
     public Scenario StatusCodeShouldBe(HttpStatusCode httpStatusCode)
     {
-        _expectedStatusCode = (int) httpStatusCode;
-        _ignoreStatusCode = false;
+        StatusCodeShouldBe((int)httpStatusCode);
         return this;
     }
 
@@ -375,7 +313,7 @@ public class Scenario : IUrlExpression
     /// <param name="input"></param>
     public void WriteFormData(Dictionary<string, string> input)
     {
-        ConfigureHttpContext(c => c.WriteFormData(input));
+        Body.WriteFormData(input);
     }
 
 
@@ -389,11 +327,6 @@ public class Scenario : IUrlExpression
         return new(this, headerKey);
     }
 
-    internal void Rewind()
-    {
-        ConfigureHttpContext(context => context.Request.Body.Position = 0);
-    }
-
     /// <summary>
     ///     Only for internal Alba testing, but this writes its input
     ///     to an HttpContext
@@ -402,6 +335,9 @@ public class Scenario : IUrlExpression
     internal void SetupHttpContext(HttpContext context)
     {
         foreach (var setup in _setups) setup(context);
+
+        // Whatever was written, the application reads the body from the start
+        if (context.Request.Body.CanSeek) context.Request.Body.Position = 0;
     }
 
     /// <summary>
@@ -449,14 +385,6 @@ public class Scenario : IUrlExpression
     public void WithBearerToken(string jwt)
     {
         ConfigureHttpContext(c => c.SetBearerToken(jwt));
-    }
-
-    internal class RewindableStream : MemoryStream
-    {
-        protected override void Dispose(bool disposing)
-        {
-            // Nothing!
-        }
     }
 }
 

@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Net.Http.Headers;
- 
+using Microsoft.AspNetCore.Http;
+
 namespace Alba;
 
 public static class HeaderExtensions
@@ -16,26 +15,12 @@ public static class HeaderExtensions
     }
 
     /// <summary>
-    /// Set the content-length header value
+    /// Set the content-length header value, or remove the header for null
     /// </summary>
     /// <param name="headers"></param>
     /// <param name="value"></param>
     public static void ContentLength(this IHeaderDictionary headers, long? value)
     {
-        if (value.HasValue)
-        {
-            headers[HeaderNames.ContentLength] = FormatInt64(value.Value);
-        }
-        else
-        {
-            headers.Remove(HeaderNames.ContentLength);
-        }
-    }
-
-    private static bool TryParseInt64(string input, out long value) {
-        return HeaderUtilities.TryParseNonNegativeInt64(input, out value);
-    }
-    private static string FormatInt64(long input) {
-        return HeaderUtilities.FormatNonNegativeInt64(input);
+        headers.ContentLength = value;
     }
 }

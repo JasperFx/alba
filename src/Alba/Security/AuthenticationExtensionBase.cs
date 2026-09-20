@@ -16,7 +16,7 @@ public abstract class AuthenticationExtensionBase : IHasClaims
         _baselineClaims.Add(claim);
     }
 
-    protected IEnumerable<Claim> defaultClaims()
+    private IEnumerable<Claim> defaultClaims()
     {
         foreach (var claim1 in stubTypeSpecificClaims()) yield return claim1;
 
@@ -40,29 +40,18 @@ public abstract class AuthenticationExtensionBase : IHasClaims
 
     protected (Claim[] additiveClaims, string[] removedClaims) extractScenarioSpecificClaims(HttpContext context)
     {
-        var additiveClaims = Array.Empty<Claim>();
+        var additiveClaims = context.Items.TryGetValue(Scenario.ClaimsItemKey, out var raw) && raw is Claim[] added
+            ? added
+            : [];
 
-        if (context.Items.TryGetValue("alba_claims", out var raw))
-        {
-            if (raw is Claim[] ca)
-            {
-                additiveClaims = ca;
-            }
-        }
+        var removedClaims = context.Items.TryGetValue(Scenario.RemovedClaimsItemKey, out var rawRemoved)
+                            && rawRemoved is string[] removed
+            ? removed
+            : [];
 
-        var removalClaims = Array.Empty<string>();
-
-        if (context.Items.TryGetValue("alba_removed_claims", out var rawRc))
-        {
-            if (rawRc is string[] cr)
-            {
-                removalClaims = cr;
-            }
-        }
-
-        return (additiveClaims, removalClaims);
+        return (additiveClaims, removedClaims);
     }
-      
+
     protected IEnumerable<Claim> allClaims(HttpContext context)
     {
         var (additiveClaims, removedClaims) = extractScenarioSpecificClaims(context);

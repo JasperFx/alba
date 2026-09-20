@@ -9,7 +9,7 @@ built in [ASP.NET Core TestServer](https://docs.microsoft.com/en-us/aspnet/core/
 You can certainly write integration tests by hand using the lower level `TestServer` and `HttpClient`, but you'll write much less code with Alba. Moreover, Alba *scenarios* were meant to be declarative to maximize the readability of the integration tests, making those tests much more valuable as living technical documentation.
 
 ::: tip
-As of 9.0+, Alba only supports .NET 10.0 or greater and ships `net10.0` and `net11.0` targets, so .NET 11 release candidate applications are supported as well. You can still use older versions of Alba to test previous versions of ASP.NET Core.
+As of 9.0+, Alba only supports .NET 10.0 or greater. You can still use older versions of Alba to test previous versions of ASP.NET Core.
 :::
 
 ## Alba Setup
@@ -91,8 +91,8 @@ for more information.
 
 ## Configuring the Host Fluently
 
-Every bootstrapping method returns an `AlbaHostBuilder`. Nothing starts until the builder is awaited, so you can
-chain the Alba specific parts of the setup onto it first: configuration value overrides and Alba extensions. ASP.NET
+Every bootstrapping method returns an `AlbaHostBuilder`. You can
+chain the Alba specific parts of the setup onto it as part of the construction. ASP.NET
 Core host customization such as service registrations stays in the configuration action passed to `AlbaHost.For<T>`.
 
 <!-- snippet: sample_fluent_configuration -->
@@ -121,10 +121,9 @@ registered.
 
 Configuration values take precedence over the application's own configuration files. On .NET 11, `AlbaHost.For<T>`
 applies them to the `WebApplicationBuilder` as soon as it is created, before the application's own startup code runs,
-so a value read in `Program.cs` before `builder.Build()` already sees the override, and the values reach applications
-that never forward `args` into `WebApplication.CreateBuilder()`. On .NET 10, `AlbaHost.For<T>` passes the values to
+so a value read in `Program.cs` before `builder.Build()` already sees the override. On .NET 10, `AlbaHost.For<T>` passes the values to
 the application as host configuration, which requires the application to call `WebApplication.CreateBuilder(args)`.
-Host-level keys such as `environment` and `contentRoot` cannot be changed this way; use `UseEnvironment` on the
+Host-level keys such as `environment` and `contentRoot` cannot be changed this way, use `UseEnvironment` on the
 `Action<IWebHostBuilder>` overload for those.
 
 ## Running a Scenario

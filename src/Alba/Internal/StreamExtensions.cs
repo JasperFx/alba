@@ -1,4 +1,4 @@
-﻿namespace Alba.Internal;
+namespace Alba.Internal;
 
 internal static class StreamExtensions
 {
@@ -19,12 +19,5 @@ internal static class StreamExtensions
     {
         using var sr = new StreamReader(stream, leaveOpen: true);
         return await sr.ReadToEndAsync();
-    }
-
-    public static async Task<byte[]> ReadAllBytesAsync(this Stream stream)
-    {
-        using var content = new MemoryStream();
-        await stream.CopyToAsync(content);
-        return content.ToArray();
     }
 }

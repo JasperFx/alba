@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.Loader;
 
 namespace Alba;
@@ -21,13 +21,9 @@ internal static class JasperFxEnvironmentAutoStartHost
 
     public static void Enable()
     {
-        if (AutoStartHostEnabler.IsValueCreated)
+        if (AutoStartHostEnabler.IsValueCreated || File.Exists(JasperFxDllPath))
         {
             AutoStartHostEnabler.Value.Invoke();
-            return;
         }
-
-        if (File.Exists(JasperFxDllPath))
-            AutoStartHostEnabler.Value.Invoke();
     }
 }

@@ -56,26 +56,19 @@ public class OpenConnectUserPassword : OpenConnectExtension
         object? tokenCustomization)
     {
         if (disco == null) throw new ArgumentNullException(nameof(disco), "Unable to load the token discovery document");
-            
-        if (tokenCustomization is UserPassword u)
-        {
-            return client.RequestPasswordTokenAsync(new PasswordTokenRequest
-            {
-                Address = disco.TokenEndpoint,
-                ClientId = ClientId!,
-                ClientSecret = ClientSecret,
-                UserName = u.UserName,
-                Password = u.Password
-            });
-        }
-            
+
+        // A per scenario override replaces the extension's default credentials
+        var (userName, password) = tokenCustomization is UserPassword u
+            ? (u.UserName, u.Password)
+            : (UserName!, Password);
+
         return client.RequestPasswordTokenAsync(new PasswordTokenRequest
         {
             Address = disco.TokenEndpoint,
             ClientId = ClientId!,
             ClientSecret = ClientSecret,
-            UserName = UserName!,
-            Password = Password
+            UserName = userName,
+            Password = password
         });
     }
 }

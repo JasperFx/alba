@@ -1,7 +1,7 @@
 using System.Text;
 using System.Xml.Serialization;
 using Microsoft.AspNetCore.Http;
- 
+
 namespace Alba;
 
 public class HttpRequestBody
@@ -20,17 +20,12 @@ public class HttpRequestBody
         var serializer = new XmlSerializer(target.GetType());
         serializer.Serialize(writer, target);
         var xml = writer.ToString();
-        var bytes = Encoding.UTF8.GetBytes(xml);
 
         _parent.ConfigureHttpContext(context =>
         {
-            var stream = context.Request.Body;
-            stream.Write(bytes, 0, bytes.Length);
-            stream.Position = 0;
-
+            WriteTextToBody(xml, context);
             context.Request.ContentType = MimeType.Xml.Value;
             context.Accepts(MimeType.Xml.Value);
-            context.Request.ContentLength = stream.Length;
         });
     }
 

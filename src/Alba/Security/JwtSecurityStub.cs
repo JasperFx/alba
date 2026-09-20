@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +16,8 @@ namespace Alba.Security;
 /// </summary>
 public class JwtSecurityStub : AuthenticationExtensionBase, IAlbaExtension
 {
+    private static readonly byte[] DefaultSigningKey = "some really big key that should work"u8.ToArray();
+
     private JwtBearerOptions? _options;
 
     private readonly string? _overrideSchemaTargetName;
@@ -35,10 +36,9 @@ public class JwtSecurityStub : AuthenticationExtensionBase, IAlbaExtension
 
     Task IAlbaExtension.Start(IAlbaHost host)
     {
-        // This seems to be necessary to "bake" in the JwtBearerOptions modifications
-        var options = host.Services.GetRequiredService<IOptionsMonitor<JwtBearerOptions>>()
+        // Resolving the options runs PostConfigure, which captures them for token building
+        _ = host.Services.GetRequiredService<IOptionsMonitor<JwtBearerOptions>>()
             .Get(_overrideSchemaTargetName ?? JwtBearerDefaults.AuthenticationScheme);
-
 
         host.BeforeEach(ConfigureJwt);
         return Task.CompletedTask;
@@ -119,7 +119,7 @@ public class JwtSecurityStub : AuthenticationExtensionBase, IAlbaExtension
             });
             
         var validationParameters = options.TokenValidationParameters.Clone();
-        validationParameters.IssuerSigningKey ??= new SymmetricSecurityKey("some really big key that should work"u8.ToArray());
+        validationParameters.IssuerSigningKey ??= new SymmetricSecurityKey(DefaultSigningKey);
         validationParameters.ValidateIssuer = false;
         validationParameters.IssuerValidator = (issuer, token, parameters) => issuer;
         options.TokenValidationParameters = validationParameters;
@@ -136,7 +136,7 @@ public class JwtSecurityStub : AuthenticationExtensionBase, IAlbaExtension
         set
         {
             _options = value ?? throw new ArgumentNullException(nameof(value));
-            _options.TokenValidationParameters.IssuerSigningKey ??= new SymmetricSecurityKey(Encoding.UTF8.GetBytes("some really big key that should work"));
+            _options.TokenValidationParameters.IssuerSigningKey ??= new SymmetricSecurityKey(DefaultSigningKey);
         }
     }
 }
