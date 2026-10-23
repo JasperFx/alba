@@ -230,6 +230,13 @@ happen to contain the text "Error" now parse successfully.
   response body as `byte[]`, for endpoints that return files, images or other payloads that
   `ReadAsText()` would corrupt. Like the other readers they leave the body readable, so a scenario
   can assert on the bytes and still call `ReadAsJson<T>()` afterwards.
+- **Scenarios by route name.** `x.Get.RouteNamed("GetAccount", new { accountId })` and
+  `x.Post.Json(body).ToRouteNamed("MakeDeposit", new { accountId })` address an endpoint by its ASP.NET Core
+  route name instead of a literal url, generating the url from the application's routing. This covers minimal API
+  `.WithName(...)`, MVC `Name = ...` and Wolverine's `RouteName`. Route values that are not route parameters
+  become the query string. An unknown route name or a missing required value throws before the request is sent,
+  listing the route names the application knows
+  ([#254](https://github.com/JasperFx/alba/issues/254)).
 - **HTTP QUERY and OPTIONS support.** Scenarios can issue HTTP QUERY and OPTIONS requests via
   `Scenario.Query` and `Scenario.Options`, matching the existing verb properties
   (`x.Query.Url("/api/query")`, `x.Options.Url("/api/options")`).

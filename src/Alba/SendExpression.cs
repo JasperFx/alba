@@ -63,6 +63,20 @@ public sealed class SendExpression
     }
 
     /// <summary>
+    /// Send the request to the endpoint with this ASP.NET Core route name, generating the url
+    /// from the route values. Values that are not route parameters become the query string.
+    /// An unknown route name or a missing required value throws before the request is sent.
+    /// </summary>
+    /// <param name="routeName">The route name from minimal API WithName(), MVC Name = or Wolverine RouteName</param>
+    /// <param name="routeValues">An anonymous object, dictionary or RouteValueDictionary</param>
+    /// <returns></returns>
+    public SendExpression ToRouteNamed(string routeName, object? routeValues = null)
+    {
+        _context.UseRouteName(routeName, routeValues);
+        return this;
+    }
+
+    /// <summary>
     /// Appends a query string parameter to the HttpRequest
     /// </summary>
     /// <param name="paramName"></param>

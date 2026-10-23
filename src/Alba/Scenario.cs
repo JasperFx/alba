@@ -107,6 +107,19 @@ public class Scenario : IUrlExpression
         return new SendExpression(this);
     }
 
+    SendExpression IUrlExpression.RouteNamed(string routeName, object? routeValues)
+    {
+        UseRouteName(routeName, routeValues);
+        return new SendExpression(this);
+    }
+
+    internal void UseRouteName(string routeName, object? routeValues)
+    {
+        // Resolved immediately so a bad route name fails before any request is sent
+        var url = RouteNameResolver.Resolve(_system.Services, routeName, routeValues);
+        ConfigureHttpContext(context => RouteNameResolver.Apply(context.Request, url));
+    }
+
     SendExpression IUrlExpression.Json<T>(T input, JsonStyle? jsonStyle)
     {
         WriteJson(input, jsonStyle);

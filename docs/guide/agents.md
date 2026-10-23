@@ -77,6 +77,10 @@ no HttpClient. Follow these rules exactly; the API below is Alba 9 and differs f
   `_.WriteFormData(dictionary)`, `.ByteArray(bytes)`, `.Stream(stream)`. Set headers with
   `_.WithRequestHeader(name, value)`, `.Accepts("...")`, `.ContentType("...")`.
 - Query strings: `_.Get.Url("/search").QueryString("q", "alba")` or `.QueryString(new { q = "alba", page = 2 })`.
+- Route names: when the endpoint has a route name (minimal API `.WithName(...)`, MVC `Name = ...`, Wolverine
+  `RouteName`), prefer `_.Get.RouteNamed("GetAccount", new { accountId })` or
+  `_.Post.Json(body).ToRouteNamed("MakeDeposit", new { accountId })` over a literal url. Extra values become the
+  query string. An unknown name or missing value throws before the request and lists the known route names.
 - Status codes: the default expectation is any 2xx. `_.StatusCodeShouldBeOk()` requires exactly 200,
   `_.StatusCodeShouldBe(404)` requires that code, `_.IgnoreStatusCode()` skips the check.
 - Body assertions: `_.ContentShouldBe("exact")`, `_.ContentShouldContain("part")`, `_.ContentShouldNotContain("part")`,
