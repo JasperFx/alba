@@ -4,6 +4,9 @@
         <TargetFramework>net10.0</TargetFramework>
 
         <IsPackable>false</IsPackable>
+        <OutputType>Exe</OutputType>
+        <!-- Runs on Microsoft.Testing.Platform, which dotnet test requires through global.json -->
+        <EnableNUnitRunner>true</EnableNUnitRunner>
     </PropertyGroup>
 
     <ItemGroup>

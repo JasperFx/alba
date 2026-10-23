@@ -120,6 +120,10 @@ no HttpClient. Follow these rules exactly; the API below is Alba 9 and differs f
   `host.Server.AllowSynchronousIO = true` after the host starts.
 - Snapshot testing: add Verify and Verify.AspNetCore, then `await Verify(result)` with the scenario result.
 - Extend the DSL with extension methods on `Scenario` for repeated setup instead of copying it into every test.
+- Real Docker dependencies such as a database or broker: if the solution has an Aspire AppHost, start it once per test
+  assembly with `Aspire.Hosting.Testing`, remove the API resource, wait for the resources to be healthy, and pass their
+  connection strings to the host with `WithConfiguration("ConnectionStrings:<name>", ...)`. See
+  https://jasperfx.github.io/alba/guide/aspire.
 
 ## Deliverable
 1. Add the package and project references, plus `InternalsVisibleTo` when needed.

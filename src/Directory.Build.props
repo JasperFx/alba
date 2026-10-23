@@ -4,5 +4,10 @@
         <WarningsAsErrors>NU1901;NU1902;NU1904</WarningsAsErrors>
         <NuGetAuditMode>all</NuGetAuditMode>
         <NuGetAuditLevel>critical</NuGetAuditLevel>
+        <!-- Verify 33+ fails the build without a maintenance fee declaration. Alba claims the
+             open source exemption, which Verify accepts for at most 12 months: renew this month
+             before it passes. https://github.com/VerifyTests/Verify/blob/main/docs/maintenance-fee.md -->
+        <Verify_SponsorshipExemption>OpenSource</Verify_SponsorshipExemption>
+        <Verify_SponsorshipExemptionUntil>2027-10</Verify_SponsorshipExemptionUntil>
     </PropertyGroup>
 </Project>
