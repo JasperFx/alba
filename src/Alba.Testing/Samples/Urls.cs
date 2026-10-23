@@ -16,6 +16,7 @@ namespace Alba.Testing.Samples
                 _.Patch.Url("/");
                 _.Head.Url("/");
                 _.Query.Url("/");
+                _.Options.Url("/");
             });
         }
         #endregion
@@ -31,6 +32,26 @@ namespace Alba.Testing.Samples
                 // Or append one parameter per public property or field
                 // of an object
                 _.Get.Url("/search").QueryString(new { q = "alba", page = 2 });
+            });
+        }
+        #endregion
+
+        #region sample_route_names
+        public async Task route_names(IAlbaHost system)
+        {
+            var accountId = 42;
+
+            await system.Scenario(_ =>
+            {
+                // Route values fill the route parameters of the named endpoint,
+                // and the rest become the query string
+                _.Get.RouteNamed("GetAccount", new { accountId, include = "deposits" });
+            });
+
+            await system.Scenario(_ =>
+            {
+                // With a request body, name the route after the body
+                _.Post.Json(new { Amount = 100m }).ToRouteNamed("MakeDeposit", new { accountId });
             });
         }
         #endregion

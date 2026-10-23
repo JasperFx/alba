@@ -54,6 +54,7 @@ export default defineConfig({
 function getGuideSidebar() {
     return [
         { text: 'Alba Setup', link: '/guide/gettingstarted' },
+        { text: 'Alba for AI Agents', link: '/guide/agents' },
         { text: 'Integrating with xUnit', link: '/guide/xunit' },
         { text: 'Integrating with NUnit', link: '/guide/nunit' },
         { text: 'Integrating with TUnit', link: '/guide/tunit' },

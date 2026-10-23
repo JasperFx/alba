@@ -82,6 +82,11 @@ public class Scenario : IUrlExpression
     /// </summary>
     public IUrlExpression Query => withMethod("QUERY");
 
+    /// <summary>
+    /// Specify an HTTP OPTIONS Url
+    /// </summary>
+    public IUrlExpression Options => withMethod("OPTIONS");
+
     private IUrlExpression withMethod(string method)
     {
         ConfigureHttpContext(context => context.HttpMethod(method));
@@ -100,6 +105,19 @@ public class Scenario : IUrlExpression
     {
         ConfigureHttpContext(context => context.RelativeUrl(relativeUrl));
         return new SendExpression(this);
+    }
+
+    SendExpression IUrlExpression.RouteNamed(string routeName, object? routeValues)
+    {
+        UseRouteName(routeName, routeValues);
+        return new SendExpression(this);
+    }
+
+    internal void UseRouteName(string routeName, object? routeValues)
+    {
+        // Resolved immediately so a bad route name fails before any request is sent
+        var url = RouteNameResolver.Resolve(_system.Services, routeName, routeValues);
+        ConfigureHttpContext(context => RouteNameResolver.Apply(context.Request, url));
     }
 
     SendExpression IUrlExpression.Json<T>(T input, JsonStyle? jsonStyle)

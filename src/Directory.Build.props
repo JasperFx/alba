@@ -3,6 +3,6 @@
     <PropertyGroup>
         <WarningsAsErrors>NU1901;NU1902;NU1904</WarningsAsErrors>
         <NuGetAuditMode>all</NuGetAuditMode>
-        <NuGetAuditLevel>low</NuGetAuditLevel>
+        <NuGetAuditLevel>critical</NuGetAuditLevel>
     </PropertyGroup>
 </Project>

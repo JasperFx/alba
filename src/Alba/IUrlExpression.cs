@@ -26,6 +26,16 @@ public interface IUrlExpression
     SendExpression Url([StringSyntax(StringSyntaxAttribute.Uri)]string relativeUrl);
 
     /// <summary>
+    /// Send the request to the endpoint with this ASP.NET Core route name, generating the url
+    /// from the route values. Values that are not route parameters become the query string.
+    /// An unknown route name or a missing required value throws before the request is sent.
+    /// </summary>
+    /// <param name="routeName">The route name from minimal API WithName(), MVC Name = or Wolverine RouteName</param>
+    /// <param name="routeValues">An anonymous object, dictionary or RouteValueDictionary</param>
+    /// <returns></returns>
+    SendExpression RouteNamed(string routeName, object? routeValues = null);
+
+    /// <summary>
     /// Serializes the input object as JSON.
     /// </summary>
     /// <param name="input"></param>
