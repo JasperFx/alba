@@ -14,8 +14,15 @@ Alba builds with the .NET SDK pinned in `global.json` and uses a [Nuke](https://
 ./build.cmd Test
 ```
 
+`global.json` puts `dotnet test` in Microsoft.Testing.Platform mode, so name a single test project
+with `--project`, for example `dotnet test --project src/Alba.Testing`.
+
 Or work directly with the solution at `src/Alba.sln` from your IDE or `dotnet` CLI. The main test
 project is `src/Alba.Testing`.
+
+`src/AspireSamples` holds the sample for the Aspire documentation page. Its tests start Postgres and
+RabbitMQ containers, so they need Docker and are not part of `./build.cmd Test`. Run them with
+`dotnet test --project src/AspireSamples`.
 
 Package versions are managed centrally in `src/Directory.Packages.props`.
 
