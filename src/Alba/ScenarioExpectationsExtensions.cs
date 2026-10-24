@@ -79,6 +79,34 @@ public static class ScenarioExpectationsExtensions
     }
 
     /// <summary>
+    /// Assert that the response is a problem details response (application/problem+json)
+    /// with this status code. Chain WithTitle(), WithDetail() and the other methods on the
+    /// result to assert on its members.
+    /// </summary>
+    /// <param name="scenario"></param>
+    /// <param name="statusCode"></param>
+    /// <returns></returns>
+    public static ProblemDetailsExpectations ShouldReturnProblemDetails(this Scenario scenario, int statusCode)
+    {
+        scenario.StatusCodeShouldBe(statusCode);
+        return new ProblemDetailsExpectations(scenario, requireErrors: false);
+    }
+
+    /// <summary>
+    /// Assert that the response is a validation problem: a problem details response with an
+    /// 'errors' member, as written by Results.ValidationProblem() or MVC model validation.
+    /// Chain WithValidationError() on the result to assert on the errors for each field.
+    /// </summary>
+    /// <param name="scenario"></param>
+    /// <param name="statusCode">The expected status code, 400 by default</param>
+    /// <returns></returns>
+    public static ProblemDetailsExpectations ShouldReturnValidationProblem(this Scenario scenario, int statusCode = 400)
+    {
+        scenario.StatusCodeShouldBe(statusCode);
+        return new ProblemDetailsExpectations(scenario, requireErrors: true);
+    }
+
+    /// <summary>
     /// Assert that the http response was redirected
     /// </summary>
     /// <param name="scenario"></param>

@@ -1,6 +1,11 @@
 using System.Diagnostics.CodeAnalysis;
+using Alba.Internal;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
  
 namespace Alba;
@@ -94,6 +99,35 @@ public static class AlbaHostExtensions
         });
 
         return await response.ReadAsTextAsync();
+    }
+
+    /// <summary>
+    /// Describes the application's endpoints, such as "GET /health", that anonymous requests
+    /// can reach: endpoints marked [AllowAnonymous] or AllowAnonymous(), and endpoints with no
+    /// authorization requirement when the application has no fallback authorization policy
+    /// </summary>
+    /// <param name="host"></param>
+    /// <returns></returns>
+    public static IReadOnlyList<string> EndpointsAllowingAnonymous(this IAlbaHost host)
+    {
+        var fallbackPolicy = host.Services.GetService<IOptions<AuthorizationOptions>>()?.Value.FallbackPolicy;
+
+        return EndpointDescriptions.DescribeAll(EndpointDescriptions.RoutableEndpoints(host.Services)
+            .Where(e => allowsAnonymous(e, fallbackPolicy)));
+    }
+
+    // Mirrors the authorization middleware: [AllowAnonymous] always wins, otherwise an endpoint
+    // without authorization metadata falls back to the fallback policy when there is one
+    private static bool allowsAnonymous(Endpoint endpoint, AuthorizationPolicy? fallbackPolicy)
+    {
+        var metadata = endpoint.Metadata;
+        if (metadata.GetMetadata<IAllowAnonymous>() != null) return true;
+
+        var hasAuthorization = metadata.GetMetadata<IAuthorizeData>() != null
+                               || metadata.GetMetadata<AuthorizationPolicy>() != null
+                               || metadata.GetMetadata<IAuthorizationRequirementData>() != null;
+
+        return !hasAuthorization && fallbackPolicy == null;
     }
 
     public class ResponseExpression

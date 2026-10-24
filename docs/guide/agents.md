@@ -74,7 +74,8 @@ no HttpClient. Follow these rules exactly; the API below is Alba 9 and differs f
 - Verbs: `_.Get`, `_.Put`, `_.Post`, `_.Delete`, `_.Patch`, `_.Head`, `_.Query`, `_.Options`. Set the url with
   `.Url("/path")` for requests without a body, or `.Json(body).ToUrl("/path")` for requests with one.
 - Request bodies: `.Json(obj)`, `.RawJson("{...}")`, `.Text("...")`, `.Xml(obj)`, `.FormData(obj)`,
-  `_.WriteFormData(dictionary)`, `.ByteArray(bytes)`, `.Stream(stream)`. Set headers with
+  `_.WriteFormData(dictionary)`, `.ByteArray(bytes)`, `.Stream(stream)`. File uploads:
+  `.MultipartFormData(form => form.File("upload", bytes, "report.csv").Field("tag", "q3"))`. Set headers with
   `_.WithRequestHeader(name, value)`, `.Accepts("...")`, `.ContentType("...")`.
 - Query strings: `_.Get.Url("/search").QueryString("q", "alba")` or `.QueryString(new { q = "alba", page = 2 })`.
 - Route names: when the endpoint has a route name (minimal API `.WithName(...)`, MVC `Name = ...`, Wolverine
@@ -87,6 +88,12 @@ no HttpClient. Follow these rules exactly; the API below is Alba 9 and differs f
   `_.ContentTypeShouldBe("application/json")`. Header assertions: `_.Header(name).SingleValueShouldEqual(...)`,
   `.ShouldHaveValues(...)`, `.ShouldNotBeWritten()`, `.SingleValueShouldMatch(regex)`.
   Redirects: `_.RedirectShouldBe("/url")`, `_.RedirectPermanentShouldBe("/url")`.
+- JSON values without a DTO: `_.JsonPath("$.lines[0].sku").ShouldBe("A-1")`, `.ShouldExist()`, `.ShouldNotExist()`,
+  `.ShouldHaveCount(2)`. Paths support `$`, `.name`, `['name']` and `[index]` only. `ShouldBe` compares structurally
+  using the application's JSON settings; `_.JsonPath("$").ShouldBe(new { ... })` compares the whole body.
+- Error responses: `_.ShouldReturnProblemDetails(409).WithTitle("...").WithDetail("...")` and
+  `_.ShouldReturnValidationProblem().WithValidationError("Amount", "must be positive")` (field names ignore case,
+  the message is a substring match).
 - Failed assertions throw `ScenarioAssertionException` with the response body in the message. Assert on status and
   headers inside the scenario; assert on deserialized data after it returns.
 - Reading the response: `result.ReadAsJsonAsync<T>()`, `ReadAsTextAsync()`, `ReadAsBytesAsync()`, `ReadAsXmlAsync()`,
@@ -114,6 +121,18 @@ no HttpClient. Follow these rules exactly; the API below is Alba 9 and differs f
 - `var clock = new TimeProviderOverride(new DateTimeOffset(2030, 1, 1, 0, 0, 0, TimeSpan.Zero));` passed to
   `AlbaHost.For<Program>(clock)` replaces the application's `TimeProvider`. Drive it with `clock.Advance(...)` and
   `clock.SetUtcNow(...)`.
+
+## Outbound HTTP and endpoint checks
+- Stub calls the application makes through `IHttpClientFactory` instead of reaching real services:
+  `var payments = new HttpClientStub("payments").When(HttpMethod.Post, "/charges").RespondWithJson(charge);` passed
+  to `AlbaHost.For<Program>(payments)`. A typed client's name is its class name; `new HttpClientStub()` stubs every
+  client. Other responses: `RespondWith(HttpStatusCode.NotFound)`, `RespondWithText(...)`,
+  `Throws(new HttpRequestException(...))`. The last matching rule wins. Assert on `payments.Requests` (each has
+  `Uri`, `Headers`, `ReadAsJson<T>()`). Unmatched requests throw inside the application.
+- `host.EndpointsAllowingAnonymous()` lists endpoints reachable without credentials, such as `"GET /health"`; assert
+  the exact list to catch endpoints missing authorization. For coverage, pass one shared `EndpointCoverage` instance
+  (a static field) to every host, then assert `coverage.NotExercised()` after the last test, in an xUnit assembly
+  fixture, an NUnit `[SetUpFixture]` or a TUnit `[After(TestSession)]` hook.
 
 ## Pitfalls
 - If the application does synchronous stream I/O and throws "Synchronous operations are disallowed", set

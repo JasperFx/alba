@@ -237,6 +237,27 @@ happen to contain the text "Error" now parse successfully.
   become the query string. An unknown route name or a missing required value throws before the request is sent,
   listing the route names the application knows
   ([#254](https://github.com/JasperFx/alba/issues/254)).
+- **JSON structure assertions.** `x.JsonPath("$.lines[0].sku").ShouldBe("A-1")` asserts on one value in a JSON
+  response without deserializing it, using a small JSONPath subset. Expected values are serialized with the
+  application's JSON settings and compared structurally, and `$` compares the whole body. `ShouldExist()`,
+  `ShouldNotExist()` and `ShouldHaveCount(...)` cover presence and array lengths. See the
+  [docs page](https://github.com/JasperFx/alba/blob/master/docs/scenarios/json.md#asserting-on-json-structure).
+- **Problem details assertions.** `x.ShouldReturnProblemDetails(409).WithTitle(...)` and
+  `x.ShouldReturnValidationProblem().WithValidationError("Amount", "must be positive")` assert on RFC 9457 problem
+  details responses, including `[ApiController]` model validation. See the
+  [docs page](https://github.com/JasperFx/alba/blob/master/docs/scenarios/problemdetails.md).
+- **Stubbing outbound HTTP.** The `HttpClientStub` extension answers the application's `IHttpClientFactory` calls
+  (named, typed or all clients) with stubbed responses, simulated failures or responses built from the request, and
+  records every request with its body. See the
+  [docs page](https://github.com/JasperFx/alba/blob/master/docs/guide/httpclient.md).
+- **Endpoint coverage and authorization audits.** The `EndpointCoverage` extension lists the endpoints that no
+  request has been routed to. One instance can be shared by every host of the application, including a pool of hosts
+  for concurrent tests, and checked after the last test. The `EndpointsAllowingAnonymous()` extension method lists
+  the endpoints a request without credentials can reach, following the authorization middleware's rules. See the
+  [docs page](https://github.com/JasperFx/alba/blob/master/docs/guide/endpoints.md).
+- **Multipart form builder.** `x.Post.MultipartFormData(form => form.File("upload", bytes, "report.csv").Field("tag", "q3"))`
+  builds file uploads and form fields without assembling a `MultipartFormDataContent`, inferring each file's
+  content type from its name.
 - **HTTP QUERY and OPTIONS support.** Scenarios can issue HTTP QUERY and OPTIONS requests via
   `Scenario.Query` and `Scenario.Options`, matching the existing verb properties
   (`x.Query.Url("/api/query")`, `x.Options.Url("/api/options")`).
