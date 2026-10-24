@@ -255,6 +255,12 @@ happen to contain the text "Error" now parse successfully.
   for concurrent tests, and checked after the last test. The `EndpointsAllowingAnonymous()` extension method lists
   the endpoints a request without credentials can reach, following the authorization middleware's rules. See the
   [docs page](https://github.com/JasperFx/alba/blob/master/docs/guide/endpoints.md).
+- **Host pooling for parallel tests.** `AlbaHostPool` runs up to `MaxHosts` hosts and lends each to one test at a
+  time through `await pool.RentAsync()`. Each host is built by a factory for its slot, so hosts can use separate
+  databases or other infrastructure. Returning a lease resets the host: actions added through the lease are removed,
+  `IResettableAlbaExtension` extensions such as `HttpClientStub` are reset, and `OnReturn` runs. `host.GetExtension<T>()`
+  finds a host's own extension. See the
+  [docs page](https://github.com/JasperFx/alba/blob/master/docs/guide/pooling.md).
 - **Multipart form builder.** `x.Post.MultipartFormData(form => form.File("upload", bytes, "report.csv").Field("tag", "q3"))`
   builds file uploads and form fields without assembling a `MultipartFormDataContent`, inferring each file's
   content type from its name.

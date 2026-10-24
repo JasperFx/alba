@@ -59,6 +59,12 @@ no HttpClient. Follow these rules exactly; the API below is Alba 9 and differs f
   `[OneTimeTearDown]`.
 - TUnit: a class implementing `IAsyncInitializer` and `IAsyncDisposable` that owns the host, injected with
   `[ClassDataSource<AlbaBootstrap>(Shared = SharedType.PerTestSession)]`.
+- Parallel tests that change data: share an `AlbaHostPool` (namespace `Alba.Pooling`) instead of one host. The factory builds each host for its
+  slot, so hosts can use separate databases:
+  `new AlbaHostPool(slot => AlbaHost.For<Program>().WithConfiguration("ConnectionStrings:Db", $"...Database=app_{slot.Index}"), new AlbaHostPoolOptions { MaxHosts = 4, OnReturn = (host, slot) => resetData(host) })`.
+  Each test does `await using var host = await pool.RentAsync(cancellationToken);` and uses `host` like any
+  `IAlbaHost`. Create per host extensions such as `HttpClientStub` inside the factory and find them with
+  `host.GetExtension<HttpClientStub>()`. Rent one host per test, and always dispose the lease.
 
 ## Writing scenarios
     var result = await host.Scenario(_ =>

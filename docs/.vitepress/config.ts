@@ -58,6 +58,7 @@ function getGuideSidebar() {
         { text: 'Integrating with xUnit', link: '/guide/xunit' },
         { text: 'Integrating with NUnit', link: '/guide/nunit' },
         { text: 'Integrating with TUnit', link: '/guide/tunit' },
+        { text: 'Pooling Hosts', link: '/guide/pooling' },
         { text: 'Aspire Testing', link: '/guide/aspire' },
         { text: 'Extension Model', link: '/guide/extensions' },
         { text: 'Security Extensions', link: '/guide/security' },

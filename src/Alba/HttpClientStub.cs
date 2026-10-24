@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using Alba.Pooling;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Http;
 
@@ -11,14 +12,16 @@ namespace Alba;
 /// Alba extension that answers the application's outbound HTTP calls made through
 /// IHttpClientFactory (named, typed and default clients) with stubbed responses, and records
 /// every request. Requests that match no stubbed response throw inside the application.
+/// In an AlbaHostPool, returning the host restores the stubbed responses it joined the pool with.
 /// </summary>
-public sealed class HttpClientStub : IAlbaExtension
+public sealed class HttpClientStub : IResettableAlbaExtension
 {
     private readonly object _lock = new();
     private readonly List<RecordedHttpRequest> _requests = new();
 
     // Replaced rather than mutated, so requests match against a snapshot without locking
     private HttpClientStubRule[] _rules = [];
+    private HttpClientStubRule[] _checkpointRules = [];
 
     /// <summary>
     /// Stub the client with this name, or every client from IHttpClientFactory when no name
@@ -168,6 +171,22 @@ public sealed class HttpClientStub : IAlbaExtension
     }
 
     Task IAlbaExtension.Start(IAlbaHost host) => Task.CompletedTask;
+
+    void IResettableAlbaExtension.Checkpoint()
+    {
+        lock (_lock) _checkpointRules = _rules;
+    }
+
+    Task IResettableAlbaExtension.ResetAsync()
+    {
+        lock (_lock)
+        {
+            _requests.Clear();
+            _rules = _checkpointRules;
+        }
+
+        return Task.CompletedTask;
+    }
 
     void IDisposable.Dispose()
     {

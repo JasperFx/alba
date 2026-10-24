@@ -310,47 +310,47 @@ public class AlbaHost : IAlbaHost
 
     public async ValueTask DisposeAsync()
     {
-        List<Exception>? failures = null;
+        await Teardown.RunAllAsync("One or more failures while tearing down the AlbaHost", teardownSteps());
+    }
 
+    private IEnumerable<Func<Task>> teardownSteps()
+    {
         foreach (var extension in Extensions)
         {
-            await tryTeardown(() => extension.DisposeAsync());
+            yield return () => extension.DisposeAsync().AsTask();
         }
 
-        await tryTeardown(async () =>
+        yield return async () =>
         {
             if (_host is not null)
             {
                 await _host.StopAsync();
                 _host.Dispose();
             }
-        });
+        };
 
-        await tryTeardown(() =>
+        yield return () =>
         {
             Server.Dispose();
-            return ValueTask.CompletedTask;
-        });
+            return Task.CompletedTask;
+        };
 
-        await tryTeardown(() => _factory?.DisposeAsync() ?? ValueTask.CompletedTask);
+        yield return () => _factory?.DisposeAsync().AsTask() ?? Task.CompletedTask;
+    }
 
-        if (failures is not null)
-        {
-            throw new AggregateException("One or more failures while tearing down the AlbaHost", failures);
-        }
+    // Lets an AlbaHostPool remove the actions added while a test held the host
+    internal readonly record struct HookCheckpoint(int BeforeEachAsync, int BeforeEach, int AfterEach);
 
-        // Every teardown step runs even if an earlier one fails
-        async ValueTask tryTeardown(Func<ValueTask> step)
-        {
-            try
-            {
-                await step();
-            }
-            catch (Exception e)
-            {
-                (failures ??= new List<Exception>()).Add(e);
-            }
-        }
+    internal HookCheckpoint CheckpointHooks()
+    {
+        return new HookCheckpoint(_beforeEachAsync.Count, _beforeEachSync.Count, _afterEach.Count);
+    }
+
+    internal void RestoreHooks(HookCheckpoint checkpoint)
+    {
+        _beforeEachAsync.RemoveRange(checkpoint.BeforeEachAsync, _beforeEachAsync.Count - checkpoint.BeforeEachAsync);
+        _beforeEachSync.RemoveRange(checkpoint.BeforeEach, _beforeEachSync.Count - checkpoint.BeforeEach);
+        _afterEach.RemoveRange(checkpoint.AfterEach, _afterEach.Count - checkpoint.AfterEach);
     }
 
 
@@ -429,15 +429,20 @@ public class AlbaHost : IAlbaHost
         return host;
     }
 
-    internal static async Task DisposeQuietly(IAsyncDisposable host)
+    internal static Task DisposeQuietly(IAsyncDisposable host)
+    {
+        return DisposeQuietly(() => host.DisposeAsync().AsTask());
+    }
+
+    internal static async Task DisposeQuietly(Func<Task> dispose)
     {
         try
         {
-            await host.DisposeAsync();
+            await dispose();
         }
         catch (Exception)
         {
-            // A teardown failure here would only mask the startup failure that matters
+            // A teardown failure here would only mask the failure that matters
         }
     }
 

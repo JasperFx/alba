@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using Alba.Internal;
+using Alba.Pooling;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -100,6 +101,36 @@ public static class AlbaHostExtensions
 
         return await response.ReadAsTextAsync();
     }
+
+    /// <summary>
+    /// Find the host's extension of this type, such as the HttpClientStub of a host rented
+    /// from an AlbaHostPool. Pass a match to choose between several extensions of the type.
+    /// </summary>
+    /// <param name="host"></param>
+    /// <param name="match"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException">No extension, or more than one, matches</exception>
+    public static T GetExtension<T>(this IAlbaHost host, Func<T, bool>? match = null) where T : IAlbaExtension
+    {
+        var found = ExtensionsOf(host).OfType<T>().Where(x => match?.Invoke(x) ?? true).ToArray();
+
+        return found.Length switch
+        {
+            1 => found[0],
+            0 => throw new InvalidOperationException(
+                $"The host has no {typeof(T).Name} extension{(match is null ? "" : " that matches")}"),
+            _ => throw new InvalidOperationException(
+                $"The host has {found.Length} {typeof(T).Name} extensions{(match is null ? "" : " that match")}. Pass a match to choose one.")
+        };
+    }
+
+    internal static IReadOnlyList<IAlbaExtension> ExtensionsOf(IAlbaHost host) => host switch
+    {
+        AlbaHostLease lease => lease.Inner.Extensions,
+        AlbaHost albaHost => albaHost.Extensions,
+        _ => []
+    };
 
     /// <summary>
     /// Describes the application's endpoints, such as "GET /health", that anonymous requests

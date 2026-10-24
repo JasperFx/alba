@@ -57,8 +57,8 @@ The exception from `ShouldBeEmpty()` fails the test run. To report the gaps with
 test output instead. With NUnit, check the coverage in a `[OneTimeTearDown]` method of a `[SetUpFixture]`; with TUnit,
 check it in an `[After(TestSession)]` hook.
 
-- One instance can be shared by any number of hosts, such as a pool of hosts for concurrent tests, and it keeps its
-  results after the hosts are disposed. Hosts that are not given the instance are not counted.
+- One instance can be shared by any number of hosts, such as every host of an [`AlbaHostPool`](pooling.md), and it
+  keeps its results after the hosts are disposed. Hosts that are not given the instance are not counted.
 - An endpoint counts as soon as routing selects it, whatever the response, so a test that expects a 401 from an existing
   endpoint covers it. Requests to urls that match no endpoint do not count.
 - Every request through the host counts: scenarios, server-sent event streams, and clients from
