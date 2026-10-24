@@ -106,6 +106,83 @@ public async Task read_json_shorthand(IAlbaHost host)
 
 This code snippet is functionally identical to the previous usage.
 
+## Asserting on JSON Structure
+
+`JsonPath(...)` asserts on one value in a JSON response body, without using a DTO. Expected values are
+serialized with the application's own JSON settings, so enums, naming policies and converters match what the
+application writes:
+
+<!-- snippet: sample_json_path_assertions -->
+<a id='snippet-sample_json_path_assertions'></a>
+```cs
+[Fact]
+public async Task values_at_paths()
+{
+    await _host.Scenario(x =>
+    {
+        x.Get.Url("/order");
+        x.JsonPath("$.id").ShouldBe(7);
+        x.JsonPath("$.customer.name").ShouldBe("Alba");
+        x.JsonPath("$.lines[1].sku").ShouldBe("B-2");
+        x.JsonPath("$['customer']['name']").ShouldBe("Alba");
+
+        // The leading "$." is optional
+        x.JsonPath("lines[0].quantity").ShouldBe(2);
+    });
+}
+```
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Acceptance/json_path_assertions.cs#L54-L70' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_json_path_assertions' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+Paths use a small JSONPath subset: `$` for the root, `.name` or `['name']` for a property, and `[0]` for an array
+item. The leading `$.` can be left out. Filters, wildcards and recursive descent are not supported.
+
+`ShouldBe(...)` compares structurally: property order and whitespace do not matter, and numbers compare by value, so
+`150` equals `150.0`. Objects, anonymous types and collections compare the same way, and the path `$` compares the
+whole body:
+
+<!-- snippet: sample_json_path_structural_comparison -->
+<a id='snippet-sample_json_path_structural_comparison'></a>
+```cs
+[Fact]
+public async Task objects_compare_structurally_regardless_of_property_order()
+{
+    await _host.Scenario(x =>
+    {
+        x.Get.Url("/order");
+        x.JsonPath("$.lines[0]").ShouldBe(new { quantity = 2, sku = "A-1" });
+        x.JsonPath("$.customer").ShouldBe(new { email = (string)null, name = "Alba" });
+    });
+}
+```
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Acceptance/json_path_assertions.cs#L72-L83' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_json_path_structural_comparison' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+`ShouldExist()`, `ShouldNotExist()` and `ShouldHaveCount(...)` check that a member is present or absent, or that an
+array has a given length. A member whose value is JSON `null` counts as present:
+
+<!-- snippet: sample_json_path_existence_and_counts -->
+<a id='snippet-sample_json_path_existence_and_counts'></a>
+```cs
+[Fact]
+public async Task existence_and_counts()
+{
+    await _host.Scenario(x =>
+    {
+        x.Get.Url("/order");
+        x.JsonPath("$.customer.email").ShouldExist().ShouldBe<string>(null);
+        x.JsonPath("$.customer.phone").ShouldNotExist();
+        x.JsonPath("$.lines[2]").ShouldNotExist();
+        x.JsonPath("$.lines").ShouldHaveCount(2);
+    });
+}
+```
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Acceptance/json_path_assertions.cs#L129-L142' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_json_path_existence_and_counts' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+As with the other scenario assertions, every failed path is reported together with the response body. For error
+responses in the problem details format, see [Problem Details](problemdetails.md).
+
 ## Shortcut for Pure Json Services
 
 If you don't care about any additional HTTP headers or need to verify any HTTP status code except for `200 Ok`, you can use this shorthand syntax

@@ -20,6 +20,7 @@ public sealed class MimeType
 
     public static readonly MimeType Html = New("text/html", ".htm", ".html");
     public static readonly MimeType Json = New("application/json");
+    public static readonly MimeType ProblemJson = New("application/problem+json");
     public static readonly MimeType Text = New("text/plain", ".txt");
     public static readonly MimeType Javascript = New("application/javascript", ".js", ".coffee");
     public static readonly MimeType Css = New("text/css", ".css");
@@ -98,7 +99,7 @@ public sealed class MimeType
         return _mappingFromExtension[extension];
     }
 
-    private static readonly FileExtensionContentTypeProvider FileExtensionContentTypeProvider = new();
+    internal static readonly FileExtensionContentTypeProvider FileExtensionContentTypeProvider = new();
 
     public IEnumerable<string> Extensions => _extensions;
 

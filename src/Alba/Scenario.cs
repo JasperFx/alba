@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Security.Claims;
+using System.Text.Json.Nodes;
 using Alba.Assertions;
 using Alba.Internal;
 using Microsoft.AspNetCore.Http;
@@ -343,6 +344,35 @@ public class Scenario : IUrlExpression
     public HeaderExpectations Header(string headerKey)
     {
         return new(this, headerKey);
+    }
+
+    /// <summary>
+    /// Specify expectations for the value at a path in the JSON response body. Paths use a
+    /// JSONPath subset: "$" for the root, ".name" or "['name']" for properties and "[0]"
+    /// for array items, such as "$.items[0].name". The leading "$." can be left out.
+    /// </summary>
+    /// <param name="path"></param>
+    /// <returns></returns>
+    public JsonPathExpectations JsonPath(string path)
+    {
+        return new(this, path);
+    }
+
+    /// <summary>
+    /// Serializes an expected value with the application's JSON settings before the request
+    /// executes, for assertions that compare it with the response
+    /// </summary>
+    internal Func<JsonNode?> SerializeExpectedJson<T>(T expected)
+    {
+        JsonNode? node = null;
+        AsyncPreparations.Add(async () =>
+        {
+            await using var stream = await _system.DefaultJson.WriteAsync(expected);
+            stream.Position = 0;
+            node = await JsonNode.ParseAsync(stream);
+        });
+
+        return () => node;
     }
 
     /// <summary>

@@ -24,6 +24,22 @@ public static class FormDataExtensions
 
         
     /// <summary>
+    /// Writes a multipart form data body of form fields and file uploads to the Http request
+    /// </summary>
+    /// <param name="url"></param>
+    /// <param name="configure">Adds the fields and files to the form</param>
+    /// <returns></returns>
+    public static SendExpression MultipartFormData(this IUrlExpression url, Action<MultipartFormDataBuilder> configure)
+    {
+        ArgumentNullException.ThrowIfNull(configure);
+
+        var builder = new MultipartFormDataBuilder();
+        configure(builder);
+
+        return url.MultipartFormData(builder.Content);
+    }
+
+    /// <summary>
     /// Writes the <see cref="MultipartFormDataContent"/> to the provided HttpContext, along with the
     /// required headers.
     /// </summary>

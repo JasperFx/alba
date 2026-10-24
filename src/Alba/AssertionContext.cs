@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Nodes;
 using Alba.Internal;
 using Microsoft.AspNetCore.Http;
 
@@ -57,6 +58,23 @@ public sealed class AssertionContext
         }
 
         return _body;
+    }
+
+    private (bool IsJson, JsonNode? Node)? _json;
+
+    /// <summary>
+    /// Parses the response body as JSON once for every JSON assertion in the scenario
+    /// </summary>
+    internal bool TryReadBodyAsJson(out JsonNode? node)
+    {
+        if (_json == null)
+        {
+            var isJson = JsonBody.TryParse(ReadBodyAsString(), out var parsed);
+            _json = (isJson, parsed);
+        }
+
+        node = _json.Value.Node;
+        return _json.Value.IsJson;
     }
     
 

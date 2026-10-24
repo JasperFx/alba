@@ -66,7 +66,38 @@ you'll have to resort to the dictionary approach.
 
 ## Multipart Form Data & File Uploads
 
-An additional extension exists that permits the usage of `MultipartFormDataContent`, which is commonly used for file uploads:
+`MultipartFormData(...)` builds a multipart body of form fields and file uploads:
+
+<!-- snippet: sample_multipart_form_data_builder -->
+<a id='snippet-sample_multipart_form_data_builder'></a>
+```cs
+var result = await host.Scenario(x =>
+{
+    x.Post.MultipartFormData(form => form
+            // Files with the same name bind to a collection; the content type
+            // comes from the file name extension unless one is passed
+            .File("files", Encoding.UTF8.GetBytes("Hello there!"), "greeting.txt")
+            .File("files", image, "TestImage.jpg")
+            .Field("additionalContent", "My additional string of fun times"))
+        .ToUrl("/api/files/upload");
+
+    x.StatusCodeShouldBeOk();
+});
+```
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Acceptance/multipart_form_data_builder.cs#L64-L77' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_multipart_form_data_builder' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+- `File(name, bytes, fileName)` and `File(name, stream, fileName)` add a file. The application binds it by `name`, to an
+  `IFormFile` parameter or property, or to a collection when several files share the name.
+- The file's content type comes from the extension of `fileName`, such as `text/csv` for `report.csv`, and falls back
+  to `application/octet-stream`. Pass a content type as the last argument to override it.
+- A stream is read when the request is sent, so keep it open until the scenario completes.
+- `Field(name, value)` adds a form value.
+
+Minimal API endpoints that bind `IFormFile` validate an antiforgery token when the application uses antiforgery. Call
+`.DisableAntiforgery()` on such an endpoint in the test host, or send a token, because Alba does not supply one.
+
+For full control over the body, pass a `MultipartFormDataContent` instead:
 
 <!-- snippet: sample_write_multipart_form_data -->
 <a id='snippet-sample_write_multipart_form_data'></a>

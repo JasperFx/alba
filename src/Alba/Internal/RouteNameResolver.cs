@@ -1,7 +1,6 @@
 using System.Text;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.AspNetCore.Routing.Patterns;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Alba.Internal;
@@ -43,8 +42,7 @@ internal static class RouteNameResolver
 
     private static string describeFailure(IServiceProvider services, string routeName, RouteValueDictionary values)
     {
-        var named = (services.GetService<EndpointDataSource>()?.Endpoints ?? [])
-            .OfType<RouteEndpoint>()
+        var named = EndpointDescriptions.RoutableEndpoints(services)
             .Where(e => e.Metadata.GetMetadata<ISuppressLinkGenerationMetadata>()?.SuppressLinkGeneration != true)
             .Select(e => (Name: e.Metadata.GetMetadata<IRouteNameMetadata>()?.RouteName, Endpoint: e))
             .Where(x => !string.IsNullOrEmpty(x.Name))
@@ -65,7 +63,7 @@ internal static class RouteNameResolver
             else
             {
                 writer.AppendLine("Known route names:");
-                foreach (var (name, endpoint) in named) writer.AppendLine($"  {name}: {describe(endpoint)}");
+                foreach (var (name, endpoint) in named) writer.AppendLine($"  {name}: {EndpointDescriptions.Describe(endpoint)}");
             }
 
             return writer.ToString();
@@ -74,7 +72,7 @@ internal static class RouteNameResolver
         writer.AppendLine($"Could not generate a url for the route name '{routeName}' from the supplied route values.");
         foreach (var (_, endpoint) in matches)
         {
-            writer.AppendLine($"  Route: {describe(endpoint)}");
+            writer.AppendLine($"  Route: {EndpointDescriptions.Describe(endpoint)}");
 
             var missing = endpoint.RoutePattern.Parameters
                 .Where(p => !p.IsOptional && !p.IsCatchAll && !endpoint.RoutePattern.Defaults.ContainsKey(p.Name))
@@ -92,13 +90,5 @@ internal static class RouteNameResolver
             : $"  Supplied route values: {string.Join(", ", values.Select(x => $"{x.Key}={x.Value}"))}");
 
         return writer.ToString();
-    }
-
-    private static string describe(RouteEndpoint endpoint)
-    {
-        var pattern = endpoint.RoutePattern.RawText ?? endpoint.DisplayName ?? "(unknown pattern)";
-        var methods = endpoint.Metadata.GetMetadata<IHttpMethodMetadata>()?.HttpMethods;
-
-        return methods is { Count: > 0 } ? $"{string.Join(", ", methods)} {pattern}" : pattern;
     }
 }
