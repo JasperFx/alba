@@ -95,7 +95,7 @@ See [Configuring the Host Fluently](gettingstarted.md#configuring-the-host-fluen
 ## Time Travel with TimeProviderOverride
 
 Time-sensitive endpoints — token or session expiry, cache TTLs, scheduling, "valid until" business
-rules — need a deterministic clock. The `TimeProviderOverride` extension replaces the application's
+rules — need a deterministic clock. The `TimeProviderOverride` extension, in the `Alba.Extensions` namespace, replaces the application's
 `TimeProvider` registration with a controllable [FakeTimeProvider](https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.time.testing.faketimeprovider)
 on every bootstrapping style. The extension *is* the clock: pass it to `AlbaHost.For(...)`, then
 drive time from the test.
@@ -128,7 +128,7 @@ public async Task freezing_and_advancing_the_clock()
         .ShouldBe(new DateTimeOffset(2031, 6, 15, 12, 0, 0, TimeSpan.Zero));
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/time_provider_override_usage.cs#L15-L40' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_time_provider_override' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/time_provider_override_usage.cs#L16-L41' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_time_provider_override' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 The clock is frozen: `GetUtcNow()` returns the same instant until the test moves it with
@@ -191,5 +191,5 @@ public sealed class TimeProviderOverride : FakeTimeProvider, IAlbaExtension
     }
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba/TimeProviderOverride.cs#L7-L55' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_TimeProviderOverride' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba/Extensions/TimeProviderOverride.cs#L7-L55' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_TimeProviderOverride' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->

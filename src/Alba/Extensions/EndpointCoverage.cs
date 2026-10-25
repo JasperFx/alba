@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Alba;
+namespace Alba.Extensions;
 
 /// <summary>
 /// Alba extension that records which of the application's endpoints requests are routed to.

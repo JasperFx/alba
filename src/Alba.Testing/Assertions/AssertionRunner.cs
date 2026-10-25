@@ -1,4 +1,5 @@
 using System.Text;
+using Alba.Exceptions;
 using Microsoft.AspNetCore.Http;
 
 namespace Alba.Testing.Assertions

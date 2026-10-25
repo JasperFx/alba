@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Text.Json;
 using Alba.Assertions;
+using Alba.Exceptions;
 using Alba.Internal;
 using Alba.Serialization;
 using Microsoft.AspNetCore.Builder;

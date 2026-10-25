@@ -6,7 +6,7 @@ scenarios run the real application without reaching the real services.
 
 It replaces the primary handler of clients created through `IHttpClientFactory`: named clients, typed clients and the
 default `HttpClient`. The application's own delegating handlers still run, and a primary handler the application
-configures is replaced.
+configures is replaced. `HttpClientStub` is in the `Alba.Extensions` namespace.
 
 In this test, the application's `/checkout` endpoint charges a card through a named client, `payments`:
 
@@ -30,7 +30,7 @@ request.Uri.ShouldBe(new Uri("https://payments.example.com/charges?capture=true"
 request.Headers.GetValues("x-api-key").ShouldBe(["test-key"]);
 request.ReadAsJson<Checkout>()!.Amount.ShouldBe(25m);
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Acceptance/http_client_stub_usage.cs#L67-L84' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_http_client_stub' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Acceptance/http_client_stub_usage.cs#L68-L85' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_http_client_stub' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 ## Choosing the clients

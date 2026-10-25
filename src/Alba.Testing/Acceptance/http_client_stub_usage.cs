@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
+using Alba.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;

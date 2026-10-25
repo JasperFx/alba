@@ -1,5 +1,6 @@
 using System.Net.ServerSentEvents;
 using System.Xml;
+using Alba.Exceptions;
 using Microsoft.AspNetCore.Http;
 
 namespace Alba;

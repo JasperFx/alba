@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Nodes;
+using Alba.Exceptions;
 using Alba.Internal;
 using Microsoft.AspNetCore.Http;
 

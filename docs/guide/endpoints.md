@@ -6,7 +6,8 @@ credentials can hit. Both checks describe endpoints by their HTTP methods and ro
 
 ## Endpoints that no test reaches
 
-The `EndpointCoverage` extension records each endpoint that ASP.NET Core routes a request to. Pass one instance to
+The `EndpointCoverage` extension, in the `Alba.Extensions` namespace, records each endpoint that ASP.NET Core routes a
+request to. Pass one instance to
 every host of the application, then call `NotExercised()` after the last test has run to list the endpoints that no
 request reached:
 
@@ -44,7 +45,7 @@ public class ApiFixture : IAsyncLifetime
     }
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/EndpointAudits.cs#L5-L36' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_endpoint_coverage_fixture' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/EndpointAudits.cs#L6-L37' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_endpoint_coverage_fixture' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 Register the coverage class as an assembly fixture, so that its `DisposeAsync` runs after every test in the assembly:
@@ -89,7 +90,7 @@ public async Task no_endpoint_allows_anonymous_requests()
     host.EndpointsAllowingAnonymous().ShouldBeEmpty();
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/EndpointAudits.cs#L40-L49' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_endpoints_allowing_anonymous' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/EndpointAudits.cs#L41-L50' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_endpoints_allowing_anonymous' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 For an application with public endpoints, assert the exact list instead, such as

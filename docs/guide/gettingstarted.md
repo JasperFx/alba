@@ -74,7 +74,7 @@ await using var host = await AlbaHost.For<global::Program>(x =>
     });
 });
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Acceptance/web_application_factory_usage.cs#L41-L50' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_bootstrapping_with_web_application_factory' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Acceptance/web_application_factory_usage.cs#L42-L51' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_bootstrapping_with_web_application_factory' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 The `AlbaHost.For<T>(Action<IWebHostBuilder> configuration)` method uses `WebApplicationFactory` and all its magic static

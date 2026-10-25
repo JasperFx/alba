@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Headers;
 using System.Text;
 using System.Net.Mime;
+using Alba.Exceptions;
 using Shouldly;
 using WebApp;
 using WebApp.Controllers;

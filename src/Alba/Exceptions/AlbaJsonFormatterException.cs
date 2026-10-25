@@ -1,4 +1,4 @@
-namespace Alba;
+namespace Alba.Exceptions;
 
 public sealed class AlbaJsonFormatterException : Exception
 {

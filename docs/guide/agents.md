@@ -103,8 +103,8 @@ no HttpClient. Follow these rules exactly; the API below is Alba 9 and differs f
 - Error responses: `_.ShouldReturnProblemDetails(409).WithTitle("...").WithDetail("...")` and
   `_.ShouldReturnValidationProblem().WithValidationError("Amount", "must be positive")` (field names ignore case,
   the message is a substring match).
-- Failed assertions throw `ScenarioAssertionException` with the response body in the message. Assert on status and
-  headers inside the scenario; assert on deserialized data after it returns.
+- Failed assertions throw `ScenarioAssertionException` (namespace `Alba.Exceptions`) with the response body in the
+  message. Assert on status and headers inside the scenario; assert on deserialized data after it returns.
 - Reading the response: `result.ReadAsJsonAsync<T>()`, `ReadAsTextAsync()`, `ReadAsBytesAsync()`, `ReadAsXmlAsync()`,
   `ReadAsServerSentEvents<T>()`. Synchronous variants exist and every read is repeatable. `result.Context` is the raw
   `HttpContext`.
@@ -129,7 +129,8 @@ no HttpClient. Follow these rules exactly; the API below is Alba 9 and differs f
   `scenario.WithRequestHeader(...)`, `scenario.WithBearerToken(...)` or `scenario.ConfigureHttpContext(...)`.
 - `var clock = new TimeProviderOverride(new DateTimeOffset(2030, 1, 1, 0, 0, 0, TimeSpan.Zero));` passed to
   `AlbaHost.For<Program>(clock)` replaces the application's `TimeProvider`. Drive it with `clock.Advance(...)` and
-  `clock.SetUtcNow(...)`.
+  `clock.SetUtcNow(...)`. `TimeProviderOverride`, `HttpClientStub` and `EndpointCoverage` are in the
+  `Alba.Extensions` namespace.
 
 ## Outbound HTTP and endpoint checks
 - Stub calls the application makes through `IHttpClientFactory` instead of reaching real services:

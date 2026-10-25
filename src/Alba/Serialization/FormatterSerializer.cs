@@ -1,3 +1,4 @@
+using Alba.Exceptions;
 using Alba.Internal;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Formatters;

@@ -1,4 +1,5 @@
-﻿using Shouldly;
+﻿using Alba.Exceptions;
+using Shouldly;
 using WebApp;
 
 namespace Alba.Testing.Acceptance

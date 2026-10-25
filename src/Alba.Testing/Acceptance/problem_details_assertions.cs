@@ -1,3 +1,4 @@
+using Alba.Exceptions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Shouldly;

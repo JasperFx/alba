@@ -31,7 +31,7 @@ public class ApiHosts : IAsyncLifetime
     public ValueTask DisposeAsync() => Pool.DisposeAsync();
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/HostPooling.cs#L8-L26' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_host_pool_fixture' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/HostPooling.cs#L9-L27' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_host_pool_fixture' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 Hosts start as tests need them, so a suite that never runs more than two tests at once only starts two hosts.
@@ -76,7 +76,7 @@ public class PooledHostTests(ApiHosts hosts)
     }
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/HostPooling.cs#L28-L47' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_renting_a_pooled_host' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/HostPooling.cs#L29-L48' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_renting_a_pooled_host' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 The lease is an `IAlbaHost`, so scenarios and helpers such as `GetAsJson` work unchanged. Always dispose it with

@@ -186,6 +186,12 @@ update your `using IdentityModel.Client;` directives to `using Duende.IdentityMo
 The `Alba.HttpContextExtensions.Write(this HttpResponse, string)` helper performed synchronous
 stream writes. Use ASP.NET Core's built-in `HttpResponse.WriteAsync(...)` instead.
 
+### Exceptions moved to the `Alba.Exceptions` namespace
+
+`ScenarioAssertionException`, `EmptyResponseException` and `AlbaJsonFormatterException` moved from the `Alba`
+namespace to `Alba.Exceptions`. Add `using Alba.Exceptions;` to files that catch or assert on them, such as
+`Should.ThrowAsync<ScenarioAssertionException>(...)`.
+
 ### `Dispose()` performs a full, awaited shutdown
 
 `IAlbaHost.Dispose()` previously fired the host stop without awaiting it. It now performs the
@@ -224,6 +230,9 @@ attempt to parse and return `null` only when the body is not valid XML. Valid XM
 happen to contain the text "Error" now parse successfully.
 
 ## New features
+
+The extensions added in v9 (`TimeProviderOverride`, `HttpClientStub` and `EndpointCoverage`) are in the
+`Alba.Extensions` namespace, and the host pool types are in `Alba.Pooling`.
 
 - **Server-sent events support.** See the [docs page](https://github.com/JasperFx/alba/blob/master/docs/scenarios/sse.md)
 - **Binary response reads.** `IScenarioResult.ReadAsBytes()` and `ReadAsBytesAsync()` return the

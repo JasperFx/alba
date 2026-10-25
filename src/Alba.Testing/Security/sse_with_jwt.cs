@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using Alba.Exceptions;
 using Alba.Security;
 using Shouldly;
 

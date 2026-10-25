@@ -2,7 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Time.Testing;
 
-namespace Alba;
+namespace Alba.Extensions;
 
 #region sample_TimeProviderOverride
 

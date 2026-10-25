@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Alba.Exceptions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;

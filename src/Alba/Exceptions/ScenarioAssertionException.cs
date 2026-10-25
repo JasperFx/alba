@@ -2,7 +2,7 @@ using System.Text;
 using Alba.Internal;
 
 
-namespace Alba;
+namespace Alba.Exceptions;
 
 public sealed class ScenarioAssertionException : Exception
 {

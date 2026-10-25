@@ -3,6 +3,7 @@ using System.Net;
 using System.Security.Claims;
 using System.Text.Json.Nodes;
 using Alba.Assertions;
+using Alba.Exceptions;
 using Alba.Internal;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;

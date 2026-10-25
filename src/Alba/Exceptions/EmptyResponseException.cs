@@ -1,4 +1,4 @@
-namespace Alba;
+namespace Alba.Exceptions;
 
 public class EmptyResponseException : Exception
 {

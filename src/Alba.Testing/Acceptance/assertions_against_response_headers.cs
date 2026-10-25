@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Alba.Exceptions;
+using Microsoft.AspNetCore.Http;
 using Shouldly;
 
 namespace Alba.Testing.Acceptance

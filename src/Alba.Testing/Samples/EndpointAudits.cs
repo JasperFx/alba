@@ -1,3 +1,4 @@
+using Alba.Extensions;
 using Shouldly;
 
 namespace Alba.Testing.Samples;

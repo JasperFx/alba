@@ -35,7 +35,7 @@ public async Task validation_errors_by_field()
     });
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Acceptance/problem_details_assertions.cs#L43-L71' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_problem_details_assertions' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Acceptance/problem_details_assertions.cs#L44-L72' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_problem_details_assertions' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 - `ShouldReturnProblemDetails(statusCode)` asserts the status code and the `application/problem+json` content type.

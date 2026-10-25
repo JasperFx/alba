@@ -131,7 +131,7 @@ public async Task values_at_paths()
     });
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Acceptance/json_path_assertions.cs#L54-L70' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_json_path_assertions' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Acceptance/json_path_assertions.cs#L55-L71' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_json_path_assertions' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 Paths use a small JSONPath subset: `$` for the root, `.name` or `['name']` for a property, and `[0]` for an array
@@ -155,7 +155,7 @@ public async Task objects_compare_structurally_regardless_of_property_order()
     });
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Acceptance/json_path_assertions.cs#L72-L83' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_json_path_structural_comparison' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Acceptance/json_path_assertions.cs#L73-L84' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_json_path_structural_comparison' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 `ShouldExist()`, `ShouldNotExist()` and `ShouldHaveCount(...)` check that a member is present or absent, or that an
@@ -177,7 +177,7 @@ public async Task existence_and_counts()
     });
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Acceptance/json_path_assertions.cs#L129-L142' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_json_path_existence_and_counts' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Acceptance/json_path_assertions.cs#L130-L143' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_json_path_existence_and_counts' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 As with the other scenario assertions, every failed path is reported together with the response body. For error

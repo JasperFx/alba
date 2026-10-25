@@ -6,7 +6,7 @@ using Alba.Pooling;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Http;
 
-namespace Alba;
+namespace Alba.Extensions;
 
 /// <summary>
 /// Alba extension that answers the application's outbound HTTP calls made through

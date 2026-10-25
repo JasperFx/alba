@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Alba.Exceptions;
 using Alba.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

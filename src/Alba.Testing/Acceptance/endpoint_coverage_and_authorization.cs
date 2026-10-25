@@ -1,4 +1,5 @@
 using System.Net.ServerSentEvents;
+using Alba.Extensions;
 using Alba.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
