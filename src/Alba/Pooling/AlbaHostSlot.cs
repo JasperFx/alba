@@ -3,7 +3,7 @@ using Alba.Internal;
 namespace Alba.Pooling;
 
 /// <summary>
-/// The place a host occupies in an AlbaHostPool. A host that replaces a discarded host gets
+/// The place a host occupies in an AlbaHostPool. A host that replaces another gets
 /// the same index, so per host resources such as a database name can be derived from it.
 /// </summary>
 public sealed class AlbaHostSlot

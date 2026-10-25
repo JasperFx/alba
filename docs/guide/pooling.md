@@ -218,8 +218,9 @@ var pool = new AlbaHostPool(async (slot, cancellation) =>
 });
 ```
 
-The pool runs the factory again for a host that replaces a discarded one, so the factory must work when run twice for
-the same slot. Registering the cleanup with `slot.RegisterForDispose` is enough when the cleanup can't fail. Otherwise
+The pool runs the factory again when it replaces a host: after `Discard()`, after a failed `OnRent`, `OnReturn` or
+extension reset, and after a startup failure when `FailFastOnStartupFailure` is off. So the factory must work when run
+more than once for the same slot. Registering the cleanup with `slot.RegisterForDispose` is enough when the cleanup can't fail. Otherwise
 create the resource only if it is missing, or name it with `slot.Generation`, which counts the hosts the slot held
 before, such as `app_{slot.Index}_{slot.Generation}`.
 

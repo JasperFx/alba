@@ -79,7 +79,7 @@ public class AlbaHostPool<TState> : IAsyncDisposable
 
     /// <summary>
     /// Create a pool whose factory starts each host and creates its state. The factory is
-    /// called once for each host the pool starts, including hosts that replace discarded ones.
+    /// called once for each host the pool starts, including hosts that replace others.
     /// </summary>
     /// <param name="factory">Returns a host started through AlbaHost.For(...) and its state</param>
     /// <param name="options"></param>
