@@ -70,7 +70,9 @@ the rules that exist. The request is still recorded.
 ## Tips
 
 - The stub is shared state. Tests that add rules or check `Requests` should not run in parallel against the same host.
-  Tests that share an xUnit fixture already run one at a time.
+  Tests that share an xUnit fixture already run one at a time. To run them in parallel, give each host of an
+  [`AlbaHostPool`](pooling.md) its own stub. Returning a pooled host clears the stub's requests and removes the rules
+  that tests added.
 - A resilience handler such as `AddStandardResilienceHandler()` retries stubbed 5xx responses after a delay. Stub a 4xx
   response, or leave the resilience handler out of the test host, when testing error handling.
 - Only clients from `IHttpClientFactory` are stubbed. An `HttpClient` that the application creates with `new` is not.
