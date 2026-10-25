@@ -27,6 +27,7 @@
          in the version it brings in (NU1903) -->
     <PackageVersion Include="System.Security.Cryptography.Xml" Version="10.0.13" />
     <PackageVersion Include="TUnit" Version="1.76.0" />
+    <PackageVersion Include="TUnit.Logging.Microsoft" Version="1.76.0" />
     <PackageVersion Include="Verify.AspNetCore" Version="5.0.0" />
     <PackageVersion Include="Verify.XunitV3" Version="33.3.4" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="4.0.1" />

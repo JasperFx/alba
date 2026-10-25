@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.EventLog;
+using Microsoft.Extensions.Options;
 
 namespace Alba;
 
@@ -60,6 +62,12 @@ internal sealed class AlbaWebApplicationFactory<TEntryPoint> : WebApplicationFac
         CreatedHost = base.CreateHost(builder);
 
         return CreatedHost;
+    }
+
+    // Passes the configured TestServerOptions on, which some versions of the base factory ignore
+    protected override TestServer CreateServer(IServiceProvider serviceProvider)
+    {
+        return new TestServer(serviceProvider, serviceProvider.GetRequiredService<IOptions<TestServerOptions>>());
     }
 
     private static void DisableWindowsEventLoggerProvider(ILoggingBuilder loggingBuilder)

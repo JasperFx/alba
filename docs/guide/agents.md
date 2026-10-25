@@ -147,6 +147,9 @@ no HttpClient. Follow these rules exactly; the API below is Alba 9 and differs f
 ## Pitfalls
 - If the application does synchronous stream I/O and throws "Synchronous operations are disallowed", set
   `host.Server.AllowSynchronousIO = true` after the host starts.
+- The application starts and handles requests without the test's async context. Read values such as xUnit's
+  `TestContext.Current` before starting the host and capture them. Chain `.WithTestContextFlow()` when code in the
+  application must see the current test while it handles a request. TUnit finds the test without it.
 - Snapshot testing: add Verify and Verify.AspNetCore, then `await Verify(result)` with the scenario result.
 - Extend the DSL with extension methods on `Scenario` for repeated setup instead of copying it into every test.
 - Real Docker dependencies such as a database or broker: if the solution has an Aspire AppHost, start it once per test

@@ -126,6 +126,24 @@ the application as host configuration, which requires the application to call `W
 Host-level keys such as `environment` and `contentRoot` cannot be changed this way, use `UseEnvironment` on the
 `Action<IWebHostBuilder>` overload for those.
 
+### Seeing the test from the application
+
+By default the application handles each request without the test's async context, like a real server would.
+`WithTestContextFlow()` runs each scenario's request in the test's context instead, so values the test or the test
+framework keep in an `AsyncLocal<T>`, such as xUnit's `TestContext.Current`, the current `Activity` and the current
+culture, are visible to the application while it handles the request:
+
+```cs
+await using var host = await AlbaHost.For<Program>()
+    .WithTestContextFlow();
+```
+
+A logger that looks up the current test for each message, such as one writing to xUnit's
+`TestContext.Current.TestOutputHelper`, then puts the application's logs in the test that sent the request.
+
+Each request also carries the trace context of the test's current `Activity`, including its baggage, in the request
+headers regardless of `WithTestContextFlow` being set or not.
+
 ## Running a Scenario
 
 Once you have a `AlbaHost` object, you're ready to execute *Scenario's* through your system inside of tests.

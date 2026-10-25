@@ -7,17 +7,24 @@ namespace TUnitSamples;
 #region sample_TUnit_host_pool
 public sealed class AlbaPool : IAsyncDisposable
 {
+    public const int Hosts = 4;
+
     public AlbaHostPool Pool { get; } = new(slot => AlbaHost.For<WebApp.Program>()
             // Each host gets its own database
             .WithConfiguration("ConnectionStrings:Db", $"Host=localhost;Database=app_{slot.Index}"),
         new AlbaHostPoolOptions
         {
-            // Hosts start as tests need them, up to this many. TUnit runs every test in parallel,
-            // so the rest wait here for a host.
-            MaxHosts = 4
+            // Hosts start as tests need them, up to this many
+            MaxHosts = Hosts
         });
 
     public ValueTask DisposeAsync() => Pool.DisposeAsync();
+}
+
+// TUnit runs no more of the tests marked with this limiter at once than the pool has hosts
+public sealed class PooledHostsLimit : IParallelLimit
+{
+    public int Limit => AlbaPool.Hosts;
 }
 #endregion
 
@@ -31,8 +38,11 @@ public abstract class PooledTestBase(AlbaPool pool) : IAsyncInitializer, IAsyncD
 
     public async Task InitializeAsync()
     {
+        var test = TestContext.Current;
+
         // Name the test, because timeout messages would otherwise name this method
-        _lease = await pool.Pool.RentAsync(caller: TestContext.Current?.Metadata.TestName ?? "");
+        _lease = await pool.Pool.RentAsync(test?.Execution.CancellationToken ?? default,
+            caller: test?.Metadata.TestName ?? "");
     }
 
     // Resets the host and returns it to the pool
@@ -43,6 +53,7 @@ public abstract class PooledTestBase(AlbaPool pool) : IAsyncInitializer, IAsyncD
 }
 
 [ClassDataSource<AlbaPool>(Shared = SharedType.PerTestSession)]
+[ParallelLimiter<PooledHostsLimit>]
 public class PooledMathTests(AlbaPool pool) : PooledTestBase(pool)
 {
     [Test]

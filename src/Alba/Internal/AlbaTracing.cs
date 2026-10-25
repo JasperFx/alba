@@ -35,10 +35,15 @@ internal static class AlbaTracing
 
     public static Activity? StartRequestActivity(HttpRequest request)
     {
-        if (!Source.HasListeners()) return null;
-
-        var activity = Source.StartActivity($"{request.Method} {request.Path}", ActivityKind.Client);
+        var activity = Source.HasListeners()
+            ? Source.StartActivity($"{request.Method} {request.Path}", ActivityKind.Client)
+            : null;
         activity?.SetRequestTags(request);
+
+        // Without an Alba activity, the test's own activity (such as the test framework's) still
+        // parents the request and carries its baggage into the application
+        injectTraceContext(activity ?? Activity.Current, request);
+
         return activity;
     }
 
@@ -48,7 +53,12 @@ internal static class AlbaTracing
         activity.SetTag(HttpMethod, request.Method);
         activity.SetTag(HttpRequestContentLength, request.ContentLength);
         activity.SetTag(NetPeerName, request.Host.Host);
-        
+    }
+
+    private static void injectTraceContext(Activity? activity, HttpRequest request)
+    {
+        if (activity is null) return;
+
         DistributedContextPropagator.Current.Inject(activity, request, static (carrier, name, value) =>
         {
             if (carrier is HttpRequest r)
@@ -56,7 +66,6 @@ internal static class AlbaTracing
                 r.Headers.TryAdd(name, value);
             }
         });
-       
     }
     
     public static void SetResponseTags(this Activity activity, HttpResponse response)

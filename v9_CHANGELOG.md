@@ -198,6 +198,21 @@ namespace to `Alba.Exceptions`. Add `using Alba.Exceptions;` to files that catch
 complete teardown (equivalent to awaiting `DisposeAsync()`), including disposing extensions via
 `DisposeAsync`. Prefer `await using` / `DisposeAsync()` in new code.
 
+### Applications start without the caller's async context
+
+Awaiting an `AlbaHostBuilder` starts the application without the async context of the awaiting code, so hosted
+services and other background work no longer carry the test that happened to start a shared or pooled host (its
+current `Activity`, the test framework's current test or the current culture) for the rest of the test run.
+Configuration actions run during startup, so `AsyncLocal<T>` values set by the test, such as xUnit's
+`TestContext.Current`, are no longer visible inside them. Read such values before starting the host and capture them
+in the action instead:
+
+```cs
+var output = TestContext.Current.TestOutputHelper;
+await using var host = await AlbaHost.For<Program>(x =>
+    x.ConfigureServices(services => services.AddSingleton(output)));
+```
+
 ### The default status code expectation accepts any 2xx
 
 Scenarios that do not configure a status code expectation now pass for any status code between
@@ -272,6 +287,10 @@ The extensions added in v9 (`TimeProviderOverride`, `HttpClientStub` and `Endpoi
   limits concurrent startups, the rent timeout only fires when no host comes back to the pool, and the pool records
   rent, start and return activities for tracing. See the
   [docs page](https://github.com/JasperFx/alba/blob/master/docs/guide/pooling.md).
+- **Requests in the test's context.** `WithTestContextFlow()` runs each scenario's request in the test's async
+  context, so `AsyncLocal<T>` values such as xUnit's `TestContext.Current` and the current `Activity` are visible to
+  the application while it handles the request. See the
+  [docs page](https://github.com/JasperFx/alba/blob/master/docs/guide/gettingstarted.md#seeing-the-test-from-the-application).
 - **Multipart form builder.** `x.Post.MultipartFormData(form => form.File("upload", bytes, "report.csv").Field("tag", "q3"))`
   builds file uploads and form fields without assembling a `MultipartFormDataContent`, inferring each file's
   content type from its name.
@@ -307,9 +326,15 @@ The extensions added in v9 (`TimeProviderOverride`, `HttpClientStub` and `Endpoi
   started instead of leaving an orphaned host and `TestServer` running for the rest of the test
   session. `IAlbaHost.DisposeAsync()` likewise completes every teardown step even when one fails,
   reporting the failures together as an `AggregateException`.
+- Requests carry the trace context of the test's current `Activity`, including its baggage, even when nothing
+  listens to Alba's own activities. Test frameworks that trace each test, such as TUnit, use it to attribute the
+  application's output to the right test.
 
 ## Bug fixes
 
+- `TestServerOptions` configured by the application or a test, such as `AllowSynchronousIO` through
+  `services.Configure<TestServerOptions>(...)`, now apply to hosts started with `AlbaHost.For<T>`. The .NET 10
+  `WebApplicationFactory` ignored them.
 - Alba's MVC JSON strategy no longer selects third-party formatters (such as
   Microsoft.AspNetCore.OData's) that advertise `application/json` but cannot run outside their
   own pipeline. The framework's System.Text.Json or Newtonsoft.Json formatters are preferred

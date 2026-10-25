@@ -65,20 +65,27 @@ TUnit runs tests in parallel by default, so tests that change data can't safely 
 ```cs
 public sealed class AlbaPool : IAsyncDisposable
 {
+    public const int Hosts = 4;
+
     public AlbaHostPool Pool { get; } = new(slot => AlbaHost.For<WebApp.Program>()
             // Each host gets its own database
             .WithConfiguration("ConnectionStrings:Db", $"Host=localhost;Database=app_{slot.Index}"),
         new AlbaHostPoolOptions
         {
-            // Hosts start as tests need them, up to this many. TUnit runs every test in parallel,
-            // so the rest wait here for a host.
-            MaxHosts = 4
+            // Hosts start as tests need them, up to this many
+            MaxHosts = Hosts
         });
 
     public ValueTask DisposeAsync() => Pool.DisposeAsync();
 }
+
+// TUnit runs no more of the tests marked with this limiter at once than the pool has hosts
+public sealed class PooledHostsLimit : IParallelLimit
+{
+    public int Limit => AlbaPool.Hosts;
+}
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/TUnitSamples/HostPooling.cs#L7-L22' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_TUnit_host_pool' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/TUnitSamples/HostPooling.cs#L7-L29' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_TUnit_host_pool' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 Then rent a host for each test. TUnit creates the test class for each test, so a base class can rent in
@@ -96,8 +103,11 @@ public abstract class PooledTestBase(AlbaPool pool) : IAsyncInitializer, IAsyncD
 
     public async Task InitializeAsync()
     {
+        var test = TestContext.Current;
+
         // Name the test, because timeout messages would otherwise name this method
-        _lease = await pool.Pool.RentAsync(caller: TestContext.Current?.Metadata.TestName ?? "");
+        _lease = await pool.Pool.RentAsync(test?.Execution.CancellationToken ?? default,
+            caller: test?.Metadata.TestName ?? "");
     }
 
     // Resets the host and returns it to the pool
@@ -108,6 +118,7 @@ public abstract class PooledTestBase(AlbaPool pool) : IAsyncInitializer, IAsyncD
 }
 
 [ClassDataSource<AlbaPool>(Shared = SharedType.PerTestSession)]
+[ParallelLimiter<PooledHostsLimit>]
 public class PooledMathTests(AlbaPool pool) : PooledTestBase(pool)
 {
     [Test]
@@ -124,8 +135,58 @@ public class PooledMathTests(AlbaPool pool) : PooledTestBase(pool)
     }
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/TUnitSamples/HostPooling.cs#L24-L61' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_TUnit_pooled_tests' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/TUnitSamples/HostPooling.cs#L31-L72' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_TUnit_pooled_tests' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
-TUnit starts more tests than the pool has hosts, and the extra tests wait for one. The pool's rent timeout only fires
-when no host is returned for the whole timeout, so a long queue doesn't fail while tests keep finishing.
+`[ParallelLimiter<PooledHostsLimit>]` stops TUnit running more of these tests at once than the pool has hosts, so a
+test doesn't start only to wait for a host. The limit is shared by every class marked with the same limiter type.
+
+TUnit disposes the `AlbaPool`, and with it every host, after the test session ends.
+
+Shared infrastructure such as a database container can be injected into the class that owns the pool, as a property
+with its own `[ClassDataSource]`. TUnit initializes it before the owning class, so create the pool in
+`InitializeAsync`:
+
+```cs
+public sealed class AlbaPool : IAsyncInitializer, IAsyncDisposable
+{
+    // Startup the containers before the test pool
+    [ClassDataSource<PostgresContainer>(Shared = SharedType.PerTestSession)]
+    public required PostgresContainer Database { get; init; }
+
+    public AlbaHostPool Pool { get; private set; } = null!;
+
+    public Task InitializeAsync()
+    {
+        Pool = new AlbaHostPool(slot => AlbaHost.For<WebApp.Program>()
+                .WithConfiguration("ConnectionStrings:Db", Database.ConnectionStringFor($"app_{slot.Index}")),
+            new AlbaHostPoolOptions { MaxHosts = 4 });
+
+        return Task.CompletedTask;
+    }
+
+    public ValueTask DisposeAsync() => Pool.DisposeAsync();
+}
+```
+
+Tests that create their own data instead of relying on a reset can name it with
+`TestContext.Current!.Isolation.GetIsolatedPrefix()`, which is unique to each test, for example as a tenant id.
+
+## Application output and logs
+
+Output the application writes with `Console` while it handles a scenario appears in the output of the test that sent
+the request. TUnit traces each test, Alba sends that trace with the request, and TUnit uses it to find the test.
+
+The default console logger writes from a background thread, so its messages don't reach the test. To see the
+application's `ILogger` output in each test, add the `TUnit.Logging.Microsoft` package and register its logger in the
+host's services:
+
+<!-- snippet: sample_TUnit_correlated_logging -->
+<a id='snippet-sample_TUnit_correlated_logging'></a>
+```cs
+// Writes the application's logs to the test that sent the request
+builder.Services.AddCorrelatedTUnitLogging();
+```
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/TUnitSamples/ApplicationOutput.cs#L32-L35' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_TUnit_correlated_logging' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+

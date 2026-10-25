@@ -1,5 +1,7 @@
 using System.Runtime.CompilerServices;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Alba;
 
@@ -61,12 +63,36 @@ public sealed class AlbaHostBuilder
     }
 
     /// <summary>
+    /// Run each scenario's request in the test's async context, so <see cref="AsyncLocal{T}"/> values
+    /// such as the test framework's current test, <see cref="System.Diagnostics.Activity.Current"/> and
+    /// the current culture are visible to the application while it handles the request. Output the
+    /// application writes during the request is then attributed to the test that sent it
+    /// </summary>
+    public AlbaHostBuilder WithTestContextFlow()
+    {
+        return record(b => b.ConfigureServices(s => s.Configure<TestServerOptions>(o => o.PreserveExecutionContext = true)));
+    }
+
+    /// <summary>
     /// Start the application. Awaiting the builder does the same thing, and
     /// every await returns the same running host
     /// </summary>
     public Task<IAlbaHost> StartAsync()
     {
-        return _started ??= _bootstrapper.StartAsync(_steps, _extensions.ToArray());
+        return _started ??= startDetached();
+    }
+
+    // The application starts without the caller's async context, so hosted services and other
+    // background work don't keep the test that happened to start the host (its test context,
+    // current Activity or culture) for the rest of the test run
+    private Task<IAlbaHost> startDetached()
+    {
+        var extensions = _extensions.ToArray();
+
+        using (ExecutionContext.SuppressFlow())
+        {
+            return Task.Run(() => _bootstrapper.StartAsync(_steps, extensions));
+        }
     }
 
     public TaskAwaiter<IAlbaHost> GetAwaiter()

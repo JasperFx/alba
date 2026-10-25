@@ -47,7 +47,8 @@ Create one pool for the test assembly and dispose it after the last test:
   NUnit runs tests one at a time unless they are marked `[Parallelizable]`. See the
   [NUnit example](nunit.md#running-tests-in-parallel-with-a-host-pool).
 - **TUnit**: a class that owns the pool and implements `IAsyncDisposable`, injected with
-  `[ClassDataSource<ApiHosts>(Shared = SharedType.PerTestSession)]`. See the
+  `[ClassDataSource<ApiHosts>(Shared = SharedType.PerTestSession)]`. TUnit runs every test in parallel, so add a
+  `[ParallelLimiter<T>]` whose limit is `MaxHosts`. See the
   [TUnit example](tunit.md#isolating-parallel-tests-with-a-host-pool).
 
 ## Renting a host
