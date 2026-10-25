@@ -27,6 +27,7 @@ public class AlbaHost : IAlbaHost
 
     private readonly List<Func<Scenario, Task>> _beforeEachAsync = new();
     private readonly List<Action<HttpContext>> _beforeEachSync = new();
+    private int _disposed;
 
     internal AlbaHost(IHost host, params IAlbaExtension[] extensions)
     {
@@ -310,6 +311,8 @@ public class AlbaHost : IAlbaHost
 
     public async ValueTask DisposeAsync()
     {
+        if (Interlocked.Exchange(ref _disposed, 1) == 1) return;
+
         await Teardown.RunAllAsync("One or more failures while tearing down the AlbaHost", teardownSteps());
     }
 

@@ -259,7 +259,9 @@ happen to contain the text "Error" now parse successfully.
   time through `await pool.RentAsync()`. Each host is built by a factory for its slot, so hosts can use separate
   databases or other infrastructure. Returning a lease resets the host: actions added through the lease are removed,
   `IResettableAlbaExtension` extensions such as `HttpClientStub` are reset, and `OnReturn` runs. `host.GetExtension<T>()`
-  finds a host's own extension. See the
+  finds a host's own extension. `AlbaHostPool<TState>` keeps state of your own with each host, `MaxConcurrentStarts`
+  limits concurrent startups, the rent timeout only fires when no host comes back to the pool, and the pool records
+  rent, start and return activities for tracing. See the
   [docs page](https://github.com/JasperFx/alba/blob/master/docs/guide/pooling.md).
 - **Multipart form builder.** `x.Post.MultipartFormData(form => form.File("upload", bytes, "report.csv").Field("tag", "q3"))`
   builds file uploads and form fields without assembling a `MultipartFormDataContent`, inferring each file's

@@ -64,7 +64,10 @@ no HttpClient. Follow these rules exactly; the API below is Alba 9 and differs f
   `new AlbaHostPool(slot => AlbaHost.For<Program>().WithConfiguration("ConnectionStrings:Db", $"...Database=app_{slot.Index}"), new AlbaHostPoolOptions { MaxHosts = 4, OnReturn = (host, slot) => resetData(host) })`.
   Each test does `await using var host = await pool.RentAsync(cancellationToken);` and uses `host` like any
   `IAlbaHost`. Create per host extensions such as `HttpClientStub` inside the factory and find them with
-  `host.GetExtension<HttpClientStub>()`. Rent one host per test, and always dispose the lease.
+  `host.GetExtension<HttpClientStub>()`. Rent one host per test, and always dispose the lease. To keep objects that
+  are not in DI with each host (mocks, a DbContext, seeded users), use `AlbaHostPool<TState>`: the factory returns
+  `(host, state)`, the options' actions receive `(host, state)`, and the test reads `lease.State`. Set
+  `MaxConcurrentStarts = 1` when the application can't start several hosts at once.
 
 ## Writing scenarios
     var result = await host.Scenario(_ =>

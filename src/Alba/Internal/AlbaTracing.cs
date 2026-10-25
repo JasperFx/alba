@@ -15,7 +15,24 @@ internal static class AlbaTracing
 
     public const string HttpStatusCode = "http.status_code";
     public const string HttpResponseContentLength = "http.response_content_length";
-    
+
+    public const string PoolSlot = "alba.pool.slot";
+    public const string PoolSlotGeneration = "alba.pool.slot_generation";
+    public const string PoolWaitMilliseconds = "alba.pool.wait_ms";
+    public const string PoolDiscarded = "alba.pool.discarded";
+
+    public static Activity? StartPoolActivity(string operation)
+    {
+        if (!Source.HasListeners()) return null;
+
+        return Source.StartActivity($"AlbaHostPool {operation}");
+    }
+
+    public static void RecordFailure(Activity? activity, Exception exception)
+    {
+        activity?.SetStatus(ActivityStatusCode.Error, exception.Message);
+    }
+
     public static Activity? StartRequestActivity(HttpRequest request)
     {
         if (!Source.HasListeners()) return null;

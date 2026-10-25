@@ -1,8 +1,10 @@
+using System.Diagnostics;
 using Alba.Pooling;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Shouldly;
 
 namespace Alba.Testing.Acceptance;
@@ -150,6 +152,20 @@ public class host_pooling
 
         mostHeld.ShouldBeLessThanOrEqualTo(3);
         started.Count.ShouldBeLessThanOrEqualTo(3);
+    }
+
+    [Fact]
+    public async Task a_long_queue_does_not_time_out_while_hosts_keep_coming_back()
+    {
+        await using var pool = new AlbaHostPool(slot => startApp(slot),
+            new AlbaHostPoolOptions { MaxHosts = 1, RentTimeout = TimeSpan.FromMilliseconds(500) });
+
+        // The last rent waits far longer than the timeout, but a host comes back every 60ms
+        await Task.WhenAll(Enumerable.Range(0, 15).Select(async _ =>
+        {
+            await using var host = await pool.RentAsync(Cancellation);
+            await Task.Delay(60, Cancellation);
+        }));
     }
 
     [Fact]
@@ -509,5 +525,145 @@ public class host_pooling
         // Rented hosts count as running, so this only starts the third
         await pool.WarmUpAsync(cancellationToken: Cancellation);
         started.Count.ShouldBe(3);
+    }
+
+    private sealed class Instance(AlbaHostSlot slot, List<string> teardown) : IAsyncDisposable
+    {
+        public AlbaHostSlot Slot { get; } = slot;
+
+        public int Resets { get; set; }
+
+        public ValueTask DisposeAsync()
+        {
+            lock (teardown) teardown.Add("state");
+            return ValueTask.CompletedTask;
+        }
+    }
+
+    [Fact]
+    public async Task a_pool_can_keep_state_of_its_own_with_each_host()
+    {
+        var teardown = new List<string>();
+        var pool = new AlbaHostPool<Instance>(async (slot, _) =>
+        {
+            var host = await startApp(slot);
+            host.Services.GetRequiredService<IHostApplicationLifetime>().ApplicationStopped
+                .Register(() => { lock (teardown) teardown.Add("host"); });
+            slot.RegisterForDispose(new TeardownStep(() => { lock (teardown) teardown.Add("slot resource"); }));
+
+            return (host, new Instance(slot, teardown));
+        }, new AlbaHostPoolOptions<Instance>
+        {
+            MaxHosts = 1,
+            OnReturn = (_, instance) =>
+            {
+                instance.Resets++;
+                return Task.CompletedTask;
+            }
+        });
+
+        Instance first;
+        await using (var host = await pool.RentAsync(Cancellation))
+        {
+            first = host.State;
+            first.Slot.ShouldBeSameAs(host.Slot);
+        }
+
+        var lease = await pool.RentAsync(Cancellation);
+        lease.State.ShouldBeSameAs(first);
+        first.Resets.ShouldBe(1);
+        await lease.DisposeAsync();
+        Should.Throw<ObjectDisposedException>(() => lease.State);
+
+        await pool.DisposeAsync();
+        teardown.ShouldBe(["state", "host", "slot resource"]);
+    }
+
+    private sealed class TeardownStep(Action step) : IAsyncDisposable
+    {
+        public ValueTask DisposeAsync()
+        {
+            step();
+            return ValueTask.CompletedTask;
+        }
+    }
+
+    [Fact]
+    public async Task max_concurrent_starts_limits_how_many_hosts_start_at_once()
+    {
+        var starting = 0;
+        var mostStarting = 0;
+        await using var pool = new AlbaHostPool(async (slot, _) =>
+        {
+            var now = Interlocked.Increment(ref starting);
+            lock (this) mostStarting = Math.Max(mostStarting, now);
+
+            await Task.Delay(50, Cancellation);
+            Interlocked.Decrement(ref starting);
+
+            return await startApp(slot);
+        }, new AlbaHostPoolOptions { MaxHosts = 3, MaxConcurrentStarts = 1 });
+
+        await pool.WarmUpAsync(cancellationToken: Cancellation);
+
+        mostStarting.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task a_replacement_host_knows_its_generation()
+    {
+        var generations = new List<int>();
+        await using var pool = new AlbaHostPool(slot =>
+        {
+            generations.Add(slot.Generation);
+            return startApp(slot);
+        }, new AlbaHostPoolOptions { MaxHosts = 1 });
+
+        for (var i = 0; i < 2; i++)
+        {
+            var lease = await pool.RentAsync(Cancellation);
+            lease.Discard();
+            await lease.DisposeAsync();
+        }
+
+        await using var host = await pool.RentAsync(Cancellation);
+        host.Slot.Generation.ShouldBe(2);
+        generations.ShouldBe([0, 1, 2]);
+    }
+
+    [Fact]
+    public async Task the_pool_traces_starting_renting_and_returning_hosts()
+    {
+        using var testSource = new ActivitySource(nameof(host_pooling));
+        var recorded = new List<Activity>();
+        using var listener = new ActivityListener
+        {
+            ShouldListenTo = source => source.Name is "Alba" || source == testSource,
+            Sample = (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.AllDataAndRecorded,
+            ActivityStopped = activity =>
+            {
+                lock (recorded) recorded.Add(activity);
+            }
+        };
+        ActivitySource.AddActivityListener(listener);
+
+        await using var pool = new AlbaHostPool(slot => startApp(slot));
+
+        ActivityTraceId traceId;
+        using (var test = testSource.StartActivity("test")!)
+        {
+            traceId = test.TraceId;
+            await (await pool.RentAsync(Cancellation)).DisposeAsync();
+        }
+
+        Activity[] pooling;
+        lock (recorded)
+        {
+            pooling = recorded.Where(x => x.TraceId == traceId && x.DisplayName.StartsWith("AlbaHostPool")).ToArray();
+        }
+
+        pooling.Select(x => x.DisplayName).ShouldBe(["AlbaHostPool start host", "AlbaHostPool rent", "AlbaHostPool return"]);
+        pooling.ShouldAllBe(x => Equals(x.GetTagItem("alba.pool.slot"), 0));
+        pooling[1].GetTagItem("alba.pool.wait_ms").ShouldNotBeNull();
     }
 }

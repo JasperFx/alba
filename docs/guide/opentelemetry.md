@@ -2,6 +2,7 @@
 
 Performing distributed tracing within your CI pipline is a relatively new yet powerful concept that can improve your teams response to broken, flaky or slow-performing tests. 
 Alba has support for Open Telemetry tracing within `Scenario` calls, permitting tracing within your test pipeline with any compatible OpenTelemetry integration. 
+An [`AlbaHostPool`](pooling.md#tracing-the-pool) also traces renting, starting and resetting its hosts.
 If you believe there's value in tracing additional areas of Alba, please let us know!
 
 ## Automated Instrumentation

@@ -8,20 +8,20 @@ namespace Alba.Pooling;
 /// reset the host and return it to the pool. BeforeEach and AfterEach actions added through
 /// the lease only apply until it is disposed.
 /// </summary>
-public sealed class AlbaHostLease : IAlbaHost
+public class AlbaHostLease : IAlbaHost
 {
-    private readonly AlbaHostPool _pool;
+    private readonly Func<AlbaHostLease, Task> _return;
     private readonly long _rentedAt = Environment.TickCount64;
     private int _returned;
 
-    internal AlbaHostLease(AlbaHostPool pool, AlbaHostPool.PooledHost pooled, string rentedBy)
+    internal AlbaHostLease(PooledHost pooled, string rentedBy, Func<AlbaHostLease, Task> returnToPool)
     {
-        _pool = pool;
         Pooled = pooled;
         RentedBy = rentedBy;
+        _return = returnToPool;
     }
 
-    internal AlbaHostPool.PooledHost Pooled { get; }
+    internal PooledHost Pooled { get; }
 
     internal string RentedBy { get; }
 
@@ -103,12 +103,37 @@ public sealed class AlbaHostLease : IAlbaHost
     public async ValueTask DisposeAsync()
     {
         if (Interlocked.Exchange(ref _returned, 1) == 1) return;
-        await _pool.ReturnAsync(this);
+        await _return(this);
     }
 
     public override string ToString()
     {
         var held = TimeSpan.FromMilliseconds(Environment.TickCount64 - _rentedAt);
         return $"{Slot.Name} rented by {RentedBy} for {held.TotalSeconds:0.0}s";
+    }
+}
+
+/// <summary>
+/// A host rented from an AlbaHostPool&lt;TState&gt;, with the state the pool's factory created
+/// for it
+/// </summary>
+/// <typeparam name="TState"></typeparam>
+public sealed class AlbaHostLease<TState> : AlbaHostLease
+{
+    internal AlbaHostLease(PooledHost pooled, string rentedBy, Func<AlbaHostLease, Task> returnToPool)
+        : base(pooled, rentedBy, returnToPool)
+    {
+    }
+
+    /// <summary>
+    /// The state the pool's factory created alongside the rented host
+    /// </summary>
+    public TState State
+    {
+        get
+        {
+            _ = Inner;
+            return (TState)Pooled.State!;
+        }
     }
 }

@@ -10,15 +10,22 @@ public sealed class AlbaHostSlot
 {
     private readonly List<IAsyncDisposable> _resources = new();
 
-    internal AlbaHostSlot(int index)
+    internal AlbaHostSlot(int index, int generation)
     {
         Index = index;
+        Generation = generation;
     }
 
     /// <summary>
     /// From 0 to one less than the pool's MaxHosts
     /// </summary>
     public int Index { get; }
+
+    /// <summary>
+    /// How many hosts this slot held before this one: 0 for the first host, 1 for the host
+    /// that replaced it, and so on
+    /// </summary>
+    public int Generation { get; }
 
     /// <summary>
     /// A name such as "alba-2", for prefixing per host resources like queues or schemas
