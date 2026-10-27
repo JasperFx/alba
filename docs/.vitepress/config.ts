@@ -62,7 +62,6 @@ function getGuideSidebar() {
         { text: 'Aspire Testing', link: '/guide/aspire' },
         { text: 'Extension Model', link: '/guide/extensions' },
         { text: 'Security Extensions', link: '/guide/security' },
-        { text: 'Stubbing Outbound HTTP', link: '/guide/httpclient' },
         { text: 'Endpoint Coverage', link: '/guide/endpoints' },
         { text: 'Snapshot Testing', link: '/guide/snapshot' },
         { text: 'Tracing & Open Telemetry', link: '/guide/opentelemetry' },

@@ -17,7 +17,6 @@ public class host_pooling
     private static AlbaHostBuilder startApp(AlbaHostSlot slot, params IAlbaExtension[] extensions)
     {
         var builder = WebApplication.CreateBuilder();
-        builder.Services.AddHttpClient("payments", c => c.BaseAddress = new Uri("https://payments.example.com"));
 
         return AlbaHost.For(builder, app =>
             {
@@ -33,9 +32,29 @@ public class host_pooling
         throw new FormatException("The application failed to start");
     }
 
-    private static HttpClient payments(IAlbaHost host)
+    // Holds state for one host, such as the responses a fake of another service returns
+    private sealed class RecordingExtension(string name, params string[] entries) : IResettableAlbaExtension
     {
-        return host.Services.GetRequiredService<IHttpClientFactory>().CreateClient("payments");
+        private List<string> _checkpoint = [];
+
+        public string Name { get; } = name;
+        public List<string> Entries { get; private set; } = [..entries];
+
+        public void Checkpoint() => _checkpoint = [..Entries];
+
+        public Task ResetAsync()
+        {
+            Entries = [.._checkpoint];
+            return Task.CompletedTask;
+        }
+
+        public Task Start(IAlbaHost host) => Task.CompletedTask;
+
+        public void Dispose()
+        {
+        }
+
+        public ValueTask DisposeAsync() => ValueTask.CompletedTask;
     }
 
     private sealed class Resource : IAsyncDisposable
@@ -400,49 +419,40 @@ public class host_pooling
     }
 
     [Fact]
-    public async Task returning_a_host_restores_the_responses_its_http_client_stub_started_with()
+    public async Task returning_a_host_restores_its_resettable_extensions()
     {
-        await using var pool = new AlbaHostPool(slot => startApp(slot,
-                new HttpClientStub("payments").When(HttpMethod.Get, "/status").RespondWithText("up")),
+        await using var pool = new AlbaHostPool(slot => startApp(slot, new RecordingExtension("payments", "from the factory")),
             new AlbaHostPoolOptions
             {
                 MaxHosts = 1,
                 OnCreated = (host, _) =>
                 {
-                    host.GetExtension<HttpClientStub>().When(HttpMethod.Get, "/version").RespondWithText("1.0");
+                    host.GetExtension<RecordingExtension>().Entries.Add("from OnCreated");
                     return Task.CompletedTask;
                 }
             });
 
         await using (var host = await pool.RentAsync(Cancellation))
         {
-            var stub = host.GetExtension<HttpClientStub>();
-            stub.When(HttpMethod.Get, "/status").RespondWithText("down");
-
-            (await payments(host).GetStringAsync("/status", Cancellation)).ShouldBe("down");
-            stub.Requests.Count.ShouldBe(1);
+            host.GetExtension<RecordingExtension>().Entries.Add("from the test");
         }
 
         await using (var host = await pool.RentAsync(Cancellation))
         {
-            var stub = host.GetExtension<HttpClientStub>();
-            stub.Requests.ShouldBeEmpty();
-
-            (await payments(host).GetStringAsync("/status", Cancellation)).ShouldBe("up");
-            (await payments(host).GetStringAsync("/version", Cancellation)).ShouldBe("1.0");
+            host.GetExtension<RecordingExtension>().Entries.ShouldBe(["from the factory", "from OnCreated"]);
         }
     }
 
     [Fact]
     public async Task a_resettable_extension_cannot_be_shared_between_hosts()
     {
-        var shared = new HttpClientStub("payments");
+        var shared = new RecordingExtension("payments");
         await using var pool = new AlbaHostPool(slot => startApp(slot, shared), new AlbaHostPoolOptions { MaxHosts = 2 });
 
         await using var first = await pool.RentAsync(Cancellation);
 
         var ex = await Should.ThrowAsync<InvalidOperationException>(pool.RentAsync(Cancellation));
-        ex.Message.ShouldStartWith("This HttpClientStub is already used by another host in the AlbaHostPool");
+        ex.Message.ShouldStartWith("This RecordingExtension is already used by another host in the AlbaHostPool");
     }
 
     [Fact]
@@ -464,14 +474,14 @@ public class host_pooling
     public async Task get_extension_finds_one_extension_of_the_type()
     {
         await using var pool = new AlbaHostPool(slot =>
-            startApp(slot, new HttpClientStub("payments"), new HttpClientStub("email")));
+            startApp(slot, new RecordingExtension("payments"), new RecordingExtension("email")));
 
         await using var host = await pool.RentAsync(Cancellation);
 
-        host.GetExtension<HttpClientStub>(x => x.ClientName == "email").ClientName.ShouldBe("email");
+        host.GetExtension<RecordingExtension>(x => x.Name == "email").Name.ShouldBe("email");
 
-        Should.Throw<InvalidOperationException>(() => host.GetExtension<HttpClientStub>())
-            .Message.ShouldBe("The host has 2 HttpClientStub extensions. Pass a match to choose one.");
+        Should.Throw<InvalidOperationException>(() => host.GetExtension<RecordingExtension>())
+            .Message.ShouldBe("The host has 2 RecordingExtension extensions. Pass a match to choose one.");
         Should.Throw<InvalidOperationException>(() => host.GetExtension<TimeProviderOverride>())
             .Message.ShouldBe("The host has no TimeProviderOverride extension");
     }

@@ -103,8 +103,8 @@ public static class AlbaHostExtensions
     }
 
     /// <summary>
-    /// Find the host's extension of this type, such as the HttpClientStub of a host rented
-    /// from an AlbaHostPool. Pass a match to choose between several extensions of the type.
+    /// Find the host's extension of this type, including on a host rented from an AlbaHostPool.
+    /// Pass a match to choose between several extensions of the type.
     /// </summary>
     /// <param name="host"></param>
     /// <param name="match"></param>

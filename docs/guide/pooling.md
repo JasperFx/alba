@@ -17,9 +17,8 @@ are in the `Alba.Pooling` namespace.
 public class ApiHosts : IAsyncLifetime
 {
     public AlbaHostPool Pool { get; } = new(slot => AlbaHost.For<global::Program>()
-            // Each host gets its own database and its own stub for outbound calls
-            .WithConfiguration("ConnectionStrings:Db", $"Host=localhost;Database=app_{slot.Index}")
-            .WithExtension(new HttpClientStub("payments")),
+            // Each host gets its own database
+            .WithConfiguration("ConnectionStrings:Db", $"Host=localhost;Database=app_{slot.Index}"),
         new AlbaHostPoolOptions
         {
             // Hosts start as tests need them, up to this many
@@ -31,7 +30,7 @@ public class ApiHosts : IAsyncLifetime
     public ValueTask DisposeAsync() => Pool.DisposeAsync();
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/HostPooling.cs#L9-L27' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_host_pool_fixture' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/HostPooling.cs#L7-L24' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_host_pool_fixture' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 Hosts start as tests need them, so a suite that never runs more than two tests at once only starts two hosts.
@@ -71,13 +70,10 @@ public class PooledHostTests(ApiHosts hosts)
             x.Get.Url("/");
             x.ContentShouldBe("Hello World!");
         });
-
-        // This host's own stub, separate from the stubs of the other hosts
-        host.GetExtension<HttpClientStub>().Requests.ShouldBeEmpty();
     }
 }
 ```
-<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/HostPooling.cs#L29-L48' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_renting_a_pooled_host' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/HostPooling.cs#L26-L42' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_renting_a_pooled_host' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 The lease is an `IAlbaHost`, so scenarios and helpers such as `GetAsJson` work unchanged. Always dispose it with
@@ -85,8 +81,8 @@ The lease is an `IAlbaHost`, so scenarios and helpers such as `GetAsJson` work u
 
 - `BeforeEach`, `AfterEach` and their async versions called on the lease only apply until the lease is disposed. Actions
   that every test needs belong in the factory or in `OnCreated`.
-- `host.GetExtension<HttpClientStub>()` finds the rented host's own extension. Pass a match, such as
-  `x => x.ClientName == "payments"`, when the host has several of the same type.
+- `host.GetExtension<T>()` finds the rented host's own extension. Pass a match when the host has several of the same
+  type.
 - `host.Slot` is the rented host's slot, for reaching its own resources from the test.
 - Using a lease after it is disposed throws an `ObjectDisposedException`.
 
@@ -118,8 +114,9 @@ When a host fails to start, the test that started it gets the exception and ever
 Disposing a lease resets the host in this order:
 
 1. `BeforeEach` and `AfterEach` actions added since `OnCreated` ran, through the lease or in `OnRent`, are removed.
-2. Extensions that implement `IResettableAlbaExtension` go back to their state once `OnCreated` ran. `HttpClientStub`
-   clears its recorded requests and keeps only the responses stubbed in the factory or in `OnCreated`.
+2. Extensions that implement `IResettableAlbaExtension` go back to their state once `OnCreated` ran. Implement it on
+   an extension of your own that holds state for one host, such as a fake of another service: `Checkpoint()` records
+   the state and `ResetAsync()` returns to it.
 3. `OnReturn` runs, to remove the data the test created.
 
 ```cs
@@ -225,7 +222,7 @@ more than once for the same slot. Registering the cleanup with `slot.RegisterFor
 create the resource only if it is missing, or name it with `slot.Generation`, which counts the hosts the slot held
 before, such as `app_{slot.Index}_{slot.Generation}`.
 
-Create extensions that hold state for one host, such as `HttpClientStub`, inside the factory. The pool throws if one
+Create extensions that hold state for one host inside the factory. The pool throws if one
 `IResettableAlbaExtension` instance is passed to two hosts, because returning one host would reset the other. Extensions
 meant to be shared, such as [`EndpointCoverage`](endpoints.md), can be passed to every host.
 

@@ -63,8 +63,8 @@ no HttpClient. Follow these rules exactly; the API below is Alba 9 and differs f
   slot, so hosts can use separate databases:
   `new AlbaHostPool(slot => AlbaHost.For<Program>().WithConfiguration("ConnectionStrings:Db", $"...Database=app_{slot.Index}"), new AlbaHostPoolOptions { MaxHosts = 4, OnReturn = (host, slot) => resetData(host) })`.
   Each test does `await using var host = await pool.RentAsync(cancellationToken);` and uses `host` like any
-  `IAlbaHost`. Create per host extensions such as `HttpClientStub` inside the factory and find them with
-  `host.GetExtension<HttpClientStub>()`. Rent one host per test, and always dispose the lease. To keep objects that
+  `IAlbaHost`. Create extensions that hold state for one host inside the factory and find them with
+  `host.GetExtension<T>()`. Rent one host per test, and always dispose the lease. To keep objects that
   are not in DI with each host (mocks, a DbContext, seeded users), use `AlbaHostPool<TState>`: the factory returns
   `(host, state)`, the options' actions receive `(host, state)`, and the test reads `lease.State`. Set
   `MaxConcurrentStarts = 1` when the application can't start several hosts at once.
@@ -129,16 +129,12 @@ no HttpClient. Follow these rules exactly; the API below is Alba 9 and differs f
   `scenario.WithRequestHeader(...)`, `scenario.WithBearerToken(...)` or `scenario.ConfigureHttpContext(...)`.
 - `var clock = new TimeProviderOverride(new DateTimeOffset(2030, 1, 1, 0, 0, 0, TimeSpan.Zero));` passed to
   `AlbaHost.For<Program>(clock)` replaces the application's `TimeProvider`. Drive it with `clock.Advance(...)` and
-  `clock.SetUtcNow(...)`. `TimeProviderOverride`, `HttpClientStub` and `EndpointCoverage` are in the
+  `clock.SetUtcNow(...)`. `TimeProviderOverride` and `EndpointCoverage` are in the
   `Alba.Extensions` namespace.
 
 ## Outbound HTTP and endpoint checks
-- Stub calls the application makes through `IHttpClientFactory` instead of reaching real services:
-  `var payments = new HttpClientStub("payments").When(HttpMethod.Post, "/charges").RespondWithJson(charge);` passed
-  to `AlbaHost.For<Program>(payments)`. A typed client's name is its class name; `new HttpClientStub()` stubs every
-  client. Other responses: `RespondWith(HttpStatusCode.NotFound)`, `RespondWithText(...)`,
-  `Throws(new HttpRequestException(...))`. The last matching rule wins. Assert on `payments.Requests` (each has
-  `Uri`, `Headers`, `ReadAsJson<T>()`). Unmatched requests throw inside the application.
+- Alba does not stub the HTTP calls the application makes to other services. Use the library the project already
+  uses for that, registered in the host's services through the `Action<IWebHostBuilder>` passed to `AlbaHost.For<T>`.
 - `host.EndpointsAllowingAnonymous()` lists endpoints reachable without credentials, such as `"GET /health"`; assert
   the exact list to catch endpoints missing authorization. For coverage, pass one shared `EndpointCoverage` instance
   (a static field) to every host, then assert `coverage.NotExercised()` after the last test, in an xUnit assembly

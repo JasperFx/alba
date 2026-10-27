@@ -246,7 +246,7 @@ happen to contain the text "Error" now parse successfully.
 
 ## New features
 
-The extensions added in v9 (`TimeProviderOverride`, `HttpClientStub` and `EndpointCoverage`) are in the
+The extensions added in v9 (`TimeProviderOverride` and `EndpointCoverage`) are in the
 `Alba.Extensions` namespace, and the host pool types are in `Alba.Pooling`.
 
 - **Server-sent events support.** See the [docs page](https://github.com/JasperFx/alba/blob/master/docs/scenarios/sse.md)
@@ -270,10 +270,6 @@ The extensions added in v9 (`TimeProviderOverride`, `HttpClientStub` and `Endpoi
   `x.ShouldReturnValidationProblem().WithValidationError("Amount", "must be positive")` assert on RFC 9457 problem
   details responses, including `[ApiController]` model validation. See the
   [docs page](https://github.com/JasperFx/alba/blob/master/docs/scenarios/problemdetails.md).
-- **Stubbing outbound HTTP.** The `HttpClientStub` extension answers the application's `IHttpClientFactory` calls
-  (named, typed or all clients) with stubbed responses, simulated failures or responses built from the request, and
-  records every request with its body. See the
-  [docs page](https://github.com/JasperFx/alba/blob/master/docs/guide/httpclient.md).
 - **Endpoint coverage and authorization audits.** The `EndpointCoverage` extension lists the endpoints that no
   request has been routed to. One instance can be shared by every host of the application, including a pool of hosts
   for concurrent tests, and checked after the last test. The `EndpointsAllowingAnonymous()` extension method lists
@@ -282,7 +278,7 @@ The extensions added in v9 (`TimeProviderOverride`, `HttpClientStub` and `Endpoi
 - **Host pooling for parallel tests.** `AlbaHostPool` runs up to `MaxHosts` hosts and lends each to one test at a
   time through `await pool.RentAsync()`. Each host is built by a factory for its slot, so hosts can use separate
   databases or other infrastructure. Returning a lease resets the host: actions added through the lease are removed,
-  `IResettableAlbaExtension` extensions such as `HttpClientStub` are reset, and `OnReturn` runs. `host.GetExtension<T>()`
+  `IResettableAlbaExtension` extensions are reset, and `OnReturn` runs. `host.GetExtension<T>()`
   finds a host's own extension. `AlbaHostPool<TState>` keeps state of your own with each host, `MaxConcurrentStarts`
   limits concurrent startups, the rent timeout only fires when no host comes back to the pool, and the pool records
   rent, start and return activities for tracing. See the
@@ -326,6 +322,9 @@ The extensions added in v9 (`TimeProviderOverride`, `HttpClientStub` and `Endpoi
   started instead of leaving an orphaned host and `TestServer` running for the rest of the test
   session. `IAlbaHost.DisposeAsync()` likewise completes every teardown step even when one fails,
   reporting the failures together as an `AggregateException`.
+- On .NET 11, Alba is compiled with runtime async, the .NET 11 preview feature where the runtime runs async methods
+  instead of compiler generated state machines. Live stack traces through Alba, such as in the debugger or a
+  profiler, show Alba's own methods without the async infrastructure frames between them.
 - Requests carry the trace context of the test's current `Activity`, including its baggage, even when nothing
   listens to Alba's own activities. Test frameworks that trace each test, such as TUnit, use it to attribute the
   application's output to the right test.
