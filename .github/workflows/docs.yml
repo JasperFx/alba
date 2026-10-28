@@ -12,23 +12,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           # Full history so VitePress can stamp each page's last updated date
           fetch-depth: 0
 
       - name: Install .NET Core 8.0.x
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 8.0.x
 
+      - name: Install .NET 11 SDK
+        uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+
       - name: Install Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 22
           
       - name: Setup Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
       - name: Install dependencies
         run: npm ci 
@@ -40,7 +45,7 @@ jobs:
           touch docs/.vitepress/dist/.nojekyll
       
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: docs/.vitepress/dist
           
@@ -54,4 +59,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
