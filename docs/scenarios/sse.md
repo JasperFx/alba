@@ -1,3 +1,8 @@
+---
+title: Testing Server-Sent Events
+description: Test ASP.NET Core server-sent event endpoints with Alba, reading finite streams from a scenario or consuming live streams.
+---
+
 # Server-Sent Events
 
 Alba can test [server-sent event](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events) endpoints

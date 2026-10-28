@@ -1,3 +1,8 @@
+---
+title: Snapshot Testing ASP.NET Core Responses
+description: Snapshot test Alba scenario results with Verify and Verify.AspNetCore to capture the full HTTP request and response.
+---
+
 # Snapshot Testing
 
 Although Alba does not ship built-in snapshotting support, it does easily integrate with the popular [Verify](https://github.com/VerifyTests/Verify) framework.

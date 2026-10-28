@@ -1,3 +1,8 @@
+---
+title: Stubbing Authentication in Integration Tests
+description: Stub ASP.NET Core authentication in Alba tests with AuthenticationStub and JwtSecurityStub, set claims per scenario, or use real OpenID Connect tokens.
+---
+
 # Security Extensions
 
 ## Stub out all authentication

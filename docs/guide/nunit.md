@@ -1,3 +1,8 @@
+---
+title: ASP.NET Core Integration Tests with NUnit
+description: Bootstrap one AlbaHost per NUnit test run with a SetUpFixture and reuse it across test fixtures for ASP.NET Core integration tests.
+---
+
 # Integrating with NUnit
 
 When using Alba within NUnit testing projects, you probably want to reuse the `IAlbaHost` across tests and test fixtures because

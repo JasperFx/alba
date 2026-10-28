@@ -1,10 +1,15 @@
+---
+title: Getting Started with ASP.NET Core Integration Testing
+description: Install Alba, bootstrap your ASP.NET Core application with AlbaHost, and write your first in-memory HTTP integration test scenario.
+---
+
 # Getting Started
 
 ## What is Alba?
 
-Alba is a class library that you use in combination with unit testing tools like [xUnit.Net](https://xunit.github.io) or [NUnit](https://docs.nunit.org/) to author integration tests
+Alba is a class library that you use in combination with unit testing tools like [xUnit.Net](https://xunit.net), [NUnit](https://docs.nunit.org/) or [TUnit](https://tunit.dev) to author integration tests
 against ASP.NET Core HTTP endpoints. Alba *scenarios* actually exercise the full ASP.NET Core application by running HTTP requests through your ASP.NET system **in memory** using the 
-built in [ASP.NET Core TestServer](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-7.0).
+built in [ASP.NET Core TestServer](https://learn.microsoft.com/en-us/aspnet/core/test/integration-tests).
 
 You can certainly write integration tests by hand using the lower level `TestServer` and `HttpClient`, but you'll write much less code with Alba. Moreover, Alba *scenarios* were meant to be declarative to maximize the readability of the integration tests, making those tests much more valuable as living technical documentation.
 
@@ -12,10 +17,30 @@ You can certainly write integration tests by hand using the lower level `TestSer
 As of 9.0+, Alba only supports .NET 10.0 or greater. You can still use older versions of Alba to test previous versions of ASP.NET Core.
 :::
 
+## Using an AI Coding Agent
+
+If an AI coding agent (Claude Code, Copilot, Cursor, Codex and the like) is adding the tests, give it the Alba agent
+prompt. It condenses the setup rules, the scenario API and the common pitfalls of Alba 9 into one block of instructions.
+
+<AgentPromptButton />
+
+Agents can also fetch the prompt directly from [agent-prompt.md](https://jasperfx.github.io/alba/agent-prompt.md).
+
+- **Claude Code**: paste the prompt into the repository's `CLAUDE.md`, or into a project skill, so it loads with every session.
+- **Other agents**: put it in `AGENTS.md`, `.cursor/rules`, or the equivalent instructions file for the tool.
+- **One-off tasks**: paste it at the top of the task description together with the endpoints you want covered.
+
+When an agent needs more depth than the prompt, point it at [llms.txt](https://jasperfx.github.io/alba/llms.txt) (an index
+of every page) or [llms-full.txt](https://jasperfx.github.io/alba/llms-full.txt) (the whole documentation in one file).
+
 ## Alba Setup
 
 To get started with Alba, add a Nuget reference to the Alba library to your testing project that also references the ASP.NET Core
-project that you're going to be testing. 
+project that you're going to be testing:
+
+```bash
+dotnet add package Alba
+```
 
 In the following sections I'll show you how to bootstrap
 your ASP.NET Core system with Alba and start authoring specifications with the `AlbaHost` type.
@@ -24,7 +49,7 @@ your ASP.NET Core system with Alba and start authoring specifications with the `
 
 Alba supports both traditional `Startup.cs` projects and the `WebApplicationBuilder` minimal hosting approach. On .NET 10, `AlbaHost.For<T>` works with both models. On .NET 11, `AlbaHost.For<T>` requires a `WebApplicationBuilder` application; bootstrap a `Startup.cs`-style application through its `IHostBuilder` instead, as shown in [Alternative Bootstrapping Methods](bootstrapping.md).
 
-As an example, consider this very small ASP.NET Core application utilizing the new [Minimal API](https://docs.microsoft.com/en-us/aspnet/core/tutorials/min-web-api?view=aspnetcore-6.0&tabs=visual-studio) approach:
+As an example, consider this very small ASP.NET Core application utilizing the new [Minimal API](https://learn.microsoft.com/en-us/aspnet/core/tutorials/min-web-api?tabs=visual-studio) approach:
 
 <!-- snippet: sample_minimal_web_api -->
 <a id='snippet-sample_minimal_web_api'></a>
@@ -52,7 +77,7 @@ public record MyEntity(Guid Id, string MyValue);
 <!-- endSnippet -->
 
 **As this is a Minimal API project, you will need to allow your test project access to the internal types of your application under test**. You
-can do that by either using the [InternalsVisibleToAttribute](https://docs.microsoft.com/en-us/dotnet/api/system.runtime.compilerservices.internalsvisibletoattribute?view=net-6.0) in your main
+can do that by either using the [InternalsVisibleToAttribute](https://learn.microsoft.com/en-us/dotnet/api/system.runtime.compilerservices.internalsvisibletoattribute) in your main
 application project, or use this within the project file of your application where "ProjectName.Tests" would be your testing project name:
 
 ```xml
@@ -86,7 +111,7 @@ See [this blog post from Andrew Lock on the WebApplicationFactory mechanics](htt
 for more information.
 
 ::: tip
-`AlbaHost` is an expensive object to create, so you'll generally want to reuse it across tests. See the relevant guide for [xUnit](xunit.md) or [NUnit](nunit.md)
+`AlbaHost` is an expensive object to create, so you'll generally want to reuse it across tests. See the relevant guide for [xUnit](xunit.md), [NUnit](nunit.md) or [TUnit](tunit.md)
 :::
 
 ## Configuring the Host Fluently
@@ -260,3 +285,35 @@ host.BeforeEach(httpContext =>
 
 Alba does not do anything to set the hosting environment, but you can do that yourself via the `IWebHostBuilder`
 
+
+## Frequently Asked Questions
+
+### How is Alba different from WebApplicationFactory?
+
+Alba builds on `WebApplicationFactory` and `TestServer`. Instead of building `HttpClient` requests and parsing
+responses by hand, you describe the request and the expected response in one scenario, and a failure reports the
+response body. Alba also adds authentication stubs, JSON and problem details assertions, host pooling for parallel
+tests and endpoint coverage reports.
+
+### Which test frameworks does Alba work with?
+
+Any of them. The docs show how to share a host with [xUnit](xunit.md), [NUnit](nunit.md) and [TUnit](tunit.md).
+
+### Which versions of .NET are supported?
+
+Alba 9 supports .NET 10 and .NET 11. Earlier versions of Alba support older versions of ASP.NET Core.
+
+### Can I test applications that use authentication?
+
+Yes. [Security extensions](security.md) stub out authentication, mint JWT bearer tokens from your own
+configuration, or sign in against a real OpenID Connect server.
+
+### Can AI coding agents write Alba tests?
+
+Yes. Give the agent the [Alba agent prompt](#using-an-ai-coding-agent), and point it at
+[llms.txt](https://jasperfx.github.io/alba/llms.txt) or [llms-full.txt](https://jasperfx.github.io/alba/llms-full.txt)
+for the full documentation.
+
+### Is Alba free?
+
+Yes. Alba is licensed under Apache 2.0. [JasperFx Software](https://jasperfx.net) offers paid support and consulting.

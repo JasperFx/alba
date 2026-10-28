@@ -1,3 +1,8 @@
+---
+title: Testing XML APIs
+description: Send XML request bodies and read XML responses in Alba scenarios using XmlSerializer.
+---
+
 # Sending and Checking Xml
 
 I wasn't sure that Xml over HTTP was all that common of a use case anymore, but the very first project we

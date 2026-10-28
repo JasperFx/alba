@@ -1,3 +1,8 @@
+---
+title: Redirect Assertions
+description: Assert that ASP.NET Core endpoints return temporary or permanent redirects to an expected url in Alba scenarios.
+---
+
 # Working with Redirects
 
 ## Asserting on Expected Redirect Responses

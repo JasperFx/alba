@@ -1,3 +1,8 @@
+---
+title: Writing Alba Scenarios
+description: Write declarative Alba scenarios that send an HTTP request through your ASP.NET Core application in memory and assert on the response.
+---
+
 # Writing Scenarios
 
 ::: tip
@@ -110,10 +115,10 @@ So what just happened in that test? First off, the call to `AlbaHost.For(IHostBu
 
 The call to `host.GetAsJson<OperationResult>("/math/add/3/4")` is performing these steps internally:
 
-1. Formulate an [HttpRequest](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.http.httprequest?view=aspnetcore-5.0) object that will be passed to the application
+1. Formulate an [HttpRequest](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.http.httprequest) object that will be passed to the application
 1. Executes the web request against your application
 1. Assert in this simple use case that the response status code is `200 OK`
-1. Read the raw JSON coming off the [HttpResponse](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.http.httpresponse?view=aspnetcore-5.0)
+1. Read the raw JSON coming off the [HttpResponse](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.http.httpresponse)
 1. Deserialize the raw JSON to the requested `OperationResult` type using the Json formatter of the running application
 1. Returns the resulting `OperationResult`
 

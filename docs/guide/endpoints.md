@@ -1,3 +1,7 @@
+---
+description: Find ASP.NET Core endpoints that no test reaches with EndpointCoverage, and list endpoints that allow anonymous access to catch missing authorization.
+---
+
 # Endpoint Coverage and Authorization
 
 Alba can report which of the application's endpoints the test suite reaches, and which ones a request without

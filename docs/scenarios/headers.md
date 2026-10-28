@@ -1,3 +1,8 @@
+---
+title: HTTP Request and Response Headers
+description: Set request headers and assert on response header values in Alba scenarios for ASP.NET Core.
+---
+
 # Working with Headers
 
 We really didn't worry much about HTTP niceties when I started web programming in the late 90's, but you

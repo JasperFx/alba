@@ -1,3 +1,8 @@
+---
+title: Testing with Aspire and Docker Dependencies
+description: Start real databases and message brokers from an Aspire AppHost with Aspire.Hosting.Testing and pass their connection strings to AlbaHost.
+---
+
 # Aspire Hosting
 
 Alba runs your application in process, but the application usually still needs real infrastructure such as a database

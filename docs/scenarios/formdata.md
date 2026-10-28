@@ -1,3 +1,8 @@
+---
+title: Sending Form Data and File Uploads
+description: Post HTML form data and multipart file uploads to ASP.NET Core endpoints in Alba scenarios.
+---
+
 # Sending Form Data
 
 ## Standard Form Data

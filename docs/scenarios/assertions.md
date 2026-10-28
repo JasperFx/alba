@@ -1,3 +1,7 @@
+---
+description: Write custom response assertions for Alba scenarios by implementing IScenarioAssertion and exposing them as extension methods.
+---
+
 # Writing Custom Assertions
 
 ::: tip

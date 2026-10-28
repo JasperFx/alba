@@ -29,3 +29,69 @@
     width: auto;
     margin-right: 0;
   }
+/* Home page hero code sample: below the actions until there is room for it beside the title */
+.VPHero.has-image .image {
+    order: 3;
+    margin: 40px 0 0;
+}
+
+.VPHero.has-image .image-container {
+    width: 100%;
+    max-width: 592px;
+    height: auto;
+    text-align: left;
+    transform: none;
+}
+
+.VPHero.has-image .image-bg {
+    display: none;
+}
+
+.hero-code {
+    width: 100%;
+}
+
+.hero-code div[class*='language-'] {
+    margin: 0;
+    border-radius: 12px;
+    box-shadow: var(--vp-shadow-3);
+}
+
+/* Hero text sizes that keep "Easy Integration Testing / for ASP.NET Core" to two lines */
+@media (max-width: 639px) {
+    .VPHero.has-image .text {
+        font-size: 28px;
+        line-height: 36px;
+    }
+}
+
+@media (min-width: 960px) {
+    .VPHero.has-image .text {
+        font-size: 48px;
+        line-height: 56px;
+    }
+
+    .VPHero.has-image .container {
+        flex-direction: column;
+    }
+}
+
+@media (min-width: 1280px) {
+    .VPHero.has-image .container {
+        flex-direction: row;
+    }
+
+    .VPHero.has-image .image {
+        order: 2;
+        margin: 0 0 0 48px;
+    }
+
+    .VPHero.has-image .main {
+        width: auto;
+        flex-shrink: 1;
+    }
+
+    .VPHero.has-image .image-container {
+        height: 100%;
+    }
+}

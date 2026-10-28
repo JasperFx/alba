@@ -8,7 +8,27 @@
 [![Nuget](https://img.shields.io/nuget/v/alba)](https://www.nuget.org/packages/Alba/)
 ![Nuget](https://img.shields.io/nuget/dt/alba)
 
-Tooling for better integration testing against ASP.Net Core applications. Check out [the documentation](https://jasperfx.github.io/alba) for examples.
+Alba is a .NET library for fast, readable integration tests of ASP.NET Core applications. An Alba *scenario* runs an
+HTTP request through your whole application in memory with ASP.NET Core's `TestServer` and checks the response with a
+declarative API. It works with xUnit, NUnit and TUnit, and Alba 9 supports .NET 10 and .NET 11.
+
+```bash
+dotnet add package Alba
+```
+
+```cs
+await using var host = await AlbaHost.For<Program>();
+
+await host.Scenario(_ =>
+{
+    _.Post.Json(new CreateItem("Widget")).ToUrl("/items");
+    _.StatusCodeShouldBe(201);
+    _.JsonPath("$.name").ShouldBe("Widget");
+});
+```
+
+Check out [the documentation](https://jasperfx.github.io/alba) for more examples. AI coding agents can use the
+[Alba agent prompt](https://jasperfx.github.io/alba/agent-prompt.md) and the docs in [llms.txt](https://jasperfx.github.io/alba/llms.txt) form.
 
 To work with the code, just open the solution at `src/Alba.sln` and go. No other setup necessary.
 

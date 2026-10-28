@@ -1,3 +1,8 @@
+---
+title: Specifying Request Urls
+description: Set the request url, HTTP method, query string and route name values in Alba scenarios.
+---
+
 # Working with Urls
 
 The simplest way to specify the url for the request is to use one of these calls shown below,

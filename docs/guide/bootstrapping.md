@@ -1,3 +1,7 @@
+---
+description: Bootstrap Alba from an IHostBuilder or with StartAlbaAsync to test Startup.cs-style ASP.NET Core applications, including on .NET 11.
+---
+
 # Alternative Bootstrapping Methods
 
 Whilst `AlbaHost.For<T>` is the preferred way of bootstrapping, other options exist in Alba to cover some older & alternative scenarios.
@@ -62,7 +66,7 @@ public async Task fluent_interface_bootstrapping()
 <sup><a href='https://github.com/JasperFx/alba/blob/master/src/Alba.Testing/Samples/Quickstart3.cs#L49-L65' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample_shorthand_bootstrapping' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
-The `AlbaHost` is an extension of the standard .Net Core [IHost](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.hosting.ihost?view=dotnet-plat-ext-5.0) interface with a few additions for testing support.
+The `AlbaHost` is an extension of the standard .Net Core [IHost](https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.hosting.ihost) interface with a few additions for testing support.
 While you can always access the underlying `TestServer` through the `IAlbaHost.Server` property, you're mostly going to be using the `Scenario()` method to write Alba "Scenario" tests.
 
 ::: tip

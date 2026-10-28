@@ -1,3 +1,8 @@
+---
+title: ASP.NET Core Integration Tests with TUnit
+description: Share an AlbaHost across TUnit tests with IAsyncInitializer and ClassDataSource to run ASP.NET Core integration tests.
+---
+
 # Integrating with TUnit
 
 Like other testing frameworks, you'll want to reuse the `IAlbaHost` across tests and test fixtures because

@@ -1,3 +1,8 @@
+---
+title: Problem Details Assertions
+description: Assert on RFC 9457 problem details and validation problem responses from ASP.NET Core in Alba scenarios.
+---
+
 # Problem Details
 
 ASP.NET Core writes error responses in the [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) problem details

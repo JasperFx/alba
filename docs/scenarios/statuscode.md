@@ -1,3 +1,8 @@
+---
+title: HTTP Status Code Assertions
+description: Assert on the HTTP status code of the response in Alba scenarios, or skip the default 2xx check.
+---
+
 # Http Status Codes
 
 You can declaratively check the status code with this syntax:

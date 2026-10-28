@@ -1,3 +1,7 @@
+---
+description: Run ASP.NET Core integration tests in parallel with AlbaHostPool, which lends each test its own host and resets it between tests.
+---
+
 # Pooling Hosts for Parallel Tests
 
 Sharing one `AlbaHost` keeps a test suite fast, but tests that change data or stubbed responses can't run against it at

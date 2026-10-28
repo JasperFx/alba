@@ -1,3 +1,8 @@
+---
+title: Plain Text Requests and Responses
+description: Send plain text request bodies and read or assert on plain text responses in Alba scenarios.
+---
+
 # Working with Plain Text Requests
 
 If you find yourself needing to test HTTP endpoints that either send text or return text, Alba

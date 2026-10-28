@@ -2,7 +2,7 @@
     "Convention": "InPlaceOverwrite",
     "LinkFormat": "GitHub",
     "UrlPrefix": "https://github.com/JasperFx/alba/blob/master",
-    "ExcludeMarkdownDirectories": ["documentation"],
-    "ExcludeSnippetDirectories": [],
+    "ExcludeMarkdownDirectories": ["documentation", ".claude"],
+    "ExcludeSnippetDirectories": [".claude"],
     "TreatMissingAsWarning": false
 }

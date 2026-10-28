@@ -1,3 +1,8 @@
+---
+title: Testing JSON APIs
+description: Send JSON request bodies, assert on JSON responses with JsonPath, and deserialize results with your application's own System.Text.Json or Newtonsoft.Json settings.
+---
+
 # Sending and Checking Json
 
 JSON serialization is done with the configured input and output formatters within the underlying application. This means that

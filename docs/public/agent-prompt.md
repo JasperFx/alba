@@ -1,18 +1,3 @@
-# Alba for AI Agents
-
-This page is a ready-made prompt for AI coding agents (Claude Code, Copilot, Cursor, Codex and the like) that need
-to add Alba integration tests to an ASP.NET Core project. It condenses the setup rules, the scenario API and the
-common pitfalls into one block that you can paste into an agent's instructions, a `CLAUDE.md` / `AGENTS.md` file,
-or the start of a conversation.
-
-The complete documentation is also published in agent-friendly form at
-[llms.txt](https://jasperfx.github.io/alba/llms.txt) (index) and
-[llms-full.txt](https://jasperfx.github.io/alba/llms-full.txt) (every page in one file). Point an agent at those when it
-needs more depth than the prompt below.
-
-## The prompt
-
-```md
 You are adding Alba integration tests to an ASP.NET Core project. Alba (NuGet package `Alba`, version 9 or later)
 runs HTTP requests through the real application in memory using ASP.NET Core's TestServer. There are no sockets and
 no HttpClient. Follow these rules exactly; the API below is Alba 9 and differs from older samples you may have seen.
@@ -158,13 +143,3 @@ no HttpClient. Follow these rules exactly; the API below is Alba 9 and differs f
 2. Add one shared host fixture in the style of the project's test framework.
 3. Write scenarios for the requested endpoints. Assert the status code and the response body in every scenario.
 4. Run `dotnet test` and fix failures until the suite passes.
-```
-
-## Using it
-
-- **Claude Code**: paste the block into the repository's `CLAUDE.md`, or into a project skill, so it loads with every session.
-- **Other agents**: put it in `AGENTS.md`, `.cursor/rules`, or the equivalent instructions file for the tool.
-- **One-off tasks**: paste it at the top of the task description together with the endpoints you want covered.
-
-Keep the block in sync with the Alba version you reference. It describes Alba 9; the [v9 changelog](https://github.com/JasperFx/alba/blob/master/v9_CHANGELOG.md)
-lists every API that changed from Alba 8.

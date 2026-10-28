@@ -1,3 +1,7 @@
+---
+description: Customize AlbaHost with IAlbaExtension, including the built-in TimeProviderOverride for controlling time in ASP.NET Core integration tests.
+---
+
 # Extension Model
 
 Alba has an extension model based on this interface:

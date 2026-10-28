@@ -1,3 +1,7 @@
+---
+description: Trace Alba scenarios with OpenTelemetry and see integration test requests in Datadog CI Visibility or other OpenTelemetry tools.
+---
+
 # Tracing & Open Telemetry
 
 Performing distributed tracing within your CI pipline is a relatively new yet powerful concept that can improve your teams response to broken, flaky or slow-performing tests. 
