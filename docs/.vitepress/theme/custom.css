@@ -1,34 +1,370 @@
-
+/* Palette: Alba teal green with pastel accents */
 :root {
-    --alba-green-light: #3cbaad;
-    --alba-green-dark: #00857c;
-    --alba-green: #4db6ac;
+  --alba-teal: #4db6ac;
+  --alba-teal-deep: #2b8072;
+  --alba-ink: #17463f;
 
-    --vp-c-brand-1: var(--alba-green);
-    --vp-c-brand-2: var(--alba-green-dark);
-    --vp-c-brand-3: var(--alba-green-light);
-    --vp-c-brand-soft: var(--vp-c-green-soft);
+  --alba-mint: #d4f2e6;
+  --alba-mint-strong: #a8e3cd;
+  --alba-sky: #d8eafb;
+  --alba-lavender: #e7e1fb;
+  --alba-peach: #ffe4d3;
+  --alba-butter: #fbf0c6;
+  --alba-rose: #fcdfe6;
 
+  /* Text colours meet WCAG AA (4.5:1) on the page backgrounds and every pastel tint */
+  --vp-c-brand-1: #216a5e;
+  --vp-c-brand-2: #1a5a4f;
+  --vp-c-brand-3: var(--alba-teal);
+  --vp-c-brand-soft: rgba(77, 182, 172, 0.16);
+
+  --vp-c-bg: #fcfefd;
+  --vp-c-bg-alt: #f3f9f6;
+  --vp-c-bg-soft: #edf6f1;
+  --vp-c-bg-elv: #ffffff;
+
+  --vp-c-border: #cfe2d9;
+  --vp-c-divider: #dcebe4;
+  --vp-c-gutter: #e8f2ed;
+
+  --vp-c-text-1: #18302a;
+  --vp-c-text-2: #435951;
+  --vp-c-text-3: #566b62;
+
+  --vp-c-tip-1: var(--vp-c-brand-1);
+  --vp-c-tip-2: var(--vp-c-brand-2);
+  --vp-c-tip-3: var(--vp-c-brand-3);
+  --vp-c-tip-soft: var(--alba-mint);
+  --vp-c-warning-soft: var(--alba-butter);
+  --vp-c-danger-soft: var(--alba-rose);
+  --vp-c-important-soft: var(--alba-lavender);
+  --vp-c-caution-soft: var(--alba-peach);
+  --vp-custom-block-info-bg: var(--alba-sky);
+  --vp-custom-block-note-bg: var(--alba-sky);
+
+  --vp-code-color: var(--vp-c-brand-1);
+  --vp-code-bg: rgba(77, 182, 172, 0.1);
+
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: linear-gradient(120deg, var(--alba-teal-deep) 20%, #319485 80%);
+
+  /* Chunky "road sign" buttons. The outline marks control edges and keeps 3:1 against the page. */
+  --alba-btn-edge: var(--alba-ink);
+  --alba-outline: var(--alba-ink);
+  --alba-btn-brand-bg: var(--alba-teal-deep);
+  --alba-btn-brand-text: #ffffff;
+  --alba-btn-brand-ring: rgba(255, 255, 255, 0.6);
+  --alba-btn-alt-bg: var(--alba-mint);
+  --alba-btn-alt-text: var(--alba-ink);
+
+  --vp-button-brand-border: var(--alba-btn-edge);
+  --vp-button-brand-text: var(--alba-btn-brand-text);
+  --vp-button-brand-bg: var(--alba-btn-brand-bg);
+  --vp-button-brand-hover-border: var(--alba-btn-edge);
+  --vp-button-brand-hover-text: var(--alba-btn-brand-text);
+  --vp-button-brand-hover-bg: var(--alba-btn-brand-bg);
+  --vp-button-brand-active-border: var(--alba-btn-edge);
+  --vp-button-brand-active-text: var(--alba-btn-brand-text);
+  --vp-button-brand-active-bg: var(--alba-btn-brand-bg);
+
+  --vp-button-alt-border: var(--alba-outline);
+  --vp-button-alt-text: var(--alba-btn-alt-text);
+  --vp-button-alt-bg: var(--alba-btn-alt-bg);
+  --vp-button-alt-hover-border: var(--alba-outline);
+  --vp-button-alt-hover-text: var(--alba-btn-alt-text);
+  --vp-button-alt-hover-bg: var(--alba-mint-strong);
+  --vp-button-alt-active-border: var(--alba-outline);
+  --vp-button-alt-active-text: var(--alba-btn-alt-text);
+  --vp-button-alt-active-bg: var(--alba-mint-strong);
+
+  --vp-nav-height: 80px;
+
+  /* Slab serif headings echo the lettering on the Alba sign */
+  --alba-font-display: 'Bitter Variable', Georgia, serif;
+  --vp-font-family-base: 'Figtree Variable', ui-sans-serif, system-ui, sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --vp-font-family-mono: 'JetBrains Mono Variable', ui-monospace, 'Menlo', 'Monaco', 'Consolas',
+    'Liberation Mono', 'Courier New', monospace;
+  /* JetBrains Mono runs wide, so a step down keeps lines the same length */
+  --vp-code-font-size: 0.8125em;
+  --vp-custom-block-code-font-size: 12px;
+}
+
+.dark {
+  --alba-ink: #031512;
+
+  --alba-mint: #173129;
+  --alba-mint-strong: #1f4337;
+  --alba-sky: #16283a;
+  --alba-lavender: #221f3a;
+  --alba-peach: #36261b;
+  --alba-butter: #312e1a;
+  --alba-rose: #36202a;
+
+  --vp-c-brand-1: #8fdcc3;
+  --vp-c-brand-2: #b4ead8;
+  --vp-c-brand-3: var(--alba-teal);
+  --vp-c-brand-soft: rgba(143, 220, 195, 0.14);
+
+  --vp-c-bg: #0e1513;
+  --vp-c-bg-alt: #0a100e;
+  --vp-c-bg-soft: #15201c;
+  --vp-c-bg-elv: #17231f;
+
+  --vp-c-border: #2d4239;
+  --vp-c-divider: #22322c;
+  --vp-c-gutter: #050908;
+
+  --vp-c-text-1: #e4efea;
+  --vp-c-text-2: #a9bdb5;
+  --vp-c-text-3: #7f968c;
+
+  --vp-code-color: #8fdcc3;
+  --vp-code-bg: rgba(143, 220, 195, 0.1);
+
+  --vp-home-hero-name-background: linear-gradient(120deg, #8fdcc3 20%, #c9b8f5 90%);
+
+  --alba-btn-edge: #1f5e53;
+  --alba-outline: #3f9a8a;
+  --alba-btn-brand-bg: var(--alba-teal-deep);
+  --alba-btn-brand-text: #ffffff;
+  --alba-btn-brand-ring: rgba(255, 255, 255, 0.22);
+  --alba-btn-alt-bg: var(--vp-c-bg-soft);
+  --alba-btn-alt-text: var(--vp-c-text-1);
+}
+
+::selection {
+  background-color: var(--alba-mint-strong);
+}
+
+.vp-doc h1,
+.vp-doc h2,
+.vp-doc h3,
+.VPHero .name,
+.VPHero .text,
+.VPFeature .title,
+.VPButton,
+.VPDocFooter .pager-link .title {
+  font-family: var(--alba-font-display);
+}
+
+/* Show operators like => as typed */
+code {
+  font-variant-ligatures: none;
+}
+
+/* Buttons. The doubled class outranks the scoped VitePress button styles. */
+.VPButton.VPButton {
+  border-width: 2px;
+  box-shadow: 0 4px 0 var(--alba-btn-edge);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  transition: color 0.2s, background-color 0.2s, transform 0.12s, box-shadow 0.12s;
+}
+
+.VPButton.VPButton.medium {
+  border-radius: 12px;
+}
+
+.VPButton.VPButton.big {
+  border-radius: 14px;
+  padding: 0 26px;
+}
+
+.VPButton.VPButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 var(--alba-btn-edge);
+}
+
+.VPButton.VPButton:active {
+  transform: translateY(4px);
+  box-shadow: 0 0 0 var(--alba-btn-edge);
+}
+
+/* White keyline inside the brand button, like the edge of the Alba sign */
+.VPButton.VPButton.brand {
+  box-shadow:
+    inset 0 0 0 2px var(--alba-btn-brand-bg),
+    inset 0 0 0 3.5px var(--alba-btn-brand-ring),
+    0 4px 0 var(--alba-btn-edge);
+}
+
+.VPButton.VPButton.brand:hover {
+  box-shadow:
+    inset 0 0 0 2px var(--alba-btn-brand-bg),
+    inset 0 0 0 3.5px var(--alba-btn-brand-ring),
+    0 6px 0 var(--alba-btn-edge);
+}
+
+.VPButton.VPButton.brand:active {
+  box-shadow:
+    inset 0 0 0 2px var(--alba-btn-brand-bg),
+    inset 0 0 0 3.5px var(--alba-btn-brand-ring),
+    0 0 0 var(--alba-btn-edge);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .VPButton.VPButton,
+  .VPButton.VPButton:hover,
+  .VPButton.VPButton:active {
+    transform: none;
+  }
+}
+
+/* Nav */
+.VPNavBar .VPNavBarTitle .logo {
+  height: 64px;
+  max-height: 64px;
+  width: auto;
+  margin-right: 0;
+}
+
+@media (min-width: 768px) {
+  .VPNavBarSearch .DocSearch-Button {
+    border: 1.5px solid var(--vp-c-border);
+    border-radius: 12px;
+    background-color: var(--vp-c-bg-alt);
   }
 
-
-  .dark {
-
-    --alba-green-light: #3eaca1;
-    --alba-green-dark: #03726b;
-    --alba-green: #4db6ac;
+  .VPNavBarSearch .DocSearch-Button:hover {
+    border-color: var(--vp-c-brand-1);
   }
+}
 
-  :root {
-    --vp-nav-height: 80px;
-  }
+/* Sidebar: active page as a mint pill */
+.VPSidebar .VPSidebarItem.level-1 > .item {
+  margin: 1px -12px;
+  padding: 0 12px;
+  border-radius: 10px;
+  transition: background-color 0.2s;
+}
 
-  .VPNavBar .VPNavBarTitle .logo {
-    height: 64px;
-    max-height: 64px;
-    width: auto;
-    margin-right: 0;
+.VPSidebar .VPSidebarItem.level-1 > .item:hover {
+  background-color: var(--vp-c-bg-soft);
+}
+
+.VPSidebar .VPSidebarItem.level-1.is-active > .item {
+  background-color: var(--alba-mint);
+}
+
+.VPSidebar .VPSidebarItem.level-1.is-active > .item .link > .text {
+  font-weight: 600;
+}
+
+/* Home page: soft pastel glow behind the hero, kept near the centred content on wide screens */
+.VPContent.is-home {
+  background:
+    radial-gradient(40rem 26rem at max(8%, calc(50% - 540px)) -4%, var(--alba-mint), transparent 70%),
+    radial-gradient(34rem 24rem at min(92%, calc(50% + 540px)) 6%, var(--alba-lavender), transparent 70%),
+    radial-gradient(30rem 22rem at min(70%, calc(50% + 230px)) 62%, var(--alba-sky), transparent 70%),
+    radial-gradient(28rem 20rem at max(18%, calc(50% - 370px)) 78%, var(--alba-peach), transparent 70%);
+}
+
+.VPHero .tagline {
+  color: var(--vp-c-text-2);
+}
+
+/* Feature cards, each in its own pastel */
+.VPFeatures .item:nth-child(6n + 1) { --alba-tint: var(--alba-mint); }
+.VPFeatures .item:nth-child(6n + 2) { --alba-tint: var(--alba-sky); }
+.VPFeatures .item:nth-child(6n + 3) { --alba-tint: var(--alba-lavender); }
+.VPFeatures .item:nth-child(6n + 4) { --alba-tint: var(--alba-peach); }
+.VPFeatures .item:nth-child(6n + 5) { --alba-tint: var(--alba-butter); }
+.VPFeatures .item:nth-child(6n + 6) { --alba-tint: var(--alba-rose); }
+
+.VPFeatures .item .VPFeature {
+  border: 2px solid transparent;
+  border-radius: 18px;
+  background-color: var(--alba-tint);
+  transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+
+.VPFeatures .item .VPFeature.link:hover {
+  border-color: var(--alba-outline);
+  transform: translate(-3px, -3px);
+  box-shadow: 6px 6px 0 var(--alba-outline);
+}
+
+.VPFeatures .VPFeature .icon {
+  border: 2px solid var(--alba-outline);
+  border-radius: 14px;
+  background-color: var(--vp-c-bg-elv);
+}
+
+.VPFeatures .VPFeature .details {
+  color: var(--vp-c-text-2);
+}
+
+.VPFeatures .VPFeature .link-text-value {
+  font-weight: 700;
+  color: var(--vp-c-text-1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .VPFeatures .item .VPFeature.link:hover {
+    transform: none;
   }
+}
+
+/* Docs content */
+/* Highlighter stroke under page titles */
+.vp-doc h1 {
+  text-decoration: underline;
+  text-decoration-color: var(--alba-mint-strong);
+  text-decoration-thickness: 0.32em;
+  text-underline-offset: -0.18em;
+  text-decoration-skip-ink: none;
+}
+
+.vp-doc a:not(.header-anchor):not(.VPButton) {
+  text-decoration: underline;
+  text-decoration-color: var(--alba-mint-strong);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+  transition: color 0.2s, text-decoration-color 0.2s;
+}
+
+.vp-doc a:not(.header-anchor):not(.VPButton):hover {
+  text-decoration-color: currentColor;
+}
+
+.vp-doc .custom-block {
+  border: none;
+  border-left: 4px solid var(--alba-btn-edge);
+  border-radius: 4px 14px 14px 4px;
+}
+
+.vp-doc .custom-block.tip { border-left-color: var(--alba-teal); }
+.vp-doc .custom-block.info,
+.vp-doc .custom-block.note { border-left-color: #7fb4e8; }
+.vp-doc .custom-block.warning { border-left-color: #e5c04f; }
+.vp-doc .custom-block.danger { border-left-color: #e88aa0; }
+.vp-doc .custom-block.important { border-left-color: #a48ee8; }
+.vp-doc .custom-block.caution { border-left-color: #f0a878; }
+
+.vp-doc div[class*='language-'] {
+  border: 1px solid var(--vp-c-divider);
+}
+
+@media (min-width: 640px) {
+  .vp-doc div[class*='language-'] {
+    border-radius: 14px;
+  }
+}
+
+/* Prev/next links share the card hover */
+.VPDocFooter .pager-link {
+  border: 2px solid var(--vp-c-divider);
+  border-radius: 14px;
+  transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+
+.VPDocFooter .pager-link:hover {
+  border-color: var(--alba-outline);
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 var(--alba-outline);
+}
+
 /* Home page hero code sample: below the actions until there is room for it beside the title */
 .VPHero.has-image .image {
     order: 3;
@@ -53,24 +389,28 @@
 
 .hero-code div[class*='language-'] {
     margin: 0;
-    border-radius: 12px;
-    box-shadow: var(--vp-shadow-3);
+    border: 2px solid var(--alba-btn-edge);
+    border-radius: 16px;
+    background-color: var(--vp-c-bg-elv);
+    box-shadow: 10px 10px 0 var(--alba-mint-strong);
 }
 
 /* Hero text sizes that keep "Easy Integration Testing / for ASP.NET Core" to two lines */
 @media (max-width: 639px) {
     .VPHero.has-image .text {
-        font-size: 28px;
-        line-height: 36px;
+        font-size: 26px;
+        line-height: 34px;
+    }
+}
+
+@media (min-width: 640px) {
+    .VPHero.has-image .text {
+        font-size: 42px;
+        line-height: 52px;
     }
 }
 
 @media (min-width: 960px) {
-    .VPHero.has-image .text {
-        font-size: 48px;
-        line-height: 56px;
-    }
-
     .VPHero.has-image .container {
         flex-direction: column;
     }

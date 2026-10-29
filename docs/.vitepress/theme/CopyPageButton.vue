@@ -86,19 +86,26 @@ onUnmounted(() => {
 
 .group {
   display: flex;
-  border: 1px solid var(--vp-button-alt-border);
-  border-radius: 16px;
+  border: 2px solid var(--alba-outline);
+  border-radius: 10px;
   background-color: var(--vp-button-alt-bg);
+  box-shadow: 0 3px 0 var(--alba-btn-edge);
   overflow: hidden;
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+
+.group:active {
+  transform: translateY(3px);
+  box-shadow: 0 0 0 var(--alba-btn-edge);
 }
 
 .part {
   display: flex;
   align-items: center;
   gap: 6px;
-  height: 30px;
+  height: 28px;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--vp-button-alt-text);
   transition: color 0.25s, background-color 0.25s;
 }
@@ -114,7 +121,7 @@ onUnmounted(() => {
 
 .toggle {
   padding: 0 10px 0 8px;
-  border-left: 1px solid var(--vp-c-divider);
+  border-left: 2px solid var(--alba-outline);
 }
 
 .icon {
@@ -142,10 +149,10 @@ onUnmounted(() => {
   z-index: 20;
   min-width: 220px;
   padding: 12px;
-  border: 1px solid var(--vp-c-divider);
-  border-radius: 12px;
+  border: 2px solid var(--alba-outline);
+  border-radius: 14px;
   background-color: var(--vp-c-bg-elv);
-  box-shadow: var(--vp-shadow-3);
+  box-shadow: 6px 6px 0 var(--alba-mint-strong);
 }
 
 .item {
@@ -165,8 +172,8 @@ onUnmounted(() => {
 }
 
 .item:hover {
-  color: var(--vp-c-brand-1);
-  background-color: var(--vp-c-default-soft);
+  color: var(--vp-c-text-1);
+  background-color: var(--alba-mint);
 }
 
 .external {

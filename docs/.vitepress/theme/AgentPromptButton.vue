@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { withBase } from 'vitepress'
-import { VPButton } from 'vitepress/theme'
+import { VPButton } from 'vitepress/theme-without-fonts'
 
 const promptUrl = withBase('/agent-prompt.md')
 const label = ref('Copy agent prompt')
