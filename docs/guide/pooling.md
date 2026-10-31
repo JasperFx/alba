@@ -4,8 +4,8 @@ description: Run ASP.NET Core integration tests in parallel with AlbaHostPool, w
 
 # Pooling Hosts for Parallel Tests
 
-Sharing one `AlbaHost` keeps a test suite fast, but tests that change data or stubbed responses can't run against it at
-the same time. `AlbaHostPool` runs several hosts of the application and lends each one to a single test at a time. Tests
+Sharing one `AlbaHost` is fine for a small test suite, but large suites with tests that change data can't run against it at
+the same time. `AlbaHostPool` solves that problem by running several hosts of the application and lends each one to a single test at a time. Tests
 run in parallel, each one has a host to itself, and every host is reset before the next test rents it.
 
 ## Creating a pool
@@ -46,13 +46,8 @@ Create one pool for the test assembly and dispose it after the last test:
 
 - **xUnit**: an assembly fixture, as above, registered with `[assembly: AssemblyFixture<ApiHosts>]` and taken as a
   constructor argument by the test classes.
-- **NUnit**: a static pool created in the `[OneTimeSetUp]` of a `[SetUpFixture]` and disposed in its `[OneTimeTearDown]`.
-  NUnit runs tests one at a time unless they are marked `[Parallelizable]`. See the
-  [NUnit example](nunit.md#running-tests-in-parallel-with-a-host-pool).
-- **TUnit**: a class that owns the pool and implements `IAsyncDisposable`, injected with
-  `[ClassDataSource<ApiHosts>(Shared = SharedType.PerTestSession)]`. TUnit runs every test in parallel, so add a
-  `[ParallelLimiter<T>]` whose limit is `MaxHosts`. See the
-  [TUnit example](tunit.md#isolating-parallel-tests-with-a-host-pool).
+- **NUnit**: See the [NUnit example](nunit.md#running-tests-in-parallel-with-a-host-pool).
+- **TUnit**: See the [TUnit example](tunit.md#isolating-parallel-tests-with-a-host-pool).
 
 ## Renting a host
 
@@ -85,14 +80,16 @@ The lease is an `IAlbaHost`, so scenarios and helpers such as `GetAsJson` work u
 
 - `BeforeEach`, `AfterEach` and their async versions called on the lease only apply until the lease is disposed. Actions
   that every test needs belong in the factory or in `OnCreated`.
-- `host.GetExtension<T>()` finds the rented host's own extension. Pass a match when the host has several of the same
+- `host.GetExtension<T>()` finds the rented host's extension. Pass a match when the host has several of the same
   type.
 - `host.Slot` is the rented host's slot, for reaching its own resources from the test.
 - Using a lease after it is disposed throws an `ObjectDisposedException`.
 
 ## Waiting for a host
 
-When every host is rented, `RentAsync` waits for one to be returned. Waiting tests get hosts in the order they asked.
+When every host is rented, `RentAsync` waits for one to be returned. Waiting tests get hosts in the order they are requested.
+
+Things to keep in mind:
 
 - `RentTimeout` (two minutes by default) fails a rent when no host has been returned to the pool for that long. The wait
   starts again each time any host comes back, so a long queue of tests, such as TUnit starting every test at once, does
@@ -110,8 +107,8 @@ When every host is rented, `RentAsync` waits for one to be returned. Waiting tes
   shared scheduler.
 
 When a host fails to start, the test that started it gets the exception and every later rent fails with an
-`InvalidOperationException` wrapping it, so a broken application fails the suite once rather than once per test. Set
-`FailFastOnStartupFailure = false` to try again on each rent instead.
+`InvalidOperationException`, so a broken application fails the suite once rather than once per test. Set
+`FailFastOnStartupFailure = false` to automatically try again on each rent instead.
 
 ## Resetting between tests
 
@@ -148,10 +145,7 @@ disposes that host when the lease is disposed and replaces it in the same slot.
 Tests that create unique data for themselves, such as new ids or tenants, may not need any reset. That is the cheapest
 option when the application allows it.
 
-`TimeProviderOverride` is not reset, because its clock can only move forward. Tests that depend on the current time
-should set it with `SetUtcNow(...)` to a time later than any earlier test used.
-
-A test harness that is started once per host and reused, such as MassTransit's `ITestHarness`, keeps what it recorded
+A test harness that is started once per host and reused, such as MassTransit's `ITestHarness`, will keep what it recorded
 from earlier tests. Look for messages by values the current test created, and raise inactivity timeouts such as
 MassTransit's `TestHarnessOptions.TestInactivityTimeout` past the length of the test run, because once they expire they
 don't reset.
@@ -190,8 +184,8 @@ await using var host = await pool.RentAsync(cancellation);
 host.State.ChatClient.Setup(...);
 ```
 
-When the state implements `IAsyncDisposable` or `IDisposable`, the pool disposes it just before its host. The pool
-disposes the host itself, so the state doesn't need to.
+When the state implements `IAsyncDisposable` or `IDisposable`, the pool disposes it just before its host. The pool will in turn
+dispose the host itself, so the state doesn't need to.
 
 ## Separate infrastructure per host
 
@@ -200,7 +194,7 @@ Derive each host's resources from its slot. A replacement host gets the same ind
 | Resource | Separate it by |
 |---|---|
 | Relational database | One database per slot on a shared server or container, such as `app_{slot.Index}` |
-| Marten or EF Core | One schema per slot, which is cheaper than separate databases |
+| Marten or EF Core | One schema per slot, which is cheaper than separate databases. Otherwise the same as the above |
 | Message broker | A queue or topic prefix per slot, from `slot.Name` |
 | Files | A directory per slot |
 
