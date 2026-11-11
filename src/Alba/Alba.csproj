@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Description>Supercharged integration testing for ASP.NET Core HTTP endpoints</Description>
-    <Version>9.0.0-rc.3</Version>
+    <Version>9.0.0</Version>
     <TargetFrameworks>net10.0;net11.0</TargetFrameworks>
     <PackageProjectUrl>https://jasperfx.github.io/alba/</PackageProjectUrl>
     <PackageTags>aspnetcore;integration-testing;testing;testserver;webapplicationfactory;xunit;nunit;tunit;minimal-api</PackageTags>
