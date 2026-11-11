@@ -22,6 +22,8 @@ jobs:
   ubuntu-latest:
     name: ubuntu-latest
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-dotnet@v6
@@ -31,7 +33,17 @@ jobs:
         with:
           global-json-file: global.json
 
+      - name: Get NuGet OIDC token
+        id: nuget-auth
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const token = await core.getIDToken('nuget.org');
+            core.setSecret(token);
+            return token;
+          result-encoding: string
+
       - name: 'Run: NugetPush'
         run: ./build.cmd NugetPush
         env:
-          NugetApiKey: ${{ secrets.NUGET_API_KEY }}
+          NugetApiKey: ${{ steps.nuget-auth.outputs.result }}
