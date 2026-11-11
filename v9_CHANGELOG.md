@@ -249,7 +249,7 @@ happen to contain the text "Error" now parse successfully.
 The extensions added in v9 (`TimeProviderOverride` and `EndpointCoverage`) are in the
 `Alba.Extensions` namespace, and the host pool types are in `Alba.Pooling`.
 
-- **Server-sent events support.** See the [docs page](https://github.com/JasperFx/alba/blob/master/docs/scenarios/sse.md)
+- **Server-sent events support.** See the [docs page](https://jasperfx.github.io/alba/scenarios/sse)
 - **Binary response reads.** `IScenarioResult.ReadAsBytes()` and `ReadAsBytesAsync()` return the
   response body as `byte[]`, for endpoints that return files, images or other payloads that
   `ReadAsText()` would corrupt. Like the other readers they leave the body readable, so a scenario
@@ -265,16 +265,16 @@ The extensions added in v9 (`TimeProviderOverride` and `EndpointCoverage`) are i
   response without deserializing it, using a small JSONPath subset. Expected values are serialized with the
   application's JSON settings and compared structurally, and `$` compares the whole body. `ShouldExist()`,
   `ShouldNotExist()` and `ShouldHaveCount(...)` cover presence and array lengths. See the
-  [docs page](https://github.com/JasperFx/alba/blob/master/docs/scenarios/json.md#asserting-on-json-structure).
+  [docs page](https://jasperfx.github.io/alba/scenarios/json#asserting-on-json-structure).
 - **Problem details assertions.** `x.ShouldReturnProblemDetails(409).WithTitle(...)` and
   `x.ShouldReturnValidationProblem().WithValidationError("Amount", "must be positive")` assert on RFC 9457 problem
   details responses, including `[ApiController]` model validation. See the
-  [docs page](https://github.com/JasperFx/alba/blob/master/docs/scenarios/problemdetails.md).
+  [docs page](https://jasperfx.github.io/alba/scenarios/problemdetails).
 - **Endpoint coverage and authorization audits.** The `EndpointCoverage` extension lists the endpoints that no
   request has been routed to. One instance can be shared by every host of the application, including a pool of hosts
   for concurrent tests, and checked after the last test. The `EndpointsAllowingAnonymous()` extension method lists
   the endpoints a request without credentials can reach, following the authorization middleware's rules. See the
-  [docs page](https://github.com/JasperFx/alba/blob/master/docs/guide/endpoints.md).
+  [docs page](https://jasperfx.github.io/alba/guide/endpoints).
 - **Host pooling for parallel tests.** `AlbaHostPool` runs up to `MaxHosts` hosts and lends each to one test at a
   time through `await pool.RentAsync()`. Each host is built by a factory for its slot, so hosts can use separate
   databases or other infrastructure. Returning a lease resets the host: actions added through the lease are removed,
@@ -282,11 +282,11 @@ The extensions added in v9 (`TimeProviderOverride` and `EndpointCoverage`) are i
   finds a host's own extension. `AlbaHostPool<TState>` keeps state of your own with each host, `MaxConcurrentStarts`
   limits concurrent startups, the rent timeout only fires when no host comes back to the pool, and the pool records
   rent, start and return activities for tracing. See the
-  [docs page](https://github.com/JasperFx/alba/blob/master/docs/guide/pooling.md).
+  [docs page](https://jasperfx.github.io/alba/guide/pooling).
 - **Requests in the test's context.** `WithTestContextFlow()` runs each scenario's request in the test's async
   context, so `AsyncLocal<T>` values such as xUnit's `TestContext.Current` and the current `Activity` are visible to
   the application while it handles the request. See the
-  [docs page](https://github.com/JasperFx/alba/blob/master/docs/guide/gettingstarted.md#seeing-the-test-from-the-application).
+  [docs page](https://jasperfx.github.io/alba/guide/gettingstarted#seeing-the-test-from-the-application).
 - **Multipart form builder.** `x.Post.MultipartFormData(form => form.File("upload", bytes, "report.csv").Field("tag", "q3"))`
   builds file uploads and form fields without assembling a `MultipartFormDataContent`, inferring each file's
   content type from its name.

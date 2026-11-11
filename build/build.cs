@@ -21,12 +21,12 @@ using static Nuke.Common.Tools.DotNet.DotNetTasks;
     OnPullRequestBranches = ["master"],
     InvokedTargets = [nameof(Test)],
     AutoGenerate = false)]
-[GitHubActions(
+[TrustedPublishingGitHubActions(
     "Manual Nuget Push",
     GitHubActionsImage.UbuntuLatest,
     On = [GitHubActionsTrigger.WorkflowDispatch],
     InvokedTargets = [nameof(NugetPush)],
-    ImportSecrets = [nameof(NugetApiKey)],
+    NugetUser = "${{ secrets.NUGET_USER }}",
     AutoGenerate = false)]
 class Build : NukeBuild
 {
@@ -87,7 +87,7 @@ class Build : NukeBuild
                 .SetOutputDirectory(ArtifactsDirectory));
         });
 
-    [Parameter("Nuget Api Key")] [Secret] readonly string NugetApiKey;
+    [Parameter("NuGet API key, short-lived key issued by NuGet/login via trusted publishing")] [Secret] readonly string NugetApiKey;
 
     Target NugetPush => _ => _
         .DependsOn(NugetPack)
